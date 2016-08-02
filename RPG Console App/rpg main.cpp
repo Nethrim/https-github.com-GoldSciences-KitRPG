@@ -138,10 +138,11 @@ void combat(ENEMY_TYPE enemyType)
 		if (adventurer.getPlayerHp() <= 0){	game = !game; break;}
 		if (currentEnemy.getEnemHp() <= 0)
 		{
+			int drop = currentEnemy.getEnemDrop() + (rand() % 20);
+			cout << endl;			
+			cout << "The enemy has drop " << drop << " coins!!" << endl;
 			cout << endl;
-			cout << "The enemy has drop " << currentEnemy.getEnemDrop() << " coins!!" << endl;
-			cout << endl;
-			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + currentEnemy.getEnemDrop());
+			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
 		}
 	}
 }
@@ -226,11 +227,11 @@ void drink()
 	{
 		cout << "Do you want to buy some drinks?" << endl;
 		cout << endl;
-		cout << "1- Small HP potion" << endl;
+		cout << "1- Small HP potion - 50 coins" << endl;
 		cout << endl;
-		cout << "2- Regular HP potion" << endl;
+		cout << "2- Regular HP potion- 100 coins" << endl;
 		cout << endl;
-		cout << "3- Large HP potion" << endl;
+		cout << "3- Large HP potion- 150 coins" << endl;
 		cout << endl;
 		drinks = getchar();
 		getchar();
@@ -243,15 +244,15 @@ void drink()
 				drinkVal = true;
 				break;
 			}
-			if (adventurer.getPlayerCoins() >= 10)
+			if (adventurer.getPlayerCoins() >= 50)
 			{
 				cout << "You bought a small HP potion" << endl;
 				cout << endl;
 				inventory[0] = "Small Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 10);
+				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 50);
 			}
 			else {
-				cout << "Come back when you have some coins maggot!!";
+				cout << "Come back when you've got some money, scum!!";
 				cout << endl;
 			}
 			drinkVal = true;
@@ -263,12 +264,12 @@ void drink()
 				drinkVal = true;
 				break;
 			}
-			if (adventurer.getPlayerCoins() >= 50)
+			if (adventurer.getPlayerCoins() >= 100)
 			{
 				cout << "You bought a regular HP potion" << endl;
 				cout << endl;
 				inventory[1] = "Regular Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 50);
+				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 100);
 			}else {
 				cout << "Come back when you have some coins maggot!!";
 				cout << endl;
@@ -282,12 +283,12 @@ void drink()
 				drinkVal = true;
 				break;
 			}
-			if (adventurer.getPlayerCoins() >= 100)
+			if (adventurer.getPlayerCoins() >= 150)
 			{
 				cout << endl;
 				cout << "You bought a large HP potion" << endl;
 				inventory[2] = "Large Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 100);
+				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 150);
 			}else {
 				cout << "Come back when you have some coins maggot!!";
 				cout << endl;
@@ -341,6 +342,7 @@ void useItems()
 				cout << "You use a small HP potion" << endl;
 				inventory[0] = "EMPTY";
 				adventurer.setPlayerHp(adventurer.getPlayerHp()+10+(rand()%10));
+				if (adventurer.getPlayerHp() > maxHP) { adventurer.setPlayerHp(maxHP); }
 				itemVal = true;
 			}
 			else
@@ -354,7 +356,8 @@ void useItems()
 			{
 				cout << "You use a regular HP potion" << endl;
 				inventory[1] = "EMPTY";
-				adventurer.setPlayerHp(adventurer.getPlayerHp()+20+(rand()%20));
+				adventurer.setPlayerHp(adventurer.getPlayerHp()+50+(rand()%50));
+				if (adventurer.getPlayerHp() > maxHP) { adventurer.setPlayerHp(maxHP); }
 				itemVal = true;
 			}
 			else
@@ -368,7 +371,8 @@ void useItems()
 			{
 				cout << "You use a large HP potion" << endl;
 				inventory[2] = "EMPTY";
-				adventurer.setPlayerHp(adventurer.getPlayerHp()+40+(rand()%40));
+				adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%100));
+				if (adventurer.getPlayerHp() > maxHP) {adventurer.setPlayerHp(maxHP);}
 				itemVal = true;
 			}
 			else
