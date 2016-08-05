@@ -96,7 +96,18 @@ void combat(ENEMY_TYPE enemyType)
 				break;
 			case '3':
 				cout << "You are trying to escape!" << endl;
-				tavern();
+				cout << endl;
+				if ((rand() % 100) <30)
+				{
+					cout << "You escaped from combat!" << endl;
+					cout << endl;
+					tavern();
+				}
+				else {
+					cout << "You failed to escape!" << endl;
+					cout << endl;
+				}
+				
 				combatVal = true;
 				break;
 			default:
@@ -393,8 +404,5 @@ void useItems()
 }
 
 
-// crear funcion usar item, para volver a EMPTY los items que usamos y aplicar sus propiedades. 
-// añadir pociones que aumenten daño y chance hit durante el combate, indicar que vuelvan a la normalidad la hora
-// de volver a la taberna.
-// agregar dado de RUN, para que volver a la taberna durante el combate no sea tan facil.
+
 // calcular un chance hit balanceado.
