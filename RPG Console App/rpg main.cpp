@@ -37,9 +37,9 @@ void useItems();
 void main()
 {	
 	srand(time(NULL));
-	inventory[numItems++] = "EMPTY";
-	inventory[numItems++] = "EMPTY";
-	inventory[numItems++] = "EMPTY";
+	for(int item = 0; item < MAX_ITEMS; item++)
+		inventory[item] = "EMPTY";
+
 	cout << "Welcome Stranger!! who are you ?" << endl;
 	cout << "My name is: " << endl;
 	getline(cin, name);
