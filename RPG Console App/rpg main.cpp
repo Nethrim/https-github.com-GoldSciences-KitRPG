@@ -7,10 +7,10 @@
 #include "Player.h"
 
 using namespace std;
-enemy wolf		  (100,  5, 1000,    "Wolf", 10); //HP, Atk, HitChance, name, dropCoins.
-enemy raider	  (150,  8, 1000,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
-enemy soldier	  (250,  50, 1000, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-player adventurer (200, 10, 1000, 0); //HP, ATk, HitChance, Coins.
+enemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
+enemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
+enemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
+player adventurer (200, 6, 50, 0); //HP, ATk, HitChance, Coins.
 bool game = true;
 bool valid;
 bool difValid;
@@ -116,10 +116,8 @@ void combat(ENEMY_TYPE enemyType)
 				continue;
 			}
 		}
-
-		int hitDice = (1 + (rand() % 10));
-
-		if (hitDice < currentEnemy.getEnemChit())
+				
+		if ((rand() % 100) < currentEnemy.getEnemChit() )
 		{
 			int enemyDamage = currentEnemy.getEnemAttack()+(rand()%10);
 			cout << "The " << currentEnemy.getEnemName() << " hits you for: " << enemyDamage << endl;
@@ -128,13 +126,11 @@ void combat(ENEMY_TYPE enemyType)
 		}
 		else {
 			cout << "The " << currentEnemy.getEnemName() << " miss the attack!" << endl;
-			cout << "Your HP is: " << adventurer.getPlayerHp();
+			cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
 		}
 		if (adventurer.getPlayerHp() < 1) { break; }
 
-		int playerDice = (1 + (rand() % 10));
-
-		if (playerDice < adventurer.getPlayerChit())
+		if ((rand() % 100) < adventurer.getPlayerChit())
 		{
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
 			cout << "You hit for: " << playerDamage << endl;
@@ -402,7 +398,3 @@ void useItems()
 		}
 	}
 }
-
-
-
-// calcular un chance hit balanceado.
