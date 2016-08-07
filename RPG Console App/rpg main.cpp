@@ -273,8 +273,7 @@ void addItem(const std::string& itemName)
 
 void drink()
 {
-	drinkVal = false;
-	while (!drinkVal)
+	while (true)
 	{
 		std::cout << "Do you want to buy some drinks?\n";
 		printf("You have %u coins.\n", adventurer.getPlayerCoins());
@@ -288,8 +287,7 @@ void drink()
 		
 		if( idItem == MAX_ITEM_DESCRIPTIONS ) 
 		{
-			printf("You get out of the tavern.\n");
-			drinkVal = true;
+			printf("You leave the tavern.\n");
 			break;
 		}
 		else if(idItem >= 0 && idItem < MAX_ITEM_DESCRIPTIONS)
@@ -300,13 +298,11 @@ void drink()
 			}
 			addItem(itemDescriptions[idItem].Name);
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemDescriptions[idItem].Price);
-			drinkVal = true;
 			break;
 		}
 		else
 		{
 			printf("You can't buy something that doesn't exist!\n");
-			drinkVal = false;
 			continue;
 		}
 	}
