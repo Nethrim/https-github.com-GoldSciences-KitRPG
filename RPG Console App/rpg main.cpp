@@ -8,7 +8,7 @@
 
 using namespace std;
 
-CPlayer adventurer (200, 6,		50, 250); //HP, ATk, HitChance, Coins.
+CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
 
 bool game = true;
 bool valid;
@@ -16,16 +16,9 @@ bool difValid;
 bool drinkVal;
 bool combatVal;
 bool itemVal;
-//const int MAX_ITEMS = 3;
-//string inventory[MAX_ITEMS];
 string name;
 int numItems = 0;
 int maxHP = 200;
-char drinks;
-char action;
-char item;
-char tabernSwitch;
-char mercenaryDif;
 void tavern();
 void rest();
 void mercenaryJob();
@@ -37,7 +30,7 @@ void useItems();
 void main()
 {	
 	srand(time(NULL));
-	for(int item = 0; item < MAX_INVENTORY_ITEMS; item++) {
+	for(int item = 0; item < MAX_INVENTORY_SLOTS; item++) {
 		adventurer.inventory[item].Name  = "EMPTY";
 		adventurer.inventory[item].Count = 0;
 	}
@@ -56,29 +49,6 @@ void main()
 	system("PAUSE");
 }
 
-enum ENEMY_TYPE
-{
-	WOLF,
-	RAIDER,
-	SOLDIER
-};
-
-CEnemy getEnemyDefinition(ENEMY_TYPE enemyType)
-{
-	static const CEnemy wolf		(100,  5, 70,   "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
-	static const CEnemy raider		(150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
-	static const CEnemy soldier		(250,  8, 80,	"Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-
-	switch(enemyType) 
-	{
-	case WOLF:		return wolf;	
-	case RAIDER:	return raider;	
-	case SOLDIER:	return soldier; 
-	default:
-		return CEnemy(250+(rand()%50), 8+(rand()%5), 80+(rand()%20), "Reptile (a character that spawns due to a bug).", 100+(rand()%20));
-	}
-
-}
 
 void combat(ENEMY_TYPE enemyType)
 {
@@ -94,7 +64,7 @@ void combat(ENEMY_TYPE enemyType)
 			cout << endl;
 			cout << "1-Attack 2-Inventory 3-Run" << endl;
 			cout << endl;			
-			action = getchar();
+			char action = getchar();
 			getchar();
 			switch (action)
 			{
@@ -192,7 +162,7 @@ void tavern()
 	{
 		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
 		std::cout << "1- for Rest. 2-for a Mercenary Job. 3-for a drink. " << endl;
-		tabernSwitch = getchar();
+		char tabernSwitch = getchar();
 		getchar();
 		switch (tabernSwitch)
 		{
@@ -230,7 +200,7 @@ void mercenaryJob()
 	{
 		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
 		std::cout << "1-Easy Job. 2-Medium Job. 3-Hard Job. 4-Back to the Tabern." << endl;
-		mercenaryDif = getchar();
+		char mercenaryDif = getchar();
 		getchar();
 		switch (mercenaryDif)
 		{
@@ -281,7 +251,7 @@ void drink()
 		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)
 			std::cout << i+1 <<" - "<< itemDescriptions[i].Name << ": " << itemDescriptions[i].Price << " coins.\n";
 
-		drinks = getchar();
+		char drinks = getchar();
 		getchar();
 		int idItem = drinks - '1';
 		
@@ -337,9 +307,9 @@ void useItems()
 	while (true)
 	{
 		showInventory();
-		cout << MAX_INVENTORY_ITEMS+1 << ": Continue" << endl;
+		cout << MAX_INVENTORY_SLOTS+1 << ": Continue" << endl;
 		cout << endl;
-		item = getchar();
+		char item = getchar();
 		getchar();
 
 		indexItem = item - '1';
@@ -347,7 +317,7 @@ void useItems()
 			cout << "answer again" << endl;
 			continue;
 		}
-		else if(indexItem == MAX_INVENTORY_ITEMS) {	// exit 
+		else if(indexItem == MAX_INVENTORY_SLOTS) {	// exit 
 			break;
 		}
 		else if( indexItem > adventurer.itemCount ) {

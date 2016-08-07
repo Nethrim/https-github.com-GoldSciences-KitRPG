@@ -2,14 +2,11 @@
 
 #include <string>
    
-
 struct SItem 
 {
 	std::string	Name;
 	int			Price;
 };
-
-
 
 #define MAX_ITEM_DESCRIPTIONS 3
 

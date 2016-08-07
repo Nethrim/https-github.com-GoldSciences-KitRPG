@@ -10,7 +10,7 @@ struct SInventorySlot
 	int			Count;
 };
 
-#define MAX_INVENTORY_ITEMS 3
+#define MAX_INVENTORY_SLOTS 3
 
 class CPlayer
 {
@@ -25,7 +25,7 @@ public:
 	int getPlayerChit();
 	int getPlayerCoins();
 
-	SInventorySlot	inventory[MAX_INVENTORY_ITEMS];
+	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 	int itemCount;
 
 private:
