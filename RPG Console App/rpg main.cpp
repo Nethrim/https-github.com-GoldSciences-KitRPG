@@ -10,7 +10,7 @@ using namespace std;
 enemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
 enemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
 enemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-player adventurer (200, 6, 50, 0); //HP, ATk, HitChance, Coins.
+player adventurer (2000, 60, 50, 0); //HP, ATk, HitChance, Coins.
 bool game = true;
 bool valid;
 bool difValid;
@@ -72,7 +72,7 @@ void combat(ENEMY_TYPE enemyType)
 	case SOLDIER:	currentEnemy.setEnemChit(soldier.getEnemChit());	currentEnemy.setEnemAttack(soldier.getEnemAttack());	currentEnemy.setEnemHp(soldier.getEnemHp());	currentEnemy.setEnemName(soldier.getEnemName());	currentEnemy.setEnemDrop(soldier.getEnemDrop()); break;
 	}
 
-	while (adventurer.getPlayerHp() >= 0 && currentEnemy.getEnemHp() >= 0)
+	while (adventurer.getPlayerHp() > 0 && currentEnemy.getEnemHp() > 0)
 	{	
 		combatVal = false;
 		while (!combatVal)
@@ -121,12 +121,22 @@ void combat(ENEMY_TYPE enemyType)
 		{
 			int enemyDamage = currentEnemy.getEnemAttack()+(rand()%10);
 			cout << "The " << currentEnemy.getEnemName() << " hits you for: " << enemyDamage << endl;
+
 			adventurer.setPlayerHp(adventurer.getPlayerHp() - enemyDamage);
-			cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+			if (adventurer.getPlayerHp() <= 0) 
+			{ 
+				cout << "Your HP is: 0" << endl; 
+				cout << endl;
+				cout << "You are dead!" << endl;
+			}
+			else {
+				cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+			}
 		}
 		else {
 			cout << "The " << currentEnemy.getEnemName() << " miss the attack!" << endl;
 			cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+			
 		}
 		if (adventurer.getPlayerHp() < 1) { break; }
 
@@ -135,7 +145,15 @@ void combat(ENEMY_TYPE enemyType)
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
 			cout << "You hit for: " << playerDamage << endl;
 			currentEnemy.setEnemHp(currentEnemy.getEnemHp() - playerDamage);
-			cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
+			if (currentEnemy.getEnemHp() <= 0)
+			{
+				cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0" << endl;
+				cout << endl;
+				cout << "The " << currentEnemy.getEnemName() <<" is dead" << endl;
+			}
+			else {
+				cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
+			}
 		}
 		else {
 			cout << "You miss the attack!" << endl;
@@ -151,7 +169,7 @@ void combat(ENEMY_TYPE enemyType)
 			cout << endl;
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
 		}
-	}
+	} 
 }
 
 void tavern()
