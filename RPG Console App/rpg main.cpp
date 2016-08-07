@@ -10,7 +10,7 @@ using namespace std;
 CEnemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
 CEnemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
 CEnemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
+CPlayer adventurer (200, 6, 50, 250); //HP, ATk, HitChance, Coins.
 
 
 bool game = true;
@@ -250,6 +250,20 @@ void mercenaryJob()
 	}
 }
 
+void addItem(const std::string& itemName)
+{
+	for(int i=0, count = adventurer.itemCount; i<count; i++) {
+		if(itemName == adventurer.inventory[i].Name) {
+			adventurer.inventory[i].Count++;
+			return;
+		}
+	}
+
+	adventurer.inventory[adventurer.itemCount].Name		= itemName;
+	adventurer.inventory[adventurer.itemCount].Count	= 1;
+	adventurer.itemCount++;
+}
+
 void drink()
 {
 	drinkVal = false;
@@ -276,9 +290,7 @@ void drink()
 				printf("You can't afford to buy that!\n");
 				continue;
 			}
-			adventurer.inventory[adventurer.itemCount].Name = itemDescriptions[idItem].Name;
-			adventurer.inventory[adventurer.itemCount].Count++;
-			adventurer.itemCount++;
+			addItem(itemDescriptions[idItem].Name);
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemDescriptions[idItem].Price);
 			drinkVal = true;
 			break;
