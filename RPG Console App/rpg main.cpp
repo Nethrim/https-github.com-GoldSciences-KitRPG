@@ -7,11 +7,8 @@
 #include "Player.h"
 
 using namespace std;
-CEnemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
-CEnemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
-CEnemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-CPlayer adventurer (200, 6, 50, 250); //HP, ATk, HitChance, Coins.
 
+CPlayer adventurer (200, 6,		50, 250); //HP, ATk, HitChance, Coins.
 
 bool game = true;
 bool valid;
@@ -66,16 +63,26 @@ enum ENEMY_TYPE
 	SOLDIER
 };
 
-void combat(ENEMY_TYPE enemyType)
+CEnemy getEnemyDefinition(ENEMY_TYPE enemyType)
 {
-	CEnemy currentEnemy;
+	static const CEnemy wolf		(100,  5, 70,   "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
+	static const CEnemy raider		(150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
+	static const CEnemy soldier		(250,  8, 80,	"Soldier",100); //HP, Atk, HitChance, name, dropCoins.
 
 	switch(enemyType) 
 	{
-	case WOLF:		currentEnemy.setEnemChit(wolf.getEnemChit	());	currentEnemy.setEnemAttack(wolf.getEnemAttack	());	currentEnemy.setEnemHp(wolf.getEnemHp());		currentEnemy.setEnemName(wolf.getEnemName	());	currentEnemy.setEnemDrop(wolf.getEnemDrop	()); break;
-	case RAIDER:	currentEnemy.setEnemChit(raider.getEnemChit ());	currentEnemy.setEnemAttack(raider.getEnemAttack ());	currentEnemy.setEnemHp(raider.getEnemHp());		currentEnemy.setEnemName(raider.getEnemName ());	currentEnemy.setEnemDrop(raider.getEnemDrop	()); break;
-	case SOLDIER:	currentEnemy.setEnemChit(soldier.getEnemChit());	currentEnemy.setEnemAttack(soldier.getEnemAttack());	currentEnemy.setEnemHp(soldier.getEnemHp());	currentEnemy.setEnemName(soldier.getEnemName());	currentEnemy.setEnemDrop(soldier.getEnemDrop()); break;
+	case WOLF:		return wolf;	
+	case RAIDER:	return raider;	
+	case SOLDIER:	return soldier; 
+	default:
+		return CEnemy(250+(rand()%50), 8+(rand()%5), 80+(rand()%20), "Reptile (a character that spawns due to a bug).", 100+(rand()%20));
 	}
+
+}
+
+void combat(ENEMY_TYPE enemyType)
+{
+	CEnemy currentEnemy = getEnemyDefinition(enemyType);
 
 	while (adventurer.getPlayerHp() > 0 && currentEnemy.getEnemHp() > 0)
 	{	
@@ -85,7 +92,7 @@ void combat(ENEMY_TYPE enemyType)
 			cout << endl;
 			cout << "Select Action:" << endl;
 			cout << endl;
-			cout << "1-Atack 2-Inventory 3-Run" << endl;
+			cout << "1-Attack 2-Inventory 3-Run" << endl;
 			cout << endl;			
 			action = getchar();
 			getchar();
@@ -355,7 +362,7 @@ void useItems()
 		int itemCount = adventurer.inventory[indexItem].Count;
 
 		if (itemCount <= 0) { 
-			printf("You don't have anymore of that\n"); 
+			printf("You don't have anymore of that.\n"); 
 			continue; 
 		};
 
@@ -370,7 +377,7 @@ void useItems()
 
 	if(bUsedItem)
 	{
-		printf("You used: %s\n", itemName.c_str());
+		printf("You used: %s.\n", itemName.c_str());
 		adventurer.inventory[indexItem].Count--;
 	}
 
