@@ -278,6 +278,7 @@ void drink()
 	{
 		std::cout << "Do you want to buy some drinks?\n";
 		printf("You have %u coins.\n", adventurer.getPlayerCoins());
+		printf("- Type %u to exit the tavern.\n", MAX_ITEM_DESCRIPTIONS+1);
 		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)
 			std::cout << i+1 <<" - "<< itemDescriptions[i].Name << ": " << itemDescriptions[i].Price << " coins.\n";
 
@@ -285,13 +286,13 @@ void drink()
 		getchar();
 		int idItem = drinks - '1';
 		
-		if( idItem >= MAX_ITEM_DESCRIPTIONS ) 
+		if( idItem == MAX_ITEM_DESCRIPTIONS ) 
 		{
-			printf("You can't carry anymore.\n");
+			printf("You get out of the tavern.\n");
 			drinkVal = true;
 			break;
 		}
-		else if(idItem >= 0)
+		else if(idItem >= 0 && idItem < MAX_ITEM_DESCRIPTIONS)
 		{
 			if(adventurer.getPlayerCoins() < itemDescriptions[idItem].Price) {
 				printf("You can't afford to buy that!\n");
@@ -304,7 +305,7 @@ void drink()
 		}
 		else
 		{
-			printf("answer again");
+			printf("You can't buy something that doesn't exist!\n");
 			drinkVal = false;
 			continue;
 		}
