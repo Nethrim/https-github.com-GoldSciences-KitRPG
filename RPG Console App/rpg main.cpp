@@ -8,17 +8,12 @@
 
 using namespace std;
 
+string name;
+int maxHP = 200;
+
 CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
 
 bool game = true;
-bool valid;
-bool difValid;
-bool drinkVal;
-bool combatVal;
-bool itemVal;
-string name;
-int numItems = 0;
-int maxHP = 200;
 void tavern();
 void rest();
 void mercenaryJob();
@@ -56,7 +51,7 @@ void combat(ENEMY_TYPE enemyType)
 
 	while (adventurer.getPlayerHp() > 0 && currentEnemy.getEnemHp() > 0)
 	{	
-		combatVal = false;
+		bool combatVal = false;
 		while (!combatVal)
 		{
 			cout << endl;
@@ -156,7 +151,7 @@ void combat(ENEMY_TYPE enemyType)
 
 void tavern()
 {
-	valid = false;
+	bool valid = false;
 	
 	while (!valid)
 	{
@@ -196,6 +191,7 @@ void rest()
 void mercenaryJob()
 {
 	std::cout << "mercenary job" << endl;
+	bool difValid = false;
 	while (!difValid)
 	{
 		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
@@ -217,12 +213,11 @@ void mercenaryJob()
 			combat(SOLDIER);
 			break;
 		case '4':
-			std::cout << "Welcome again " << name << endl;
+			std::cout << "Welcome again, " << name << endl;
 			tavern();
 			break;
 		default:
 			std::cout << "answer again" << endl;
-			difValid = false;
 		}
 	}
 }
