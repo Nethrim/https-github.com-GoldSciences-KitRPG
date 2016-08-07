@@ -2,11 +2,11 @@
 
 #include <string>
 
-class enemy
+class CEnemy
 {
 	public:
-		enemy(){};
-		enemy(int hp, int atk, int hit, const std::string& name, int drop);
+		CEnemy(){};
+		CEnemy(int hp, int atk, int hit, const std::string& name, int drop);
 		inline	void setEnemHp			(int val)					{ enemHp	= val; };
 		inline	void setEnemAttack		(int val)					{ enemAtk	= val; };
 		inline	void setEnemChit		(int val)					{ enemHit	= val; };

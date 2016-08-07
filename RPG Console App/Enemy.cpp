@@ -1,6 +1,6 @@
 #include"Enemy.h"
 
-enemy::enemy(
+CEnemy::CEnemy(
 	int initHp	, 
 	int initAtk	, 
 	int initHit	, 

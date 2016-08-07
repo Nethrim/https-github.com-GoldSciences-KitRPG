@@ -1,6 +1,6 @@
 #include "Player.h"
 
-player::player(int initHp, int initAtk, int initHit, int initCoins)
+CPlayer::CPlayer(int initHp, int initAtk, int initHit, int initCoins)
 {
 	setPlayerHp(initHp);
 	setPlayerAttack(initAtk);
@@ -8,40 +8,40 @@ player::player(int initHp, int initAtk, int initHit, int initCoins)
 	setPlayerCoins(initCoins);
 }
 
-void player::setPlayerHp(int initHp)
+void CPlayer::setPlayerHp(int initHp)
 {
 	playerHp = initHp;
 }
-void player::setPlayerAttack(int initAtk)
+void CPlayer::setPlayerAttack(int initAtk)
 {
 	playerAtk = initAtk;
 }
-void player::setPlayerChit(int initHit)
+void CPlayer::setPlayerChit(int initHit)
 {
 	playerHit = initHit;
 }
 
-void player::setPlayerCoins(int initCoins)
+void CPlayer::setPlayerCoins(int initCoins)
 {
 	playerCoins = initCoins;
 }
 
-int player::getPlayerHp()
+int CPlayer::getPlayerHp()
 {
 	return playerHp;
 }
 
-int player::getPlayerAttack()
+int CPlayer::getPlayerAttack()
 {
 	return playerAtk;
 }
 
-int player::getPlayerChit()
+int CPlayer::getPlayerChit()
 {
 	return playerHit;
 }
 
-int player::getPlayerCoins()
+int CPlayer::getPlayerCoins()
 {
 	return playerCoins;
 }

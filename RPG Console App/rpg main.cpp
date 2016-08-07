@@ -7,18 +7,20 @@
 #include "Player.h"
 
 using namespace std;
-enemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
-enemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
-enemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-player adventurer (200, 6, 50, 0); //HP, ATk, HitChance, Coins.
+CEnemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
+CEnemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
+CEnemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
+CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
+
+
 bool game = true;
 bool valid;
 bool difValid;
 bool drinkVal;
 bool combatVal;
 bool itemVal;
-const int MAX_ITEMS = 3;
-string inventory[MAX_ITEMS];
+//const int MAX_ITEMS = 3;
+//string inventory[MAX_ITEMS];
 string name;
 int numItems = 0;
 int maxHP = 200;
@@ -33,17 +35,20 @@ void mercenaryJob();
 void drink();
 void showInventory();
 void useItems();
-    
+
+
 void main()
 {	
 	srand(time(NULL));
-	for(int item = 0; item < MAX_ITEMS; item++)
-		inventory[item] = "EMPTY";
+	for(int item = 0; item < MAX_INVENTORY_ITEMS; item++) {
+		adventurer.inventory[item].Name  = "EMPTY";
+		adventurer.inventory[item].Count = 0;
+	}
 
-	cout << "Welcome Stranger!! who are you ?" << endl;
-	cout << "My name is: " << endl;
+	cout << "Welcome Stranger!! who are you?\n";
+	cout << "My name is: \n";
 	getline(cin, name);
-	cout << "So " << name << "...What's bring you here?" << endl;
+	cout << "So " << name << "...What's bring you here?\n";
 
 	while (game)
 	{	
@@ -63,7 +68,7 @@ enum ENEMY_TYPE
 
 void combat(ENEMY_TYPE enemyType)
 {
-	enemy currentEnemy;
+	CEnemy currentEnemy;
 
 	switch(enemyType) 
 	{
@@ -125,17 +130,17 @@ void combat(ENEMY_TYPE enemyType)
 			adventurer.setPlayerHp(adventurer.getPlayerHp() - enemyDamage);
 			if (adventurer.getPlayerHp() <= 0) 
 			{ 
-				cout << "Your HP is: 0" << endl; 
-				cout << endl;
-				cout << "You are dead!" << endl;
+				std::cout << "Your HP is: 0" << endl; 
+				std::cout << endl;
+				std::cout << "You are dead!" << endl;
 			}
 			else {
-				cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+				std::cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
 			}
 		}
 		else {
-			cout << "The " << currentEnemy.getEnemName() << " miss the attack!" << endl;
-			cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+			std::cout << "The " << currentEnemy.getEnemName() << " miss the attack!" << endl;
+			std::cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
 			
 		}
 		if (adventurer.getPlayerHp() < 1) { break; }
@@ -143,30 +148,30 @@ void combat(ENEMY_TYPE enemyType)
 		if ((rand() % 100) < adventurer.getPlayerChit())
 		{
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
-			cout << "You hit for: " << playerDamage << endl;
+			std::cout << "You hit for: " << playerDamage << endl;
 			currentEnemy.setEnemHp(currentEnemy.getEnemHp() - playerDamage);
 			if (currentEnemy.getEnemHp() <= 0)
 			{
-				cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0" << endl;
-				cout << endl;
-				cout << "The " << currentEnemy.getEnemName() <<" is dead" << endl;
+				std::cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0" << endl;
+				std::cout << endl;
+				std::cout << "The " << currentEnemy.getEnemName() <<" is dead" << endl;
 			}
 			else {
-				cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
+				std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
 			}
 		}
 		else {
-			cout << "You miss the attack!" << endl;
-			cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
+			std::cout << "You miss the attack!" << endl;
+			std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << endl;
 		};
 
 		if (adventurer.getPlayerHp() <= 0){	game = !game; break;}
 		if (currentEnemy.getEnemHp() <= 0)
 		{
 			int drop = currentEnemy.getEnemDrop() + (rand() % 20);
-			cout << endl;			
-			cout << "The enemy has drop " << drop << " coins!!" << endl;
-			cout << endl;
+			std::cout << endl;			
+			std::cout << "The enemy has drop " << drop << " coins!!" << endl;
+			std::cout << endl;
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
 		}
 	} 
@@ -179,7 +184,7 @@ void tavern()
 	while (!valid)
 	{
 		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
-		cout << "1- for Rest. 2-for a Mercenary Job. 3-for a drink. " << endl;
+		std::cout << "1- for Rest. 2-for a Mercenary Job. 3-for a drink. " << endl;
 		tabernSwitch = getchar();
 		getchar();
 		switch (tabernSwitch)
@@ -197,7 +202,7 @@ void tavern()
 			valid = false;
 			break;
 		default:
-			cout << "answer again" << endl;
+			std::cout << "answer again" << endl;
 			valid = false;
 			continue;
 		}
@@ -206,40 +211,40 @@ void tavern()
 
 void rest()
 {
-	cout << "rest" << endl;
+	std::cout << "rest" << endl;
 	adventurer.setPlayerHp(maxHP);
-	cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
+	std::cout << "Your HP is: " << adventurer.getPlayerHp() << endl;
 }
 
 void mercenaryJob()
 {
-	cout << "mercenary job" << endl;
+	std::cout << "mercenary job" << endl;
 	while (!difValid)
 	{
 		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
-		cout << "1-Easy Job. 2-Medium Job. 3-Hard Job. 4-Back to the Tabern." << endl;
+		std::cout << "1-Easy Job. 2-Medium Job. 3-Hard Job. 4-Back to the Tabern." << endl;
 		mercenaryDif = getchar();
 		getchar();
 		switch (mercenaryDif)
 		{
 		case '1':
-			cout << "Wolf fight" << endl;
+			std::cout << "Wolf fight" << endl;
 			combat(WOLF);
 			break;
 		case '2':
-			cout << "Raider fight" << endl;
+			std::cout << "Raider fight" << endl;
 			combat(RAIDER);
 			break;
 		case '3':
-			cout << "Soldier fight" << endl;
+			printf("Soldier fight");
 			combat(SOLDIER);
 			break;
 		case '4':
-			cout << "Welcome again " << name << endl;
+			std::cout << "Welcome again " << name << endl;
 			tavern();
 			break;
 		default:
-			cout << "answer again" << endl;
+			std::cout << "answer again" << endl;
 			difValid = false;
 		}
 	}
@@ -250,78 +255,37 @@ void drink()
 	drinkVal = false;
 	while (!drinkVal)
 	{
-		cout << "Do you want to buy some drinks?" << endl;
-		cout << endl;
-		cout << "1- Small HP potion - 50 coins" << endl;
-		cout << endl;
-		cout << "2- Regular HP potion- 100 coins" << endl;
-		cout << endl;
-		cout << "3- Large HP potion- 150 coins" << endl;
-		cout << endl;
+		std::cout << "Do you want to buy some drinks?\n";
+		printf("You have %u coins.\n", adventurer.getPlayerCoins());
+		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)
+			std::cout << i+1 <<" - "<< itemDescriptions[i].Name << ": " << itemDescriptions[i].Price << " coins.\n";
+
 		drinks = getchar();
 		getchar();
-		switch (drinks)
+		int idItem = drinks - '1';
+		
+		if( idItem >= MAX_ITEM_DESCRIPTIONS ) 
 		{
-		case '1':
-			if (inventory[0] == "Small Hp potion")
-			{
-				cout << "You can't carry any more" << endl;
-				drinkVal = true;
-				break;
-			}
-			if (adventurer.getPlayerCoins() >= 50)
-			{
-				cout << "You bought a small HP potion" << endl;
-				cout << endl;
-				inventory[0] = "Small Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 50);
-			}
-			else {
-				cout << "Come back when you've got some money, scum!!";
-				cout << endl;
-			}
+			printf("You can't carry anymore.\n");
 			drinkVal = true;
 			break;
-		case '2':
-			if (inventory[1] == "Regular Hp potion")
-			{
-				cout << "You can't carry any more" << endl;
-				drinkVal = true;
-				break;
+		}
+		else if(idItem >= 0)
+		{
+			if(adventurer.getPlayerCoins() < itemDescriptions[idItem].Price) {
+				printf("You can't afford to buy that!\n");
+				continue;
 			}
-			if (adventurer.getPlayerCoins() >= 100)
-			{
-				cout << "You bought a regular HP potion" << endl;
-				cout << endl;
-				inventory[1] = "Regular Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 100);
-			}else {
-				cout << "Come back when you have some coins maggot!!";
-				cout << endl;
-			}
+			adventurer.inventory[adventurer.itemCount].Name = itemDescriptions[idItem].Name;
+			adventurer.inventory[adventurer.itemCount].Count++;
+			adventurer.itemCount++;
+			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemDescriptions[idItem].Price);
 			drinkVal = true;
 			break;
-		case '3':
-			if (inventory[2] == "Large Hp potion")
-			{
-				cout << "You can't carry any more" << endl;
-				drinkVal = true;
-				break;
-			}
-			if (adventurer.getPlayerCoins() >= 150)
-			{
-				cout << endl;
-				cout << "You bought a large HP potion" << endl;
-				inventory[2] = "Large Hp potion";
-				adventurer.setPlayerCoins(adventurer.getPlayerCoins() - 150);
-			}else {
-				cout << "Come back when you have some coins maggot!!";
-				cout << endl;
-			}
-			drinkVal = true;
-			break;
-		default:
-			cout << "answer again" << endl;
+		}
+		else
+		{
+			printf("answer again");
 			drinkVal = false;
 			continue;
 		}
@@ -337,9 +301,9 @@ void showInventory()
 	cout << "Your have " << adventurer.getPlayerCoins() << " coins" << endl;
 	cout << endl;
 	int i;
-	for (i = 0; i < numItems; i++)
+	for (i = 0; i < adventurer.itemCount; i++)
 	{
-		cout<< i + 1<<"- "<< inventory[i] << endl;
+		cout << i + 1 << " - "<< adventurer.inventory[i].Name << ": " << adventurer.inventory[i].Count;
 		cout << endl;
 	}
 	
@@ -350,69 +314,52 @@ void useItems()
 	cout << endl;
 	cout << "Use an Item or press 4 to continue" << endl;
 	cout << endl;
-	itemVal = false;
-	while (!itemVal)
+
+	bool bUsedItem = false;
+	int indexItem = -1;
+	std::string itemName;
+	while (true)
 	{
 		showInventory();
-		cout << "4- Continue" << endl;
+		cout << MAX_INVENTORY_ITEMS+1 << ": Continue" << endl;
 		cout << endl;
 		item = getchar();
 		getchar();
-		switch (item)
-		{
-		case '1':
-			
-			if (inventory[0] == "Small Hp potion")
-			{
-				cout << "You use a small HP potion" << endl;
-				inventory[0] = "EMPTY";
-				adventurer.setPlayerHp(adventurer.getPlayerHp()+10+(rand()%10));
-				if (adventurer.getPlayerHp() > maxHP) { adventurer.setPlayerHp(maxHP); }
-				itemVal = true;
-			}
-			else
-			{
-				cout << "It's empty !!" << endl;
-				itemVal = false;
-			}
-			break;
-		case '2':
-			if (inventory[1] == "Regular Hp potion")
-			{
-				cout << "You use a regular HP potion" << endl;
-				inventory[1] = "EMPTY";
-				adventurer.setPlayerHp(adventurer.getPlayerHp()+50+(rand()%50));
-				if (adventurer.getPlayerHp() > maxHP) { adventurer.setPlayerHp(maxHP); }
-				itemVal = true;
-			}
-			else
-			{
-				cout << "It's empty !!" << endl;
-				itemVal = false;
-			}
-			break;
-		case '3':
-			if (inventory[2] == "Large Hp potion")
-			{
-				cout << "You use a large HP potion" << endl;
-				inventory[2] = "EMPTY";
-				adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%100));
-				if (adventurer.getPlayerHp() > maxHP) {adventurer.setPlayerHp(maxHP);}
-				itemVal = true;
-			}
-			else
-			{
-				cout << "It's empty !!" << endl;
-				itemVal = false;
-			}
-			break;
-		case '4':
-			itemVal = true;
-			break;
-		default:
+
+		indexItem = item - '1';
+		if(indexItem < 0) {
 			cout << "answer again" << endl;
-			itemVal = false;
+			continue;
+		}
+		else if(indexItem == MAX_INVENTORY_ITEMS) {	// exit 
+			break;
+		}
+		else if( indexItem > adventurer.itemCount ) {
+			cout << "answer again" << endl;
+			continue;
+		}
+
+		itemName = adventurer.inventory[indexItem].Name;
+		int itemCount = adventurer.inventory[indexItem].Count;
+
+		if (itemCount <= 0) { 
+			printf("You don't have anymore of that\n"); 
+			continue; 
+		};
+
+		if( itemName == "Small HP Potion" )			{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 10+(rand()%10)); printf("You feel slightly better.\n");		bUsedItem = true; break; }
+		else if( itemName == "Medium HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; break; }
+		else if( itemName == "Large HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; break; }
+		else {
+			printf("Unrecognized item found in inventory!\n");
 			continue;
 		}
 	}
+
+	if(bUsedItem)
+	{
+		printf("You used: %s\n", itemName.c_str());
+		adventurer.inventory[indexItem].Count--;
+	}
+
 }
