@@ -10,7 +10,7 @@ using namespace std;
 enemy wolf		  (100,  5, 70,    "Wolf", 25); //HP, Atk, HitChance, name, dropCoins.
 enemy raider	  (150,  10, 50,  "Raider", 50); //HP, Atk, HitChance, name, dropCoins.
 enemy soldier	  (250,  8, 80, "Soldier",100); //HP, Atk, HitChance, name, dropCoins.
-player adventurer (2000, 60, 50, 0); //HP, ATk, HitChance, Coins.
+player adventurer (200, 6, 50, 0); //HP, ATk, HitChance, Coins.
 bool game = true;
 bool valid;
 bool difValid;
