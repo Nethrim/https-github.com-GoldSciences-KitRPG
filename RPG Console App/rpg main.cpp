@@ -5,9 +5,6 @@
 #include "Enemy.h"
 #include "Player.h"
 
-std::string name;
-int maxHP = 200;
-
 CPlayer adventurer (CT_PLAYER, 200, 6, 50, 50); //MaxHP, ATk, HitChance, Coins.
 
 struct SGameCounters {
@@ -48,8 +45,8 @@ void main()
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
-	getline(std::cin, name);
-	std::cout << "So, " << name << "... What brings you here?\n";
+	getline(std::cin, adventurer.Name);
+	std::cout << "So, " << adventurer.Name << "... What brings you here?\n";
 
 	tavern();	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
@@ -230,7 +227,7 @@ void mercenaryJob()
 		else if('2' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
 		else if('3' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
 		else if('4' == mercenaryDif)	{ // This option cancels the loop which causes to exit to the tavern.
-			std::cout << "Welcome back, " << name << ".\n";
+			std::cout << "Welcome back, " << adventurer.Name << ".\n";
 			break;
 		}
 		else {

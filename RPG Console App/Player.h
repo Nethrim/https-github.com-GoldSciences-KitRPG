@@ -17,6 +17,6 @@ class CPlayer : public CCharacter
 public:
 	using CCharacter::CCharacter;
 
-	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 	int itemCount;
+	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 };

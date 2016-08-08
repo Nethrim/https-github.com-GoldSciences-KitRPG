@@ -49,5 +49,5 @@ public:
 
 	CHARACTER_TYPE		Type	= CT_UNKNOWN;
 	SCharacterPoints	Points	= {100, 5, 50, 100};
-	std::string			Name	= "Unknown";
+	std::string			Name	= "Unnamed";
 };
