@@ -1,8 +1,7 @@
 #include <iostream>
 #include <stdio.h>
-#include <time.h>   
+#include <time.h>
 #include <windows.h>
-#include <string>
 #include "Enemy.h"
 #include "Player.h"
 
@@ -17,7 +16,6 @@ void mercenaryJob();
 void drink();
 void showInventory();
 void useItems();
-
 
 void main()
 {	
