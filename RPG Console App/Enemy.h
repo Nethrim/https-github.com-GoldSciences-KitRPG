@@ -62,6 +62,6 @@ static CEnemy getEnemyDefinition(ENEMY_TYPE enemyType)
 	case RAIDER:	return raider;	
 	case SOLDIER:	return soldier; 
 	default:
-		return CEnemy(UNKNOWN, 250+(rand()%50), 8+(rand()%5), 80+(rand()%20), 100+(rand()%20), "Reptile (a character that spawns due to a bug).");
+		return CEnemy(UNKNOWN, 250+(rand()%50), 8+(rand()%5), 80+(rand()%20), 100+(rand()%20), "Reptile (a character that spawns due to a bug)");
 	}
 }

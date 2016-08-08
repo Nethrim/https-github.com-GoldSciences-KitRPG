@@ -129,7 +129,7 @@ void combat(ENEMY_TYPE enemyType)
 		if ((rand() % 100) < currentEnemy.getEnemChit() )
 		{
 			int enemyDamage = currentEnemy.getEnemAttack()+(rand()%10);
-			printf("The %s hits you for %u.\n", currentEnemy.getEnemName().c_str(), enemyDamage);
+			printf("The %s hits you for: %u.\n", currentEnemy.getEnemName().c_str(), enemyDamage);
 
 			GlobalGameCounters.DamageTaken += enemyDamage;
 			GlobalGameCounters.AttacksReceived++;
@@ -162,8 +162,8 @@ void combat(ENEMY_TYPE enemyType)
 			// Check if the enemy was killed. If it was, we cancel the turn loop after applying drops to the player.
 			if (currentEnemy.getEnemHp() <= 0)
 			{
-				std::cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0" << "\n\n";
-				std::cout << "The " << currentEnemy.getEnemName() <<" is dead" << "\n";
+				std::cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0\n\n";
+				std::cout << "The " << currentEnemy.getEnemName() <<" is dead\n";
 				int drop = currentEnemy.getEnemDrop() + (rand() % 20);
 				std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 				adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
