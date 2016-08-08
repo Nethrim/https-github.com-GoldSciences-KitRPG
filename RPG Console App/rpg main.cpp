@@ -44,7 +44,7 @@ void main()
 {	
 	srand((unsigned int)time(NULL));
 	for(int item = 0; item < MAX_INVENTORY_SLOTS; item++) {
-		adventurer.inventory[item].Description	= itemDescriptions[MAX_ITEM_DESCRIPTIONS];
+		adventurer.inventory[item].Description	= itemDescriptions[getDescriptionCount(itemDescriptions)+1];
 		adventurer.inventory[item].Count		= 0;
 	}
 
@@ -303,19 +303,19 @@ void drink()
 	while (true)	// break the loop for exiting the shop
 	{
 		printf("You have %u coins.\n", adventurer.Points.Coins);
-		printf("- Type %u to exit the shop.\n", MAX_ITEM_DESCRIPTIONS+1);
-		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)	// Print available items
+		printf("- Type %u to exit the shop.\n", getDescriptionCount(itemDescriptions)+1);
+		for(int i=0; i<getDescriptionCount(itemDescriptions); i++)	// Print available items
 			printf("- Type %u to buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 
 		char drinks = getchar();
 		getchar();
 		int idItem = drinks - '1';
 		
-		if( idItem == MAX_ITEM_DESCRIPTIONS ) {
+		if( idItem == getDescriptionCount(itemDescriptions) ) {
 			printf("You leave the shop.\n");
 			break;
 		}
-		else if(idItem >= 0 && idItem < MAX_ITEM_DESCRIPTIONS) {
+		else if(idItem >= 0 && idItem < getDescriptionCount(itemDescriptions)) {
 			int itemPrice = itemDescriptions[idItem].Price;
 			const std::string itemName = itemDescriptions[idItem].Name;
 			if(adventurer.Points.Coins < itemPrice) {

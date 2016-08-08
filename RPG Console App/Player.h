@@ -9,7 +9,7 @@ struct SInventorySlot
 	int			Count;
 };
 
-#define MAX_INVENTORY_SLOTS 3
+#define MAX_INVENTORY_SLOTS 10
 
 // This class has the same properties as the base CCharacter and also adds the inventory which is unnecessary for other character types.
 class CPlayer : public CCharacter
