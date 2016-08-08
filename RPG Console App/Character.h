@@ -3,12 +3,12 @@
 #include <string>
 
 enum CHARACTER_TYPE : unsigned int
-{	CT_NPC
+{	CT_UNKNOWN
+,	CT_NPC
 ,	CT_PLAYER
 ,	CT_WOLF
 ,	CT_RAIDER
 ,	CT_SOLDIER
-,	CT_UNKNOWN
 };
 
 struct SCharacterPoints

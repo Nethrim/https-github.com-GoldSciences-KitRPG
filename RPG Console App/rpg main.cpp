@@ -321,6 +321,8 @@ void drink()
 			if(adventurer.Points.Coins < itemPrice) {
 				printf("You can't afford to buy that! Choose something else...\n");
 			}
+			else if(adventurer.itemCount == MAX_INVENTORY_SLOTS)
+				printf("You don't have enough space in your inventory.");
 			else {
 				addItem(itemDescriptions[idItem]);
 				printf("You spend %u coins in %s.\n", itemPrice, itemName.c_str());
@@ -350,7 +352,6 @@ void useItems(CEnemy& enemy)
 
 	bool bUsedItem = false;
 	int indexItem = -1;
-	std::string itemName;
 	SItem itemDescription;
 	while(true)
 	{
@@ -365,26 +366,25 @@ void useItems(CEnemy& enemy)
 		else if(indexItem < 0 || indexItem >= adventurer.itemCount) {	// invalid index means it's an invalid option
 			std::cout << "Invalid answer. Answer again...\n";
 			continue;
-		}
-
-		if (adventurer.inventory[indexItem].Count <= 0) { 
+		} 
+		else if (adventurer.inventory[indexItem].Count <= 0) { 
 			printf("You don't have anymore of that. Use something else...\n"); 
 			continue; 
-		};
-
-		// if we reached here it means that the input was valid so we select the description and exit the loop
-		itemDescription = adventurer.inventory[indexItem].Description;
-		itemName = itemDescription.Name;
-		bUsedItem = true;
-		break;
+		} 
+		else {
+			// if we reached here it means that the input was valid so we select the description and exit the loop
+			itemDescription = adventurer.inventory[indexItem].Description;
+			bUsedItem = true;
+			break;
+		}
 	}
 
 	if(bUsedItem) {
 		int itemEffectValue = 0;
-		int resultingHp = 0;
 		int lotteryRange = 0;
 		int lotteryResult = 0;
 
+		std::string itemName = itemDescription.Name;
 		printf("You used: %s.\n", itemName.c_str());
 		switch( itemDescription.Type )
 		{
@@ -398,9 +398,10 @@ void useItems(CEnemy& enemy)
 			break;
 		case IT_GRENADE:
 			printf("You throw that shit to the enemy.\n");
+			itemEffectValue = int(enemy.Points.MaxHP*(0.2f*itemDescription.Grade)); // this is the total damage points applied to the enemy or player
+
 			lotteryRange = 60+(10*itemDescription.Grade);
 			lotteryResult = rand()%100;
-			itemEffectValue = int(enemy.Points.MaxHP*(0.2f*itemDescription.Grade)); // this is the total damage points applied to the enemy or player
 			if( lotteryResult < lotteryRange)
 			{
 				enemy.Points.HP -= itemEffectValue;	// this is the resulting hp after applying the damage 
