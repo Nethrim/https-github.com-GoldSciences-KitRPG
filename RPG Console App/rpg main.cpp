@@ -10,6 +10,27 @@ int maxHP = 200;
 
 CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
 
+struct SGameCounters {
+	int DamageDealt			= 0;
+	int DamageTaken			= 0;
+
+	int EnemiesKilled		= 0;
+	int PotionsUsed			= 0;
+	int BattlesWon			= 0;
+	int MoneyEarned			= 0;
+	int MoneySpent			= 0;
+	int TurnsPlayed			= 0;
+
+	int AttacksHit			= 0;
+	int AttacksMissed		= 0;
+	int AttacksReceived		= 0;
+	int AttacksAvoided		= 0;
+
+	int EscapesSucceeded	= 0;
+	int EscapesFailed		= 0;
+} GlobalGameCounters;
+
+
 void tavern();
 void rest();
 void mercenaryJob();
@@ -33,6 +54,38 @@ void main()
 	tavern();	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
 	printf("\nGame Over!\n\n");
+	printf("Player statistics:\n"
+   "Damage Dealt		: %u.\n"
+   "Damage Taken		: %u.\n"
+   "Enemies Killed		: %u.\n"
+   "Potions Used		: %u.\n"
+   "Battles Won			: %u.\n"
+   "Money Earned		: %u.\n"
+   "Money Spent			: %u.\n"
+   "Turns Played		: %u.\n"
+   "Attacks Hit			: %u.\n"
+   "Attacks Missed		: %u.\n"
+   "Attacks Received	: %u.\n"
+   "Attacks Avoided		: %u.\n"
+   "Escapes Succeeded	: %u.\n"
+   "Escapes Failed		: %u.\n"
+	, GlobalGameCounters.DamageDealt		
+	, GlobalGameCounters.DamageTaken		
+	, GlobalGameCounters.EnemiesKilled	
+	, GlobalGameCounters.PotionsUsed		
+	, GlobalGameCounters.BattlesWon		
+	, GlobalGameCounters.MoneyEarned		
+	, GlobalGameCounters.MoneySpent		
+	, GlobalGameCounters.TurnsPlayed		
+	, GlobalGameCounters.AttacksHit		
+	, GlobalGameCounters.AttacksMissed	
+	, GlobalGameCounters.AttacksReceived	
+	, GlobalGameCounters.AttacksAvoided	
+	, GlobalGameCounters.EscapesSucceeded	
+	, GlobalGameCounters.EscapesFailed	
+	);
+
+
 	system("PAUSE");
 }
 
@@ -43,6 +96,8 @@ void combat(ENEMY_TYPE enemyType)
 
 	while (true)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
+		GlobalGameCounters.TurnsPlayed++;
+
 		while (true)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 		{
 			printf("\nSelect Action:\n");
@@ -57,9 +112,11 @@ void combat(ENEMY_TYPE enemyType)
 				std::cout << "You try to escape!\n\n";
 				if ((rand() % 100) < 30) {
 					printf("You escaped from combat!\n");
+					GlobalGameCounters.EscapesSucceeded++;
 					return;
 				}
 
+				GlobalGameCounters.EscapesFailed++;
 				printf("You failed to escape!\n");
 				break;
 			}
@@ -67,12 +124,15 @@ void combat(ENEMY_TYPE enemyType)
 				printf("Invalid action.\n");
 			}
 		}
-				
+
 		// Calculate the enemy hit chance and apply damage to player or just print the miss message.
 		if ((rand() % 100) < currentEnemy.getEnemChit() )
 		{
 			int enemyDamage = currentEnemy.getEnemAttack()+(rand()%10);
 			printf("The %s hits you for %u.\n", currentEnemy.getEnemName().c_str(), enemyDamage);
+
+			GlobalGameCounters.DamageTaken += enemyDamage;
+			GlobalGameCounters.AttacksReceived++;
 
 			adventurer.setPlayerHp(adventurer.getPlayerHp() - enemyDamage);
 			if (adventurer.getPlayerHp() <= 0) 
@@ -83,6 +143,7 @@ void combat(ENEMY_TYPE enemyType)
 			}
 		}
 		else {
+			GlobalGameCounters.AttacksAvoided++;
 			std::cout << "The " << currentEnemy.getEnemName() << " misses the attack!\n";
 		}
 
@@ -94,6 +155,9 @@ void combat(ENEMY_TYPE enemyType)
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
 			std::cout << "You hit for: " << playerDamage << "\n";
 			currentEnemy.setEnemHp(currentEnemy.getEnemHp() - playerDamage);
+			
+			GlobalGameCounters.DamageDealt += playerDamage;
+			GlobalGameCounters.AttacksHit++;
 
 			// Check if the enemy was killed. If it was, we cancel the turn loop after applying drops to the player.
 			if (currentEnemy.getEnemHp() <= 0)
@@ -103,10 +167,16 @@ void combat(ENEMY_TYPE enemyType)
 				int drop = currentEnemy.getEnemDrop() + (rand() % 20);
 				std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 				adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
+
+				GlobalGameCounters.BattlesWon++;
+				GlobalGameCounters.EnemiesKilled++;
+				GlobalGameCounters.MoneyEarned += drop;
+
 				break;	// Cancel the combat loop to exit combat.
 			}
 		}
 		else {
+			GlobalGameCounters.AttacksMissed++;
 			printf("You miss the attack!\n");
 		};
 
@@ -222,6 +292,8 @@ void drink()
 			addItem(itemName);
 			printf("You spend %u coins in %s.\n", itemPrice, itemName.c_str());
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemPrice);
+
+			GlobalGameCounters.MoneySpent += itemPrice;
 			continue;
 		}
 		else
@@ -271,9 +343,9 @@ void useItems()
 			continue; 
 		};
 
-		if( itemName == "Small HP Potion" )			{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 10+(rand()%10)); printf("You feel slightly better.\n");		bUsedItem = true; break; }
-		else if( itemName == "Medium HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; break; }
-		else if( itemName == "Large HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; break; }
+		if( itemName == "Small HP Potion" )			{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 10+(rand()%10)); printf("You feel slightly better.\n");		bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
+		else if( itemName == "Medium HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
+		else if( itemName == "Large HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
 		else {
 			printf("Unrecognized item found in inventory! Item name: %s.\n", itemName.c_str());
 			continue;
