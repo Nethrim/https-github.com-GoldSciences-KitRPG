@@ -328,7 +328,7 @@ void useItems()
 		indexItem = item - '1';
 		if(indexItem == MAX_INVENTORY_SLOTS) // exit option
 			break;
-		else if(indexItem < 0 || indexItem >= adventurer.itemCount ) {	// invalid index means it's an invalid option
+		else if(indexItem < 0 || indexItem >= adventurer.itemCount) {	// invalid index means it's an invalid option
 			std::cout << "Invalid answer. Answer again...\n";
 			continue;
 		}
