@@ -404,12 +404,13 @@ void useItems(CEnemy& enemy)
 			if( lotteryResult < lotteryRange)
 			{
 				enemy.Points.HP -= itemEffectValue;	// this is the resulting hp after applying the damage 
-
+				GlobalGameCounters.DamageDealt += itemEffectValue;
 				printf("The grenade hits the enemy doing %u damage.\n", itemEffectValue);
 			}
 			else if( lotteryResult == lotteryRange )
 			{
 				adventurer.Points.HP -= itemEffectValue/2;	// this is the resulting hp after applying the damage 
+				GlobalGameCounters.DamageTaken += itemEffectValue;
 				printf("You throw the grenade too close...\n"		
 					"The grenade explodes near you hurting you by %u damage!", itemEffectValue);
 			}
