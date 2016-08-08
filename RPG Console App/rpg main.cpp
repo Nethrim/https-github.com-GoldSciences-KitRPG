@@ -295,7 +295,7 @@ void showInventory()
 
 void useItems()
 {
-	printf("\nUse an Item or press 4 to continue.\n\n");
+	printf("\nUse an Item or press %u to continue.\n\n", MAX_INVENTORY_SLOTS+1);
 
 	bool bUsedItem = false;
 	int indexItem = -1;
@@ -303,7 +303,7 @@ void useItems()
 	while (true)
 	{
 		showInventory();
-		cout << MAX_INVENTORY_SLOTS+1 << ": Continue." << endl;
+		printf("- Type %u to continue.\n", MAX_INVENTORY_SLOTS+1);
 		cout << endl;
 		char item = getchar();
 		getchar();
