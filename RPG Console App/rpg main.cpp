@@ -81,7 +81,7 @@ void combat(ENEMY_TYPE enemyType)
 			{ 
 				std::cout << "Your HP is: 0.\n\n";
 				std::cout << "You are dead!\n";
-				break;
+				break;	// If the player is dead we exit the turn loop.
 			}
 			else {
 				printf("Your HP is: %u.\n", adventurer.getPlayerHp());
@@ -98,10 +98,16 @@ void combat(ENEMY_TYPE enemyType)
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
 			std::cout << "You hit for: " << playerDamage << "\n";
 			currentEnemy.setEnemHp(currentEnemy.getEnemHp() - playerDamage);
+
+			// Check if the enemy was killed. If it was, we cancel the turn loop after applying drops to the player.
 			if (currentEnemy.getEnemHp() <= 0)
 			{
 				std::cout << "The "<< currentEnemy.getEnemName() <<" HP is: 0" << "\n\n";
 				std::cout << "The " << currentEnemy.getEnemName() <<" is dead" << "\n";
+				int drop = currentEnemy.getEnemDrop() + (rand() % 20);
+				std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
+				adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
+				break;	// Cancel the combat loop to exit combat.
 			}
 			else {
 				std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
@@ -112,14 +118,6 @@ void combat(ENEMY_TYPE enemyType)
 			std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
 		};
 
-		// Check if we killed the enemy. If we did we cancel the turn loop after applying drops to the player.
-		if (currentEnemy.getEnemHp() <= 0)
-		{
-			int drop = currentEnemy.getEnemDrop() + (rand() % 20);
-			std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
-			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
-			break;
-		}
 	} 
 }
 
@@ -147,22 +145,27 @@ void tavern()
 
 void rest()
 {
-	std::cout << "You decide to get some rest\n";
+	printf("You decide to get some rest\n");
 	adventurer.setPlayerHp(maxHP);
 	std::cout << "Your HP is: " << adventurer.getPlayerHp() << "\n";
 }
 
 void mercenaryJob()
 {
-	std::cout << "You decide to enroll for a mercenary job.\n";
+	printf("You decide to enroll for a mercenary job.\n");
 	while (true)
 	{
 		printf("1- Easy Job. 2- Medium Job. 3- Hard Job. 4- Back to the tavern.\n");
 		char mercenaryDif = getchar();
 		getchar();
-		if('1' == mercenaryDif)			{ printf("You challenge a %s.\n", getEnemyDefinition(WOLF)		.getEnemName().c_str()); combat(WOLF);		break; }
-		else if('2' == mercenaryDif)	{ printf("You challenge a %s.\n", getEnemyDefinition(RAIDER)	.getEnemName().c_str()); combat(RAIDER);	break; }
-		else if('3' == mercenaryDif)	{ printf("You challenge a %s.\n", getEnemyDefinition(SOLDIER)	.getEnemName().c_str()); combat(SOLDIER);	break; }
+
+		// Set bCombat to true and the enemy type for executing the combat logic.
+		bool bCombat = false;
+		ENEMY_TYPE enemyType = UNKNOWN;	
+
+		if('1' == mercenaryDif)			{ bCombat = true; enemyType	= WOLF		; break; }
+		else if('2' == mercenaryDif)	{ bCombat = true; enemyType	= RAIDER	; break; }
+		else if('3' == mercenaryDif)	{ bCombat = true; enemyType	= SOLDIER	; break; }
 		else if('4' == mercenaryDif)	{
 			std::cout << "Welcome back, " << name << ".\n";
 			break;
@@ -171,9 +174,14 @@ void mercenaryJob()
 			printf("Invalid answer. Answer again...\n");
 		}
 
-		// If the combat didn't go well we need to exit this function.
-		if (adventurer.getPlayerHp() <= 0) 
-			break;
+		if( bCombat )
+		{
+			printf("You challenge a %s.\n", getEnemyDefinition(enemyType).getEnemName().c_str()); 
+			combat(enemyType);
+			// If the combat didn't go well we need to exit this function.
+			if (adventurer.getPlayerHp() <= 0) 
+				break;
+		}
 	}
 }
 
@@ -196,7 +204,7 @@ void addItem(const std::string& itemName)
 void drink()
 {
 	printf("Do you want to buy some drinks?\n");
-	while (true)
+	while (true)	// break the loop for exiting the shop
 	{
 		printf("You have %u coins.\n", adventurer.getPlayerCoins());
 		printf("- Type %u to exit the shop.\n", MAX_ITEM_DESCRIPTIONS+1);
@@ -223,7 +231,7 @@ void drink()
 			addItem(itemName);
 			printf("You spend %u coins in %s.\n", itemPrice, itemName.c_str());
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemPrice);
-			break;
+			continue;
 		}
 		else
 		{
