@@ -67,7 +67,7 @@ void combat(ENEMY_TYPE enemyType)
 				if ((rand() % 100) < 30)
 				{
 					printf("You escaped from combat!\n");
-					tavern();
+					return;
 				}
 				else {
 					printf("You failed to escape!\n");
