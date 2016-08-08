@@ -8,7 +8,7 @@
 std::string name;
 int maxHP = 200;
 
-CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
+CPlayer adventurer (6, 200, 50, 50); //HP, ATk, HitChance, Coins.
 
 void tavern();
 void rest();

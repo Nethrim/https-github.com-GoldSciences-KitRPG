@@ -13,7 +13,21 @@ class CEnemy
 {
 	public:
 		CEnemy(){};
-		CEnemy(ENEMY_TYPE enemyType, int hp, int atk, int hit, const std::string& name, int drop);
+		CEnemy(
+			ENEMY_TYPE	enemyType_,
+			int initHp	, 
+			int initAtk	, 
+			int initHit	, 
+			const std::string& name,
+			int initDrop
+		)
+			:enemyType	(enemyType_)
+			,enemHp		(initHp	)
+			,enemAtk	(initAtk)
+			,enemHit	(initHit)
+			,enemyName	(name	)
+			,enemDrop	(initDrop)
+		{};
 		inline	void setEnemHp			(int val)					{ enemHp	= val; };
 		inline	void setEnemAttack		(int val)					{ enemAtk	= val; };
 		inline	void setEnemChit		(int val)					{ enemHit	= val; };
