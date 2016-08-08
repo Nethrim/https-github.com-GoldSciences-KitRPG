@@ -41,47 +41,36 @@ void main()
 
 void combat(ENEMY_TYPE enemyType)
 {
-	CEnemy currentEnemy = getEnemyDefinition(enemyType);
+	CEnemy currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
-	while (adventurer.getPlayerHp() > 0 && currentEnemy.getEnemHp() > 0)
+	while (true)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
-		bool combatVal = false;
-		while (!combatVal)
+		while (true)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 		{
 			printf("\nSelect Action:\n");
 			printf("1-Attack 2-Inventory 3-Run\n\n");
 			char action = getchar();
 			getchar();
-			switch (action)
-			{
-			case '1':
-				printf("You decide to attack!\n");
-				combatVal = true;
-				break;
-			case '2':
-				useItems();
-				combatVal = true;
-				break;
-			case '3':
+			
+			// If the action is valid then we execute it and break the current while() so the attack turn executes.
+				 if('1' == action) { printf("You decide to attack!\n"); break; }
+			else if('2' == action) { useItems(); break; }
+			else if('3' == action) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
 				std::cout << "You try to escape!\n\n";
-				if ((rand() % 100) < 30)
-				{
+				if ((rand() % 100) < 30) {
 					printf("You escaped from combat!\n");
 					return;
 				}
-				else {
-					printf("You failed to escape!\n");
-				}
-				
-				combatVal = true;
+
+				printf("You failed to escape!\n");
 				break;
-			default:
+			}
+			else {	// We do nothing on invalid action so the while() just executes the next interation
 				printf("Invalid action.\n");
-				combatVal = false;
-				continue;
 			}
 		}
 				
+		// Calculate the enemy hit chance and apply damage to player or just print the miss message.
 		if ((rand() % 100) < currentEnemy.getEnemChit() )
 		{
 			int enemyDamage = currentEnemy.getEnemAttack()+(rand()%10);
@@ -92,6 +81,7 @@ void combat(ENEMY_TYPE enemyType)
 			{ 
 				std::cout << "Your HP is: 0.\n\n";
 				std::cout << "You are dead!\n";
+				break;
 			}
 			else {
 				printf("Your HP is: %u.\n", adventurer.getPlayerHp());
@@ -100,13 +90,9 @@ void combat(ENEMY_TYPE enemyType)
 		else {
 			std::cout << "The " << currentEnemy.getEnemName() << " misses the attack!\n";
 			std::cout << "Your HP is: " << adventurer.getPlayerHp() << "\n";
-			
 		}
 
-		if (adventurer.getPlayerHp() <= 0) {	
-			break;
-		}
-
+		// Calculate the player hit chance and apply damage to enemy or just print the miss message.
 		if ((rand() % 100) < adventurer.getPlayerChit())
 		{
 			int playerDamage = adventurer.getPlayerAttack()+(rand()%10);
@@ -126,34 +112,35 @@ void combat(ENEMY_TYPE enemyType)
 			std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
 		};
 
-		if (adventurer.getPlayerHp() <= 0) {	
-			break;
-		}
+		// Check if we killed the enemy. If we did we cancel the turn loop after applying drops to the player.
 		if (currentEnemy.getEnemHp() <= 0)
 		{
 			int drop = currentEnemy.getEnemDrop() + (rand() % 20);
 			std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
+			break;
 		}
 	} 
 }
 
 void tavern()
 {
+	// This is the main loop of the game and queries for user input until the exit option is selected.
 	while (true)
 	{
 		std::cout << "1- For Rest. 2- For a Mercenary Job. 3- For a drink. 4- Exit game.\n";
 		char tavernChoice = getchar();
 		getchar();
-		if( '1' == tavernChoice )		{	rest();			}
-		else if( '2' == tavernChoice )	{	mercenaryJob();	}
-		else if( '3' == tavernChoice )	{	drink();		}
-		else if( '4' == tavernChoice )	{	break;			}
-		else {
+
+		if( '1' == tavernChoice )		{	rest();			}	// Rest and ask again for the action.
+		else if( '2' == tavernChoice )	{	mercenaryJob();	}	// Go for a mercenary job and ask again for action once it's done
+		else if( '3' == tavernChoice )	{	drink();		}	// Go to the shop and ask again for action once it's done.
+		else if( '4' == tavernChoice )	{	break;			}	// Exit the main loop, which effectively closes the game
+		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
 			std::cout << "Invalid answer. Answer again...\n"; 
 		};
 
-		if (adventurer.getPlayerHp() <= 0) 
+		if (adventurer.getPlayerHp() <= 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
 			break; 
 	}
 }
@@ -170,9 +157,6 @@ void mercenaryJob()
 	std::cout << "You decide to enroll for a mercenary job.\n";
 	while (true)
 	{
-		if (adventurer.getPlayerHp() <= 0) 
-			break;
-
 		printf("1- Easy Job. 2- Medium Job. 3- Hard Job. 4- Back to the tavern.\n");
 		char mercenaryDif = getchar();
 		getchar();
@@ -186,6 +170,10 @@ void mercenaryJob()
 		else {
 			printf("Invalid answer. Answer again...\n");
 		}
+
+		// If the combat didn't go well we need to exit this function.
+		if (adventurer.getPlayerHp() <= 0) 
+			break;
 	}
 }
 
