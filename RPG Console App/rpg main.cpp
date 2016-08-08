@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Player.h"
 
-CPlayer adventurer (CT_PLAYER, 200, 6, 50, 50); //MaxHP, ATk, HitChance, Coins.
+CPlayer adventurer (CT_PLAYER, 200, 6, 50, 50, "Anonymous"); //MaxHP, ATk, HitChance, Coins.
 
 struct SGameCounters {
 	int DamageDealt			= 0;

@@ -14,24 +14,24 @@ enum CHARACTER_TYPE : unsigned int
 struct SCharacterPoints
 {
 	SCharacterPoints() = default;
-	SCharacterPoints(int maxHp, int attack, int hit, int coins)
-		:MaxHp	(maxHp	)
-		,Hp		(maxHp	)
+	SCharacterPoints(int maxHP, int attack, int hit, int coins)
+		:MaxHP	(maxHP	)
+		,HP		(maxHP	)
 		,Attack	(attack	)
 		,Hit	(hit	)	
 		,Coins	(coins	)
 		{};
 
-	SCharacterPoints(int maxHp, int hp, int attack, int hit, int coins)
-		:MaxHp	(maxHp	)
-		,Hp		(hp		)
+	SCharacterPoints(int maxHP, int hp, int attack, int hit, int coins)
+		:MaxHP	(maxHP	)
+		,HP		(hp		)
 		,Attack	(attack	)
 		,Hit	(hit	)	
 		,Coins	(coins	)
 		{};
 
-	int MaxHp	= 100, 
-		Hp		= 100, 
+	int MaxHP	= 100, 
+		HP		= 100, 
 		Attack	= 5, 
 		Hit		= 50, 
 		Coins	= 100;
