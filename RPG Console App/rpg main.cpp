@@ -30,7 +30,7 @@ void main()
 	getline(std::cin, name);
 	std::cout << "So, " << name << "... What brings you here?\n";
 
-	tavern();				
+	tavern();	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
 	printf("\nGame Over!\n\n");
 	system("PAUSE");
@@ -63,7 +63,7 @@ void combat(ENEMY_TYPE enemyType)
 				printf("You failed to escape!\n");
 				break;
 			}
-			else {	// We do nothing on invalid action so the while() just executes the next interation
+			else {	// We do nothing on invalid action so the while() just executes the next interation of input request.
 				printf("Invalid action.\n");
 			}
 		}
@@ -81,14 +81,12 @@ void combat(ENEMY_TYPE enemyType)
 				std::cout << "You are dead!\n";
 				break;	// If the player is dead we exit the turn loop.
 			}
-			else {
-				printf("Your HP is: %u.\n", adventurer.getPlayerHp());
-			}
 		}
 		else {
 			std::cout << "The " << currentEnemy.getEnemName() << " misses the attack!\n";
-			std::cout << "Your HP is: " << adventurer.getPlayerHp() << "\n";
 		}
+
+		printf("Your HP is: %u.\n", adventurer.getPlayerHp());
 
 		// Calculate the player hit chance and apply damage to enemy or just print the miss message.
 		if ((rand() % 100) < adventurer.getPlayerChit())
@@ -107,15 +105,12 @@ void combat(ENEMY_TYPE enemyType)
 				adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
 				break;	// Cancel the combat loop to exit combat.
 			}
-			else {
-				std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
-			}
 		}
 		else {
-			std::cout << "You miss the attack!\n";
-			std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
+			printf("You miss the attack!\n");
 		};
 
+		std::cout << "The " << currentEnemy.getEnemName() << " HP is: " << currentEnemy.getEnemHp() << "\n";
 	} 
 }
 
@@ -164,7 +159,7 @@ void mercenaryJob()
 		if('1' == mercenaryDif)			{ bCombat = true;	enemyType	= WOLF;		}
 		else if('2' == mercenaryDif)	{ bCombat = true;	enemyType	= RAIDER;	}
 		else if('3' == mercenaryDif)	{ bCombat = true;	enemyType	= SOLDIER;	}
-		else if('4' == mercenaryDif)	{
+		else if('4' == mercenaryDif)	{ // This option cancels the loop which causes to exit to the tavern.
 			std::cout << "Welcome back, " << name << ".\n";
 			break;
 		}
