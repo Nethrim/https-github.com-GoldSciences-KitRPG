@@ -20,3 +20,8 @@ public:
 	int itemCount;
 	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 };
+
+template<size_t _Size>
+static inline constexpr int getInventorySize(const SInventorySlot (&inventoryArray)[_Size]) {
+	return ((int)_Size);
+}

@@ -43,7 +43,7 @@ void useItems(CEnemy& enemy);
 void main()
 {	
 	srand((unsigned int)time(NULL));
-	for(int item = 0; item < MAX_INVENTORY_SLOTS; item++) {
+	for(int item = 0; item < getInventorySize(adventurer.inventory); item++) {
 		adventurer.inventory[item].Description	= itemDescriptions[getDescriptionCount(itemDescriptions)+1];
 		adventurer.inventory[item].Count		= 0;
 	}
@@ -299,11 +299,11 @@ void addItem(const SItem& itemDescription)
 
 void drink()
 {
-	printf("Do you want to buy some drinks?\n");
+	printf("Do you want to buy some drinks?\n\n");
 	while (true)	// break the loop for exiting the shop
 	{
-		printf("You have %u coins.\n", adventurer.Points.Coins);
-		printf("- Type %u to exit the shop.\n", getDescriptionCount(itemDescriptions)+1);
+		printf("-- You have %u coins.\n", adventurer.Points.Coins);
+		printf("- Type %u to exit the shop.\n\n", getDescriptionCount(itemDescriptions)+1);
 		for(int i=0; i<getDescriptionCount(itemDescriptions); i++)	// Print available items
 			printf("- Type %u to buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 
@@ -315,13 +315,16 @@ void drink()
 			printf("You leave the shop.\n");
 			break;
 		}
-		else if(idItem >= 0 && idItem < getDescriptionCount(itemDescriptions)) {
+		else if(idItem < 0 && idItem >= getDescriptionCount(itemDescriptions)) {
+			printf("You can't buy something that doesn't exist!\n");
+		}
+		else {
 			int itemPrice = itemDescriptions[idItem].Price;
-			const std::string itemName = itemDescriptions[idItem].Name;
+			const std::string& itemName = itemDescriptions[idItem].Name;
 			if(adventurer.Points.Coins < itemPrice) {
 				printf("You can't afford to buy that! Choose something else...\n");
 			}
-			else if(adventurer.itemCount == MAX_INVENTORY_SLOTS)
+			else if(adventurer.itemCount == getInventorySize(adventurer.inventory))
 				printf("You don't have enough space in your inventory.");
 			else {
 				addItem(itemDescriptions[idItem]);
@@ -329,9 +332,6 @@ void drink()
 				adventurer.Points.Coins = adventurer.Points.Coins - itemPrice;
 				GlobalGameCounters.MoneySpent += itemPrice;
 			}
-		}
-		else {
-			printf("You can't buy something that doesn't exist!\n");
 		}
 	}
 	std::cout << "\n";
@@ -348,7 +348,7 @@ void showInventory()
 
 void useItems(CEnemy& enemy)
 {
-	printf("\nUse an Item or press %u to continue.\n\n", MAX_INVENTORY_SLOTS+1);
+	printf("\nUse an Item or press %u to continue.\n\n", getInventorySize(adventurer.inventory)+1);
 
 	bool bUsedItem = false;
 	int indexItem = -1;
@@ -356,20 +356,18 @@ void useItems(CEnemy& enemy)
 	while(true)
 	{
 		showInventory();
-		printf("- Type %u to continue.\n", MAX_INVENTORY_SLOTS+1);
+		printf("- Type %u to continue.\n", getInventorySize(adventurer.inventory)+1);
 		char item = getchar();
 		getchar();
 
 		indexItem = item - '1';
-		if(indexItem == MAX_INVENTORY_SLOTS) // exit option
+		if(indexItem == getInventorySize(adventurer.inventory)) // exit option
 			break;
 		else if(indexItem < 0 || indexItem >= adventurer.itemCount) {	// invalid index means it's an invalid option
 			std::cout << "Invalid answer. Answer again...\n";
-			continue;
 		} 
 		else if (adventurer.inventory[indexItem].Count <= 0) { 
 			printf("You don't have anymore of that. Use something else...\n"); 
-			continue; 
 		} 
 		else {
 			// if we reached here it means that the input was valid so we select the description and exit the loop

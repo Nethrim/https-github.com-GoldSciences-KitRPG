@@ -2,13 +2,13 @@
 
 #include <string>
    
-enum ITEM_TYPE
+enum ITEM_TYPE : unsigned int
 {	IT_UNKNOWN	= 0
 ,	IT_POTION
 ,	IT_GRENADE
 };
 
-enum PROPERTY_TYPE
+enum PROPERTY_TYPE : unsigned int
 {	PT_NONE	 = 0
 ,	PT_BLAST
 ,	PT_HEALTH
