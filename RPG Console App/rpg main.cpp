@@ -131,8 +131,8 @@ void combat(CHARACTER_TYPE enemyType)
 			GlobalGameCounters.DamageTaken += enemyDamage;
 			GlobalGameCounters.AttacksReceived++;
 
-			adventurer.Points.Hp = adventurer.Points.Hp - enemyDamage;
-			if (adventurer.Points.Hp <= 0) 
+			adventurer.Points.HP = adventurer.Points.HP - enemyDamage;
+			if (adventurer.Points.HP <= 0) 
 			{ 
 				std::cout << "Your HP is: 0.\n\n";
 				std::cout << "You are dead!\n";
@@ -144,20 +144,20 @@ void combat(CHARACTER_TYPE enemyType)
 			std::cout << "The " << currentEnemy.Name << " misses the attack!\n";
 		}
 
-		printf("Your HP is: %u.\n", adventurer.Points.Hp);
+		printf("Your HP is: %u.\n", adventurer.Points.HP);
 
 		// Calculate the player hit chance and apply damage to enemy or just print the miss message.
 		if ((rand() % 100) < adventurer.Points.Hit)
 		{
 			int playerDamage = adventurer.Points.Attack+(rand()%10);
 			std::cout << "You hit for: " << playerDamage << "\n";
-			currentEnemy.Points.Hp = currentEnemy.Points.Hp - playerDamage;
+			currentEnemy.Points.HP = currentEnemy.Points.HP - playerDamage;
 			
 			GlobalGameCounters.DamageDealt += playerDamage;
 			GlobalGameCounters.AttacksHit++;
 
 			// Check if the enemy was killed. If it was, we cancel the turn loop after applying drops to the player.
-			if (currentEnemy.Points.Hp <= 0)
+			if (currentEnemy.Points.HP <= 0)
 			{
 				std::cout << "The "<< currentEnemy.Name <<" HP is: 0\n\n";
 				std::cout << "The " << currentEnemy.Name <<" is dead\n";
@@ -177,7 +177,7 @@ void combat(CHARACTER_TYPE enemyType)
 			printf("You miss the attack!\n");
 		};
 
-		std::cout << "The " << currentEnemy.Name << " HP is: " << currentEnemy.Points.Hp << "\n";
+		std::cout << "The " << currentEnemy.Name << " HP is: " << currentEnemy.Points.HP << "\n";
 	} 
 }
 
@@ -198,7 +198,7 @@ void tavern()
 			std::cout << "Invalid answer. Answer again...\n"; 
 		};
 
-		if (adventurer.Points.Hp <= 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
+		if (adventurer.Points.HP <= 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
 			break; 
 	}
 }
@@ -206,8 +206,8 @@ void tavern()
 void rest()
 {
 	printf("You decide to get some rest\n");
-	adventurer.Points.Hp = adventurer.Points.MaxHp;
-	std::cout << "Your HP is: " << adventurer.Points.Hp << "\n";
+	adventurer.Points.HP = adventurer.Points.MaxHP;
+	std::cout << "Your HP is: " << adventurer.Points.HP << "\n";
 }
 
 void mercenaryJob()
@@ -340,9 +340,9 @@ void useItems()
 			continue; 
 		};
 
-		if( itemName == "Small HP Potion" )			{ adventurer.Points.Hp = (adventurer.Points.Hp+ 10+(rand()%10)); printf("You feel slightly better.\n");		bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
-		else if( itemName == "Medium HP Potion" )	{ adventurer.Points.Hp = (adventurer.Points.Hp+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
-		else if( itemName == "Large HP Potion" )	{ adventurer.Points.Hp = (adventurer.Points.Hp+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
+		if( itemName == "Small HP Potion" )			{ adventurer.Points.HP = (adventurer.Points.HP+ 10+(rand()%10)); printf("You feel slightly better.\n");		bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
+		else if( itemName == "Medium HP Potion" )	{ adventurer.Points.HP = (adventurer.Points.HP+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
+		else if( itemName == "Large HP Potion" )	{ adventurer.Points.HP = (adventurer.Points.HP+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; GlobalGameCounters.PotionsUsed++; break; }
 		else {
 			printf("Unrecognized item found in inventory! Item name: %s.\n", itemName.c_str());
 			continue;
