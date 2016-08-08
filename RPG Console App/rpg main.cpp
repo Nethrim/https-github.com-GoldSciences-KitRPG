@@ -24,7 +24,7 @@ void useItems();
 
 void main()
 {	
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	for(int item = 0; item < MAX_INVENTORY_SLOTS; item++) {
 		adventurer.inventory[item].Name  = "EMPTY";
 		adventurer.inventory[item].Count = 0;
