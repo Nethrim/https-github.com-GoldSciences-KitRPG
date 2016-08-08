@@ -238,13 +238,13 @@ void addItem(const std::string& itemName)
 
 void drink()
 {
+	printf("Do you want to buy some drinks?\n");
 	while (true)
 	{
-		std::cout << "Do you want to buy some drinks?\n";
 		printf("You have %u coins.\n", adventurer.getPlayerCoins());
 		printf("- Type %u to exit the tavern.\n", MAX_ITEM_DESCRIPTIONS+1);
 		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)
-			std::cout << i+1 <<" - "<< itemDescriptions[i].Name << ": " << itemDescriptions[i].Price << " coins.\n";
+			printf("- Type %u to buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 
 		char drinks = getchar();
 		getchar();
@@ -257,12 +257,15 @@ void drink()
 		}
 		else if(idItem >= 0 && idItem < MAX_ITEM_DESCRIPTIONS)
 		{
-			if(adventurer.getPlayerCoins() < itemDescriptions[idItem].Price) {
+			int itemPrice = itemDescriptions[idItem].Price;
+			const string itemName = itemDescriptions[idItem].Name;
+			if(adventurer.getPlayerCoins() < itemPrice) {
 				printf("You can't afford to buy that!\n");
 				continue;
 			}
-			addItem(itemDescriptions[idItem].Name);
-			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemDescriptions[idItem].Price);
+			addItem(itemName);
+			printf("You spend %u coins in %s.\n", itemPrice, itemName.c_str());
+			adventurer.setPlayerCoins(adventurer.getPlayerCoins() - itemPrice);
 			break;
 		}
 		else
@@ -292,9 +295,7 @@ void showInventory()
 
 void useItems()
 {
-	cout << endl;
-	cout << "Use an Item or press 4 to continue" << endl;
-	cout << endl;
+	printf("\nUse an Item or press 4 to continue.\n\n");
 
 	bool bUsedItem = false;
 	int indexItem = -1;
@@ -302,7 +303,7 @@ void useItems()
 	while (true)
 	{
 		showInventory();
-		cout << MAX_INVENTORY_SLOTS+1 << ": Continue" << endl;
+		cout << MAX_INVENTORY_SLOTS+1 << ": Continue." << endl;
 		cout << endl;
 		char item = getchar();
 		getchar();
