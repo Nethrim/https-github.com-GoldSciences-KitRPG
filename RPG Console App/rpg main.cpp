@@ -8,7 +8,7 @@
 std::string name;
 int maxHP = 200;
 
-CPlayer adventurer (6, 200, 50, 50); //HP, ATk, HitChance, Coins.
+CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
 
 void tavern();
 void rest();
@@ -161,9 +161,9 @@ void mercenaryJob()
 		bool bCombat = false;
 		ENEMY_TYPE enemyType = UNKNOWN;	
 
-		if('1' == mercenaryDif)			{ bCombat = true; enemyType	= WOLF		; break; }
-		else if('2' == mercenaryDif)	{ bCombat = true; enemyType	= RAIDER	; break; }
-		else if('3' == mercenaryDif)	{ bCombat = true; enemyType	= SOLDIER	; break; }
+		if('1' == mercenaryDif)			{ bCombat = true;	enemyType	= WOLF;		}
+		else if('2' == mercenaryDif)	{ bCombat = true;	enemyType	= RAIDER;	}
+		else if('3' == mercenaryDif)	{ bCombat = true;	enemyType	= SOLDIER;	}
 		else if('4' == mercenaryDif)	{
 			std::cout << "Welcome back, " << name << ".\n";
 			break;

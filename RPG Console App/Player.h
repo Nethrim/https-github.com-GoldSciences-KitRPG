@@ -13,9 +13,9 @@ struct SInventorySlot
 class CPlayer
 {
 public:
-	CPlayer(int initAtk, int initHp, int initHit, int initCoins)
-		: playerAtk		(initAtk)
-		, playerHp		(initHp)
+	CPlayer(int initHp, int initAtk, int initHit, int initCoins)
+		: playerHp		(initHp)
+		, playerAtk		(initAtk)
 		, playerHit		(initHit)
 		, playerCoins	(initCoins)
 	{};
@@ -33,8 +33,8 @@ public:
 	int itemCount;
 
 private:
-	int playerAtk, 
-		playerHp, 
+	int playerHp, 
+		playerAtk, 
 		playerHit, 
 		playerCoins;
 };
