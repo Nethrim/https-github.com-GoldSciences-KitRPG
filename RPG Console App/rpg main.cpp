@@ -11,7 +11,6 @@ int maxHP = 200;
 
 CPlayer adventurer (200, 6, 50, 50); //HP, ATk, HitChance, Coins.
 
-bool game = true;
 void tavern();
 void rest();
 void mercenaryJob();
@@ -31,14 +30,11 @@ void main()
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
 	getline(std::cin, name);
-	std::cout << "So " << name << "...What's bring you here?\n";
+	std::cout << "So, " << name << "... What brings you here?\n";
 
-	while (game)
-	{	
-		tavern();				
-	}
+	tavern();				
 
-	printf("\nGame Over\n\n");
+	printf("\nGame Over!\n\n");
 	system("PAUSE");
 }
 
@@ -67,8 +63,8 @@ void combat(ENEMY_TYPE enemyType)
 				combatVal = true;
 				break;
 			case '3':
-				std::cout << "You are trying to escape!\n\n";
-				if ((rand() % 100) <30)
+				std::cout << "You try to escape!\n\n";
+				if ((rand() % 100) < 30)
 				{
 					printf("You escaped from combat!\n");
 					tavern();
@@ -80,7 +76,7 @@ void combat(ENEMY_TYPE enemyType)
 				combatVal = true;
 				break;
 			default:
-				printf("Invalid action\n");
+				printf("Invalid action.\n");
 				combatVal = false;
 				continue;
 			}
@@ -106,7 +102,10 @@ void combat(ENEMY_TYPE enemyType)
 			std::cout << "Your HP is: " << adventurer.getPlayerHp() << "\n";
 			
 		}
-		if (adventurer.getPlayerHp() < 1) { break; }
+
+		if (adventurer.getPlayerHp() <= 0) {	
+			break;
+		}
 
 		if ((rand() % 100) < adventurer.getPlayerChit())
 		{
@@ -127,11 +126,13 @@ void combat(ENEMY_TYPE enemyType)
 			std::cout << "The " << currentEnemy.getEnemName() << " HP is : " << currentEnemy.getEnemHp() << "\n";
 		};
 
-		if (adventurer.getPlayerHp() <= 0){	game = !game; break;}
+		if (adventurer.getPlayerHp() <= 0) {	
+			break;
+		}
 		if (currentEnemy.getEnemHp() <= 0)
 		{
 			int drop = currentEnemy.getEnemDrop() + (rand() % 20);
-			std::cout << "\nThe enemy has drop " << drop << " coins!!\n\n";
+			std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 			adventurer.setPlayerCoins(adventurer.getPlayerCoins() + drop);
 		}
 	} 
@@ -139,33 +140,21 @@ void combat(ENEMY_TYPE enemyType)
 
 void tavern()
 {
-	bool valid = false;
-	
-	while (!valid)
+	while (true)
 	{
-		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
-		std::cout << "1- for Rest. 2-for a Mercenary Job. 3-for a drink.\n";
-		char tabernSwitch = getchar();
+		std::cout << "1- For Rest. 2- For a Mercenary Job. 3- For a drink. 4- Exit game.\n";
+		char tavernChoice = getchar();
 		getchar();
-		switch (tabernSwitch)
-		{
-		case '1':
-			rest();
-			valid = false;
-			break;
-		case '2':
-			mercenaryJob();
-			valid = true;
-			break;
-		case '3':
-			drink();
-			valid = false;
-			break;
-		default:
-			std::cout << "Invalid answer. Answer again...\n";
-			valid = false;
-			continue;
-		}
+		if( '1' == tavernChoice )		{	rest();			}
+		else if( '2' == tavernChoice )	{	mercenaryJob();	}
+		else if( '3' == tavernChoice )	{	drink();		}
+		else if( '4' == tavernChoice )	{	break;			}
+		else {
+			std::cout << "Invalid answer. Answer again...\n"; 
+		};
+
+		if (adventurer.getPlayerHp() <= 0) 
+			break; 
 	}
 }
 
@@ -179,39 +168,30 @@ void rest()
 void mercenaryJob()
 {
 	std::cout << "You decide to enroll for a mercenary job.\n";
-	bool difValid = false;
-	while (!difValid)
+	while (true)
 	{
-		if (adventurer.getPlayerHp() <= 0) { game = !game; break; }
-		std::cout << "1-Easy Job. 2-Medium Job. 3-Hard Job. 4-Back to the Tabern.\n";
+		if (adventurer.getPlayerHp() <= 0) 
+			break;
+
+		printf("1- Easy Job. 2- Medium Job. 3- Hard Job. 4- Back to the tavern.\n");
 		char mercenaryDif = getchar();
 		getchar();
-		switch (mercenaryDif)
-		{
-		case '1':
-			std::cout << "Wolf fight\n";
-			combat(WOLF);
+		if('1' == mercenaryDif)			{ printf("You challenge a %s.\n", getEnemyDefinition(WOLF)		.getEnemName().c_str()); combat(WOLF);		break; }
+		else if('2' == mercenaryDif)	{ printf("You challenge a %s.\n", getEnemyDefinition(RAIDER)	.getEnemName().c_str()); combat(RAIDER);	break; }
+		else if('3' == mercenaryDif)	{ printf("You challenge a %s.\n", getEnemyDefinition(SOLDIER)	.getEnemName().c_str()); combat(SOLDIER);	break; }
+		else if('4' == mercenaryDif)	{
+			std::cout << "Welcome back, " << name << ".\n";
 			break;
-		case '2':
-			std::cout << "Raider fight\n";
-			combat(RAIDER);
-			break;
-		case '3':
-			printf("Soldier fight");
-			combat(SOLDIER);
-			break;
-		case '4':
-			std::cout << "Welcome back, " << name << "\n";
-			tavern();
-			break;
-		default:
-			std::cout << "answer again\n";
+		}
+		else {
+			printf("Invalid answer. Answer again...\n");
 		}
 	}
 }
 
 void addItem(const std::string& itemName)
 {
+	// look in the inventory for the name so we just increment the counter instead of adding the item
 	for(int i=0, count = adventurer.itemCount; i<count; i++) {
 		if(itemName == adventurer.inventory[i].Name) {
 			adventurer.inventory[i].Count++;
@@ -219,6 +199,7 @@ void addItem(const std::string& itemName)
 		}
 	}
 
+	// If we didn't return yet it means that the item was not found and we need to add it to the inventory.
 	adventurer.inventory[adventurer.itemCount].Name		= itemName;
 	adventurer.inventory[adventurer.itemCount].Count	= 1;
 	adventurer.itemCount++;
@@ -230,8 +211,8 @@ void drink()
 	while (true)
 	{
 		printf("You have %u coins.\n", adventurer.getPlayerCoins());
-		printf("- Type %u to exit the tavern.\n", MAX_ITEM_DESCRIPTIONS+1);
-		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)
+		printf("- Type %u to exit the shop.\n", MAX_ITEM_DESCRIPTIONS+1);
+		for(int i=0; i<MAX_ITEM_DESCRIPTIONS; i++)	// Print available items
 			printf("- Type %u to buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 
 		char drinks = getchar();
@@ -240,7 +221,7 @@ void drink()
 		
 		if( idItem == MAX_ITEM_DESCRIPTIONS ) 
 		{
-			printf("You leave the tavern.\n");
+			printf("You leave the shop.\n");
 			break;
 		}
 		else if(idItem >= 0 && idItem < MAX_ITEM_DESCRIPTIONS)
@@ -248,7 +229,7 @@ void drink()
 			int itemPrice = itemDescriptions[idItem].Price;
 			const std::string itemName = itemDescriptions[idItem].Name;
 			if(adventurer.getPlayerCoins() < itemPrice) {
-				printf("You can't afford to buy that!\n");
+				printf("You can't afford to buy that! Choose something else...\n");
 				continue;
 			}
 			addItem(itemName);
@@ -272,7 +253,6 @@ void showInventory()
 	std::cout << "You have " << adventurer.getPlayerCoins() << " coins.\n\n";
 	for (int i = 0; i < adventurer.itemCount; i++)
 		std::cout << i + 1 << " - "<< adventurer.inventory[i].Name << ": " << adventurer.inventory[i].Count << "\n";
-	
 }
 
 void useItems()
@@ -282,7 +262,7 @@ void useItems()
 	bool bUsedItem = false;
 	int indexItem = -1;
 	std::string itemName;
-	while (true)
+	while(true)
 	{
 		showInventory();
 		printf("- Type %u to continue.\n", MAX_INVENTORY_SLOTS+1);
@@ -290,23 +270,17 @@ void useItems()
 		getchar();
 
 		indexItem = item - '1';
-		if(indexItem < 0) {
-			std::cout << "answer again\n";
-			continue;
-		}
-		else if(indexItem == MAX_INVENTORY_SLOTS) {	// exit 
+		if(indexItem == MAX_INVENTORY_SLOTS) // exit option
 			break;
-		}
-		else if( indexItem > adventurer.itemCount ) {
-			std::cout << "answer again\n";
+		else if(indexItem < 0 || indexItem >= adventurer.itemCount ) {	// invalid index means it's an invalid option
+			std::cout << "Invalid answer. Answer again...\n";
 			continue;
 		}
 
 		itemName = adventurer.inventory[indexItem].Name;
-		int itemCount = adventurer.inventory[indexItem].Count;
 
-		if (itemCount <= 0) { 
-			printf("You don't have anymore of that.\n"); 
+		if (adventurer.inventory[indexItem].Count <= 0) { 
+			printf("You don't have anymore of that. Use something else...\n"); 
 			continue; 
 		};
 
@@ -314,15 +288,13 @@ void useItems()
 		else if( itemName == "Medium HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+ 50+(rand()%10)); printf("You feel better.\n");				bUsedItem = true; break; }
 		else if( itemName == "Large HP Potion" )	{ adventurer.setPlayerHp(adventurer.getPlayerHp()+100+(rand()%10)); printf("You feel incredibly better.\n");	bUsedItem = true; break; }
 		else {
-			printf("Unrecognized item found in inventory!\n");
+			printf("Unrecognized item found in inventory! Item name: %s.\n", itemName.c_str());
 			continue;
 		}
 	}
 
-	if(bUsedItem)
-	{
+	if(bUsedItem) {
 		printf("You used: %s.\n", itemName.c_str());
 		adventurer.inventory[indexItem].Count--;
 	}
-
 }
