@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Character.h"
 #include "Item.h"
 
 struct SInventorySlot
@@ -10,31 +11,12 @@ struct SInventorySlot
 
 #define MAX_INVENTORY_SLOTS 3
 
-class CPlayer
+// This class has the same properties as the base CCharacter and also adds the inventory which is unnecessary for other character types.
+class CPlayer : public CCharacter
 {
 public:
-	CPlayer(int initHp, int initAtk, int initHit, int initCoins)
-		: playerHp		(initHp)
-		, playerAtk		(initAtk)
-		, playerHit		(initHit)
-		, playerCoins	(initCoins)
-	{};
-	inline void	setPlayerAttack	(int value)	{ playerAtk		=	value; };
-	inline void	setPlayerHp		(int value)	{ playerHp		=	value; };
-	inline void	setPlayerChit	(int value)	{ playerHit		=	value; };
-	inline void	setPlayerCoins	(int value)	{ playerCoins	=	value; };
-	
-	inline int	getPlayerAttack	()			{ return playerAtk; };
-	inline int	getPlayerHp		()			{ return playerHp; };
-	inline int	getPlayerChit	()			{ return playerHit; };
-	inline int	getPlayerCoins	()			{ return playerCoins; };
+	using CCharacter::CCharacter;
 
 	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 	int itemCount;
-
-private:
-	int playerHp, 
-		playerAtk, 
-		playerHit, 
-		playerCoins;
 };
