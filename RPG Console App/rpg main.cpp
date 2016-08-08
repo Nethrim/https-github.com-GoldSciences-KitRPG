@@ -178,9 +178,7 @@ void mercenaryJob()
 		{
 			printf("You challenge a %s.\n", getEnemyDefinition(enemyType).getEnemName().c_str()); 
 			combat(enemyType);
-			// If the combat didn't go well we need to exit this function.
-			if (adventurer.getPlayerHp() <= 0) 
-				break;
+			break;	// Just exit this function after the combat ends and automatically go back to the tavern.
 		}
 	}
 }
