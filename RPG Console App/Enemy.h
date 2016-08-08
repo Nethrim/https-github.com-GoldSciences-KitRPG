@@ -6,7 +6,7 @@
 class CEnemy : public CCharacter
 {
 public:
-	using CCharacter::CCharacter;
+	using CCharacter::CCharacter;	// This makes our CEnemy class to expose all the CCharacter constructors.
 };
 
 static CEnemy getEnemyDefinition(CHARACTER_TYPE enemyType)
