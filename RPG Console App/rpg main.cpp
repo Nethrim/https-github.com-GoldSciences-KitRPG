@@ -1,10 +1,10 @@
 #define NOMINMAX
 
 #include <iostream>
-#include <stdio.h>
 #include <time.h>
 #include <windows.h>
 #include <algorithm>
+#include "Misc.h"
 #include "Enemy.h"
 #include "Player.h"
 
@@ -34,7 +34,6 @@ struct SGameCounters {
 	int GrenadesUsed		= 0;
 
 } GlobalGameCounters;
-
 
 void tavern();
 void rest();
@@ -97,11 +96,10 @@ void combat(CHARACTER_TYPE enemyType)
 				"3: Run.\n\n"
 			);
 
-			char actionChoice = getchar();
-			getchar();
+			unsigned int actionChoice = getNumericInput();
 			
 			// If the action is valid then we execute it and break the current while() so the attack turn executes.
-			if('1' == actionChoice) { 
+			if(1 == actionChoice) { 
 				printf("You decide to attack!\n"); 
 
 				int damageDealt = attack(adventurer, currentEnemy);
@@ -114,13 +112,13 @@ void combat(CHARACTER_TYPE enemyType)
 
 				break; 
 			}
-			else if('2' == actionChoice) { 
+			else if(2 == actionChoice) { 
 				if( useItems(currentEnemy) )	// If no items were used we ask again for user input. 
 					break; 
 				else
 					continue;
 			}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
-			else if('3' == actionChoice) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
+			else if(3 == actionChoice) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
 				printf("You try to escape!\n\n");
 				if ((rand() % 100) < 30) {
 					printf("You escaped from combat!\n");
@@ -180,15 +178,14 @@ void tavern()
 				"6: Exit game.\n\n"
 		);
 
-		char tavernChoice = getchar();
-		getchar();
+		unsigned int tavernChoice = getNumericInput();
 
-			 if( '1' == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
-		else if( '2' == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
-		else if( '3' == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
-		else if( '4' == tavernChoice )	{	showInventory();	}	// Display the inventory and coins and ask again for action once it's done.
-		else if( '5' == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
-		else if( '6' == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
+			 if( 1 == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
+		else if( 2 == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
+		else if( 3 == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	showInventory();	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 5 == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
+		else if( 6 == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
 		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
 			printf("Invalid answer. Answer again...\n");
 		};
@@ -214,17 +211,17 @@ void mercenaryJob()
 				"2: Medium Job.\n"
 				"3: Hard Job.\n"
 				"4: Back to the tavern.\n\n");
-		char mercenaryDif = getchar();
-		getchar();
+
+		unsigned int mercenaryDif = getNumericInput();
 
 		// Set bCombat to true and the enemy type for executing the combat logic.
 		bool bCombat = false;
 		CHARACTER_TYPE enemyType = CT_UNKNOWN;	
 
-		if('1' == mercenaryDif)			{ bCombat = true;	enemyType	= CT_WOLF;		}
-		else if('2' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
-		else if('3' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
-		else if('4' == mercenaryDif)	{ // This option cancels the loop which causes to exit to the tavern.
+			 if(1 == mercenaryDif)	{ bCombat = true;	enemyType	= CT_WOLF;		}
+		else if(2 == mercenaryDif)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
+		else if(3 == mercenaryDif)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
+		else if(4 == mercenaryDif)	{ // This option cancels the loop which causes to exit to the tavern.
 			std::cout << "Welcome back, " << adventurer.Name << ".\n";
 			break;
 		}
@@ -269,15 +266,13 @@ void bar()
 			printf("%u: Buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 		printf("\n");
 
-		char drinkChoice = getchar();
-		getchar();
-		int indexItem = drinkChoice - '1';
+		unsigned int indexItem = getNumericInput()-1;
 		
 		if( indexItem == descriptionCount ) {
 			printf("You leave the bar.\n");
 			break;
 		}
-		else if(indexItem < 0 || indexItem >= descriptionCount)
+		else if(indexItem > descriptionCount)
 			printf("You can't buy something that doesn't exist!\n");
 		else 
 		{
@@ -305,7 +300,7 @@ void showInventory()
 	printf("-- You look at your wallet and count %u coins.\n\n", adventurer.Points.Coins);
 	if(adventurer.itemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
-		for (int i = 0; i < adventurer.itemCount; i++)
+		for (unsigned int i = 0; i < adventurer.itemCount; i++)
 			printf("%u: x%.2u %s.\n", i + 1, adventurer.inventory[i].Count, adventurer.inventory[i].Description.Name.c_str());
 		printf("\n");
 	}
@@ -315,20 +310,18 @@ void showInventory()
 bool useItems(CCharacter& enemy)
 {
 	bool bUsedItem = false;
-	int indexItem = -1;
+	unsigned int indexItem = ~0U;
 	SItem itemDescription;
 	while(true)
 	{
 		printf("- Type %u to close your inventory.\n", getInventorySize(adventurer.inventory)+1);
 		showInventory();
 
-		char itemChoice = getchar();
-		getchar();
-		indexItem = itemChoice - '1';
+		indexItem = getNumericInput()-1;
 
 		if(indexItem == getInventorySize(adventurer.inventory)) // exit option
 			break;
-		else if(indexItem < 0 || indexItem >= adventurer.itemCount)	// invalid index means it's an invalid option
+		else if(indexItem >= adventurer.itemCount)	// invalid index means it's an invalid option
 			printf("Invalid answer. Answer again...\n");
 		else if (adventurer.inventory[indexItem].Count <= 0)
 			printf("You don't have anymore of that. Use something else...\n"); 
