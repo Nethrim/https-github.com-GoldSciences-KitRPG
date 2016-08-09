@@ -34,3 +34,5 @@ public:
 		,Name(name)
 		{};
 };
+
+void rest(SCharacterPoints& adventurerPoints);	// Take a nap and recover HP up to MaxHP.

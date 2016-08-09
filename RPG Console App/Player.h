@@ -25,3 +25,6 @@ template<size_t _Size>
 static inline constexpr int getInventorySize(const SInventorySlot (&inventoryArray)[_Size]) {
 	return ((int)_Size);
 }
+
+void addItem(CPlayer& adventurer, const SItem& itemDescription);
+void showInventory(const CPlayer& adventurer);
