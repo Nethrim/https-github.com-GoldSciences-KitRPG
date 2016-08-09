@@ -15,10 +15,10 @@ struct SInventorySlot
 class CPlayer : public CCharacter
 {
 public:
-	using CCharacter::CCharacter;	// This makes our CPlayer class to expose all the CCharacter constructors.
-
-	int itemCount;
+	int				itemCount = 0;
 	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
+
+	using CCharacter::CCharacter;	// This makes our CPlayer class to expose all the CCharacter constructors.
 };
 
 template<size_t _Size>
