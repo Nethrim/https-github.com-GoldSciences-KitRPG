@@ -142,6 +142,7 @@ void combat(CHARACTER_TYPE enemyType)
 		if (adventurer.Points.HP <= 0  || currentEnemy.Points.HP <= 0)	// We do this check because player actions may kill one of the combatants and in that case we need to exit this loop.
 			break;	// Cancel the combat loop to exit combat.
 
+		// Execute enemy attack turn
 		int damageDealt = attack(currentEnemy, adventurer);
 		if(damageDealt) {
 			GlobalGameCounters.DamageTaken += damageDealt;
@@ -187,7 +188,7 @@ void tavern()
 			 if( '1' == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
 		else if( '2' == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
 		else if( '3' == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
-		else if( '4' == tavernChoice )	{	showInventory();	}	// Dìsplay the inventory and coins and ask again for action once it's done.
+		else if( '4' == tavernChoice )	{	showInventory();	}	// Display the inventory and coins and ask again for action once it's done.
 		else if( '5' == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
 		else if( '6' == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
 		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
@@ -353,7 +354,7 @@ bool useItems(CEnemy& enemy)
 		case IT_POTION:
 			printf("You start feeling better...\n");
 
-			itemEffectValue = (10+(rand()%10))*itemDescription.Grade;
+			itemEffectValue = (10*itemDescription.Grade+(rand()%10))*itemDescription.Grade;
 			adventurer.Points.HP += itemEffectValue;
 
 			printf("The potion heals you for %u HP. You now have %u HP.\n", itemEffectValue, adventurer.Points.HP);
@@ -393,7 +394,10 @@ bool useItems(CEnemy& enemy)
 		if( adventurer.inventory[indexItem].Count )
 			printf("\nYou have %u %s left.\n", adventurer.inventory[indexItem].Count, itemName.c_str());
 		else 
+		{
+			adventurer.inventory[indexItem] = adventurer.inventory[--adventurer.itemCount];
 			printf("\nYou ran out of %s.\n", itemName.c_str());
+		}
 	}
 	
 	return bUsedItem;
@@ -457,4 +461,3 @@ void displayScore()
 		, GlobalGameCounters.GrenadesUsed		
 	);
 };
-
