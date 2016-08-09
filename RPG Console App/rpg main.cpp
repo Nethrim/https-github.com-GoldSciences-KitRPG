@@ -44,7 +44,7 @@ void mercenaryJob();
 void bar();
 void displayScore();
 void showInventory();
-bool useItems(CEnemy& enemy);
+bool useItems(CCharacter& enemy);
 
 void main()
 {	
@@ -83,7 +83,7 @@ int attack(const CCharacter& attacker, CCharacter& target)
 
 void combat(CHARACTER_TYPE enemyType)
 {
-	CEnemy currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
+	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
 	while (adventurer.Points.HP > 0 && currentEnemy.Points.HP > 0)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
@@ -314,7 +314,7 @@ void showInventory()
 }
 
 // This function returns true if an item was used or false if the menu was exited without doing anything.
-bool useItems(CEnemy& enemy)
+bool useItems(CCharacter& enemy)
 {
 	bool bUsedItem = false;
 	int indexItem = -1;
