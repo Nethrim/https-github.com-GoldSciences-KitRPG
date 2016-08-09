@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "Enemy.h"
 #include "Player.h"
+#include "Menu.h"
 
 CPlayer adventurer (CT_PLAYER, 200, 6, 50, 100, "Anonymous"); //MaxHP, ATk, HitChance, Coins.
 
@@ -36,14 +37,18 @@ struct SGameCounters {
 } GlobalGameCounters;
 
 
-void tavern();
-void rest();
-void mercenaryJob();
-void bar();
-void displayScore();
-void showInventory();
-bool useItems(CCharacter& enemy);
+void tavern();							// Main loop of the game. From there the player can choose to go shopping, fighting or take a nap to recover HP.
+void rest();							// Take a nap and recover HP up to MaxHP.
+void mercenaryJob();					// Displays the combat difficulty menu from where the player can start combat or go back to the tavern.
+void bar();								// Displays the available items for buying along with the player money.
+void showInventory();					// Displays the contents of the inventory and the current money.
+void displayScore();					// Displays the player's character points and statistics.
+bool useItems(CCharacter& enemy);		// While in combat, displays a list of the available items to use.
+void combat(CHARACTER_TYPE enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 
+// This function seeds the rand() and enters the tavern() after initializing the player.
+// If the player leaves the tavern() it means the game was requested to close. 
+// After leaving the tavern() we display the score of the player.
 void main()
 {	
 	srand((unsigned int)time(NULL));
@@ -61,140 +66,28 @@ void main()
 	system("PAUSE");
 }
 
-// This function returns the damage dealt to the target
-int attack(const CCharacter& attacker, CCharacter& target)
-{
-	// Calculate success from the hit chance and apply damage to target or just print the miss message.
-	int damageDealt = 0;
-
-	if ((rand() % 100) < attacker.Points.Hit)
-	{
-		damageDealt = attacker.Points.Attack+(rand()%10);
-		target.Points.HP -= damageDealt;
-		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
-	}
-	else 
-		printf("%s misses the attack!\n", attacker.Name.c_str());
-
-	return damageDealt;
-};
-
-void combat(CHARACTER_TYPE enemyType)
-{
-	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
-
-	while (adventurer.Points.HP > 0 && currentEnemy.Points.HP > 0)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
-	{	
-		GlobalGameCounters.TurnsPlayed++;
-
-		while (true)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
-		{
-			printf("\n-- Your HP is: %u.\n", adventurer.Points.HP);
-			printf("-- %s HP is: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP);
-			printf("Select action:\n"
-				"1: Attack.\n"
-				"2: Inventory.\n"
-				"3: Run.\n\n"
-			);
-
-			char actionChoice = getchar();
-			getchar();
-			
-			// If the action is valid then we execute it and break the current while() so the attack turn executes.
-			if('1' == actionChoice) { 
-				printf("You decide to attack!\n"); 
-
-				int damageDealt = attack(adventurer, currentEnemy);
-				if(damageDealt) {
-					GlobalGameCounters.DamageDealt += damageDealt;
-					GlobalGameCounters.AttacksHit++;
-				}
-				else 
-					GlobalGameCounters.AttacksMissed++;
-
-				break; 
-			}
-			else if('2' == actionChoice) { 
-				if( useItems(currentEnemy) )	// If no items were used we ask again for user input. 
-					break; 
-				else
-					continue;
-			}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
-			else if('3' == actionChoice) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
-				printf("You try to escape!\n\n");
-				if ((rand() % 100) < 30) {
-					printf("You escaped from combat!\n");
-					GlobalGameCounters.EscapesSucceeded++;
-					return;
-				}
-
-				GlobalGameCounters.EscapesFailed++;
-				printf("You failed to escape!\n");
-				break;
-			}
-			else {	// We do nothing on invalid action so the while() just executes the next interation of input request.
-				printf("Invalid action.\n");
-			}
-		}
-
-		if (adventurer.Points.HP <= 0  || currentEnemy.Points.HP <= 0)	// We do this check because player actions may kill one of the combatants and in that case we need to exit this loop.
-			break;	// Cancel the combat loop to exit combat.
-
-		// Execute enemy attack turn
-		int damageDealt = attack(currentEnemy, adventurer);
-		if(damageDealt) {
-			GlobalGameCounters.DamageTaken += damageDealt;
-			GlobalGameCounters.AttacksReceived++;
-		}
-		else
-			GlobalGameCounters.AttacksAvoided++;
-	} 
-
-	if (adventurer.Points.HP <= 0) 
-		std::cout << "You are dead!\n";
-	else if (currentEnemy.Points.HP <= 0)
-	{
-		printf("The %s is dead!\n", currentEnemy.Name.c_str());
-		int drop = currentEnemy.Points.Coins + (rand() % 20);
-		std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
-		adventurer.Points.Coins = adventurer.Points.Coins + drop;
-
-		GlobalGameCounters.BattlesWon++;
-		GlobalGameCounters.EnemiesKilled++;
-		GlobalGameCounters.MoneyEarned += drop;
-	}
-}
-
 void tavern()
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
-	while (true)
+	static const SMenuItem tavernOptions[] =
+	{ { 1, "Rest"						}
+	, { 2, "Look for a mercenary job"	}
+	, { 3, "Go for a drink"				}
+	, { 4, "Show inventory"				}
+	, { 5, "Display score"				}
+	, { 6, "Exit game"					}
+	};
+
+	while (adventurer.Points.HP > 0)  // If the last action didn't go well we cancel the loop and exit the game.
 	{
-		printf(	"\n-- You wonder about what to do next...\n");
-		printf(	"Select your next action:\n");
-		printf(	"1: Rest.\n"
-				"2: Look for a mercenary job.\n"
-				"3: Go for a drink.\n"
-				"4: Show inventory.\n"
-				"5: Display score.\n"
-				"6: Exit game.\n\n"
-		);
+		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
-		char tavernChoice = getchar();
-		getchar();
-
-			 if( '1' == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
-		else if( '2' == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
-		else if( '3' == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
-		else if( '4' == tavernChoice )	{	showInventory();	}	// Display the inventory and coins and ask again for action once it's done.
-		else if( '5' == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
-		else if( '6' == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
-		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
-			printf("Invalid answer. Answer again...\n");
-		};
-
-		if (adventurer.Points.HP <= 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
-			break; 
+			 if( 1 == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
+		else if( 2 == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
+		else if( 3 == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	showInventory();	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 5 == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
+		else if( 6 == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
 	}
 }
 
@@ -207,36 +100,30 @@ void rest()
 
 void mercenaryJob()
 {
-	printf("\nYou decide to enroll for a mercenary job.\n");
-	while (true)
-	{
-		printf(	"1: Easy Job.\n"
-				"2: Medium Job.\n"
-				"3: Hard Job.\n"
-				"4: Back to the tavern.\n\n");
-		char mercenaryDif = getchar();
-		getchar();
+	static const SMenuItem jobOptions[] =
+	{ { 1, "Easy Job"				}
+	, { 2, "Medium Job"				}
+	, { 3, "Hard Job"				}
+	, { 4, "Back to the tavern"		}
+	};
 
-		// Set bCombat to true and the enemy type for executing the combat logic.
-		bool bCombat = false;
-		CHARACTER_TYPE enemyType = CT_UNKNOWN;	
+	int mercenaryDifficulty = displayMenu("You decide to enroll for a mercenary job.", jobOptions);
 
-		if('1' == mercenaryDif)			{ bCombat = true;	enemyType	= CT_WOLF;		}
-		else if('2' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
-		else if('3' == mercenaryDif)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
-		else if('4' == mercenaryDif)	{ // This option cancels the loop which causes to exit to the tavern.
-			std::cout << "Welcome back, " << adventurer.Name << ".\n";
-			break;
-		}
-		else {
-			printf("Invalid answer. Answer again...\n");
-		}
+	// Set bCombat to true and the enemy type for executing the combat logic.
+	bool bCombat = false;
+	CHARACTER_TYPE enemyType = CT_UNKNOWN;	
 
-		if( bCombat ) {
-			printf("You challenge a %s.\n", getEnemyDefinition(enemyType).Name.c_str()); 
-			combat(enemyType);
-			break;	// Just exit this function after the combat ends and automatically go back to the tavern.
-		}
+		 if(1 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_WOLF;		}
+	else if(2 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
+	else if(3 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
+	else if(4 == mercenaryDifficulty)	{ // This option cancels the loop which causes to exit to the tavern.
+		std::cout << "Welcome back, " << adventurer.Name << ".\n";
+		return;
+	}
+
+	if( bCombat ) {
+		printf("You challenge a %s.\n", getEnemyDefinition(enemyType).Name.c_str()); 
+		combat(enemyType);
 	}
 }
 
@@ -308,6 +195,107 @@ void showInventory()
 		for (int i = 0; i < adventurer.itemCount; i++)
 			printf("%u: x%.2u %s.\n", i + 1, adventurer.inventory[i].Count, adventurer.inventory[i].Description.Name.c_str());
 		printf("\n");
+	}
+}
+
+// This function returns the damage dealt to the target
+int attack(const CCharacter& attacker, CCharacter& target)
+{
+	// Calculate success from the hit chance and apply damage to target or just print the miss message.
+	int damageDealt = 0;
+
+	if ((rand() % 100) < attacker.Points.Hit)
+	{
+		damageDealt = attacker.Points.Attack+(rand()%10);
+		target.Points.HP -= damageDealt;
+		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
+	}
+	else 
+		printf("%s misses the attack!\n", attacker.Name.c_str());
+
+	return damageDealt;
+};
+
+void combat(CHARACTER_TYPE enemyType)
+{
+	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
+
+	static const SMenuItem combatOptions[] =
+	{ { 1, "Attack"		}
+	, { 2, "Inventory"	}
+	, { 3, "Run"		}
+	};
+
+	while (adventurer.Points.HP > 0 && currentEnemy.Points.HP > 0)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
+	{	
+		GlobalGameCounters.TurnsPlayed++;
+
+		while (true)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
+		{
+			printf("\n-- Your HP is: %u.\n", adventurer.Points.HP);
+			printf("-- %s HP is: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP);
+			int actionChoice = displayMenu("It's your turn to make a move", combatOptions);
+			
+			// If the action is valid then we execute it and break the current while() so the attack turn executes.
+			if(1 == actionChoice) { 
+				printf("You decide to attack!\n"); 
+
+				int damageDealt = attack(adventurer, currentEnemy);
+				if(damageDealt) {
+					GlobalGameCounters.DamageDealt += damageDealt;
+					GlobalGameCounters.AttacksHit++;
+				}
+				else 
+					GlobalGameCounters.AttacksMissed++;
+
+				break; 
+			}
+			else if(2 == actionChoice) { 
+				if( useItems(currentEnemy) )	// If no items were used we ask again for user input. 
+					break; 
+				else
+					continue;
+			}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
+			else if(3 == actionChoice) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
+				printf("You try to escape!\n\n");
+				if ((rand() % 100) < 30) {
+					printf("You escaped from combat!\n");
+					GlobalGameCounters.EscapesSucceeded++;
+					return;
+				}
+
+				GlobalGameCounters.EscapesFailed++;
+				printf("You failed to escape!\n");
+				break;
+			}
+		}
+
+		if (adventurer.Points.HP <= 0  || currentEnemy.Points.HP <= 0)	// We do this check because player actions may kill one of the combatants and in that case we need to exit this loop.
+			break;	// Cancel the combat loop to exit combat.
+
+		// Execute enemy attack turn
+		int damageDealt = attack(currentEnemy, adventurer);
+		if(damageDealt) {
+			GlobalGameCounters.DamageTaken += damageDealt;
+			GlobalGameCounters.AttacksReceived++;
+		}
+		else
+			GlobalGameCounters.AttacksAvoided++;
+	} 
+
+	// Determine the outcome of the battle and give rewards if applicable.
+	if (adventurer.Points.HP <= 0) 
+		printf("You are dead!\n");
+	else if (currentEnemy.Points.HP <= 0)
+	{
+		printf("The %s is dead!\n", currentEnemy.Name.c_str());
+		int drop = currentEnemy.Points.Coins + (rand() % 20);
+		std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
+		adventurer.Points.Coins = adventurer.Points.Coins + drop;
+
+		GlobalGameCounters.BattlesWon++;
+		GlobalGameCounters.EnemiesKilled++;
+		GlobalGameCounters.MoneyEarned += drop;
 	}
 }
 
