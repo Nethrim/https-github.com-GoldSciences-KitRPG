@@ -157,6 +157,12 @@ void combat(CHARACTER_TYPE enemyType)
 		std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 		adventurer.Points.Coins = adventurer.Points.Coins + drop;
 
+		switch(currentEnemy.Type) {
+		case CT_SOLDIER	:	adventurer.Points.MaxHP += 2;
+		case CT_RAIDER	:	adventurer.Points.MaxHP++;
+		case CT_WOLF	:	adventurer.Points.MaxHP++;
+		}
+
 		GlobalGameCounters.BattlesWon++;
 		GlobalGameCounters.EnemiesKilled++;
 		GlobalGameCounters.MoneyEarned += drop;
@@ -166,7 +172,7 @@ void combat(CHARACTER_TYPE enemyType)
 void tavern()
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
-	while (true)
+	while (adventurer.Points.HP > 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
 	{
 		printf(	"\n-- You wonder about what to do next...\n");
 		printf(	"Select your next action:\n");
@@ -189,9 +195,6 @@ void tavern()
 		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
 			printf("Invalid answer. Answer again...\n");
 		};
-
-		if (adventurer.Points.HP <= 0) // If the mercenary job didn't go well we cancel the loop and exit the game.
-			break; 
 	}
 }
 
