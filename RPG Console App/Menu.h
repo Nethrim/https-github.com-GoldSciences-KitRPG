@@ -1,13 +1,14 @@
 #pragma once
-#include <string>
-#include <iostream>
+
+#include "Misc.h"
+
 #include <algorithm>
 
 class SMenuItem
 {
 public:
-	int			ReturnValue;
-	std::string	Text;
+	unsigned int	ReturnValue;
+	std::string		Text;
 };
 
 template <size_t _ArraySize>
@@ -25,20 +26,15 @@ int displayMenu(size_t optionCount, const std::string& title, const SMenuItem (&
 			printf("%u: %s.\n", i+1, menuItems[i].Text.c_str());	
 		
 		// Get user input
-		std::string userChoice;
-		getline(std::cin, userChoice);
-	
 		// Convert the input string to a menuitem index.
-		unsigned int selectedOption = ~0U;	// this is the bits of 0 negated which results in 0xFFFFFFFF.
-		try { selectedOption = std::stoul(userChoice)-1; }	// stoul converts an std::string to an unsigned long
-		catch(std::invalid_argument) {}	// this try/catch bullshit is required because std::stoi() throws exceptions if the input can't be converted to a number.
+		const unsigned int selectedIndex = getNumericInput()-1;	// 
 
-		if(selectedOption >= optionCount)	// We only accept from 0 to 
+		if(selectedIndex >= optionCount)	// We only accept from 0 to optionCount
 			printf("Invalid answer. Answer again...\n");
 		else
 		{
 			printf("\n");
-			return menuItems[selectedOption].ReturnValue;
+			return menuItems[selectedIndex].ReturnValue;
 		}
 	}
 }

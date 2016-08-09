@@ -15,7 +15,7 @@ struct SInventorySlot
 class CPlayer : public CCharacter
 {
 public:
-	int				itemCount = 0;
+	unsigned int	itemCount = 0;
 	SInventorySlot	inventory[MAX_INVENTORY_SLOTS];
 
 	using CCharacter::CCharacter;	// This makes our CPlayer class to expose all the CCharacter constructors.

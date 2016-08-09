@@ -101,10 +101,10 @@ void rest()
 void mercenaryJob()
 {
 	static const SMenuItem jobOptions[] =
-	{ { 1, "Easy Job"				}
-	, { 2, "Medium Job"				}
-	, { 3, "Hard Job"				}
-	, { 4, "Back to the tavern"		}
+	{ { 1, "Easy Job"			}
+	, { 2, "Medium Job"			}
+	, { 3, "Hard Job"			}
+	, { 4, "Back to the tavern"	}
 	};
 
 	int mercenaryDifficulty = displayMenu("You decide to enroll for a mercenary job.", jobOptions);
@@ -156,15 +156,13 @@ void bar()
 			printf("%u: Buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 		printf("\n");
 
-		char drinkChoice = getchar();
-		getchar();
-		int indexItem = drinkChoice - '1';
+		unsigned int indexItem = getNumericInput()-1;
 		
 		if( indexItem == descriptionCount ) {
 			printf("You leave the bar.\n");
 			break;
 		}
-		else if(indexItem < 0 || indexItem >= descriptionCount)
+		else if(indexItem >= descriptionCount)
 			printf("You can't buy something that doesn't exist!\n");
 		else 
 		{
@@ -192,7 +190,7 @@ void showInventory()
 	printf("-- You look at your wallet and count %u coins.\n\n", adventurer.Points.Coins);
 	if(adventurer.itemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
-		for (int i = 0; i < adventurer.itemCount; i++)
+		for (unsigned int i = 0; i < adventurer.itemCount; i++)
 			printf("%u: x%.2u %s.\n", i + 1, adventurer.inventory[i].Count, adventurer.inventory[i].Description.Name.c_str());
 		printf("\n");
 	}
@@ -303,20 +301,18 @@ void combat(CHARACTER_TYPE enemyType)
 bool useItems(CCharacter& enemy)
 {
 	bool bUsedItem = false;
-	int indexItem = -1;
+	unsigned int indexItem = ~0U;
 	SItem itemDescription;
 	while(true)
 	{
 		printf("- Type %u to close your inventory.\n", getInventorySize(adventurer.inventory)+1);
 		showInventory();
 
-		char itemChoice = getchar();
-		getchar();
-		indexItem = itemChoice - '1';
+		indexItem = getNumericInput()-1;
 
 		if(indexItem == getInventorySize(adventurer.inventory)) // exit option
 			break;
-		else if(indexItem < 0 || indexItem >= adventurer.itemCount)	// invalid index means it's an invalid option
+		else if(indexItem >= adventurer.itemCount)	// invalid index means it's an invalid option
 			printf("Invalid answer. Answer again...\n");
 		else if (adventurer.inventory[indexItem].Count <= 0)
 			printf("You don't have anymore of that. Use something else...\n"); 
