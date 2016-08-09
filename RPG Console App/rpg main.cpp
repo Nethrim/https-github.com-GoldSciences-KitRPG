@@ -37,6 +37,7 @@ void tavern();
 void rest();
 void mercenaryJob();
 void bar();
+void displayScore();
 void showInventory();
 void useItems(CEnemy& enemy);
 
@@ -51,53 +52,12 @@ void main()
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
 	getline(std::cin, adventurer.Name);
-	std::cout << "So, " << adventurer.Name << "... What brings you here?\n";
+	std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 
 	tavern();	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
 	printf("\nGame Over!\n\n");
-	printf("Player statistics:\n\n"
-   "Battles Won			: %u\n"
-   "Turns Played		: %u\n"
-   "------------------------\n"
-   "Enemies Killed		: %u\n"
-   "Damage Dealt		: %u\n"
-   "Damage Taken		: %u\n"
-   "------------------------\n"
-   "Escapes Succeeded	: %u\n"
-   "Escapes Failed		: %u\n"
-   "------------------------\n"
-   "Money Earned		: %u\n"
-   "Money Spent			: %u\n"
-   "------------------------\n"
-   "Attacks Hit			: %u\n"
-   "Attacks Missed		: %u\n"
-   "Attacks Received	: %u\n"
-   "Attacks Avoided		: %u\n"
-   "------------------------\n"
-   "Potions Used		: %u\n"
-   "Grenades Used		: %u\n"
-	, GlobalGameCounters.BattlesWon			
-	, GlobalGameCounters.TurnsPlayed			
-	
-	, GlobalGameCounters.EnemiesKilled		
-	, GlobalGameCounters.DamageDealt			
-	, GlobalGameCounters.DamageTaken			
-	
-	, GlobalGameCounters.EscapesSucceeded	
-	, GlobalGameCounters.EscapesFailed		
-	
-	, GlobalGameCounters.MoneyEarned			
-	, GlobalGameCounters.MoneySpent			
-
-	, GlobalGameCounters.AttacksHit			
-	, GlobalGameCounters.AttacksMissed		
-	, GlobalGameCounters.AttacksReceived		
-	, GlobalGameCounters.AttacksAvoided		
-
-	, GlobalGameCounters.PotionsUsed			
-	, GlobalGameCounters.GrenadesUsed		
-	);
+	displayScore();
 
 	system("PAUSE");
 }
@@ -227,12 +187,14 @@ void tavern()
 	// This is the main loop of the game and queries for user input until the exit option is selected.
 	while (true)
 	{
-		printf(	"\nWhile sitting at the tavern you wonder about what to do next...\n");
+		printf(	"\n-- You wonder about what to do next...\n");
 		printf(	"Select your next action:\n");
 		printf(	"1: Rest.\n"
 				"2: Look for a mercenary job.\n"
 				"3: Go for a drink.\n"
-				"4: Exit game.\n"
+				"4: Display score.\n"
+				"5: Show inventory.\n"
+				"6: Exit game.\n\n"
 		);
 
 		char tavernChoice = getchar();
@@ -241,7 +203,9 @@ void tavern()
 		if( '1' == tavernChoice )		{	rest();			}	// Rest and ask again for the action.
 		else if( '2' == tavernChoice )	{	mercenaryJob();	}	// Go for a mercenary job and ask again for action once it's done
 		else if( '3' == tavernChoice )	{	bar();			}	// Go to the shop and ask again for action once it's done.
-		else if( '4' == tavernChoice )	{	break;			}	// Exit the main loop, which effectively closes the game
+		else if( '4' == tavernChoice )	{	displayScore();	}	// Go to the shop and ask again for action once it's done.
+		else if( '5' == tavernChoice )	{	showInventory();	}	// Go to the shop and ask again for action once it's done.
+		else if( '6' == tavernChoice )	{	break;			}	// Exit the main loop, which effectively closes the game
 		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
 			printf("Invalid answer. Answer again...\n");
 		};
@@ -361,7 +325,7 @@ void showInventory()
 	if(adventurer.itemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
 		for (int i = 0; i < adventurer.itemCount; i++)
-			printf("%u: %.2u %s.\n", i + 1, adventurer.inventory[i].Count, adventurer.inventory[i].Description.Name.c_str());
+			printf("%u: x%.2u %s.\n", i + 1, adventurer.inventory[i].Count, adventurer.inventory[i].Description.Name.c_str());
 		printf("\n");
 	}
 }
@@ -401,7 +365,7 @@ void useItems(CEnemy& enemy)
 		int lotteryResult = 0;
 
 		std::string itemName = itemDescription.Name;
-		printf("\nYou used: %s.\n", itemName.c_str());
+		printf("\nYou used: %s.\n\n", itemName.c_str());
 		switch( itemDescription.Type )
 		{
 		case IT_POTION:
@@ -450,3 +414,62 @@ void useItems(CEnemy& enemy)
 			printf("\nYou ran out of %s.\n", itemName.c_str());
 	}
 }
+
+void displayScore() 
+{
+	printf("\n-- Player points:\n\n"
+		"Max HP     : %u.\n"
+		"HP         : %u.\n"
+		"Attack     : %u.\n"
+		"Hit chance : %u.\n"
+		"Coins      : %u.\n"
+		, adventurer.Points.MaxHP     
+		, adventurer.Points.HP         
+		, adventurer.Points.Attack     
+		, adventurer.Points.Hit
+		, adventurer.Points.Coins		
+	);
+
+	printf("\n-- Player statistics:\n\n"
+		"Battles Won         : %u\n"
+		"Turns Played        : %u\n"
+		"--------------------\n"
+		"Enemies Killed      : %u\n"
+		"Damage Dealt        : %u\n"
+		"Damage Taken        : %u\n"
+		"--------------------\n"
+		"Escapes Succeeded   : %u\n"
+		"Escapes Failed      : %u\n"
+		"--------------------\n"
+		"Money Earned        : %u\n"
+		"Money Spent         : %u\n"
+		"--------------------\n"
+		"Attacks Hit         : %u\n"
+		"Attacks Missed      : %u\n"
+		"Attacks Received    : %u\n"
+		"Attacks Avoided     : %u\n"
+		"--------------------\n"
+		"Potions Used        : %u\n"
+		"Grenades Used       : %u\n\n"
+		, GlobalGameCounters.BattlesWon			
+		, GlobalGameCounters.TurnsPlayed			
+	
+		, GlobalGameCounters.EnemiesKilled		
+		, GlobalGameCounters.DamageDealt			
+		, GlobalGameCounters.DamageTaken			
+	
+		, GlobalGameCounters.EscapesSucceeded	
+		, GlobalGameCounters.EscapesFailed		
+	
+		, GlobalGameCounters.MoneyEarned			
+		, GlobalGameCounters.MoneySpent			
+
+		, GlobalGameCounters.AttacksHit			
+		, GlobalGameCounters.AttacksMissed		
+		, GlobalGameCounters.AttacksReceived		
+		, GlobalGameCounters.AttacksAvoided		
+
+		, GlobalGameCounters.PotionsUsed			
+		, GlobalGameCounters.GrenadesUsed		
+	);
+};
