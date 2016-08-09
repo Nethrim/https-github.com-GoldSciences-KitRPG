@@ -1,10 +1,10 @@
 #define NOMINMAX
 
 #include <iostream>
-#include <stdio.h>
 #include <time.h>
 #include <windows.h>
 #include <algorithm>
+#include "Misc.h"
 #include "Enemy.h"
 #include "Player.h"
 #include "Menu.h"
@@ -35,7 +35,6 @@ struct SGameCounters {
 	int GrenadesUsed		= 0;
 
 } GlobalGameCounters;
-
 
 void tavern();							// Main loop of the game. From there the player can choose to go shopping, fighting or take a nap to recover HP.
 void rest();							// Take a nap and recover HP up to MaxHP.
@@ -232,6 +231,7 @@ void combat(CHARACTER_TYPE enemyType)
 		{
 			printf("\n-- Your HP is: %u.\n", adventurer.Points.HP);
 			printf("-- %s HP is: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP);
+
 			int actionChoice = displayMenu("It's your turn to make a move", combatOptions);
 			
 			// If the action is valid then we execute it and break the current while() so the attack turn executes.
@@ -290,6 +290,12 @@ void combat(CHARACTER_TYPE enemyType)
 		int drop = currentEnemy.Points.Coins + (rand() % 20);
 		std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
 		adventurer.Points.Coins = adventurer.Points.Coins + drop;
+
+		switch(currentEnemy.Type) {
+		case CT_SOLDIER	:	adventurer.Points.MaxHP += 2;
+		case CT_RAIDER	:	adventurer.Points.MaxHP++;
+		case CT_WOLF	:	adventurer.Points.MaxHP++;
+		}
 
 		GlobalGameCounters.BattlesWon++;
 		GlobalGameCounters.EnemiesKilled++;
