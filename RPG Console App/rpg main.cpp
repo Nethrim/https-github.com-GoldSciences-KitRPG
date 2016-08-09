@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
@@ -5,10 +7,6 @@
 #include <algorithm>
 #include "Enemy.h"
 #include "Player.h"
-
-#if defined max
-#undef max
-#endif
 
 CPlayer adventurer (CT_PLAYER, 200, 6, 50, 100, "Anonymous"); //MaxHP, ATk, HitChance, Coins.
 
@@ -356,6 +354,7 @@ bool useItems(CCharacter& enemy)
 
 			itemEffectValue = (10*itemDescription.Grade+(rand()%10))*itemDescription.Grade;
 			adventurer.Points.HP += itemEffectValue;
+			adventurer.Points.HP = std::min(adventurer.Points.HP, adventurer.Points.MaxHP);
 
 			printf("The potion heals you for %u HP. You now have %u HP.\n", itemEffectValue, adventurer.Points.HP);
 			GlobalGameCounters.PotionsUsed++;
