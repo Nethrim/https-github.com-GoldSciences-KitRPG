@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include <time.h>
 #include <windows.h>
+#include <algorithm>
 #include "Enemy.h"
 #include "Player.h"
+
+#if defined max
+#undef max
+#endif
 
 CPlayer adventurer (CT_PLAYER, 200, 6, 50, 100, "Anonymous"); //MaxHP, ATk, HitChance, Coins.
 
@@ -39,15 +44,11 @@ void mercenaryJob();
 void bar();
 void displayScore();
 void showInventory();
-void useItems(CEnemy& enemy);
+bool useItems(CEnemy& enemy);
 
 void main()
 {	
 	srand((unsigned int)time(NULL));
-	for(int item = 0; item < getInventorySize(adventurer.inventory); item++) {
-		adventurer.inventory[item].Description	= itemDescriptions[getDescriptionCount(itemDescriptions)+1];
-		adventurer.inventory[item].Count		= 0;
-	}
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
@@ -56,36 +57,73 @@ void main()
 
 	tavern();	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
-	printf("\nGame Over!\n\n");
+	printf("\n-- Game Over! --\n\n");
 	displayScore();
 
 	system("PAUSE");
 }
 
+// This function returns the damage dealt to the target
+int attack(const CCharacter& attacker, CCharacter& target)
+{
+	// Calculate success from the hit chance and apply damage to target or just print the miss message.
+	int damageDealt = 0;
+
+	if ((rand() % 100) < attacker.Points.Hit)
+	{
+		damageDealt = attacker.Points.Attack+(rand()%10);
+		target.Points.HP -= damageDealt;
+		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
+	}
+	else 
+		printf("%s misses the attack!\n", attacker.Name.c_str());
+
+	return damageDealt;
+};
 
 void combat(CHARACTER_TYPE enemyType)
 {
 	CEnemy currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
-	while (true)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
+	while (adventurer.Points.HP > 0 && currentEnemy.Points.HP > 0)	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
 		GlobalGameCounters.TurnsPlayed++;
 
 		while (true)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 		{
-			printf("\nSelect action:\n");
-			printf(	"1: Attack.\n"
-					"2: Inventory.\n"
-					"3: Run\n\n"
+			printf("\n-- Your HP is: %u.\n", adventurer.Points.HP);
+			printf("-- %s HP is: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP);
+			printf("Select action:\n"
+				"1: Attack.\n"
+				"2: Inventory.\n"
+				"3: Run.\n\n"
 			);
-			char action = getchar();
+
+			char actionChoice = getchar();
 			getchar();
 			
 			// If the action is valid then we execute it and break the current while() so the attack turn executes.
-				 if('1' == action) { printf("You decide to attack!\n"); break; }
-			else if('2' == action) { useItems(currentEnemy); break; }	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
-			else if('3' == action) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
-				std::cout << "You try to escape!\n\n";
+			if('1' == actionChoice) { 
+				printf("You decide to attack!\n"); 
+
+				int damageDealt = attack(adventurer, currentEnemy);
+				if(damageDealt) {
+					GlobalGameCounters.DamageDealt += damageDealt;
+					GlobalGameCounters.AttacksHit++;
+				}
+				else 
+					GlobalGameCounters.AttacksMissed++;
+
+				break; 
+			}
+			else if('2' == actionChoice) { 
+				if( useItems(currentEnemy) )	// If no items were used we ask again for user input. 
+					break; 
+				else
+					continue;
+			}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
+			else if('3' == actionChoice) { // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the attack turn.
+				printf("You try to escape!\n\n");
 				if ((rand() % 100) < 30) {
 					printf("You escaped from combat!\n");
 					GlobalGameCounters.EscapesSucceeded++;
@@ -101,85 +139,31 @@ void combat(CHARACTER_TYPE enemyType)
 			}
 		}
 
-		if (adventurer.Points.HP <= 0) 
-		{ 
-			std::cout << "Your HP is: 0.\n\n";
-			std::cout << "You are dead!\n";
-			break;	// If the player is dead we exit the turn loop.
-		}
-		else if (currentEnemy.Points.HP <= 0)
-		{
-			std::cout << "The "<< currentEnemy.Name <<" HP is: 0\n\n";
-			std::cout << "The " << currentEnemy.Name <<" is dead\n";
-			int drop = currentEnemy.Points.Coins + (rand() % 20);
-			std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
-			adventurer.Points.Coins = adventurer.Points.Coins + drop;
-
-			GlobalGameCounters.BattlesWon++;
-			GlobalGameCounters.EnemiesKilled++;
-			GlobalGameCounters.MoneyEarned += drop;
-
+		if (adventurer.Points.HP <= 0  || currentEnemy.Points.HP <= 0)	// We do this check because player actions may kill one of the combatants and in that case we need to exit this loop.
 			break;	// Cancel the combat loop to exit combat.
-		}
 
-
-		// Calculate the enemy hit chance and apply damage to player or just print the miss message.
-		if ((rand() % 100) < currentEnemy.Points.Hit )
-		{
-			int enemyDamage = currentEnemy.Points.Attack+(rand()%10);
-			printf("%s hits you for: %u.\n", currentEnemy.Name.c_str(), enemyDamage);
-
-			GlobalGameCounters.DamageTaken += enemyDamage;
+		int damageDealt = attack(currentEnemy, adventurer);
+		if(damageDealt) {
+			GlobalGameCounters.DamageTaken += damageDealt;
 			GlobalGameCounters.AttacksReceived++;
-
-			adventurer.Points.HP = adventurer.Points.HP - enemyDamage;
-			if (adventurer.Points.HP <= 0) 
-			{ 
-				std::cout <<	"Your HP is: 0.\n"
-								"You are dead!\n";
-				break;	// If the player is dead we exit the turn loop.
-			}
 		}
-		else {
+		else
 			GlobalGameCounters.AttacksAvoided++;
-			std::cout << currentEnemy.Name << " misses the attack!\n";
-		}
-
-		printf("Your HP is: %u.\n", adventurer.Points.HP);
-
-		// Calculate the player hit chance and apply damage to enemy or just print the miss message.
-		if ((rand() % 100) < adventurer.Points.Hit)
-		{
-			int playerDamage = adventurer.Points.Attack+(rand()%10);
-			std::cout << "You hit for: " << playerDamage << "\n";
-			currentEnemy.Points.HP = currentEnemy.Points.HP - playerDamage;
-			
-			GlobalGameCounters.DamageDealt += playerDamage;
-			GlobalGameCounters.AttacksHit++;
-
-			// Check if the enemy was killed. If it was, we cancel the turn loop after applying drops to the player.
-			if (currentEnemy.Points.HP <= 0)
-			{
-				std::cout	<< currentEnemy.Name << " HP is: 0.\n" 
-							<< currentEnemy.Name << " is dead!\n";
-				int drop = currentEnemy.Points.Coins + (rand() % 20);
-				std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
-				adventurer.Points.Coins = adventurer.Points.Coins + drop;
-
-				GlobalGameCounters.BattlesWon++;
-				GlobalGameCounters.EnemiesKilled++;
-				GlobalGameCounters.MoneyEarned += drop;
-
-				break;	// Cancel the combat loop to exit combat.
-			}
-		}
-		else {
-			GlobalGameCounters.AttacksMissed++;
-			printf("You miss the attack!\n");
-		};
-
-		std::cout << currentEnemy.Name << " HP is: " << currentEnemy.Points.HP << "\n";
 	} 
+
+	if (adventurer.Points.HP <= 0) 
+		std::cout << "You are dead!\n";
+	else if (currentEnemy.Points.HP <= 0)
+	{
+		printf("The %s is dead!\n", currentEnemy.Name.c_str());
+		int drop = currentEnemy.Points.Coins + (rand() % 20);
+		std::cout << "\nThe enemy dropped " << drop << " coins!!\n\n";
+		adventurer.Points.Coins = adventurer.Points.Coins + drop;
+
+		GlobalGameCounters.BattlesWon++;
+		GlobalGameCounters.EnemiesKilled++;
+		GlobalGameCounters.MoneyEarned += drop;
+	}
 }
 
 void tavern()
@@ -192,20 +176,20 @@ void tavern()
 		printf(	"1: Rest.\n"
 				"2: Look for a mercenary job.\n"
 				"3: Go for a drink.\n"
-				"4: Display score.\n"
-				"5: Show inventory.\n"
+				"4: Show inventory.\n"
+				"5: Display score.\n"
 				"6: Exit game.\n\n"
 		);
 
 		char tavernChoice = getchar();
 		getchar();
 
-		if( '1' == tavernChoice )		{	rest();			}	// Rest and ask again for the action.
-		else if( '2' == tavernChoice )	{	mercenaryJob();	}	// Go for a mercenary job and ask again for action once it's done
-		else if( '3' == tavernChoice )	{	bar();			}	// Go to the shop and ask again for action once it's done.
-		else if( '4' == tavernChoice )	{	displayScore();	}	// Go to the shop and ask again for action once it's done.
-		else if( '5' == tavernChoice )	{	showInventory();	}	// Go to the shop and ask again for action once it's done.
-		else if( '6' == tavernChoice )	{	break;			}	// Exit the main loop, which effectively closes the game
+			 if( '1' == tavernChoice )	{	rest();				}	// Rest and ask again for the action.
+		else if( '2' == tavernChoice )	{	mercenaryJob();		}	// Go for a mercenary job and ask again for action once it's done
+		else if( '3' == tavernChoice )	{	bar();				}	// Go to the shop and ask again for action once it's done.
+		else if( '4' == tavernChoice )	{	showInventory();	}	// Dìsplay the inventory and coins and ask again for action once it's done.
+		else if( '5' == tavernChoice )	{	displayScore();		}	// Display score and player points and ask again for action once it's done.
+		else if( '6' == tavernChoice )	{	break;				}	// Exit the main loop, which effectively closes the game.
 		else {	// Enter here if we didn't recognize the option. Print the error message and ask again for input.
 			printf("Invalid answer. Answer again...\n");
 		};
@@ -224,7 +208,7 @@ void rest()
 
 void mercenaryJob()
 {
-	printf("You decide to enroll for a mercenary job.\n");
+	printf("\nYou decide to enroll for a mercenary job.\n");
 	while (true)
 	{
 		printf(	"1: Easy Job.\n"
@@ -275,7 +259,7 @@ void addItem(const SItem& itemDescription)
 
 void bar()
 {
-	printf("Do you want to buy some drinks?\n\n");
+	printf("\nDo you want to buy some drinks?\n\n");
 
 	static const int descriptionCount = getDescriptionCount(itemDescriptions);
 	while (true)	// break the loop to leave the shop
@@ -294,9 +278,8 @@ void bar()
 			printf("You leave the bar.\n");
 			break;
 		}
-		else if(indexItem < 0 || indexItem >= descriptionCount) {
+		else if(indexItem < 0 || indexItem >= descriptionCount)
 			printf("You can't buy something that doesn't exist!\n");
-		}
 		else 
 		{
 			int itemPrice	= itemDescriptions[indexItem].Price;	// Get a copy of this value because we use it very often.
@@ -314,7 +297,6 @@ void bar()
 			}
 		}
 	}
-	std::cout << "\n";
 	showInventory();
 }
 
@@ -330,7 +312,8 @@ void showInventory()
 	}
 }
 
-void useItems(CEnemy& enemy)
+// This function returns true if an item was used or false if the menu was exited without doing anything.
+bool useItems(CEnemy& enemy)
 {
 	bool bUsedItem = false;
 	int indexItem = -1;
@@ -339,18 +322,17 @@ void useItems(CEnemy& enemy)
 	{
 		printf("- Type %u to close your inventory.\n", getInventorySize(adventurer.inventory)+1);
 		showInventory();
+
 		char itemChoice = getchar();
 		getchar();
-
 		indexItem = itemChoice - '1';
+
 		if(indexItem == getInventorySize(adventurer.inventory)) // exit option
 			break;
-		else if(indexItem < 0 || indexItem >= adventurer.itemCount) {	// invalid index means it's an invalid option
+		else if(indexItem < 0 || indexItem >= adventurer.itemCount)	// invalid index means it's an invalid option
 			printf("Invalid answer. Answer again...\n");
-		} 
-		else if (adventurer.inventory[indexItem].Count <= 0) { 
+		else if (adventurer.inventory[indexItem].Count <= 0)
 			printf("You don't have anymore of that. Use something else...\n"); 
-		} 
 		else {
 			// if we reached here it means that the input was valid so we select the description and exit the loop
 			itemDescription = adventurer.inventory[indexItem].Description;
@@ -413,6 +395,8 @@ void useItems(CEnemy& enemy)
 		else 
 			printf("\nYou ran out of %s.\n", itemName.c_str());
 	}
+	
+	return bUsedItem;
 }
 
 void displayScore() 
@@ -424,7 +408,7 @@ void displayScore()
 		"Hit chance : %u.\n"
 		"Coins      : %u.\n"
 		, adventurer.Points.MaxHP     
-		, adventurer.Points.HP         
+		, std::max(adventurer.Points.HP, 0)
 		, adventurer.Points.Attack     
 		, adventurer.Points.Hit
 		, adventurer.Points.Coins		
@@ -473,3 +457,4 @@ void displayScore()
 		, GlobalGameCounters.GrenadesUsed		
 	);
 };
+
