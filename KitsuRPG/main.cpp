@@ -21,10 +21,10 @@ void main()
 	getline(std::cin, gameInstance.Adventurer.Name);
 	std::cout << "\nSo, " << gameInstance.Adventurer.Name << "... What brings you here?\n";
 
-	tavern(gameInstance);	// Tavern is the main loop of our game. Exiting it means we quit the game.
+	tavern(gameInstance.Adventurer);	// Tavern is the main loop of our game. Exiting it means we quit the game.
 
 	printf("\n-- Game Over! --\n\n");
-	displayScore(gameInstance);
+	displayScore(gameInstance.Adventurer);
 
 	system("PAUSE");
 }

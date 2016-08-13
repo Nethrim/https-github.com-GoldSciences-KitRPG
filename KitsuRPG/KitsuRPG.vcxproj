@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C0EE0B86-9A24-490A-B06D-BDC9059FB4CA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RPGConsoleApp</RootNamespace>
+    <RootNamespace>KitsuRPG</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -169,8 +169,7 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Game_combat.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="rpg main.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
@@ -179,7 +178,6 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Misc.h" />
-    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Menu.h"
 
-void tavern(CGame& gameInstance)
+void tavern(CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
 	static const SMenuItem tavernOptions[] =
@@ -13,20 +13,20 @@ void tavern(CGame& gameInstance)
 	, { 6, "Exit game"					}
 	};
 
-	while (gameInstance.Adventurer.Points.HP > 0)  // If the last action didn't go well we cancel the loop and exit the game.
+	while (adventurer.Points.HP > 0)  // If the last action didn't go well we cancel the loop and exit the game.
 	{
 		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
-			 if( 1 == tavernChoice )	{	rest(gameInstance.Adventurer.Points);	}	// Rest and ask again for the action.
-		else if( 2 == tavernChoice )	{	mercenaryJob(gameInstance);				}	// Go for a mercenary job and ask again for action once it's done
-		else if( 3 == tavernChoice )	{	bar(gameInstance);						}	// Go to the shop and ask again for action once it's done.
-		else if( 4 == tavernChoice )	{	showInventory(gameInstance.Adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
-		else if( 5 == tavernChoice )	{	displayScore(gameInstance);				}	// Display score and player points and ask again for action once it's done.
+			 if( 1 == tavernChoice )	{	rest(adventurer.Points);	}	// Rest and ask again for the action.
+		else if( 2 == tavernChoice )	{	mercenaryJob(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
+		else if( 3 == tavernChoice )	{	bar(adventurer);			}	// Go to the shop and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	showInventory(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 5 == tavernChoice )	{	displayScore(adventurer);	}	// Display score and player points and ask again for action once it's done.
 		else if( 6 == tavernChoice )	{	break;									}	// Exit the main loop, which effectively closes the game.
 	}
 }
 
-void mercenaryJob(CGame& gameInstance)
+void mercenaryJob(CCharacter& adventurer)
 {
 	static const SMenuItem jobOptions[] =
 	{ { 1, "Easy Job"			}
@@ -35,40 +35,40 @@ void mercenaryJob(CGame& gameInstance)
 	, { 4, "Back to the tavern"	}
 	};
 
-	int mercenaryDifficulty = displayMenu("You decide to enroll for a mercenary job.", jobOptions);
+	const int mercenaryDifficulty = displayMenu("You decide to enroll for a mercenary job", jobOptions);
 
 	// Set bCombat to true and the enemy type for executing the combat logic.
 	bool bCombat = false;
-	CHARACTER_TYPE enemyType = CT_UNKNOWN;	
+	ENEMY_TYPE enemyType = ENEMY_TYPE_UNKNOWN;	
 
-		 if(1 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_WOLF;		}
-	else if(2 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_RAIDER;	}
-	else if(3 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= CT_SOLDIER;	}
+		 if(1 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_WOLF;		}
+	else if(2 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_RAIDER;	}
+	else if(3 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_SOLDIER;	}
 	else if(4 == mercenaryDifficulty)	{ // This option cancels the loop which causes to exit to the tavern.
-		std::cout << "Welcome back, " << gameInstance.Adventurer.Name << ".\n";
+		std::cout << "Welcome back, " << adventurer.Name << ".\n";
 		return;
 	}
 
 	if( bCombat ) {
 		printf("You challenge a %s.\n", getEnemyDefinition(enemyType).Name.c_str()); 
-		combat(gameInstance, enemyType);
+		combat(adventurer, enemyType);
 	}
 }
 
-void bar(CGame& gameInstance)
+void bar(CCharacter& adventurer)
 {
 	printf("\nDo you want to buy some drinks?\n\n");
 
-	static const int descriptionCount = getDescriptionCount(itemDescriptions);
+	static const size_t descriptionCount = getDescriptionCount(itemDescriptions);
 	while (true)	// break the loop to leave the shop
 	{
-		printf("-- You have %u coins.\n", gameInstance.Adventurer.Points.Coins);
-		printf("Type %u to leave the bar.\n\n", descriptionCount+1);
+		printf("-- You have %u coins.\n", adventurer.Points.Coins);
+		printf("Type %u to leave the bar.\n\n", (uint32_t)(descriptionCount+1));
 		for(int i=0; i<descriptionCount; i++)	// Print available items
 			printf("%u: Buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 		printf("\n");
 
-		unsigned int indexItem = getNumericInput()-1;
+		const uint32_t indexItem = (uint32_t)(getNumericInput()-1);
 		
 		if( indexItem == descriptionCount ) {
 			printf("You leave the bar.\n");
@@ -81,25 +81,26 @@ void bar(CGame& gameInstance)
 			int itemPrice	= itemDescriptions[indexItem].Price;	// Get a copy of this value because we use it very often.
 
 			// Check first for conditions that prevent from acquiring the item
-			if(gameInstance.Adventurer.Points.Coins < itemPrice)
+			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy that! Choose something else...\n");
-			else if(gameInstance.Adventurer.itemCount == getInventorySize(gameInstance.Adventurer.inventory))
-				printf("You don't have enough space in your inventory.\n");
-			else {	// If we didn't find a reason for canceling the buy, add the item to the player's inventory and do the money calculations.
-				addItem(gameInstance.Adventurer, itemDescriptions[indexItem]);
+			else if(addItem(adventurer, itemDescriptions[indexItem]))	// addItem() returns false if the inventory is full.
+			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemDescriptions[indexItem].Name.c_str());
-				gameInstance.Adventurer.Points.Coins			-= itemPrice;
-				gameInstance.Statisticts.MoneySpent	+= itemPrice;
+				adventurer.Points.Coins			-= itemPrice;
+				adventurer.Score.MoneySpent	+= itemPrice;
 			}
+			else
+				printf("Not enough space in inventory!\n");
+
 		}
 	}
-	showInventory(gameInstance.Adventurer);
+	showInventory(adventurer);
 }
 
-void displayScore(const CGame& gameInstance) 
+void displayScore(const CCharacter& adventurer) 
 {
-	const SCharacterPoints& points = gameInstance.Adventurer.Points;
-	const SGameCounters& gameCounters = gameInstance.Statisticts;
+	const SCharacterPoints& points = adventurer.Points;
+	const SCharacterScore& gameCounters = adventurer.Score;
 
 	printf("\n-- Player points:\n\n"
 		"Max HP     : %u.\n"
