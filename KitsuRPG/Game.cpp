@@ -29,27 +29,24 @@ void tavern(CCharacter& adventurer)
 void mercenaryJob(CCharacter& adventurer)
 {
 	static const SMenuItem jobOptions[] =
-	{ { 1, "Easy Job"			}
-	, { 2, "Medium Job"			}
-	, { 3, "Hard Job"			}
-	, { 4, "Back to the tavern"	}
+	{ { ENEMY_TYPE_WOLF,					"Easy Job"				}
+	, { ENEMY_TYPE_RAIDER,					"Medium Job"			}
+	, { ENEMY_TYPE_SOLDIER,					"Hard Job"				}
+	, { ENEMY_TYPE_KNIGHT,					"Very Hard Job"			}
+	, { ENEMY_TYPE_DRAGON,					"Nightmare Job"			}
+	, { (uint32_t)size(enemyDefinitions),	"Back to the tavern"	}
 	};
 
-	const int mercenaryDifficulty = displayMenu("You decide to enroll for a mercenary job", jobOptions);
+	const ENEMY_TYPE enemyType = (ENEMY_TYPE)displayMenu("You decide to enroll for a mercenary job", jobOptions);
 
 	// Set bCombat to true and the enemy type for executing the combat logic.
 	bool bCombat = false;
-	ENEMY_TYPE enemyType = ENEMY_TYPE_UNKNOWN;	
 
-		 if(1 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_WOLF;		}
-	else if(2 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_RAIDER;	}
-	else if(3 == mercenaryDifficulty)	{ bCombat = true;	enemyType	= ENEMY_TYPE_SOLDIER;	}
-	else if(4 == mercenaryDifficulty)	{ // This option cancels the loop which causes to exit to the tavern.
+	if(size(enemyDefinitions) == enemyType)	{ // This option cancels the loop which causes to exit to the tavern.
 		std::cout << "Welcome back, " << adventurer.Name << ".\n";
 		return;
 	}
-
-	if( bCombat ) {
+	else {
 		printf("You challenge a %s.\n", getEnemyDefinition(enemyType).Name.c_str()); 
 		combat(adventurer, enemyType);
 	}

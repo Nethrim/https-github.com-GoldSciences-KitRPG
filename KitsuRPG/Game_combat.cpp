@@ -66,31 +66,17 @@ void determineOutcome(CCharacter& adventurer, CCharacter& enemy, ENEMY_TYPE enem
 		int drop = enemy.Points.Coins + (rand() % 20);
 		printf("\nThe enemy dropped %u coins!!\n\n", drop);
 		adventurer.Points.Coins = adventurer.Points.Coins + drop;
-		if(adventurer.ItemCount < size(adventurer.Inventory))
-		{
-			for(uint32_t i=0; i<enemy.ItemCount; i++) 
+		for(uint32_t i=0; i<enemy.ItemCount; i++) 
+			if(rand()%2) 
 			{
-				if(rand()%2)
-				{
-					if(adventurer.ItemCount < size(adventurer.Inventory))
-					{
-						const SInventorySlot& itemDrop = enemy.Inventory[i];
-						addItem(adventurer, itemDrop.Description);
-						printf("\nThe enemy dropped %s!!\n\n", itemDrop.Description.Name.c_str());
-					}
-				}
+				const SInventorySlot& itemDrop = enemy.Inventory[i];
+				if(addItem(adventurer, itemDrop.Description))
+					printf("\nThe enemy dropped %s!!\n\n", itemDrop.Description.Name.c_str());
+				else
+					printf("You can't pick up %s by %s because the inventory is full!", itemDrop.Description.Name.c_str(), enemy.Name.c_str());
 			}
-		}
-		else
-			if(enemy.ItemCount)
-				printf("You can't pick up the item dropped by %s because the inventory is full!", enemy.Name.c_str());
 
-		switch(enemyType) {
-		case ENEMY_TYPE_SOLDIER	:	adventurer.Points.MaxHP += 2;
-		case ENEMY_TYPE_RAIDER	:	adventurer.Points.MaxHP++;
-		case ENEMY_TYPE_WOLF	:
-		default					:	adventurer.Points.MaxHP++;
-		}
+		adventurer.Points.MaxHP += enemyType;
 
 		adventurer.Score.BattlesWon++;
 		adventurer.Score.EnemiesKilled++;
@@ -190,7 +176,7 @@ void combat(CCharacter& adventurer, ENEMY_TYPE enemyType)
 	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
 	addItem( currentEnemy, itemDescriptions[0] );
-	if(enemyType == ENEMY_TYPE_SOLDIER)
+	for(size_t i=(size_t)ENEMY_TYPE_WOLF; i<enemyType; ++i)
 		addItem( currentEnemy, itemDescriptions[rand()%getDescriptionCount(itemDescriptions)] );
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;

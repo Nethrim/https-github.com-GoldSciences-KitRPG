@@ -4,8 +4,6 @@
 
 #include <iostream>
 #include <time.h>
-#include <windows.h>
-
 
 // This function seeds the rand() and enters the tavern() after initializing the player.
 // If the player leaves the tavern() it means the game was requested to close. 
@@ -26,5 +24,6 @@ void main()
 	printf("\n-- Game Over! --\n\n");
 	displayScore(gameInstance.Adventurer);
 
-	system("PAUSE");
+	printf("Press ENTER to exit.");
+	getline(std::cin, gameInstance.Adventurer.Name);
 }
