@@ -64,16 +64,16 @@ void determineOutcome(CCharacter& adventurer, CCharacter& enemy, ENEMY_TYPE enem
 	{
 		printf("The %s is dead!\n", enemy.Name.c_str());
 		int drop = enemy.Points.Coins + (rand() % 20);
-		printf("\nThe enemy dropped %u coins!!\n\n", drop);
+		printf("\nThe enemy dropped %u coins!!\n", drop);
 		adventurer.Points.Coins = adventurer.Points.Coins + drop;
 		for(uint32_t i=0; i<enemy.ItemCount; i++) 
 			if(rand()%2) 
 			{
 				const SInventorySlot& itemDrop = enemy.Inventory[i];
 				if(addItem(adventurer, itemDrop.Description))
-					printf("\nThe enemy dropped %s!!\n\n", itemDrop.Description.Name.c_str());
+					printf("\nThe enemy dropped %s!!\n", itemDrop.Description.Name.c_str());
 				else
-					printf("You can't pick up %s by %s because the inventory is full!", itemDrop.Description.Name.c_str(), enemy.Name.c_str());
+					printf("You can't pick up %s by %s because the inventory is full!\n", itemDrop.Description.Name.c_str(), enemy.Name.c_str());
 			}
 
 		adventurer.Points.MaxHP += enemyType;
@@ -133,8 +133,8 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- Your HP is: %u.\n", adventurer.Points.HP);
-		printf("-- %s HP is: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP);
+		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), adventurer.Points.HP, adventurer.Points.Hit, adventurer.Points.Attack);
+		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP, currentEnemy.Points.Hit, currentEnemy.Points.Attack);
 
 		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);
@@ -147,7 +147,7 @@ TURN_ACTION resolveAI(CCharacter& enemy, CCharacter& adventurer)
 	TURN_ACTION action = TURN_ACTION_ATTACK;
 	if(enemy.ItemCount)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
-	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%9))	// 11 % chance of escape attempt.
+	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%9))	// 11 % chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
 
 	return action;
@@ -175,9 +175,9 @@ void combat(CCharacter& adventurer, ENEMY_TYPE enemyType)
 {
 	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
-	addItem( currentEnemy, itemDescriptions[0] );
+	addItem( currentEnemy, itemDescriptions[1] );
 	for(size_t i=(size_t)ENEMY_TYPE_WOLF; i<enemyType; ++i)
-		addItem( currentEnemy, itemDescriptions[rand()%getDescriptionCount(itemDescriptions)] );
+		addItem( currentEnemy, itemDescriptions[1+(rand()%(size(itemDescriptions)-1))] );
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
@@ -331,7 +331,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 	bool bUsedItem = false;
 	uint32_t indexItem = ~0U;
 	SItem itemDescription;
-	static const size_t inventorySize = size(user.Inventory)+1;
+	static const size_t inventorySize = size(user.Inventory);
 	if(0 == user.ItemCount)
 	{
 		printf("%s has no items in the inventory.", user.Name.c_str());
@@ -342,12 +342,12 @@ bool useItems(CCharacter& user, CCharacter& target)
 	{
 		while(true)
 		{
-			printf("- Type %u to close your inventory.\n", (uint32_t)(inventorySize));
+			printf("- Type %u to close your inventory.\n", (uint32_t)(inventorySize+1));
 			showInventory(user);
 
 			indexItem = (uint32_t)(getNumericInput()-1);
 
-			if(indexItem == (inventorySize-1)) // exit option
+			if(indexItem == inventorySize) // exit option
 				break;
 			else if(indexItem >= user.ItemCount)	// invalid index means it's an invalid option
 				printf("Invalid answer. Answer again...\n");

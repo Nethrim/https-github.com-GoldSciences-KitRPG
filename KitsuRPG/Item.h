@@ -28,7 +28,8 @@ struct SItem
 
 static const SItem itemDescriptions[] = 
 	// Type					Property				Grade	Price	Name
-{	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	1,	10	,	"Small HP Potion"				}
+{	{ITEM_TYPE_UNKNOWN	,	PROPERTY_TYPE_NONE		,	0,	0	,	"This item doesn't exist. Bug?"	}	// the invalid description should be always in the last element
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	1,	10	,	"Small HP Potion"				}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	2,	20	,	"HP Potion"						}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	3,	30	,	"Large HP Potion"				}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_STRENGTH	,	1,	10	,	"Small Strength Potion"			}
@@ -43,8 +44,4 @@ static const SItem itemDescriptions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	1,	10	,	"Small Needle Grenade"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	2,	20	,	"Needle Grenade"				}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	3,	30	,	"Large Needle Grenade"			}
-,	{ITEM_TYPE_UNKNOWN	,	PROPERTY_TYPE_NONE		,	0,	0	,	"This item doesn't exist. Bug?"	}	// the invalid description should be always in the last element
 };
-
-template<size_t _Size>
-static inline constexpr size_t getDescriptionCount(const SItem (&descriptionArray)[_Size]) { return size(descriptionArray)-1; }

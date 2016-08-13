@@ -56,22 +56,22 @@ void bar(CCharacter& adventurer)
 {
 	printf("\nDo you want to buy some drinks?\n\n");
 
-	static const size_t descriptionCount = getDescriptionCount(itemDescriptions);
+	static const size_t descriptionCount = size(itemDescriptions);
 	while (true)	// break the loop to leave the shop
 	{
 		printf("-- You have %u coins.\n", adventurer.Points.Coins);
-		printf("Type %u to leave the bar.\n\n", (uint32_t)(descriptionCount+1));
-		for(int i=0; i<descriptionCount; i++)	// Print available items
-			printf("%u: Buy %s for %u coins.\n", i+1, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
+		printf("Type %u to leave the bar.\n\n", (uint32_t)(descriptionCount));
+		for(int i=1; i<descriptionCount; i++)	// Print available items
+			printf("%u: Buy %s for %u coins.\n", i, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 		printf("\n");
 
-		const uint32_t indexItem = (uint32_t)(getNumericInput()-1);
+		const uint32_t indexItem = (uint32_t)getNumericInput();
 		
-		if( indexItem == descriptionCount ) {
+		if( indexItem == (descriptionCount) ) {
 			printf("You leave the bar.\n");
 			break;
 		}
-		else if(indexItem >= descriptionCount)
+		else if(indexItem > descriptionCount)
 			printf("You can't buy something that doesn't exist!\n");
 		else 
 		{
