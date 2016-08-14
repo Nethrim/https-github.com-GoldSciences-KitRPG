@@ -4,15 +4,24 @@
 bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, displays a list of the available items to use.
 
 // This function returns the damage dealt to the target
-int attack(const CCharacter& attacker, CCharacter& target)
+int attack(CCharacter& attacker, CCharacter& target)
 {
 	// Calculate success from the hit chance and apply damage to target or just print the miss message.
 	int32_t damageDealt = 0;
 
-	if ((rand() % 100) < (attacker.Points.Hit+attacker.CombatBonus.Points.Hit) )
+	SCharacterPoints attackerPoints = calculateFinalPoints(attacker.Points, weaponDefinitions[attacker.Weapon].Points, attacker.CombatBonus.Points);
+
+	if ((rand() % 100) < (attackerPoints.Hit) )
 	{
-		damageDealt = attacker.Points.Attack+attacker.CombatBonus.Points.Attack+(rand()%(attacker.Points.Attack/10+1));
-		target.Points.HP -= damageDealt;
+		damageDealt = attackerPoints.Attack+(rand()%((attackerPoints.Attack)/10+1));
+		target	.Points.HP		-= damageDealt;
+		attacker.Points.Coins	+= attackerPoints.Coins;
+		attacker.Points.HP		+= attackerPoints.HP;
+		attacker.Points.HP		= std::min(attacker.Points.HP, attacker.Points.MaxHP);
+		if(attackerPoints.Coins)
+			printf("%s gives %s %u Coins.\n", weaponDefinitions[attacker.Weapon].Name.c_str(), attacker.Name.c_str(), attackerPoints.Coins);
+		if(attackerPoints.HP)
+			printf("%s gives %s %u Health Points.\n", weaponDefinitions[attacker.Weapon].Name.c_str(), attacker.Name.c_str(), attackerPoints.HP);
 		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
 	}
 	else 
@@ -55,7 +64,7 @@ bool escape(const std::string& escaperName, SCharacterScore& escaperScore)
 	return false;
 }
 
-void determineOutcome(CCharacter& adventurer, CCharacter& enemy, ENEMY_TYPE enemyType)
+void determineOutcome(CCharacter& adventurer, CCharacter& enemy, uint32_t enemyType)
 {
 		// Determine the outcome of the battle and give rewards if applicable.
 	if (adventurer.Points.HP <= 0) 
@@ -75,6 +84,17 @@ void determineOutcome(CCharacter& adventurer, CCharacter& enemy, ENEMY_TYPE enem
 				else
 					printf("You can't pick up %s by %s because the inventory is full!\n", itemDescriptions[itemDrop.ItemIndex].Name.c_str(), enemy.Name.c_str());
 			}
+
+		if(enemy.Weapon > adventurer.Weapon)
+		{
+			if(rand()%2)
+			{
+				printf("You recover %s from %s.\n", weaponDefinitions[enemy.Weapon].Name.c_str(), enemy.Name.c_str());
+				adventurer.Weapon = enemy.Weapon;
+			}
+			else
+				printf("%s dropped by %s is too damaged to be recovered.\n", weaponDefinitions[enemy.Weapon].Name.c_str(), enemy.Name.c_str());
+		}
 
 		adventurer.Points.MaxHP += enemyType;
 
@@ -131,10 +151,13 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	};
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
+
+	SCharacterPoints playerPoints = calculateFinalPoints(adventurer.Points, weaponDefinitions[adventurer.Weapon].Points, adventurer.CombatBonus.Points);
+	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy.Points, weaponDefinitions[currentEnemy.Weapon].Points, currentEnemy.CombatBonus.Points);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", adventurer.Name.c_str(), adventurer.Points.HP+adventurer.CombatBonus.Points.HP, adventurer.Points.Hit+adventurer.CombatBonus.Points.Hit, adventurer.Points.Attack+adventurer.CombatBonus.Points.Attack);
-		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP+currentEnemy.CombatBonus.Points.HP, currentEnemy.Points.Hit+currentEnemy.CombatBonus.Points.Hit, currentEnemy.Points.Attack+currentEnemy.CombatBonus.Points.Attack);
+		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u. Weapon: %s.\n", adventurer.Name.c_str(), adventurer.Points.HP, playerPoints.Hit, playerPoints.Attack, weaponDefinitions[adventurer.Weapon].Name.c_str());
+		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u. Weapon: %s.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP, enemyPoints.Hit, enemyPoints.Attack,	weaponDefinitions[currentEnemy.Weapon].Name.c_str());
 
 		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);
@@ -147,7 +170,7 @@ TURN_ACTION resolveAI(CCharacter& enemy, CCharacter& adventurer)
 	TURN_ACTION action = TURN_ACTION_ATTACK;
 	if(enemy.Inventory.ItemCount)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
-	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%9))	// 11 % chance of escape attempt if health is less than 11%.
+	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%7))	// 11 % chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
 
 	return action;
@@ -171,13 +194,15 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 }
 
 //5736	// gasty.bellino@gmail.com
-void combat(CCharacter& adventurer, ENEMY_TYPE enemyType)
+void combat(CCharacter& adventurer, uint32_t enemyType)
 {
-	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
+	CCharacter currentEnemy = enemyDefinitions[enemyType];	// Request the enemy data.
 
 	addItem( currentEnemy.Inventory, 1 );
-	for(size_t i=(size_t)ENEMY_TYPE_WOLF; i<enemyType; ++i)
+	for(size_t i=1; i<enemyType; ++i)
 		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
+
+	currentEnemy.Weapon = rand()%size(weaponDefinitions);
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
@@ -367,7 +392,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 		// Only use potions if we have less than 80% HP
 		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Type
 			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Property
-			|| user.Points.HP < ((user.Points.MaxHP+user.CombatBonus.Points.MaxHP)*.8f)
+			|| user.Points.HP < ((user.Points.MaxHP+user.CombatBonus.Points.MaxHP)*.7f)
 			)
 			bUsedItem = true;
 	}

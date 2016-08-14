@@ -37,17 +37,15 @@ void mercenaryJob(CCharacter& adventurer)
 	jobOptions[size(enemyDefinitions)-1].ReturnValue	= size(enemyDefinitions);
 	jobOptions[size(enemyDefinitions)-1].Text			= "Back to tavern";
 
-	const ENEMY_TYPE enemyType = (ENEMY_TYPE)displayMenu("You decide to enroll for a mercenary job", jobOptions);
+	const uint32_t enemyType = displayMenu("You decide to enroll for a mercenary job", jobOptions);
 
 	// Set bCombat to true and the enemy type for executing the combat logic.
 	bool bCombat = false;
 
-	if(size(enemyDefinitions) == enemyType)	{ // This option cancels the loop which causes to exit to the tavern.
-		std::cout << "Welcome back, " << adventurer.Name << ".\n";
-		return;
-	}
+	if(size(enemyDefinitions) == enemyType)	// This option cancels the loop which causes to exit to the tavern.
+		printf("Welcome back, %s.\n", adventurer.Name.c_str());
 	else {
-		printf("You challenge a %s.\n", getEnemyDefinition(enemyType).Name.c_str()); 
+		printf("You challenge a %s.\n", enemyDefinitions[enemyType].Name.c_str()); 
 		combat(adventurer, enemyType);
 	}
 }

@@ -29,9 +29,13 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 	}
 }
 
-void showInventory(const CCharacter& adventurer)
+void showInventory(const SCharacter& adventurer)
 {
 	printf("\n-- Your inventory --\n");
+	if(adventurer.Weapon)
+		printf("-- You're carrying %s.\n", weaponDefinitions[adventurer.Weapon].Name.c_str());
+	else
+		printf("-- You're not carrying any weapons.\n");
 	printf("-- You look at your wallet and count %u coins.\n", adventurer.Points.Coins);
 	if(adventurer.Inventory.ItemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
@@ -39,5 +43,6 @@ void showInventory(const CCharacter& adventurer)
 			printf("%u: x%.2u %s.\n", i + 1, adventurer.Inventory.Slots[i].ItemCount, itemDescriptions[adventurer.Inventory.Slots[i].ItemIndex].Name.c_str());
 		printf("\n");
 	}
+
 }
 
