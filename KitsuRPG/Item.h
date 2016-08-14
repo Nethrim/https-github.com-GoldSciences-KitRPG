@@ -1,7 +1,10 @@
 #pragma once
 
 #include <string>
-   
+
+#ifndef __ITEM_H__98214809271346928734293846__
+#define __ITEM_H__98214809271346928734293846__
+
 enum ITEM_TYPE : unsigned int
 {	ITEM_TYPE_UNKNOWN	= 0
 ,	ITEM_TYPE_POTION
@@ -45,3 +48,5 @@ static const SItem itemDescriptions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	2,	20	,	"Needle Grenade"				}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	3,	30	,	"Large Needle Grenade"			}
 };
+
+#endif // __ITEM_H__98214809271346928734293846__

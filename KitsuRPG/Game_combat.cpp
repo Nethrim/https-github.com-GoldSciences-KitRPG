@@ -66,14 +66,14 @@ void determineOutcome(CCharacter& adventurer, CCharacter& enemy, ENEMY_TYPE enem
 		int drop = enemy.Points.Coins + (rand() % 20);
 		printf("\nThe enemy dropped %u coins!!\n", drop);
 		adventurer.Points.Coins = adventurer.Points.Coins + drop;
-		for(uint32_t i=0; i<enemy.ItemCount; i++) 
+		for(uint32_t i=0; i<enemy.Inventory.ItemCount; i++) 
 			if(rand()%2) 
 			{
-				const SInventorySlot& itemDrop = enemy.Inventory[i];
-				if(addItem(adventurer, itemDrop.Description))
-					printf("\nThe enemy dropped %s!!\n", itemDrop.Description.Name.c_str());
+				const SInventorySlot& itemDrop = enemy.Inventory.Slots[i];
+				if(addItem(adventurer.Inventory, itemDrop.ItemIndex))
+					printf("\nThe enemy dropped %s!!\n", itemDescriptions[itemDrop.ItemIndex].Name.c_str());
 				else
-					printf("You can't pick up %s by %s because the inventory is full!\n", itemDrop.Description.Name.c_str(), enemy.Name.c_str());
+					printf("You can't pick up %s by %s because the inventory is full!\n", itemDescriptions[itemDrop.ItemIndex].Name.c_str(), enemy.Name.c_str());
 			}
 
 		adventurer.Points.MaxHP += enemyType;
@@ -133,8 +133,8 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), adventurer.Points.HP, adventurer.Points.Hit, adventurer.Points.Attack);
-		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP, currentEnemy.Points.Hit, currentEnemy.Points.Attack);
+		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", adventurer.Name.c_str(), adventurer.Points.HP+adventurer.CombatBonus.Points.HP, adventurer.Points.Hit+adventurer.CombatBonus.Points.Hit, adventurer.Points.Attack+adventurer.CombatBonus.Points.Attack);
+		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP+currentEnemy.CombatBonus.Points.HP, currentEnemy.Points.Hit+currentEnemy.CombatBonus.Points.Hit, currentEnemy.Points.Attack+currentEnemy.CombatBonus.Points.Attack);
 
 		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);
@@ -145,7 +145,7 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 TURN_ACTION resolveAI(CCharacter& enemy, CCharacter& adventurer)
 {
 	TURN_ACTION action = TURN_ACTION_ATTACK;
-	if(enemy.ItemCount)
+	if(enemy.Inventory.ItemCount)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
 	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%9))	// 11 % chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
@@ -175,9 +175,9 @@ void combat(CCharacter& adventurer, ENEMY_TYPE enemyType)
 {
 	CCharacter currentEnemy = getEnemyDefinition(enemyType);	// Request the enemy data.
 
-	addItem( currentEnemy, itemDescriptions[1] );
+	addItem( currentEnemy.Inventory, 1 );
 	for(size_t i=(size_t)ENEMY_TYPE_WOLF; i<enemyType; ++i)
-		addItem( currentEnemy, itemDescriptions[1+(rand()%(size(itemDescriptions)-1))] );
+		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
@@ -298,7 +298,7 @@ void useGrenade(const SItem& itemDescription, CCharacter& thrower, CCharacter& t
 
 void executeItem(uint32_t indexItem, CCharacter& user, CCharacter& target) {
 
-	SItem& itemDescription = user.Inventory[indexItem].Description;
+	const SItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex];
 	std::string itemName = itemDescription.Name;
 	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
 	switch( itemDescription.Type )
@@ -315,12 +315,12 @@ void executeItem(uint32_t indexItem, CCharacter& user, CCharacter& target) {
 		printf("This item type does nothing yet... But we still remove it from your inventory!\n");
 	}
 
-	user.Inventory[indexItem].Count--;
-	if( user.Inventory[indexItem].Count )
-		printf("\n%s has %u %s left.\n", user.Name.c_str(), user.Inventory[indexItem].Count, itemName.c_str());
+	user.Inventory.Slots[indexItem].ItemCount--;
+	if( user.Inventory.Slots[indexItem].ItemCount )
+		printf("\n%s has %u %s left.\n", user.Name.c_str(), user.Inventory.Slots[indexItem].ItemCount, itemName.c_str());
 	else 
 	{
-		user.Inventory[indexItem] = user.Inventory[--user.ItemCount];
+		user.Inventory.Slots[indexItem] = user.Inventory.Slots[--user.Inventory.ItemCount];
 		printf("\n%s ran out of %s.\n", user.Name.c_str(), itemName.c_str());
 	}
 }
@@ -331,8 +331,8 @@ bool useItems(CCharacter& user, CCharacter& target)
 	bool bUsedItem = false;
 	uint32_t indexItem = ~0U;
 	SItem itemDescription;
-	static const size_t inventorySize = size(user.Inventory);
-	if(0 == user.ItemCount)
+	static const size_t inventorySize = size(user.Inventory.Slots);
+	if(0 == user.Inventory.ItemCount)
 	{
 		printf("%s has no items in the inventory.", user.Name.c_str());
 		return false;
@@ -349,9 +349,9 @@ bool useItems(CCharacter& user, CCharacter& target)
 
 			if(indexItem == inventorySize) // exit option
 				break;
-			else if(indexItem >= user.ItemCount)	// invalid index means it's an invalid option
+			else if(indexItem >= user.Inventory.ItemCount)	// invalid index means it's an invalid option
 				printf("Invalid answer. Answer again...\n");
-			else if (user.Inventory[indexItem].Count <= 0)
+			else if (user.Inventory.Slots[indexItem].ItemCount <= 0)
 				printf("You don't have anymore of that. Use something else...\n"); 
 			else {
 				// if we reached here it means that the input was valid so we select the description and exit the loop
@@ -362,11 +362,11 @@ bool useItems(CCharacter& user, CCharacter& target)
 	}
 	else // not a player so execute choice by AI
 	{
-		indexItem = (uint32_t)(rand() % user.ItemCount);	// this should be improved.
+		indexItem = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
 		
 		// Only use potions if we have less than 80% HP
-		if	 ( ITEM_TYPE_POTION != user.Inventory[indexItem].Description.Type
-			|| PROPERTY_TYPE_HEALTH != user.Inventory[indexItem].Description.Property
+		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Type
+			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Property
 			|| user.Points.HP < ((user.Points.MaxHP+user.CombatBonus.Points.MaxHP)*.8f)
 			)
 			bUsedItem = true;

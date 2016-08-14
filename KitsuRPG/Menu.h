@@ -22,7 +22,7 @@ int displayMenu(size_t optionCount, const std::string& title, const SMenuItem (&
 		printf(	"Make your selection:\n" );
 		
 		// Print menu options
-		for(int i=0; i<optionCount; i++)
+		for(size_t i=0; i<optionCount; i++)
 			printf("%u: %s.\n", i+1, menuItems[i].Text.c_str());	
 		
 		// Get user input

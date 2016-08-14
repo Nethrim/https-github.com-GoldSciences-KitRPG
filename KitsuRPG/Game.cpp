@@ -61,7 +61,7 @@ void bar(CCharacter& adventurer)
 	{
 		printf("-- You have %u coins.\n", adventurer.Points.Coins);
 		printf("Type %u to leave the bar.\n\n", (uint32_t)(descriptionCount));
-		for(int i=1; i<descriptionCount; i++)	// Print available items
+		for(size_t i=1; i<descriptionCount; i++)	// Print available items
 			printf("%u: Buy %s for %u coins.\n", i, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
 		printf("\n");
 
@@ -80,15 +80,14 @@ void bar(CCharacter& adventurer)
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy that! Choose something else...\n");
-			else if(addItem(adventurer, itemDescriptions[indexItem]))	// addItem() returns false if the inventory is full.
+			else if(addItem(adventurer.Inventory, indexItem))	// addItem() returns false if the inventory is full.
 			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemDescriptions[indexItem].Name.c_str());
-				adventurer.Points.Coins			-= itemPrice;
+				adventurer.Points.Coins		-= itemPrice;
 				adventurer.Score.MoneySpent	+= itemPrice;
 			}
 			else
 				printf("Not enough space in inventory!\n");
-
 		}
 	}
 	showInventory(adventurer);
@@ -113,26 +112,26 @@ void displayScore(const CCharacter& adventurer)
 	);
 
 	printf("\n-- Player statistics:\n\n"
-		"Battles Won         : %u\n"
-		"Turns Played        : %u\n"
+		"Battles Won         : %llu\n"
+		"Turns Played        : %llu\n"
 		"--------------------\n"
-		"Enemies Killed      : %u\n"
-		"Damage Dealt        : %u\n"
-		"Damage Taken        : %u\n"
+		"Enemies Killed      : %llu\n"
+		"Damage Dealt        : %llu\n"
+		"Damage Taken        : %llu\n"
 		"--------------------\n"
-		"Escapes Succeeded   : %u\n"
-		"Escapes Failed      : %u\n"
+		"Escapes Succeeded   : %llu\n"
+		"Escapes Failed      : %llu\n"
 		"--------------------\n"
-		"Money Earned        : %u\n"
-		"Money Spent         : %u\n"
+		"Money Earned        : %llu\n"
+		"Money Spent         : %llu\n"
 		"--------------------\n"
-		"Attacks Hit         : %u\n"
-		"Attacks Missed      : %u\n"
-		"Attacks Received    : %u\n"
-		"Attacks Avoided     : %u\n"
+		"Attacks Hit         : %llu\n"
+		"Attacks Missed      : %llu\n"
+		"Attacks Received    : %llu\n"
+		"Attacks Avoided     : %llu\n"
 		"--------------------\n"
-		"Potions Used        : %u\n"
-		"Grenades Used       : %u\n\n"
+		"Potions Used        : %llu\n"
+		"Grenades Used       : %llu\n\n"
 		, gameCounters.BattlesWon			
 		, gameCounters.TurnsPlayed			
 	

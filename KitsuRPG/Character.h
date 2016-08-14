@@ -4,33 +4,34 @@
 #include "Misc.h"
 
 // This struct holds a counter for every action that we want to record mostly for score purposes.
-struct SCharacterScore {
-	int BattlesWon			= 0;
-	int TurnsPlayed			= 0;
+struct SCharacterScore 
+{
+	uint64_t BattlesWon			= 0;
+	uint64_t TurnsPlayed		= 0;
 
-	int EnemiesKilled		= 0;
-	int DamageDealt			= 0;
-	int DamageTaken			= 0;
+	uint64_t EnemiesKilled		= 0;
+	uint64_t DamageDealt		= 0;
+	uint64_t DamageTaken		= 0;
 
-	int EscapesSucceeded	= 0;
-	int EscapesFailed		= 0;
+	uint64_t EscapesSucceeded	= 0;
+	uint64_t EscapesFailed		= 0;
 
-	int MoneyEarned			= 0;
-	int MoneySpent			= 0;
+	uint64_t MoneyEarned		= 0;
+	uint64_t MoneySpent			= 0;
 
-	int AttacksHit			= 0;
-	int AttacksMissed		= 0;
-	int AttacksReceived		= 0;
-	int AttacksAvoided		= 0;
+	uint64_t AttacksHit			= 0;
+	uint64_t AttacksMissed		= 0;
+	uint64_t AttacksReceived	= 0;
+	uint64_t AttacksAvoided		= 0;
 
-	int PotionsUsed			= 0;
-	int GrenadesUsed		= 0;
+	uint64_t PotionsUsed		= 0;
+	uint64_t GrenadesUsed		= 0;
 };
 
 struct SInventorySlot
 {
-	SItem		Description;
-	uint32_t	Count;
+	uint32_t	ItemIndex;
+	uint32_t	ItemCount;
 };
 
 enum CHARACTER_TYPE : unsigned int
@@ -52,8 +53,6 @@ struct SCharacterPoints
 
 typedef SCharacterPoints SBonusTurns;
 
-#define MAX_INVENTORY_SLOTS 8
-
 struct SCombatBonus
 {
 	SCharacterPoints	Points		= {0, 0, 0, 0, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
@@ -68,19 +67,25 @@ struct SCombatBonus
 	};
 };
 
+#define MAX_INVENTORY_SLOTS 9
+struct SCharacterInventory
+{
+	uint32_t			ItemCount					= 0;
+	SInventorySlot		Slots[MAX_INVENTORY_SLOTS]	= {};
+};
+
 class CCharacter
 {
 public:
 	CHARACTER_TYPE		Type							= CHARACTER_TYPE_UNKNOWN;
-	SCharacterPoints	Points							= {10, 10, 1, 50, 50};	// These are the base character points.
+	SCharacterPoints	Points							= {10, 10, 50, 1, 10};	// These are the base character points.
 	std::string			Name							= "Unnamed";
-	uint32_t			ItemCount						= 0;
-	SInventorySlot		Inventory[MAX_INVENTORY_SLOTS]	= {};
 	SCombatBonus		CombatBonus						= {};
-	SCharacterScore		Score							= {};			
+	SCharacterInventory	Inventory						= {};
+	SCharacterScore		Score							= {};	
 
 	CCharacter() = default;
-	CCharacter(CHARACTER_TYPE characterType, int maxHP, int attack, int hitChance, int coins, const std::string& name)
+	CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, const std::string& name)
 		:Type(characterType)
 		,Points({maxHP, maxHP, hitChance, attack, coins})
 		,Name(name)
@@ -88,5 +93,5 @@ public:
 };
 
 void rest(SCharacterPoints& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
-bool addItem(CCharacter& adventurer, const SItem& itemDescription);
+bool addItem(SCharacterInventory& adventurer, uint32_t itemIndex);
 void showInventory(const CCharacter& adventurer);
