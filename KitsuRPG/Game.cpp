@@ -22,20 +22,20 @@ void tavern(CCharacter& adventurer)
 		else if( 3 == tavernChoice )	{	bar(adventurer);			}	// Go to the shop and ask again for action once it's done.
 		else if( 4 == tavernChoice )	{	showInventory(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
 		else if( 5 == tavernChoice )	{	displayScore(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if( 6 == tavernChoice )	{	break;									}	// Exit the main loop, which effectively closes the game.
+		else if( 6 == tavernChoice )	{	break;						}	// Exit the main loop, which effectively closes the game.
 	}
 }
 
 void mercenaryJob(CCharacter& adventurer)
 {
-	static const SMenuItem jobOptions[] =
-	{ { ENEMY_TYPE_WOLF,					"Easy Job"				}
-	, { ENEMY_TYPE_RAIDER,					"Medium Job"			}
-	, { ENEMY_TYPE_SOLDIER,					"Hard Job"				}
-	, { ENEMY_TYPE_KNIGHT,					"Very Hard Job"			}
-	, { ENEMY_TYPE_DRAGON,					"Nightmare Job"			}
-	, { (uint32_t)size(enemyDefinitions),	"Back to the tavern"	}
-	};
+	SMenuItem jobOptions[size(enemyDefinitions)];
+	for(uint32_t i=0, count = size(enemyDefinitions)-1; i<count; ++i)
+	{
+		jobOptions[i].ReturnValue	= i+1;
+		jobOptions[i].Text			= "Level " + std::to_string(i+1);
+	}
+	jobOptions[size(enemyDefinitions)-1].ReturnValue	= size(enemyDefinitions);
+	jobOptions[size(enemyDefinitions)-1].Text			= "Back to tavern";
 
 	const ENEMY_TYPE enemyType = (ENEMY_TYPE)displayMenu("You decide to enroll for a mercenary job", jobOptions);
 

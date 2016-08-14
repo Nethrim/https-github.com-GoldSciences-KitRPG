@@ -4,7 +4,7 @@
 #include <iostream>
 
 template <typename _T, size_t _Size> 
-size_t size(const _T (&staticArray)[_Size]) { return _Size; }
+inline constexpr size_t size(const _T (&staticArray)[_Size]) { return _Size; }
 
 static int64_t getNumericInput()
 {

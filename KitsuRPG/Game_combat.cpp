@@ -220,14 +220,14 @@ void usePotion(const SItem& itemDescription, CCharacter& potionDrinker)
 	case PROPERTY_TYPE_STRENGTH:
 		printf("%s starts feeling stronger...\n", drinkerName.c_str());
 		itemEffectValue = 3*itemGrade;
-		itemEffectValue += 3+(rand()%itemGrade);
+		itemEffectValue += rand()%(itemGrade*2);
 		drinkerBonus.Points.Attack		+= itemEffectValue;
 		drinkerBonus.TurnsLeft.Attack	+= 1+itemGrade;
 		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), drinkerPoints.Attack+drinkerBonus.Points.Attack, drinkerBonus.TurnsLeft.Attack-1);
 		break;
 	case PROPERTY_TYPE_HIT:
 		printf("%s starts feeling faster...\n", drinkerName.c_str());
-		itemEffectValue = 5*itemGrade;
+		itemEffectValue = 10*itemGrade;
 		itemEffectValue += ((rand()%itemGrade)+1)*5;
 		drinkerBonus.Points.Hit		+= itemEffectValue;
 		drinkerBonus.TurnsLeft.Hit	+= 1+itemGrade;
