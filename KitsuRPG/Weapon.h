@@ -1,31 +1,9 @@
-#pragma once
+#include "GameBase.h"
 
 #include <string>
 
-enum STATUS_TYPE
-{	STATUS_TYPE_NONE
-,	STATUS_TYPE_BLEEDING
-,	STATUS_TYPE_STUN
-,	STATUS_TYPE_BLIND
-};
-
-struct SCharacterPoints
-{
-	int	MaxHP	;
-	int	HP		;
-	int	Hit		;
-	int	Attack	;
-	int	Coins	;
-
-	void Print()
-	{
-		printf("MaxHP   : %u.\n",	MaxHP	);
-		printf("HP      : %u.\n",	HP		);
-		printf("Hit     : %u.\n",	Hit		);
-		printf("Attack  : %u.\n",	Attack	);
-		printf("Coins   : %u.\n",	Coins	);
-	};
-};
+#ifndef __WEAPON_H__928364890236498716349825347895236__
+#define __WEAPON_H__928364890236498716349825347895236__
 
 struct SWeapon
 {
@@ -87,3 +65,5 @@ static const SWeapon weaponDefinitions[] =
 ,	{	{	10,	2,	0,		8,	0},	STATUS_TYPE_BLIND		,	"Zeus' Staff"				}
 ,	{	{	10,	2,	0,		8,	0},	STATUS_TYPE_BLEEDING	,	"Anhur's Spear"				}
 };
+
+#endif // __WEAPON_H__928364890236498716349825347895236__

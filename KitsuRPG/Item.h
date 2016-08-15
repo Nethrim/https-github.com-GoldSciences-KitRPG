@@ -1,5 +1,3 @@
-#pragma once
-
 #include <string>
 
 #ifndef __ITEM_H__98214809271346928734293846__

@@ -1,4 +1,9 @@
 #include "Game.h"
+
+#include "Weapon.h"
+#include "Item.h"
+#include "Enemy.h"
+
 #include "Menu.h"
 
 bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, displays a list of the available items to use.

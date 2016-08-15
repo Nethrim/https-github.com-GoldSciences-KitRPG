@@ -1,7 +1,8 @@
-#pragma once
-
 #include <string>
 #include <iostream>
+
+#ifndef __MISC_H__982143092634987160987328097642398__
+#define __MISC_H__982143092634987160987328097642398__
 
 template <typename _T, size_t _Size> 
 inline constexpr size_t size(const _T (&staticArray)[_Size]) { return _Size; }
@@ -19,3 +20,5 @@ static int64_t getNumericInput()
 
 	return selectedOption;
 }
+
+#endif // __MISC_H__982143092634987160987328097642398__

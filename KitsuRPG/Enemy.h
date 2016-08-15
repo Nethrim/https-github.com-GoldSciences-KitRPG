@@ -1,6 +1,7 @@
-#pragma once
-
 #include "Character.h"
+
+#ifndef __ENEMY_H__923409234902364897234__
+#define __ENEMY_H__923409234902364897234__
 
 static const CCharacter enemyDefinitions[] =	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,		1,		"Unknown"	}
 												,	{CHARACTER_TYPE_ENEMY,	10,		50,		1,		10,		"Wolf"		} //type, MaxHP, HitChance, Atk, dropCoins, name.
@@ -18,12 +19,4 @@ static const CCharacter enemyDefinitions[] =	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,
 												,	{CHARACTER_TYPE_ENEMY,	300,	70,		30,		250,	"Death"		} //type, MaxHP, HitChance, Atk, dropCoins, name.
 												};
 
-static const CCharacter& getEnemyDefinition(uint32_t enemyType)
-{
-	static const CCharacter invalidEnemy	(CHARACTER_TYPE_ENEMY, 250+(rand()%50), 70+(rand()%5), 40+(rand()%20), 100+(rand()%20), "1nd3x 32202 (a character that spawns due to a bug)");
-
-	if(enemyType >= size(enemyDefinitions) )
-		return invalidEnemy;
-	else 
-		return enemyDefinitions[enemyType];
-}
+#endif // __ENEMY_H__923409234902364897234__

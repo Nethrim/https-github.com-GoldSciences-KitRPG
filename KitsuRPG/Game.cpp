@@ -1,4 +1,8 @@
 #include "Game.h"
+
+#include "Item.h"
+#include "Enemy.h"
+
 #include "Menu.h"
 
 void tavern(CCharacter& adventurer)

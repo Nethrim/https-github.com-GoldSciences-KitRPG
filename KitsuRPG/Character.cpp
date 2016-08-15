@@ -1,5 +1,11 @@
 #include "Character.h"
 
+#include "Weapon.h"
+#include "Item.h"
+#include "Misc.h"
+
+#include <algorithm>
+
 void rest(CCharacter& character)
 {
 	SCharacterPoints finalPoints = calculateFinalPoints(character);
@@ -29,6 +35,20 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 		return true;
 	}
 }
+
+SCharacterPoints calculateFinalPoints(const CCharacter& character)
+{
+	SCharacterPoints result;
+	const SWeapon& weaponDefinition = weaponDefinitions[character.Weapon];
+
+	result.MaxHP	= character.Points.MaxHP			+	weaponDefinition.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	;
+	result.HP		=										weaponDefinition.Points.HP		+	character.CombatBonus.Points.HP		;
+	result.Hit		= character.Points.Hit				+	weaponDefinition.Points.Hit		+	character.CombatBonus.Points.Hit	;
+	result.Attack	= character.Points.Attack			+	weaponDefinition.Points.Attack	+	character.CombatBonus.Points.Attack	;
+	result.Coins	=										weaponDefinition.Points.Coins	+	character.CombatBonus.Points.Coins	;
+
+	return result;
+};
 
 bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount)
 {
