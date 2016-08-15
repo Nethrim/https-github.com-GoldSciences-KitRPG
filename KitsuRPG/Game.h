@@ -6,7 +6,7 @@ class CGame
 {
 public:
 								//CharacterType			MaxHP	HitChance,	ATk, Coins,		Name.
-	CCharacter		Adventurer = {CHARACTER_TYPE_PLAYER,	10,		50,		1,		100,	"Anonymous"}; 
+	CCharacter		Adventurer; // = {CHARACTER_TYPE_PLAYER,	10,		50,		1,		100,	"Anonymous"}; 
 };
 
 void tavern(CCharacter& adventurer);							// Main loop of the game. From there the player can choose to go shopping, fighting or take a nap to recover HP.

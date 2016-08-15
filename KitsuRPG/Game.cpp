@@ -17,7 +17,7 @@ void tavern(CCharacter& adventurer)
 	{
 		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
-			 if( 1 == tavernChoice )	{	rest(adventurer.Points);	}	// Rest and ask again for the action.
+			 if( 1 == tavernChoice )	{	rest(adventurer);			}	// Rest and ask again for the action.
 		else if( 2 == tavernChoice )	{	mercenaryJob(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
 		else if( 3 == tavernChoice )	{	bar(adventurer);			}	// Go to the shop and ask again for action once it's done.
 		else if( 4 == tavernChoice )	{	showInventory(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
@@ -95,6 +95,7 @@ void displayScore(const CCharacter& adventurer)
 {
 	const SCharacterPoints& points = adventurer.Points;
 	const SCharacterScore& gameCounters = adventurer.Score;
+	const SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 
 	printf("\n-- Player points:\n\n"
 		"Max HP     : %u.\n"
@@ -102,10 +103,10 @@ void displayScore(const CCharacter& adventurer)
 		"Attack     : %u.\n"
 		"Hit chance : %u.\n"
 		"Coins      : %u.\n"
-		, points.MaxHP     
+		, finalPoints.MaxHP     
 		, std::max(points.HP, 0)
-		, points.Attack     
-		, points.Hit
+		, finalPoints.Attack     
+		, finalPoints.Hit
 		, points.Coins		
 	);
 

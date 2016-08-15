@@ -62,12 +62,28 @@ struct SCombatBonus
 	};
 };
 
-#define MAX_COMBAT_STATUS	32
+#define MAX_COMBAT_STATUS	16
 
 struct SCombatStatus
 {
-	STATUS_TYPE			Status	[MAX_COMBAT_STATUS]	= {};
-	int					Counter	[MAX_COMBAT_STATUS]	= {};
+	uint32_t			Count	= 0;
+	STATUS_TYPE			Status		[MAX_COMBAT_STATUS]	= {};
+	int					TurnsLeft	[MAX_COMBAT_STATUS]	= {};
+	int					GetStatusTurns(STATUS_TYPE status)
+	{
+		for(uint32_t i=0; i<Count; ++i)
+			if(Status[i] == status)
+				return TurnsLeft[i];
+		return 0;
+	};
+	void				NextTurn() {
+		for( uint32_t i=0; i<Count; ++i)
+			if(TurnsLeft[i] && 0 == --TurnsLeft[i])
+			{
+				Status		[i]	=	Status		[--Count];
+				TurnsLeft	[i]	=	TurnsLeft	[Count];
+			}
+	};
 };
 
 #define MAX_INVENTORY_SLOTS 9
@@ -100,35 +116,8 @@ struct SCharacter
 		,Weapon			(0)
 	{};
 
-	int		Save(FILE* fp)	const
-	{	
-		if(0 == fp) {	
-			printf("Cannot save to file!"	); 
-			return -1; 
-		}	
-		if( 1 != fwrite	(this, sizeof(SCharacter), 1, fp) )				
-		{ 
-			printf( "Cannot save to file!"	); 
-			return -1; 
-		}; 
-		return 0; 
-	};
-
-	int		Load(FILE* fp)	{	
-		if(0 == fp) {	
-			printf("Cannot load from file!"	); 
-			return -1; 
-		} 
-		
-		SCharacter loadedCharacter; 
-		if( 1 != fread	(&loadedCharacter, sizeof(SCharacter), 1, fp) ) { 
-			printf( "Cannot load from file!"	); 
-			return -1; 
-		}; 
-		
-		*this = loadedCharacter; 
-		return 0; 
-	};
+	int		Save(FILE* fp)	const;
+	int		Load(FILE* fp);
 };
 
 #pragma pack(pop)
@@ -144,59 +133,27 @@ public:
 		,Name		(name)
 		{};
 
-	int		Save(FILE* fp)	const 
-	{	
-		SCharacter::Save(fp);
-		uint8_t nameLen = (uint8_t)Name.size();
-		if( 1 != fwrite(&nameLen, 1, 1, fp) )
-		{
-			printf("Failed to save character data!");
-			return -1;
-		}
-		if(nameLen)
-			if( 1 != fwrite(Name.c_str(), 1, nameLen, fp) )
-			{
-				printf("Failed to load character name!");
-				return -1;
-			}
-		return 0; 
-	};
-
-	int		Load(FILE* fp)	{	
-		SCharacter::Load(fp); 
-		uint8_t nameLen = 0;
-		if( 1 != fread(&nameLen, 1, 1, fp) )
-		{
-			printf("Failed to load character data!");
-			return -1;
-		}
-		char name[128] = {0,};
-		if(nameLen)
-			if( 1 != fread(name, 1, std::min(nameLen, (uint8_t)127), fp) )
-			{
-				printf("Failed to load character name!");
-				return -1;
-			}
-		Name = name;
-		return 0; 
-	};
+	int		Save(FILE* fp)	const;
+	int		Load(FILE* fp);
 };
 
 
 
-static SCharacterPoints calculateFinalPoints(const SCharacterPoints& basePoints, const SCharacterPoints& weaponBonusPoints, const SCharacterPoints& turnBonusPoints)
+static SCharacterPoints calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result;
+	const SWeapon& weaponDefinition = weaponDefinitions[character.Weapon];
 
-	result.MaxHP	= basePoints.MaxHP			+	weaponBonusPoints.MaxHP		+turnBonusPoints.MaxHP	;
-	result.HP		= weaponBonusPoints.HP		+	turnBonusPoints.HP;
-	result.Hit		= basePoints.Hit			+	weaponBonusPoints.Hit		+turnBonusPoints.Hit	;
-	result.Attack	= basePoints.Attack			+	weaponBonusPoints.Attack	+turnBonusPoints.Attack	;
-	result.Coins	= weaponBonusPoints.Coins	+	turnBonusPoints.Coins;
+	result.MaxHP	= character.Points.MaxHP			+	weaponDefinition.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	;
+	result.HP		=										weaponDefinition.Points.HP		+	character.CombatBonus.Points.HP		;
+	result.Hit		= character.Points.Hit				+	weaponDefinition.Points.Hit		+	character.CombatBonus.Points.Hit	;
+	result.Attack	= character.Points.Attack			+	weaponDefinition.Points.Attack	+	character.CombatBonus.Points.Attack	;
+	result.Coins	=										weaponDefinition.Points.Coins	+	character.CombatBonus.Points.Coins	;
 
 	return result;
 };
 
-void rest(SCharacterPoints& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
 bool addItem(SCharacterInventory& adventurer, uint32_t itemIndex);
+bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount);
+void rest(CCharacter& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
 void showInventory(const SCharacter& adventurer);

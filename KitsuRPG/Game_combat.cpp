@@ -8,20 +8,43 @@ int attack(CCharacter& attacker, CCharacter& target)
 {
 	// Calculate success from the hit chance and apply damage to target or just print the miss message.
 	int32_t damageDealt = 0;
+	const SWeapon& weaponDefinition = weaponDefinitions[attacker.Weapon];
 
-	SCharacterPoints attackerPoints = calculateFinalPoints(attacker.Points, weaponDefinitions[attacker.Weapon].Points, attacker.CombatBonus.Points);
+	SCharacterPoints attackerPoints = calculateFinalPoints(attacker);
 
-	if ((rand() % 100) < (attackerPoints.Hit) )
+	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND) > 0;
+	if(bIsBlind)
+		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Hit/2);
+
+	if ((rand() % 100) < (bIsBlind ? attackerPoints.Hit/2 : attackerPoints.Hit) )
 	{
 		damageDealt = attackerPoints.Attack+(rand()%((attackerPoints.Attack)/10+1));
 		target	.Points.HP		-= damageDealt;
 		attacker.Points.Coins	+= attackerPoints.Coins;
 		attacker.Points.HP		+= attackerPoints.HP;
-		attacker.Points.HP		= std::min(attacker.Points.HP, attacker.Points.MaxHP);
+		attacker.Points.HP		= std::min(attacker.Points.HP, attackerPoints.MaxHP);
+		if(weaponDefinition.Status)
+		{
+			if(rand()%2)
+			{
+				std::string text;
+				int turns=1;
+				switch(weaponDefinition.Status)
+				{
+				default: text = "An unknown effect was applied to %s for %u turns.\n";break;
+				case STATUS_TYPE_STUN:		turns = 2; text = "%s will be stunned for the next %u turns.\n"	;break;
+				case STATUS_TYPE_BLIND:		turns = 2; text = "%s will be blind for the next %u turns.\n"	;break;
+				case STATUS_TYPE_BLEEDING:	turns = 2; text = "%s will bleed for the next %u turns.\n"		;break;
+				}
+				printf(text.c_str(), target.Name.c_str(), turns-1);
+				addStatus(target.CombatStatus, weaponDefinition.Status, 1);
+			}
+		}
+
 		if(attackerPoints.Coins)
-			printf("%s gives %s %u Coins.\n", weaponDefinitions[attacker.Weapon].Name.c_str(), attacker.Name.c_str(), attackerPoints.Coins);
+			printf("%s gives %s %u Coins.\n", weaponDefinition.Name.c_str(), attacker.Name.c_str(), attackerPoints.Coins);
 		if(attackerPoints.HP)
-			printf("%s gives %s %u Health Points.\n", weaponDefinitions[attacker.Weapon].Name.c_str(), attacker.Name.c_str(), attackerPoints.HP);
+			printf("%s gives %s %u Health Points.\n", weaponDefinition.Name.c_str(), attacker.Name.c_str(), attackerPoints.HP);
 		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
 	}
 	else 
@@ -116,6 +139,20 @@ enum TURN_OUTCOME
 ,	TURN_OUTCOME_CANCEL
 };
 
+void applyTurnStatus(CCharacter& character)
+{
+	int amount=0;
+	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
+	{
+		switch(character.CombatStatus.Status[i])
+		{
+		case STATUS_TYPE_BLEEDING:	amount = std::max(1, character.Points.MaxHP/20); character.Points.HP -= amount; printf("%s is bleeding and loses %u HP.\n", character.Name.c_str(), amount); break;
+		//case STATUS_TYPE_STUN:		break;
+		//case STATUS_TYPE_BLIND:		break;
+		}
+	}
+};
+
 TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CCharacter& target)
 {
 	// If the action is valid then we execute it and break the current while() so the attack turn executes.
@@ -131,15 +168,25 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
-	if(outcome != TURN_OUTCOME_CONTINUE) 
-	{
-		if(outcome == TURN_OUTCOME_ESCAPE)
-			attacker.CombatBonus = {};
-		else
-			attacker.CombatBonus.NextTurn();
+	if(outcome != TURN_OUTCOME_CONTINUE) {
+		if(outcome != TURN_OUTCOME_ESCAPE)
+			applyTurnStatus(attacker);
+		attacker.CombatBonus.NextTurn();
+		attacker.CombatStatus.NextTurn();
 	}
 
 	return outcome;
+}
+
+void printStatuses(const CCharacter& character)
+{
+	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
+		switch(character.CombatStatus.Status[i])
+		{
+		case STATUS_TYPE_BLIND:		printf("%s is blind for the next %u turn(s).\n"		, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
+		case STATUS_TYPE_BLEEDING:	printf("%s is bleeding for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
+		case STATUS_TYPE_STUN:		printf("%s is stunned for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
+		}
 }
 
 TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
@@ -152,12 +199,14 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 
-	SCharacterPoints playerPoints = calculateFinalPoints(adventurer.Points, weaponDefinitions[adventurer.Weapon].Points, adventurer.CombatBonus.Points);
-	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy.Points, weaponDefinitions[currentEnemy.Weapon].Points, currentEnemy.CombatBonus.Points);
+	SCharacterPoints playerPoints = calculateFinalPoints(adventurer);
+	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s HP is: %u. Hit Chance: %u. Attack: %u. Weapon: %s.\n", adventurer.Name.c_str(), adventurer.Points.HP, playerPoints.Hit, playerPoints.Attack, weaponDefinitions[adventurer.Weapon].Name.c_str());
-		printf("-- %s HP is: %u. Hit Chance: %u. Attack: %u. Weapon: %s.\n", currentEnemy.Name.c_str(), currentEnemy.Points.HP, enemyPoints.Hit, enemyPoints.Attack,	weaponDefinitions[currentEnemy.Weapon].Name.c_str());
+		printf("\n-- %s HP is: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\n",	  adventurer	.Name.c_str(), adventurer	.Points.HP,	 playerPoints	.Hit, playerPoints	.Attack,	adventurer		.CombatBonus.TurnsLeft.Hit,adventurer	.CombatBonus.TurnsLeft.Attack,	weaponDefinitions[adventurer	.Weapon].Name.c_str());
+		printStatuses(adventurer);
+		printf("\n-- %s HP is: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\n",	  currentEnemy	.Name.c_str(), currentEnemy	.Points.HP,	 enemyPoints	.Hit, enemyPoints	.Attack,	currentEnemy	.CombatBonus.TurnsLeft.Hit,currentEnemy	.CombatBonus.TurnsLeft.Attack,	weaponDefinitions[currentEnemy	.Weapon].Name.c_str());
+		printStatuses(currentEnemy);
 
 		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);
@@ -193,16 +242,24 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 	return true;
 }
 
+void setupEnemy(CCharacter& currentEnemy, uint32_t enemyType)
+{
+	addItem( currentEnemy.Inventory, 1 );
+	for(uint32_t i=1; i<enemyType; ++i)
+		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
+
+	currentEnemy.Weapon = std::min(rand()%(enemyType*4), size(weaponDefinitions)-1);
+	SCharacterPoints finalEnemyPoints = calculateFinalPoints(currentEnemy);
+	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
+}
+
 //5736	// gasty.bellino@gmail.com
 void combat(CCharacter& adventurer, uint32_t enemyType)
 {
 	CCharacter currentEnemy = enemyDefinitions[enemyType];	// Request the enemy data.
+	setupEnemy(currentEnemy, enemyType);
 
-	addItem( currentEnemy.Inventory, 1 );
-	for(size_t i=1; i<enemyType; ++i)
-		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
-
-	currentEnemy.Weapon = rand()%size(weaponDefinitions);
+	adventurer.CombatStatus.Count = 0;	// We need to clear the combat status before starting the combat.
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
@@ -210,12 +267,31 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
 
-		turnOutcome = playerTurn(adventurer, currentEnemy);
+		if(adventurer.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
+		{
+			printf("%s is stunned and loses his turn!\n", adventurer.Name.c_str());
+			turnOutcome = TURN_OUTCOME_CANCEL;
+			applyTurnStatus(adventurer);
+			adventurer.CombatStatus.NextTurn();
+			adventurer.CombatBonus.NextTurn();
+		}
+		else
+			turnOutcome = playerTurn(adventurer, currentEnemy);
+
 		if(!combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))
 			break;
 
 		// Execute enemy attack turn
-		turnOutcome = enemyTurn(currentEnemy, adventurer);
+		if(currentEnemy.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
+		{
+			printf("%s is stunned and loses his turn!\n", currentEnemy.Name.c_str());
+			turnOutcome = TURN_OUTCOME_CANCEL;
+			applyTurnStatus(currentEnemy);
+			currentEnemy.CombatStatus.NextTurn();
+			currentEnemy.CombatBonus.NextTurn();
+		}
+		else
+			turnOutcome = enemyTurn(currentEnemy, adventurer);
 	} 
 
 	determineOutcome(adventurer, currentEnemy, enemyType);
@@ -224,22 +300,22 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 void usePotion(const SItem& itemDescription, CCharacter& potionDrinker) 
 {
 	int itemEffectValue;
-	int totalMaxHP=potionDrinker.Points.MaxHP+potionDrinker.CombatBonus.Points.MaxHP;
 	const int itemGrade = std::max(1, itemDescription.Grade);
 	
 	const std::string& drinkerName	= potionDrinker.Name;
 	SCharacterPoints& drinkerPoints	= potionDrinker.Points;
 	SCombatBonus& drinkerBonus		= potionDrinker.CombatBonus;
-	
+	SCharacterPoints finalPoints;
 
 	switch(itemDescription.Property)
 	{
 	case PROPERTY_TYPE_HEALTH:
 		printf("%s starts feeling better...\n", drinkerName.c_str());
-		itemEffectValue = (totalMaxHP/5+1)+(rand()%(totalMaxHP/10));
+		finalPoints = calculateFinalPoints(potionDrinker);
+		itemEffectValue = (finalPoints.MaxHP/5+1)+(rand()%(finalPoints.MaxHP/10));
 		itemEffectValue *= itemDescription.Grade;
 		drinkerPoints.HP += itemEffectValue;
-		drinkerPoints.HP = std::min(drinkerPoints.HP, totalMaxHP);
+		drinkerPoints.HP = std::min(drinkerPoints.HP, finalPoints.MaxHP);
 		printf("The potion heals %s for %u! %s now has %u HP.\n", drinkerName.c_str(), itemEffectValue, drinkerName.c_str(), drinkerPoints.HP);
 		break;
 	case PROPERTY_TYPE_STRENGTH:
@@ -247,16 +323,22 @@ void usePotion(const SItem& itemDescription, CCharacter& potionDrinker)
 		itemEffectValue = 3*itemGrade;
 		itemEffectValue += rand()%(itemGrade*2);
 		drinkerBonus.Points.Attack		+= itemEffectValue;
-		drinkerBonus.TurnsLeft.Attack	+= 1+itemGrade;
-		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), drinkerPoints.Attack+drinkerBonus.Points.Attack, drinkerBonus.TurnsLeft.Attack-1);
+		if(0 == drinkerBonus.TurnsLeft.Attack)
+			drinkerBonus.TurnsLeft.Attack = 1;
+		drinkerBonus.TurnsLeft.Attack	+= itemGrade;
+		finalPoints = calculateFinalPoints(potionDrinker);
+		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack, drinkerBonus.TurnsLeft.Attack-1);
 		break;
 	case PROPERTY_TYPE_HIT:
 		printf("%s starts feeling faster...\n", drinkerName.c_str());
 		itemEffectValue = 10*itemGrade;
 		itemEffectValue += ((rand()%itemGrade)+1)*5;
 		drinkerBonus.Points.Hit		+= itemEffectValue;
-		drinkerBonus.TurnsLeft.Hit	+= 1+itemGrade;
-		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), drinkerPoints.Hit+drinkerBonus.Points.Hit, drinkerBonus.TurnsLeft.Hit-1);
+		if(0 == drinkerBonus.TurnsLeft.Hit)
+			drinkerBonus.TurnsLeft.Hit = 1;
+		drinkerBonus.TurnsLeft.Hit	+= itemGrade;
+		finalPoints = calculateFinalPoints(potionDrinker);
+		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Hit, drinkerBonus.TurnsLeft.Hit-1);
 		break;
 	default:
 		printf("Potion type not implemented!");
@@ -321,9 +403,9 @@ void useGrenade(const SItem& itemDescription, CCharacter& thrower, CCharacter& t
 	thrower.Score.GrenadesUsed++;
 }
 
-void executeItem(uint32_t indexItem, CCharacter& user, CCharacter& target) {
+void executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) {
 
-	const SItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex];
+	const SItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex];
 	std::string itemName = itemDescription.Name;
 	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
 	switch( itemDescription.Type )
@@ -340,12 +422,12 @@ void executeItem(uint32_t indexItem, CCharacter& user, CCharacter& target) {
 		printf("This item type does nothing yet... But we still remove it from your inventory!\n");
 	}
 
-	user.Inventory.Slots[indexItem].ItemCount--;
-	if( user.Inventory.Slots[indexItem].ItemCount )
-		printf("\n%s has %u %s left.\n", user.Name.c_str(), user.Inventory.Slots[indexItem].ItemCount, itemName.c_str());
+	user.Inventory.Slots[indexInventory].ItemCount--;
+	if( user.Inventory.Slots[indexInventory].ItemCount )
+		printf("\n%s has %u %s left.\n", user.Name.c_str(), user.Inventory.Slots[indexInventory].ItemCount, itemName.c_str());
 	else 
 	{
-		user.Inventory.Slots[indexItem] = user.Inventory.Slots[--user.Inventory.ItemCount];
+		user.Inventory.Slots[indexInventory] = user.Inventory.Slots[--user.Inventory.ItemCount];
 		printf("\n%s ran out of %s.\n", user.Name.c_str(), itemName.c_str());
 	}
 }
@@ -354,7 +436,7 @@ void executeItem(uint32_t indexItem, CCharacter& user, CCharacter& target) {
 bool useItems(CCharacter& user, CCharacter& target)
 {
 	bool bUsedItem = false;
-	uint32_t indexItem = ~0U;
+	uint32_t indexInventory = ~0U;
 	SItem itemDescription;
 	static const size_t inventorySize = size(user.Inventory.Slots);
 	if(0 == user.Inventory.ItemCount)
@@ -370,13 +452,13 @@ bool useItems(CCharacter& user, CCharacter& target)
 			printf("- Type %u to close your inventory.\n", (uint32_t)(inventorySize+1));
 			showInventory(user);
 
-			indexItem = (uint32_t)(getNumericInput()-1);
+			indexInventory = (uint32_t)(getNumericInput()-1);
 
-			if(indexItem == inventorySize) // exit option
+			if(indexInventory == inventorySize) // exit option
 				break;
-			else if(indexItem >= user.Inventory.ItemCount)	// invalid index means it's an invalid option
+			else if(indexInventory >= user.Inventory.ItemCount)	// invalid index means it's an invalid option
 				printf("Invalid answer. Answer again...\n");
-			else if (user.Inventory.Slots[indexItem].ItemCount <= 0)
+			else if (user.Inventory.Slots[indexInventory].ItemCount <= 0)
 				printf("You don't have anymore of that. Use something else...\n"); 
 			else {
 				// if we reached here it means that the input was valid so we select the description and exit the loop
@@ -387,18 +469,31 @@ bool useItems(CCharacter& user, CCharacter& target)
 	}
 	else // not a player so execute choice by AI
 	{
-		indexItem = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
+		indexInventory = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
 		
 		// Only use potions if we have less than 80% HP
-		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Type
-			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexItem].ItemIndex].Property
+		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Type
+			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Property
 			|| user.Points.HP < ((user.Points.MaxHP+user.CombatBonus.Points.MaxHP)*.7f)
 			)
 			bUsedItem = true;
 	}
 
+	const SCharacterPoints finalPoints = calculateFinalPoints(user);
+
 	if(bUsedItem)
-		executeItem(indexItem, user, target);
+	{
+		const SItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex];
+		if( ITEM_TYPE_POTION == itemDescription.Type 
+		 && PROPERTY_TYPE_HEALTH == itemDescription.Property 
+		 && user.Points.HP == finalPoints.MaxHP)
+		{
+			bUsedItem = false;
+			printf("Your HP is full!");
+		}
+		else
+			executeItem(indexInventory, user, target);
+	}
 	
 	return bUsedItem;
 }

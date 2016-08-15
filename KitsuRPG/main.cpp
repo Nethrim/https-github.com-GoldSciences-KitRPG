@@ -1,6 +1,7 @@
 #define NOMINMAX
 
 #include "Game.h"
+#include "Menu.h"
 
 #include <iostream>
 #include <time.h>
@@ -16,14 +17,28 @@ void main()
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
-	getline(std::cin, gameInstance.Adventurer.Name);
-	std::cout << "\nSo, " << gameInstance.Adventurer.Name << "... What brings you here?\n";
+	std::string Name;
+	getline(std::cin, Name);
 
-	tavern(gameInstance.Adventurer);	// Tavern is the main loop of our game. Exiting it means we quit the game.
+	static const SMenuItem playAgainMenu[]
+	{	{ 1,	"Yes"	}
+	,	{ 0,	"No"	}
+	};
 
-	printf("\n-- Game Over! --\n\n");
-	displayScore(gameInstance.Adventurer);
+	bool bPlayAgain = true;
+	while(bPlayAgain)
+	{
+		gameInstance.Adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
+		gameInstance.Adventurer.Weapon	= rand()%4;
+		SCharacterPoints finalPoints = calculateFinalPoints(gameInstance.Adventurer);
+		gameInstance.Adventurer.Points.HP = finalPoints.MaxHP;
 
-	printf("Press ENTER to exit.");
-	getline(std::cin, gameInstance.Adventurer.Name);
+		std::cout << "\nSo, " << gameInstance.Adventurer.Name << "... What brings you here?\n";
+		tavern(gameInstance.Adventurer);	// Tavern is the main menu of our game.
+
+		printf("\n-- Game Over! --\n");
+		displayScore(gameInstance.Adventurer);
+
+		bPlayAgain = displayMenu("Play again? ..", playAgainMenu) ? true : false;
+	}
 }

@@ -1,10 +1,11 @@
 #include "Character.h"
 
-void rest(SCharacterPoints& points)
+void rest(CCharacter& character)
 {
+	SCharacterPoints finalPoints = calculateFinalPoints(character);
+	character.Points.HP = finalPoints.MaxHP;
 	printf("\nYou decide to get some rest.\n");
-	points.HP = points.MaxHP;
-	printf("Your HP is: %u.\n", points.HP);
+	printf("Your HP is: %u.\n", character.Points.HP);
 }
 
 bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
@@ -29,6 +30,28 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 	}
 }
 
+bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount)
+{
+	// look in the inventory for the name so we just increment the counter instead of adding the item
+	for(int i=0, count = characterStatus.Count; i<count; i++) {
+		if(statusType == characterStatus.Status[i]) {
+			characterStatus.TurnsLeft[i] += turnCount;
+			return true;
+		}
+	}
+
+	if(characterStatus.Count >= size(characterStatus.Status))
+		return false;
+	else
+	{
+		// If we didn't return yet it means that the item was not found and we need to add it to the inventory.
+		characterStatus.Status		[characterStatus.Count] = statusType;
+		characterStatus.TurnsLeft	[characterStatus.Count] = turnCount;
+		characterStatus.Count++;
+		return true;
+	}
+}
+
 void showInventory(const SCharacter& adventurer)
 {
 	printf("\n-- Your inventory --\n");
@@ -46,3 +69,69 @@ void showInventory(const SCharacter& adventurer)
 
 }
 
+int	SCharacter::Save(FILE* fp)	const
+{	
+	if(0 == fp) {	
+		printf("Cannot save to file!"	); 
+		return -1; 
+	}	
+	if( 1 != fwrite	(this, sizeof(SCharacter), 1, fp) )				
+	{ 
+		printf( "Cannot save to file!"	); 
+		return -1; 
+	}; 
+	return 0; 
+};
+
+int	SCharacter::Load(FILE* fp)	{	
+	if(0 == fp) {	
+		printf("Cannot load from file!"	); 
+		return -1; 
+	} 
+		
+	SCharacter loadedCharacter; 
+	if( 1 != fread	(&loadedCharacter, sizeof(SCharacter), 1, fp) ) { 
+		printf( "Cannot load from file!"	); 
+		return -1; 
+	}; 
+		
+	*this = loadedCharacter; 
+	return 0; 
+};
+
+int	CCharacter::Save(FILE* fp)	const 
+{	
+	SCharacter::Save(fp);
+	uint8_t nameLen = (uint8_t)Name.size();
+	if( 1 != fwrite(&nameLen, 1, 1, fp) )
+	{
+		printf("Failed to save character data!");
+		return -1;
+	}
+	if(nameLen)
+		if( 1 != fwrite(Name.c_str(), 1, nameLen, fp) )
+		{
+			printf("Failed to load character name!");
+			return -1;
+		}
+	return 0; 
+};
+
+int	CCharacter::Load(FILE* fp)	{	
+	SCharacter::Load(fp); 
+	uint8_t nameLen = 0;
+	if( 1 != fread(&nameLen, 1, 1, fp) )
+	{
+		printf("Failed to load character data!");
+		return -1;
+	}
+	char name[128] = {0,};
+	if(nameLen)
+		if( 1 != fread(name, 1, std::min(nameLen, (uint8_t)127), fp) )
+		{
+			printf("Failed to load character name!");
+			return -1;
+		}
+	Name = name;
+	return 0; 
+};
