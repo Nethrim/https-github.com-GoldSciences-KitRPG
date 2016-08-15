@@ -129,6 +129,7 @@ struct SCharacter
 	SCharacterScore		Score			= {};	
 	uint32_t			Weapon			= 0;
 	uint32_t			Armor			= 0;
+	int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
 
 	constexpr SCharacter() = default;
 	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
@@ -139,6 +140,8 @@ struct SCharacter
 		,Inventory		({})
 		,Score			({})
 		,Weapon			(0)
+		,Armor			(0)
+		,Shield			(0)
 	{};
 
 	int		Save(FILE* fp)	const;

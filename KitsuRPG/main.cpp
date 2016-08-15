@@ -1,6 +1,8 @@
 #define NOMINMAX
 
 #include "Game.h"
+#include "Armor.h"
+
 #include "Menu.h"
 
 #include <iostream>
@@ -13,7 +15,7 @@ void main()
 {	
 	srand((unsigned int)time(NULL));
 
-	CGame gameInstance;	// This class instance will contain all our game data.
+	CCharacter adventurer;	// This class instance will contain all our game data.
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
@@ -28,16 +30,19 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		gameInstance.Adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
-		gameInstance.Adventurer.Weapon	= rand()%4;
-		SCharacterPoints finalPoints = calculateFinalPoints(gameInstance.Adventurer);
-		gameInstance.Adventurer.Points.HP = finalPoints.MaxHP;
+		adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
+		adventurer.Weapon	= rand()%4;
+		adventurer.Armor	= rand()%4;
+		adventurer.Shield	= armorDefinitions[adventurer.Armor].Shield;
 
-		std::cout << "\nSo, " << gameInstance.Adventurer.Name << "... What brings you here?\n";
-		tavern(gameInstance.Adventurer);	// Tavern is the main menu of our game.
+		SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
+		adventurer.Points.HP = finalPoints.MaxHP;
+
+		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
+		tavern(adventurer);	// Tavern is the main menu of our game.
 
 		printf("\n-- Game Over! --\n");
-		displayScore(gameInstance.Adventurer);
+		displayScore(adventurer);
 
 		bPlayAgain = displayMenu("Play again? ..", playAgainMenu) ? true : false;
 	}

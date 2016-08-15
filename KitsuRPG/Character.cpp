@@ -2,6 +2,8 @@
 
 #include "Weapon.h"
 #include "Item.h"
+#include "Armor.h"
+
 #include "Misc.h"
 
 #include <algorithm>
@@ -39,13 +41,14 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 SCharacterPoints calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result;
-	const SWeapon& weaponDefinition = weaponDefinitions[character.Weapon];
+	const CWeapon& weaponDefinition = weaponDefinitions[character.Weapon];
+	const CArmor& armorDefinition = armorDefinitions[character.Armor];
 
-	result.MaxHP	= character.Points.MaxHP			+	weaponDefinition.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	;
-	result.HP		=										weaponDefinition.Points.HP		+	character.CombatBonus.Points.HP		;
-	result.Hit		= character.Points.Hit				+	weaponDefinition.Points.Hit		+	character.CombatBonus.Points.Hit	;
-	result.Attack	= character.Points.Attack			+	weaponDefinition.Points.Attack	+	character.CombatBonus.Points.Attack	;
-	result.Coins	=										weaponDefinition.Points.Coins	+	character.CombatBonus.Points.Coins	;
+	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	+	weaponDefinition.Points.MaxHP	+	armorDefinition.Points.MaxHP	;
+	result.HP		=								character.CombatBonus.Points.HP		+	weaponDefinition.Points.HP		+	armorDefinition.Points.HP		;
+	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit	+	weaponDefinition.Points.Hit		+	armorDefinition.Points.Hit		;
+	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack	+	weaponDefinition.Points.Attack	+	armorDefinition.Points.Attack	;
+	result.Coins	=								character.CombatBonus.Points.Coins	+	weaponDefinition.Points.Coins	+	armorDefinition.Points.Coins	;
 
 	return result;
 };
@@ -79,6 +82,10 @@ void showInventory(const SCharacter& adventurer)
 		printf("-- You're carrying %s.\n", weaponDefinitions[adventurer.Weapon].Name.c_str());
 	else
 		printf("-- You're not carrying any weapons.\n");
+	if(adventurer.Armor)
+		printf("-- You're wearing %s.\n", armorDefinitions[adventurer.Armor].Name.c_str());
+	else
+		printf("-- You're not wearing any armor.\n");
 	printf("-- You look at your wallet and count %u coins.\n", adventurer.Points.Coins);
 	if(adventurer.Inventory.ItemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");

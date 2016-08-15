@@ -20,7 +20,7 @@ enum PROPERTY_TYPE : unsigned int
 ,	PROPERTY_TYPE_HIT
 };
 
-struct SItem 
+struct CItem 
 {
 	ITEM_TYPE		Type;
 	PROPERTY_TYPE	Property;
@@ -29,7 +29,7 @@ struct SItem
 	std::string		Name;
 };
 
-static const SItem itemDescriptions[] = 
+static const CItem itemDescriptions[] = 
 	// Type					Property				Grade	Price	Name
 {	{ITEM_TYPE_UNKNOWN	,	PROPERTY_TYPE_NONE		,	0,	0	,	"This item doesn't exist. Bug?"	}	// the invalid description should be always in the last element
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	1,	10	,	"Small Potion of Healing"		}
