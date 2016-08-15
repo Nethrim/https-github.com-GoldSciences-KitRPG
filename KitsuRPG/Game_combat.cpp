@@ -290,7 +290,7 @@ void setupEnemy(CCharacter& currentEnemy, uint32_t enemyType)
 	for(uint32_t i=1; i<enemyType; ++i)
 		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
 
-	currentEnemy.Weapon	= rand() % std::min(enemyType*enemyType, size(weaponDefinitions));
+	currentEnemy.Weapon	= rand() % std::min(enemyType*6, size(weaponDefinitions));
 	currentEnemy.Armor	= rand() % std::min(enemyType*4, size(armorDefinitions));
 	currentEnemy.Shield = armorDefinitions[currentEnemy.Armor].Shield;
 
