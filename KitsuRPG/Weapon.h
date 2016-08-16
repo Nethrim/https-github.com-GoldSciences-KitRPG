@@ -42,6 +42,7 @@ static const CWeaponModifier weaponModifiers[] =
 ,	{	{	4,	0,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Executioner's %s"		}
 ,	{	{	0,	0,	0,		0,	4	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Stalker's %s"			}
 ,	{	{	0,	0,	0,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BURN	,	"Laser %s"				}	
+,	{	{	0,	0,	0,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_POISON	,	"Radiactive %s"			}	
 ,	{	{	0,	4,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Angel's %s"			}
 ,	{	{	0,	0,	0,		0,	0	},	WEAPON_EFFECT_LEECH	,	STATUS_TYPE_NONE	,	"Vampire's %s"			}
 };
@@ -77,11 +78,11 @@ static std::string getWeaponName(const SWeapon& weapon)
 	return formattedName;
 }
 
-static WEAPON_EFFECT getWeaponEffect(const SWeapon& weapon) {
+static inline constexpr WEAPON_EFFECT getWeaponEffect(const SWeapon& weapon) {
 	return WEAPON_EFFECT(weaponDefinitions[weapon.Index].Effect | weaponModifiers[weapon.Modifier].Effect);
 }
 
-static STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
+static inline constexpr STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
 	return STATUS_TYPE(weaponDefinitions[weapon.Index].Status | weaponModifiers[weapon.Modifier].Status);
 }
 

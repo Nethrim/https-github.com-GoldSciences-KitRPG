@@ -51,15 +51,15 @@ static std::string getArmorName(const SArmor& armor)
 	return formattedName;
 }
 
-static ARMOR_EFFECT getArmorEffect(const SArmor& armor) {
+static inline constexpr ARMOR_EFFECT getArmorEffect(const SArmor& armor) {
 	return ARMOR_EFFECT(armorDefinitions[armor.Index].Effect | armorModifiers[armor.Modifier].Effect);
 }
 
-static int32_t getArmorShield(const SArmor& armor) {
+static inline constexpr int32_t getArmorShield(const SArmor& armor) {
 	return armorDefinitions[armor.Index].Shield + armorModifiers[armor.Modifier].Shield;
 }
 
-static int32_t getArmorAbsorption(const SArmor& armor) {
+static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
 	return armorDefinitions[armor.Index].Absorption + armorModifiers[armor.Modifier].Absorption;
 }
 

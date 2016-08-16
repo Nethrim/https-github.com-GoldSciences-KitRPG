@@ -168,11 +168,18 @@ int attack(CCharacter& attacker, CCharacter& target)
 			applyArmorReflect(attacker, target, reflectedDamage);
 		}
 
+		const int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor);
 		for(int i=0; i<MAX_STATUS_COUNT; i++)
 		{
 			STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
-			if(0 == (bitStatus & attackerWeaponStatus) || (rand()%2))
+			if(0 == (bitStatus & attackerWeaponStatus) )
 				continue;
+
+			if((rand()%100) < targetArmorAbsorption)
+			{
+				printf("%s absorbs the status inflicted by the weapon.\n", targetArmorName.c_str());
+				continue;
+			}
 
 			std::string text;
 			int turns = 2;
