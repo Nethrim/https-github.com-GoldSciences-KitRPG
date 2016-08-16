@@ -53,15 +53,15 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_BLAST		,	1,	10	,	"Small Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_BLAST		,	2,	20	,	"Grenade"						}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_BLAST		,	3,	30	,	"Large Grenade"					}
+,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	1,	10	,	"Small Fire Grenade"			}
+,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	2,	20	,	"Fire Grenade"					}
+,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	3,	30	,	"Large Fire Grenade"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	1,	10	,	"Small Needle Grenade"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	2,	20	,	"Needle Grenade"				}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING	,	3,	30	,	"Large Needle Grenade"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_POISON	,	1,	10	,	"Small Poison Grenade"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_POISON	,	2,	20	,	"Poison Grenade"				}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_POISON	,	3,	30	,	"Large Poison Grenade"			}
-,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	1,	10	,	"Small Fire Grenade"			}
-,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	2,	20	,	"Fire Grenade"					}
-,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE		,	3,	30	,	"Large Fire Grenade"			}
 };
 
 #endif // __ITEM_H__98214809271346928734293846__

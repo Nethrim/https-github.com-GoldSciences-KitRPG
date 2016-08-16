@@ -368,6 +368,37 @@ void applyTurnStatus(CCharacter& character)
 	}
 };
 
+void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
+{
+	if(combatBonus.HP)
+	{
+		if(combatBonus.HP > 0 && (character.Points.HP >= calculateFinalPoints(character).MaxHP)) {}
+		else 
+		{
+			if(combatBonus.HP > 0)
+				printf("%s gains %u HP from %s.\n", character.Name.c_str(), combatBonus.HP, sourceName.c_str());
+			else if( combatBonus.HP < 0)
+				printf("%s loses %u HP from %s.\n", character.Name.c_str(), combatBonus.HP*-1, sourceName.c_str());
+			character.Points.HP		+= combatBonus.HP;
+		}
+	}
+	if(combatBonus.Coins)
+	{
+		if(combatBonus.Coins > 0)
+			printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
+		else if( combatBonus.Coins < 0)
+			printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
+		character.Points.Coins	+= combatBonus.Coins;
+	}
+};
+
+void applyArmorBonus(CCharacter& character)
+{
+	const std::string armorName = getArmorName(character.Armor);
+	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
+	applyCombatBonus(character, armorPoints, armorName);
+};
+
 TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CCharacter& target)
 {
 	// If the action is valid then we execute it and break the current while() so the attack turn executes.
@@ -381,6 +412,14 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 	else if(TURN_ACTION_RUN == combatOption) {
 		if( escape(attacker.Name, attacker.Score) )
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
+	}
+
+	if(outcome == TURN_OUTCOME_CANCEL && target.Points.HP > 0 && attacker.Points.HP > 0) {
+		applyTurnStatus(attacker);
+		applyCombatBonus(attacker, attacker.CombatBonus.Points, "Turn Combat Bonus");
+		applyArmorBonus(attacker);
+		attacker.CombatBonus.NextTurn();
+		attacker.CombatStatus.NextTurn();
 	}
 
 	return outcome;
@@ -468,38 +507,6 @@ void setupEnemy(CCharacter& currentEnemy, uint32_t enemyType)
 	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
 }
 
-void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
-{
-	if(combatBonus.HP)
-	{
-		if(combatBonus.HP > 0 && (character.Points.HP >= calculateFinalPoints(character).MaxHP)) {}
-		else 
-		{
-			if(combatBonus.HP > 0)
-				printf("%s gains %u HP from %s.\n", character.Name.c_str(), combatBonus.HP, sourceName.c_str());
-			else if( combatBonus.HP < 0)
-				printf("%s loses %u HP from %s.\n", character.Name.c_str(), combatBonus.HP*-1, sourceName.c_str());
-			character.Points.HP		+= combatBonus.HP;
-		}
-	}
-	if(combatBonus.Coins)
-	{
-		if(combatBonus.Coins > 0)
-			printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
-		else if( combatBonus.Coins < 0)
-			printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
-		character.Points.Coins	+= combatBonus.Coins;
-	}
-};
-
-
-void applyArmorBonus(CCharacter& character)
-{
-	const std::string armorName = getArmorName(character.Armor);
-	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
-	applyCombatBonus(character, armorPoints, armorName);
-};
-
 //5736	// gasty.bellino@gmail.com
 void combat(CCharacter& adventurer, uint32_t enemyType)
 {
@@ -526,20 +533,6 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		if(!combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))
 			break;
 
-		if(turnOutcome != TURN_OUTCOME_CONTINUE) {
-			if(turnOutcome != TURN_OUTCOME_ESCAPE)
-			{
-				applyTurnStatus(adventurer);
-				applyCombatBonus(adventurer, adventurer.CombatBonus.Points, "Turn Combat Bonus");
-				applyArmorBonus(adventurer);
-			}
-			adventurer.CombatBonus.NextTurn();
-			adventurer.CombatStatus.NextTurn();
-		}
-
-		if(!combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))
-			break;
-
 		// Execute enemy attack turn
 		if(currentEnemy.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
 		{
@@ -548,20 +541,6 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		}
 		else
 			turnOutcome = enemyTurn(currentEnemy, adventurer);
-
-		if(!combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))
-			break;
-
-		if(turnOutcome != TURN_OUTCOME_CONTINUE) {
-			if(turnOutcome != TURN_OUTCOME_ESCAPE)
-			{
-				applyTurnStatus(currentEnemy);
-				applyCombatBonus(currentEnemy, currentEnemy.CombatBonus.Points, "Turn Combat Bonus");
-				applyArmorBonus(currentEnemy);
-			}
-			currentEnemy.CombatBonus.NextTurn();
-			currentEnemy.CombatStatus.NextTurn();
-		}
 	}
 
 	determineOutcome(adventurer, currentEnemy, enemyType);
