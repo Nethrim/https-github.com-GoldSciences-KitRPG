@@ -20,8 +20,6 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	int passthroughDamage	= (int)(damageDealt * (1.0-absorptionFraction));
 	int totalDamage			= shieldedDamage+passthroughDamage;
 	
-	int finalPassthroughDamage = 0;
-
 	printf("Absorption rate: %%%f. Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u.\n", (float)(absorptionFraction*100), shieldedDamage, passthroughDamage, damageDealt, totalDamage);
 	if( totalDamage < damageDealt )
 	{
@@ -37,6 +35,8 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 			shieldedDamage += errorDamage;
 		}
 	}
+
+	int finalPassthroughDamage = 0;
 
 	if(shieldedDamage)
 	{
@@ -83,7 +83,8 @@ int attack(CCharacter& attacker, CCharacter& target)
 	int finalWeaponCoins	= weaponDefinition.Points.Coins	+	weaponModifier.Points.Coins	;
 	int finalWeaponHP		= weaponDefinition.Points.HP	+	weaponModifier.Points.HP	;
 
-	const std::string weaponName = getWeaponName(attacker.Weapon, attacker.WeaponModifier);
+	const std::string weaponName	= getWeaponName	(attacker.Weapon, attacker.WeaponModifier);
+	const std::string armorName		= getArmorName	(attacker.Armor, attacker.ArmorModifier);
 
 	SCharacterPoints attackerPoints = calculateFinalPoints(attacker);
 
@@ -124,9 +125,9 @@ int attack(CCharacter& attacker, CCharacter& target)
 		{
 			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxHP-attacker.Points.HP);
 			if(actualHPGained > 0)
-				printf("%s drains %u HP from %s.\n", attacker.Name.c_str(), actualHPGained, weaponName.c_str());
+				printf("%s drains %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), weaponName.c_str());
 			else if(actualHPGained < 0)
-				printf("%s loses %u HP from %s.\n", attacker.Name.c_str(), actualHPGained, weaponName.c_str());
+				printf("%s loses %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), weaponName.c_str());
 			attacker.Points.HP		+= actualHPGained;
 		}
 
@@ -135,10 +136,20 @@ int attack(CCharacter& attacker, CCharacter& target)
 			int actualCoinsGained = std::min(finalPassthroughDamage, target.Points.Coins);
 			target.Points.Coins -= actualCoinsGained;
 			if(actualCoinsGained > 0)
-				printf("%s steals %u Coins from %s.\n", attacker.Name.c_str(), actualCoinsGained, weaponName.c_str());
+				printf("%s steals %u Coins from %s with %s.\n", attacker.Name.c_str(), actualCoinsGained, target.Name.c_str(), weaponName.c_str());
 			else if(actualCoinsGained < 0)
-				printf("%s drops %u Coins from %s.\n", attacker.Name.c_str(), actualCoinsGained, weaponName.c_str());
+				printf("%s drops %u Coins from %s with %s.\n", attacker.Name.c_str(), actualCoinsGained, target.Name.c_str(), weaponName.c_str());
 			attacker.Points.Coins	+= actualCoinsGained;
+		}
+
+		if((armorDefinitions[target.Armor].Effect | armorDefinitions[target.ArmorModifier].Effect) & ARMOR_EFFECT_REFLECT)
+		{
+			int reflectedDamage = damageDealt-finalPassthroughDamage;
+			if(reflectedDamage > 0)
+				printf("%s reflects %u damage with %s.\n", target.Name.c_str(), reflectedDamage, armorName.c_str());
+			else if(reflectedDamage < 0)
+				printf("%s reflects %u health with %s.\n", target.Name.c_str(), reflectedDamage, armorName.c_str());
+			applyShieldableDamage(attacker, reflectedDamage, armorName);
 		}
 
 		for(int i=0; i<MAX_STATUS_COUNT; i++)

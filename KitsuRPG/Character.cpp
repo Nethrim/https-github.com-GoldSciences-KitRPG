@@ -98,7 +98,7 @@ void showInventory(const SCharacter& adventurer)
 		printf("-- You're not carrying any weapons.\n");
 
 	if(adventurer.Armor)
-		printf("-- You're wearing %s.\n", getArmorName(adventurer.Weapon, adventurer.WeaponModifier).c_str());
+		printf("-- You're wearing %s.\n", getArmorName(adventurer.Armor, adventurer.ArmorModifier).c_str());
 	else
 		printf("-- You're not wearing any armor.\n");
 
