@@ -68,7 +68,7 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 }
 
 static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName) {
-	return applyShieldableDamage(target, damageDealt, armorDefinitions[target.Armor].Absorption, sourceName);
+	return applyShieldableDamage(target, damageDealt, armorDefinitions[target.Armor].Absorption+armorModifiers[target.Armor].Absorption, sourceName);
 }
 
 // This function returns the damage dealt to the target

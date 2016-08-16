@@ -36,7 +36,7 @@ void main()
 		adventurer.Armor			= rand() % size(armorDefinitions);	//%(size(armorDefinitions)/5);
 		adventurer.WeaponModifier	= rand() % size(weaponModifiers);	//%(size(weaponModifiers)/2);
 		adventurer.ArmorModifier	= rand()%size(armorModifiers);
-		adventurer.Shield			= armorDefinitions[adventurer.Armor].Shield;
+		adventurer.Shield			= armorDefinitions[adventurer.Armor].Shield+armorModifiers[adventurer.ArmorModifier].Shield;
 
 		SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 		adventurer.Points.HP = finalPoints.MaxHP;
