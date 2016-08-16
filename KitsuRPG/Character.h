@@ -20,8 +20,6 @@ public:
 	int		Load(FILE* fp);
 };
 
-
-
 SCharacterPoints calculateFinalPoints(const CCharacter& character);
 
 bool addItem(SCharacterInventory& adventurer, uint32_t itemIndex);

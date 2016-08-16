@@ -17,7 +17,7 @@ void tavern(CCharacter& adventurer)
 	, { 6, "Exit game"					}
 	};
 
-	while (adventurer.Points.HP > 0)  // If the last action didn't go well we cancel the loop and exit the game.
+	while (true)  // If the last action didn't go well we cancel the loop and exit the game.
 	{
 		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
@@ -116,6 +116,7 @@ void displayScore(const CCharacter& adventurer)
 
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"
+		"Battles Lost        : %llu\n"
 		"Turns Played        : %llu\n"
 		"--------------------\n"
 		"Enemies Killed      : %llu\n"
@@ -136,6 +137,7 @@ void displayScore(const CCharacter& adventurer)
 		"Potions Used        : %llu\n"
 		"Grenades Used       : %llu\n\n"
 		, gameCounters.BattlesWon			
+		, gameCounters.BattlesLost
 		, gameCounters.TurnsPlayed			
 	
 		, gameCounters.EnemiesKilled		

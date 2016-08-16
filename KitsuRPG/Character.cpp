@@ -41,51 +41,67 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 SCharacterPoints calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result;
-	const CWeapon& weaponDefinition = weaponDefinitions[character.Weapon];
-	const CArmor& armorDefinition = armorDefinitions[character.Armor];
+	const CWeapon&			weaponDefinition	= weaponDefinitions	[character.Weapon];
+	const CWeaponModifier&	weaponModifier		= weaponModifiers	[character.WeaponModifier];
+	const CArmor&			armorDefinition		= armorDefinitions	[character.Armor];
+	const CArmor&			armorModifier		= armorModifiers	[character.ArmorModifier];
 
-	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	+	weaponDefinition.Points.MaxHP	+	armorDefinition.Points.MaxHP	;
-	result.HP		=								character.CombatBonus.Points.HP		+	weaponDefinition.Points.HP		+	armorDefinition.Points.HP		;
-	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit	+	weaponDefinition.Points.Hit		+	armorDefinition.Points.Hit		;
-	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack	+	weaponDefinition.Points.Attack	+	armorDefinition.Points.Attack	;
-	result.Coins	=								character.CombatBonus.Points.Coins	+	weaponDefinition.Points.Coins	+	armorDefinition.Points.Coins	;
+	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	+	weaponDefinition.Points.MaxHP	+	weaponModifier.Points.MaxHP		+	armorDefinition.Points.MaxHP	+	armorModifier.Points.MaxHP	;
+	result.HP		=								character.CombatBonus.Points.HP		+	weaponDefinition.Points.HP		+	weaponModifier.Points.HP		+	armorDefinition.Points.HP		+	armorModifier.Points.HP		;
+	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit	+	weaponDefinition.Points.Hit		+	weaponModifier.Points.Hit		+	armorDefinition.Points.Hit		+	armorModifier.Points.Hit	;
+	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack	+	weaponDefinition.Points.Attack	+	weaponModifier.Points.Attack	+	armorDefinition.Points.Attack	+	armorModifier.Points.Attack	;
+	result.Coins	=								character.CombatBonus.Points.Coins	+	weaponDefinition.Points.Coins	+	weaponModifier.Points.Coins		+	armorDefinition.Points.Coins	+	armorModifier.Points.Coins	;
 
 	return result;
 };
 
 bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount)
 {
-	// look in the inventory for the name so we just increment the counter instead of adding the item
-	for(int i=0, count = characterStatus.Count; i<count; i++) {
-		if(statusType == characterStatus.Status[i]) {
-			characterStatus.TurnsLeft[i] += turnCount;
-			return true;
+	for(int i=0, count=MAX_STATUS_COUNT; i<count; ++i)
+	{
+		STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
+		if(0 == (bitStatus & statusType))
+			continue;
+
+		bool bFound = false;
+		// look in the inventory for the name so we just increment the counter instead of adding the item
+		for(int i=0, count = characterStatus.Count; i<count; i++) {
+			if(bitStatus == characterStatus.Status[i]) {
+				characterStatus.TurnsLeft[i] += turnCount;
+				bFound = true;
+				break;
+			}
+		}
+
+		if(bFound)
+			continue;
+
+		if(characterStatus.Count >= size(characterStatus.Status))
+			return false;
+		else
+		{
+			// If we didn't return yet it means that the item was not found and we need to add it to the inventory.
+			characterStatus.Status		[characterStatus.Count] = bitStatus;
+			characterStatus.TurnsLeft	[characterStatus.Count] = turnCount;
+			characterStatus.Count++;
 		}
 	}
-
-	if(characterStatus.Count >= size(characterStatus.Status))
-		return false;
-	else
-	{
-		// If we didn't return yet it means that the item was not found and we need to add it to the inventory.
-		characterStatus.Status		[characterStatus.Count] = statusType;
-		characterStatus.TurnsLeft	[characterStatus.Count] = turnCount;
-		characterStatus.Count++;
-		return true;
-	}
+	return true;
 }
 
 void showInventory(const SCharacter& adventurer)
 {
 	printf("\n-- Your inventory --\n");
 	if(adventurer.Weapon)
-		printf("-- You're carrying %s.\n", weaponDefinitions[adventurer.Weapon].Name.c_str());
+		printf("-- You're carrying %s.\n", getWeaponName(adventurer.Weapon, adventurer.WeaponModifier).c_str());
 	else
 		printf("-- You're not carrying any weapons.\n");
+
 	if(adventurer.Armor)
-		printf("-- You're wearing %s.\n", armorDefinitions[adventurer.Armor].Name.c_str());
+		printf("-- You're wearing %s.\n", getArmorName(adventurer.Weapon, adventurer.WeaponModifier).c_str());
 	else
 		printf("-- You're not wearing any armor.\n");
+
 	printf("-- You look at your wallet and count %u coins.\n", adventurer.Points.Coins);
 	if(adventurer.Inventory.ItemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");

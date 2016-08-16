@@ -10,6 +10,7 @@
 struct SCharacterScore 
 {
 	uint64_t BattlesWon			= 0;
+	uint64_t BattlesLost		= 0;
 	uint64_t TurnsPlayed		= 0;
 
 	uint64_t EnemiesKilled		= 0;
@@ -71,11 +72,14 @@ struct SCombatBonus
 	};
 };
 
-enum STATUS_TYPE
-{	STATUS_TYPE_NONE
-,	STATUS_TYPE_BLEEDING
-,	STATUS_TYPE_STUN
-,	STATUS_TYPE_BLIND
+#define MAX_STATUS_COUNT 8
+enum STATUS_TYPE : uint16_t
+{	STATUS_TYPE_NONE		= 0x00
+,	STATUS_TYPE_BLIND		= 0x01
+,	STATUS_TYPE_STUN		= 0x02
+,	STATUS_TYPE_BLEEDING	= 0x04
+,	STATUS_TYPE_BURN		= 0x08
+,	STATUS_TYPE_POISON		= 0x10
 };
 
 #define MAX_COMBAT_STATUS	16
@@ -84,7 +88,7 @@ struct SCombatStatus
 {
 	uint32_t			Count	= 0;
 	STATUS_TYPE			Status		[MAX_COMBAT_STATUS]	= {};
-	int					TurnsLeft	[MAX_COMBAT_STATUS]	= {};
+	int8_t				TurnsLeft	[MAX_COMBAT_STATUS]	= {};
 	int					GetStatusTurns(STATUS_TYPE status)
 	{
 		for(uint32_t i=0; i<Count; ++i)
@@ -118,6 +122,13 @@ enum CHARACTER_TYPE : uint32_t
 ,	CHARACTER_TYPE_ALLY
 };
 
+enum PROFESSION
+{	PROFESSION_CIVILIAN
+,	PROFESSION_SWORDMAN
+,	PROFESSION_ARCHER
+,	PROFESSION_MAGE
+};
+
 // POD to store all the character data that is not a string or object.
 struct SCharacter
 {
@@ -128,8 +139,11 @@ struct SCharacter
 	SCharacterInventory	Inventory		= {};
 	SCharacterScore		Score			= {};	
 	uint32_t			Weapon			= 0;
+	uint32_t			WeaponModifier	= 0;
 	uint32_t			Armor			= 0;
+	uint32_t			ArmorModifier	= 0;
 	int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
+	PROFESSION			Profession		= PROFESSION_CIVILIAN;
 
 	constexpr SCharacter() = default;
 	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
@@ -140,7 +154,9 @@ struct SCharacter
 		,Inventory		({})
 		,Score			({})
 		,Weapon			(0)
+		,WeaponModifier	(0)
 		,Armor			(0)
+		,ArmorModifier	(0)
 		,Shield			(0)
 	{};
 

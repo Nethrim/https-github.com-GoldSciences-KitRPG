@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Armor.h"
+#include "Weapon.h"
 
 #include "Menu.h"
 
@@ -30,10 +31,12 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
-		adventurer.Weapon	= rand()%4;
-		adventurer.Armor	= rand()%4;
-		adventurer.Shield	= armorDefinitions[adventurer.Armor].Shield;
+		adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	30, 50, 5, 100, Name);
+		adventurer.Weapon			= rand() % size(weaponDefinitions);	//%(size(weaponDefinitions)/5);
+		adventurer.Armor			= rand() % size(armorDefinitions);	//%(size(armorDefinitions)/5);
+		adventurer.WeaponModifier	= rand() % size(weaponModifiers);	//%(size(weaponModifiers)/2);
+		adventurer.ArmorModifier	= rand()%size(armorModifiers);
+		adventurer.Shield			= armorDefinitions[adventurer.Armor].Shield;
 
 		SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 		adventurer.Points.HP = finalPoints.MaxHP;
