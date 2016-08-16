@@ -654,9 +654,13 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 	printf("%s throws %s to %s.\n", thrower.Name.c_str(), itemDescription.Name.c_str(), target.Name.c_str());
 	bool bAddStatus = false;
 
+	int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;
+	ARMOR_EFFECT attackerArmorEffect = (ARMOR_EFFECT)getArmorEffect(thrower.Armor);
+	ARMOR_EFFECT targetArmorEffect = (ARMOR_EFFECT)getArmorEffect(target.Armor);
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	STATUS_TYPE		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
+	const std::string targetArmorName = getArmorName(target.Armor);
 	switch(grenadeProperty)
 	{
 	case PROPERTY_TYPE_SMOKE:
@@ -680,10 +684,20 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		itemEffectValueSelf = itemEffectValueReducedSelf;
 		itemEffectValue		= itemEffectValueReduced;
 		bAddStatus			= true;
+
 	case PROPERTY_TYPE_BLAST:
 		if(lotteryResult == lotteryRange)
 		{
-			applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
+			reflectedDamage			= itemEffectValueSelf - finalPassthroughDamage;
+			if(reflectedDamage)
+			{
+				if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
+				{
+					printf("\n%s reflects damage from %s.\n", getArmorName(thrower.Armor).c_str(), itemDescription.Name.c_str());
+					applyArmorReflect(thrower, thrower, reflectedDamage);
+				}
+			}
 			if(bAddStatus)
 				addStatus(thrower.CombatStatus, grenadeStatus, 1*itemDescription.Grade);
 
@@ -693,8 +707,26 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		}
 		else if( lotteryResult == (lotteryRange-1) )
 		{
-			applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
-			applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
+			reflectedDamage			= (itemEffectValue>>1) - finalPassthroughDamage;
+			if(reflectedDamage)
+			{
+				if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
+				{
+					printf("\n%s reflects damage from %s.\n", targetArmorName.c_str(), itemDescription.Name.c_str());
+					applyArmorReflect(thrower, target, reflectedDamage);
+				}
+			}
+			finalPassthroughDamage  = applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
+			reflectedDamage			= (itemEffectValueSelf>>1) - finalPassthroughDamage;
+			if(reflectedDamage)
+			{
+				if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
+				{
+					printf("\n%s reflects damage from %s.\n", getArmorName(thrower.Armor).c_str(), itemDescription.Name.c_str());
+					applyArmorReflect(thrower, thrower, reflectedDamage);
+				}
+			}
 			if(bAddStatus)
 			{
 				addStatus(target.CombatStatus	, grenadeStatus, 2*itemDescription.Grade);
@@ -706,7 +738,16 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		}
 		else if( lotteryResult < lotteryRange )
 		{
-			applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
+			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
+			if(reflectedDamage)
+			{
+				if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
+				{
+					printf("\n%s reflects damage from %s.\n", targetArmorName.c_str(), itemDescription.Name.c_str());
+					applyArmorReflect(thrower, target, reflectedDamage);
+				}
+			}
 			if(bAddStatus)
 				addStatus(target.CombatStatus, grenadeStatus, (uint32_t)(3.6f*itemDescription.Grade));
 
