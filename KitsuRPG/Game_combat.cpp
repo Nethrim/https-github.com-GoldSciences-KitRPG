@@ -46,14 +46,14 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Shield, shieldedDamage), sourceName.c_str());
 			target.Shield = std::max(0, remainingShield);
 			if(remainingShield < 0)
-				printf("%s's shield ran out allowing %u damage from %s to pass through.\n", target.Name.c_str(), remainingShield*-1, sourceName.c_str());
+				printf("%s's shield ran out allowing some damage from %s to pass through.\n", target.Name.c_str(), sourceName.c_str());
 			else
 				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Shield);
 		}
 		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
 		{
 			finalPassthroughDamage	= remainingShield*-1;
-			printf("%s's wasn't protect against %u shieldable damage from %s.\n", target.Name.c_str(), finalPassthroughDamage, sourceName.c_str());
+			printf("%s's wasn't protected against %u shieldable damage from %s.\n", target.Name.c_str(), finalPassthroughDamage, sourceName.c_str());
 			target.Points.HP += remainingShield;
 		}
 	}
@@ -68,7 +68,29 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 }
 
 static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName) {
-	return applyShieldableDamage(target, damageDealt, armorDefinitions[target.Armor].Absorption+armorModifiers[target.ArmorModifier].Absorption, sourceName);
+	return applyShieldableDamage(target, damageDealt, getArmorAbsorption(target.Armor), sourceName);
+}
+
+static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt) {
+	const std::string	targetArmorName			= getArmorName	(targetReflecting.Armor);
+	const std::string	attackerArmorName		= getArmorName	(attacker.Armor);
+	if(damageDealt > 0)
+		printf("%s reflects %u damage with %s.\n", targetReflecting.Name.c_str(), damageDealt, targetArmorName.c_str());
+	else if(damageDealt < 0)
+		printf("%s reflects %u health with %s.\n", targetReflecting.Name.c_str(), damageDealt, targetArmorName.c_str());
+	int32_t finalPassthroughDamage = applyShieldableDamage(attacker, damageDealt, targetArmorName);
+	int reflectedDamage = damageDealt-finalPassthroughDamage;
+	if(reflectedDamage)
+	{
+		ARMOR_EFFECT attackerArmorEffect = (ARMOR_EFFECT)getArmorEffect(attacker.Armor);
+		if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
+		{
+			printf("\n%s causes a recursive reflection with %s.\n", attackerArmorName.c_str(), targetArmorName.c_str());
+			applyArmorReflect(targetReflecting, attacker, reflectedDamage);
+		}
+	}
+
+	return finalPassthroughDamage;
 }
 
 // This function returns the damage dealt to the target
@@ -76,15 +98,13 @@ int attack(CCharacter& attacker, CCharacter& target)
 {
 	// Calculate success from the hit chance and apply damage to target or just print the miss message.
 	int32_t damageDealt = 0;
-	const CWeapon& weaponDefinition = weaponDefinitions[attacker.Weapon];
-	const CWeaponModifier& weaponModifier = weaponModifiers[attacker.WeaponModifier];
-	STATUS_TYPE finalWeaponStatus = (STATUS_TYPE)(weaponModifier.Status | weaponDefinition.Status);
-	WEAPON_EFFECT finalWeaponEffect = (WEAPON_EFFECT)(weaponModifier.Effect | weaponDefinition.Effect);
-	int finalWeaponCoins	= weaponDefinition.Points.Coins	+	weaponModifier.Points.Coins	;
-	int finalWeaponHP		= weaponDefinition.Points.HP	+	weaponModifier.Points.HP	;
+	const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
 
-	const std::string attackerWeaponName	= getWeaponName	(attacker.Weapon, attacker.WeaponModifier);
-	const std::string targetArmorName		= getArmorName	(target.Armor, target.ArmorModifier);
+	STATUS_TYPE			attackerWeaponStatus	= (STATUS_TYPE)		getWeaponStatus(attacker.Weapon);
+	WEAPON_EFFECT		attackerWeaponEffect	= (WEAPON_EFFECT)	getWeaponEffect(attacker.Weapon);
+	ARMOR_EFFECT		targetArmorEffect		= (ARMOR_EFFECT)	getArmorEffect(target.Armor);
+	const std::string	attackerWeaponName		= getWeaponName	(attacker.Weapon);
+	const std::string	targetArmorName			= getArmorName	(target.Armor);
 
 	SCharacterPoints attackerPoints = calculateFinalPoints(attacker);
 
@@ -111,17 +131,17 @@ int attack(CCharacter& attacker, CCharacter& target)
 
 		int finalPassthroughDamage = applyShieldableDamage(target, damageDealt, attacker.Name);
 
-		if(finalWeaponCoins)
-			printf("%s gives %s %u Coins.\n", attackerWeaponName.c_str(), attacker.Name.c_str(), finalWeaponCoins);
-		attacker.Points.Coins	+= finalWeaponCoins;
+		if(attackerWeaponPoints.Coins)
+			printf("%s gives %s %u Coins.\n", attackerWeaponName.c_str(), attacker.Name.c_str(), attackerWeaponPoints.Coins);
+		attacker.Points.Coins	+= attackerWeaponPoints.Coins;
 
-		if(finalWeaponHP)
-			printf("%s gives %s %u Health Points.\n", attackerWeaponName.c_str(), attacker.Name.c_str(), finalWeaponHP);
-		attacker.Points.HP		+= finalWeaponHP;
+		if(attackerWeaponPoints.HP)
+			printf("%s gives %s %u Health Points.\n", attackerWeaponName.c_str(), attacker.Name.c_str(), attackerWeaponPoints.HP);
+		attacker.Points.HP		+= attackerWeaponPoints.HP;
 
 		attacker.Points.HP		= std::min(attacker.Points.HP, attackerPoints.MaxHP);
 
-		if(finalWeaponEffect & WEAPON_EFFECT_LEECH)
+		if(attackerWeaponEffect & WEAPON_EFFECT_LEECH)
 		{
 			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxHP-attacker.Points.HP);
 			if(actualHPGained > 0)
@@ -131,7 +151,7 @@ int attack(CCharacter& attacker, CCharacter& target)
 			attacker.Points.HP		+= actualHPGained;
 		}
 
-		if(finalWeaponEffect & WEAPON_EFFECT_STEAL)
+		if(attackerWeaponEffect & WEAPON_EFFECT_STEAL)
 		{
 			int actualCoinsGained = std::min(finalPassthroughDamage, target.Points.Coins);
 			target.Points.Coins -= actualCoinsGained;
@@ -142,20 +162,16 @@ int attack(CCharacter& attacker, CCharacter& target)
 			attacker.Points.Coins	+= actualCoinsGained;
 		}
 
-		if((armorDefinitions[target.Armor].Effect | armorModifiers[target.ArmorModifier].Effect) & ARMOR_EFFECT_REFLECT)
+		if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
 		{
 			int reflectedDamage = damageDealt-finalPassthroughDamage;
-			if(reflectedDamage > 0)
-				printf("%s reflects %u damage with %s.\n", target.Name.c_str(), reflectedDamage, targetArmorName.c_str());
-			else if(reflectedDamage < 0)
-				printf("%s reflects %u health with %s.\n", target.Name.c_str(), reflectedDamage, targetArmorName.c_str());
-			applyShieldableDamage(attacker, reflectedDamage, targetArmorName);
+			applyArmorReflect(attacker, target, reflectedDamage);
 		}
 
 		for(int i=0; i<MAX_STATUS_COUNT; i++)
 		{
 			STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
-			if(0 == (bitStatus & finalWeaponStatus) || (rand()%2))
+			if(0 == (bitStatus & attackerWeaponStatus) || (rand()%2))
 				continue;
 
 			std::string text;
@@ -234,40 +250,74 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 			loser.Inventory.Slots[i] = loser.Inventory.Slots[--loser.Inventory.ItemCount];
 		}
 
-	if(loser.Weapon > winner.Weapon)
+	SWeapon oldWinnerWeapon		= winner.Weapon;
+	std::string loserWeaponName = getWeaponName(loser.Weapon);
+	if(loser.Weapon.Index > winner.Weapon.Index)
 	{
 		if(rand()%2)
 		{
-			printf("%s recovers %s from %s.\n", winner.Name.c_str(), getWeaponName(loser.Weapon, loser.WeaponModifier).c_str(), loser.Name.c_str());
+			printf("%s recovers %s from %s.\n", winner.Name.c_str(),loserWeaponName.c_str(), loser.Name.c_str());
 			winner.Weapon			= loser.Weapon;
-			winner.WeaponModifier	= loser.WeaponModifier;
-			loser.Weapon			= rand() % (winner.Weapon+1);
-			loser.WeaponModifier	= rand() % (winner.WeaponModifier+1);
+			loser.Weapon.Index		= rand() % (oldWinnerWeapon.Index+1);
+			loser.Weapon.Modifier	= rand() % (oldWinnerWeapon.Modifier+1);
+			if(loser.Weapon.Index)
+				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getWeaponName(loser.Weapon).c_str());
 		}
 		else
 		{
-			printf("%s dropped by %s is too damaged to be recovered.\n", getWeaponName(loser.Weapon, loser.WeaponModifier).c_str(), loser.Name.c_str());
-			loser.Weapon			= 0;
-			loser.WeaponModifier	= 0;
+			printf("%s dropped by %s is too damaged to be recovered.\n", loserWeaponName.c_str(), loser.Name.c_str());
+			loser.Weapon.Index		= 0;
+			loser.Weapon.Modifier	= 0;
 		}
 	}
-
-	if(loser.Armor > winner.Armor)
+	else if(loser.Weapon.Index == winner.Weapon.Index && loser.Weapon.Modifier > winner.Weapon.Modifier)
 	{
 		if(rand()%2)
 		{
-			printf("%s recovers %s from %s.\n", winner.Name.c_str(), getArmorName(loser.Armor, loser.ArmorModifier).c_str(), loser.Name.c_str());
+			printf("%s recovers %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
+			winner.Weapon.Modifier	= loser.Weapon.Modifier;
+			loser.Weapon.Index		= rand() % (oldWinnerWeapon.Index+1);
+			loser.Weapon.Modifier	= rand() % (oldWinnerWeapon.Modifier+1);
+			if(loser.Weapon.Index)
+				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getWeaponName(loser.Weapon).c_str());
+		}
+		else
+			printf("You don't get to recover %s from %s.\n", loserWeaponName.c_str(), loser.Name.c_str());
+	}
+
+	SArmor oldWinnerArmor		= winner.Armor;
+	std::string loserArmorName = getArmorName(loser.Armor);
+	if(loser.Armor.Index > winner.Armor.Index)
+	{
+		if(rand()%2)
+		{
+			printf("%s recovers %s from %s.\n", winner.Name.c_str(),loserArmorName.c_str(), loser.Name.c_str());
 			winner.Armor			= loser.Armor;
-			winner.ArmorModifier	= loser.ArmorModifier;
-			loser.Armor				= rand() % (winner.Armor+1);
-			loser.ArmorModifier		= rand() % (winner.ArmorModifier+1);
+			loser.Armor.Index		= rand() % (oldWinnerArmor.Index+1);
+			loser.Armor.Modifier	= rand() % (oldWinnerArmor.Modifier+1);
+			if(loser.Armor.Index)
+				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getArmorName(loser.Armor).c_str());
 		}
 		else
 		{
-			printf("%s dropped by %s is too damaged to be recovered.\n", getArmorName(loser.Armor, loser.ArmorModifier).c_str(), loser.Name.c_str());
-			loser.Armor			= 0;
-			loser.ArmorModifier	= 0;
+			printf("%s dropped by %s is too damaged to be recovered.\n", loserArmorName.c_str(), loser.Name.c_str());
+			loser.Armor.Index		= 0;
+			loser.Armor.Modifier	= 0;
 		}
+	}
+	else if(loser.Armor.Index == winner.Armor.Index && loser.Armor.Modifier > winner.Armor.Modifier)
+	{
+		if(rand()%2)
+		{
+			printf("%s recovers %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
+			winner.Armor.Modifier	= loser.Armor.Modifier;
+			loser.Armor.Index		= rand() % (oldWinnerArmor.Index+1);
+			loser.Armor.Modifier	= rand() % (oldWinnerArmor.Modifier+1);
+			if(loser.Armor.Index)
+				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getArmorName(loser.Armor).c_str());
+		}
+		else
+			printf("You don't get to recover %s from %s.\n", loserArmorName.c_str(), loser.Name.c_str());
 	}
 
 	winner.Points.MaxHP += winner.Points.Attack;
@@ -311,7 +361,7 @@ void applyTurnStatus(CCharacter& character)
 		{
 		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
 		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
-		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, armorDefinitions[character.Armor].Absorption, "burning");	break;
+		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
 		//case STATUS_TYPE_STUN:		break;
 		//case STATUS_TYPE_BLIND:		break;
 		}
@@ -363,9 +413,9 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s HP is: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\nArmor: %s.\n",  adventurer	.Name.c_str(), adventurer	.Points.HP,	adventurer	.Shield,	 playerPoints	.Hit, playerPoints	.Attack,	adventurer		.CombatBonus.TurnsLeft.Hit,adventurer	.CombatBonus.TurnsLeft.Attack,		getWeaponName(adventurer.Weapon, adventurer.WeaponModifier).c_str(), getArmorName(adventurer.Armor, adventurer.ArmorModifier).c_str());
+		printf("\n-- %s HP is: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\nArmor: %s.\n",  adventurer	.Name.c_str(), adventurer	.Points.HP,	adventurer	.Shield,	 playerPoints	.Hit, playerPoints	.Attack,	adventurer		.CombatBonus.TurnsLeft.Hit,adventurer	.CombatBonus.TurnsLeft.Attack,		getWeaponName(adventurer.Weapon).c_str(), getArmorName(adventurer.Armor).c_str());
 		printStatuses(adventurer);
-		printf("\n-- %s HP is: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\nArmor: %s.\n",  currentEnemy	.Name.c_str(), currentEnemy	.Points.HP,	currentEnemy.Shield,	 enemyPoints	.Hit, enemyPoints	.Attack,	currentEnemy	.CombatBonus.TurnsLeft.Hit,currentEnemy	.CombatBonus.TurnsLeft.Attack,	getWeaponName(currentEnemy.Weapon, currentEnemy.WeaponModifier).c_str(), getArmorName(currentEnemy.Armor, currentEnemy.ArmorModifier).c_str());
+		printf("\n-- %s HP is: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\nArmor: %s.\n",  currentEnemy	.Name.c_str(), currentEnemy	.Points.HP,	currentEnemy.Shield,	 enemyPoints	.Hit, enemyPoints	.Attack,	currentEnemy	.CombatBonus.TurnsLeft.Hit,currentEnemy	.CombatBonus.TurnsLeft.Attack,	getWeaponName(currentEnemy.Weapon).c_str(), getArmorName(currentEnemy.Armor).c_str());
 		printStatuses(currentEnemy);
 
 		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
@@ -408,11 +458,11 @@ void setupEnemy(CCharacter& currentEnemy, uint32_t enemyType)
 	for(uint32_t i=1; i<enemyType; ++i)
 		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
 
-	currentEnemy.Weapon			= rand() % size(weaponDefinitions	);//	std::min(enemyType*2, size(weaponDefinitions));
-	currentEnemy.Armor			= rand() % size(armorDefinitions	);//	std::min(enemyType*2, size(armorDefinitions));
-	currentEnemy.WeaponModifier	= rand() % size(weaponModifiers		);//	std::min(enemyType*2, size(weaponModifiers));
-	currentEnemy.ArmorModifier	= rand() % size( armorModifiers		);//	std::min(enemyType*2, size( armorModifiers));
-	currentEnemy.Shield			= armorDefinitions[currentEnemy.Armor].Shield+armorModifiers[currentEnemy.ArmorModifier].Shield;
+	currentEnemy.Weapon	.Index		= uint16_t(rand() % size(weaponDefinitions	));//	std::min(enemyType*2, size(weaponDefinitions));
+	currentEnemy.Armor	.Index		= uint16_t(rand() % size(armorDefinitions	));//	std::min(enemyType*2, size(armorDefinitions));
+	currentEnemy.Weapon	.Modifier	= uint16_t(rand() % size(weaponModifiers	));//	std::min(enemyType*2, size(weaponModifiers));
+	currentEnemy.Armor	.Modifier	= uint16_t(rand() % size(armorModifiers		));//	std::min(enemyType*2, size( armorModifiers));
+	currentEnemy.Shield				= getArmorShield(currentEnemy.Armor);
 
 	SCharacterPoints finalEnemyPoints = calculateFinalPoints(currentEnemy);
 	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
@@ -445,9 +495,9 @@ void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus
 
 void applyArmorBonus(CCharacter& character)
 {
-	const std::string armorName = getArmorName(character.Armor, character.ArmorModifier);
-	applyCombatBonus(character, armorDefinitions[character.Armor].Points, armorName);
-	applyCombatBonus(character, armorModifiers[character.ArmorModifier].Points, armorName);
+	const std::string armorName = getArmorName(character.Armor);
+	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
+	applyCombatBonus(character, armorPoints, armorName);
 };
 
 //5736	// gasty.bellino@gmail.com
@@ -457,7 +507,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 	setupEnemy(currentEnemy, enemyType);
 
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
-	adventurer.Shield				= armorDefinitions[adventurer.Armor].Shield+armorModifiers[adventurer.ArmorModifier].Shield;
+	adventurer.Shield				= getArmorShield(adventurer.Armor);
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.

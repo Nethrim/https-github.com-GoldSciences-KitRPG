@@ -31,12 +31,12 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer			= CCharacter(CHARACTER_TYPE_PLAYER,	30, 50, 5, 100, Name);
-		adventurer.Weapon			= rand() % size(weaponDefinitions);	//%(size(weaponDefinitions)/5);
-		adventurer.Armor			= rand() % size(armorDefinitions);	//%(size(armorDefinitions)/5);
-		adventurer.WeaponModifier	= rand() % size(weaponModifiers);	//%(size(weaponModifiers)/2);
-		adventurer.ArmorModifier	= rand()%size(armorModifiers);
-		adventurer.Shield			= armorDefinitions[adventurer.Armor].Shield+armorModifiers[adventurer.ArmorModifier].Shield;
+		adventurer					= CCharacter(CHARACTER_TYPE_PLAYER,	30, 50, 5, 100, Name);
+		adventurer.Weapon	.Index		= (int16_t)(rand() % size(weaponDefinitions	));	//%(size(weaponDefinitions)/5);
+		adventurer.Armor	.Index		= (int16_t)(rand() % size(armorDefinitions	));	//%(size(armorDefinitions)/5);
+		adventurer.Weapon	.Modifier	= (int16_t)(rand() % size(weaponModifiers	));	//%(size(weaponModifiers)/2);
+		adventurer.Armor	.Modifier	= (int16_t)(rand() % size(armorModifiers	));
+		adventurer.Shield				= getArmorShield(adventurer.Armor);
 
 		SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 		adventurer.Points.HP = finalPoints.MaxHP;

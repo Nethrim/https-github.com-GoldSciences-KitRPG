@@ -70,11 +70,29 @@ static const CWeapon weaponDefinitions[] =
 ,	{	{	20,	2,	10,		50,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Death Scythe"					}
 };
 
-static std::string getWeaponName(uint32_t weaponDefinition, uint32_t weaponModifier)
+static std::string getWeaponName(const SWeapon& weapon)
 {
 	char formattedName[128] = {};
-	sprintf_s(formattedName, weaponModifiers[weaponModifier].Name.c_str(), weaponDefinitions[weaponDefinition].Name.c_str());
+	sprintf_s(formattedName, weaponModifiers[weapon.Modifier].Name.c_str(), weaponDefinitions[weapon.Index].Name.c_str());
 	return formattedName;
+}
+
+static WEAPON_EFFECT getWeaponEffect(const SWeapon& weapon) {
+	return WEAPON_EFFECT(weaponDefinitions[weapon.Index].Effect | weaponModifiers[weapon.Modifier].Effect);
+}
+
+static STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
+	return STATUS_TYPE(weaponDefinitions[weapon.Index].Status | weaponModifiers[weapon.Modifier].Status);
+}
+
+static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
+	SCharacterPoints weaponPoints = {};
+	weaponPoints.MaxHP	= weaponDefinitions[weapon.Index].Points.MaxHP	+	weaponModifiers[weapon.Modifier].Points.MaxHP;
+	weaponPoints.Attack	= weaponDefinitions[weapon.Index].Points.Attack	+	weaponModifiers[weapon.Modifier].Points.Attack;
+	weaponPoints.Hit	= weaponDefinitions[weapon.Index].Points.Hit	+	weaponModifiers[weapon.Modifier].Points.Hit;
+	weaponPoints.HP		= weaponDefinitions[weapon.Index].Points.HP		+	weaponModifiers[weapon.Modifier].Points.HP;
+	weaponPoints.Coins	= weaponDefinitions[weapon.Index].Points.Coins	+	weaponModifiers[weapon.Modifier].Points.Coins;
+	return weaponPoints;
 }
 
 #endif // __WEAPON_H__928364890236498716349825347895236__

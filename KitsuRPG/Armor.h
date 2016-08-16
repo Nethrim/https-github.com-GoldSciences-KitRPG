@@ -8,7 +8,7 @@
 
 
 enum ARMOR_EFFECT
-{	ARMOR_EFFECT_NONE
+{	ARMOR_EFFECT_NONE		= 0
 ,	ARMOR_EFFECT_REFLECT	= 0x01
 };
 
@@ -44,11 +44,33 @@ static const CArmor armorDefinitions[] =
 ,	{	10,	100, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Force Field"			}
 };
 
-static std::string getArmorName(uint32_t armorDefinition, uint32_t armorModifier)
+static std::string getArmorName(const SArmor& armor)
 {
 	char formattedName[128] = {};
-	sprintf_s(formattedName, armorModifiers[armorModifier].Name.c_str(), armorDefinitions[armorDefinition].Name.c_str());
+	sprintf_s(formattedName, armorModifiers[armor.Modifier].Name.c_str(), armorDefinitions[armor.Index].Name.c_str());
 	return formattedName;
+}
+
+static ARMOR_EFFECT getArmorEffect(const SArmor& armor) {
+	return ARMOR_EFFECT(armorDefinitions[armor.Index].Effect | armorModifiers[armor.Modifier].Effect);
+}
+
+static int32_t getArmorShield(const SArmor& armor) {
+	return armorDefinitions[armor.Index].Shield + armorModifiers[armor.Modifier].Shield;
+}
+
+static int32_t getArmorAbsorption(const SArmor& armor) {
+	return armorDefinitions[armor.Index].Absorption + armorModifiers[armor.Modifier].Absorption;
+}
+
+static SCharacterPoints getArmorPoints(const SArmor& armor) {
+	SCharacterPoints armorPoints = {};
+	armorPoints.MaxHP	= armorDefinitions[armor.Index].Points.MaxHP	+	armorModifiers[armor.Modifier].Points.MaxHP;
+	armorPoints.Attack	= armorDefinitions[armor.Index].Points.Attack	+	armorModifiers[armor.Modifier].Points.Attack;
+	armorPoints.Hit		= armorDefinitions[armor.Index].Points.Hit		+	armorModifiers[armor.Modifier].Points.Hit;
+	armorPoints.HP		= armorDefinitions[armor.Index].Points.HP		+	armorModifiers[armor.Modifier].Points.HP;
+	armorPoints.Coins	= armorDefinitions[armor.Index].Points.Coins	+	armorModifiers[armor.Modifier].Points.Coins;
+	return armorPoints;
 }
 
 #endif // __ARMOR_H__928364982734698273462834__

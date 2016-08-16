@@ -129,6 +129,18 @@ enum PROFESSION
 ,	PROFESSION_MAGE
 };
 
+struct SWeapon
+{
+	uint16_t Index;
+	uint16_t Modifier;
+};
+
+struct SArmor
+{
+	uint16_t Index;
+	uint16_t Modifier;
+};
+
 // POD to store all the character data that is not a string or object.
 struct SCharacter
 {
@@ -138,10 +150,8 @@ struct SCharacter
 	SCombatStatus		CombatStatus	= {};
 	SCharacterInventory	Inventory		= {};
 	SCharacterScore		Score			= {};	
-	uint32_t			Weapon			= 0;
-	uint32_t			WeaponModifier	= 0;
-	uint32_t			Armor			= 0;
-	uint32_t			ArmorModifier	= 0;
+	SWeapon				Weapon			= {0,0};
+	SArmor				Armor			= {0,0};
 	int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
 	PROFESSION			Profession		= PROFESSION_CIVILIAN;
 
@@ -153,10 +163,8 @@ struct SCharacter
 		,CombatStatus	({})
 		,Inventory		({})
 		,Score			({})
-		,Weapon			(0)
-		,WeaponModifier	(0)
-		,Armor			(0)
-		,ArmorModifier	(0)
+		,Weapon			({0,0})
+		,Armor			({0,0})
 		,Shield			(0)
 	{};
 
