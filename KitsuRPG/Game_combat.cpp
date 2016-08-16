@@ -175,16 +175,25 @@ int attack(CCharacter& attacker, CCharacter& target)
 			if(0 == (bitStatus & attackerWeaponStatus) )
 				continue;
 
+			std::string text;
 			if((rand()%100) < targetArmorAbsorption)
 			{
-				printf("%s absorbs the status inflicted by the weapon.\n", targetArmorName.c_str());
+				switch(bitStatus) {
+				case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
+				case STATUS_TYPE_BLIND		:	text = "Blind"			;	break;
+				case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
+				case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
+				case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
+				default:						text = "Unknown Status"	;	break;
+				}
+
+				printf("%s absorbs \"%s\" inflicted by %s.\n", targetArmorName.c_str(), text.c_str(), attackerWeaponName.c_str());
 				continue;
 			}
 
-			std::string text;
 			int turns = 2;
 				 
-			switch(1<<i) {
+			switch(bitStatus) {
 			case STATUS_TYPE_STUN		:	text = "%s will be stunned by %s for the next %u turns.\n"	; break;
 			case STATUS_TYPE_BLIND		:	text = "%s will be blind by %s for the next %u turns.\n"	; break;
 			case STATUS_TYPE_BLEEDING	:	text = "%s will bleed by %s for the next %u turns.\n"		; break;
