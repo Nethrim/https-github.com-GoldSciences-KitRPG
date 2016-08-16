@@ -27,7 +27,7 @@ typedef CArmor CArmorModifier;
 static const CArmorModifier armorModifiers[] = 
 {	{	0,	0, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"%s"					}
 ,	{	0,	0, {	0,	1,	0,		0,	0},	ARMOR_EFFECT_NONE,		"%s of Regeneration"	}
-,	{	0,	0, {	0,	1,	0,		0,	0},	ARMOR_EFFECT_REFLECT,	"Reflective %s"			}
+,	{	0,	0, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_REFLECT,	"Reflective %s"			}
 };
 
 static const CArmor armorDefinitions[] = 	
