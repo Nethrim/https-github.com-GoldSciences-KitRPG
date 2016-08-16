@@ -71,13 +71,17 @@ static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDe
 	return applyShieldableDamage(target, damageDealt, getArmorAbsorption(target.Armor), sourceName);
 }
 
-static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt) {
+static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) {
+	
+	if( 0 == damageDealt || 0 == (getArmorEffect(targetReflecting.Armor) & ARMOR_EFFECT_REFLECT))
+		return 0;
+
 	const std::string	targetArmorName			= getArmorName	(targetReflecting.Armor);
 	const std::string	attackerArmorName		= getArmorName	(attacker.Armor);
 	if(damageDealt > 0)
-		printf("%s reflects %u damage with %s.\n", targetReflecting.Name.c_str(), damageDealt, targetArmorName.c_str());
+		printf("%s reflects %u damage from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
 	else if(damageDealt < 0)
-		printf("%s reflects %u health with %s.\n", targetReflecting.Name.c_str(), damageDealt, targetArmorName.c_str());
+		printf("%s reflects %u health from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
 	int32_t finalPassthroughDamage = applyShieldableDamage(attacker, damageDealt, targetArmorName);
 	int reflectedDamage = damageDealt-finalPassthroughDamage;
 	if(reflectedDamage)
@@ -86,11 +90,61 @@ static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflect
 		if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
 		{
 			printf("\n%s causes a recursive reflection with %s.\n", attackerArmorName.c_str(), targetArmorName.c_str());
-			applyArmorReflect(targetReflecting, attacker, reflectedDamage);
+			applyArmorReflect(targetReflecting, attacker, reflectedDamage, attackerArmorName);
 		}
 	}
 
 	return finalPassthroughDamage;
+}
+
+STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int32_t turnCount, const std::string& sourceName)
+{
+	if(weaponStatus == STATUS_TYPE_NONE)
+		return STATUS_TYPE_NONE;
+
+	const int32_t targetArmorAbsorption	= getArmorAbsorption(target.Armor);
+	const std::string targetArmorName	= getArmorName(target.Armor);
+
+	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
+
+	for(int i=0; i<MAX_STATUS_COUNT; i++)
+	{
+		STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
+		if(0 == (bitStatus & weaponStatus) )
+			continue;
+
+		std::string text;
+		if((rand()%100) < targetArmorAbsorption)
+		{
+			switch(bitStatus) {
+			case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
+			case STATUS_TYPE_BLIND		:	text = "Blind"			;	break;
+			case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
+			case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
+			case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
+			default:						text = "Unknown Status"	;	break;
+			}
+
+			printf("%s absorbs \"%s\" inflicted by %s.\n", targetArmorName.c_str(), text.c_str(), sourceName.c_str());
+			continue;
+		}
+
+		addStatus(target.CombatStatus, bitStatus, turnCount);
+		appliedStatus = (STATUS_TYPE)(appliedStatus|bitStatus);
+
+		switch(bitStatus) {
+		case STATUS_TYPE_STUN		:	text = "%s will be stunned by %s for the next %u turns.\n"	; break;
+		case STATUS_TYPE_BLIND		:	text = "%s will be blind by %s for the next %u turns.\n"	; break;
+		case STATUS_TYPE_BLEEDING	:	text = "%s will bleed by %s for the next %u turns.\n"		; break;
+		case STATUS_TYPE_BURN		:	text = "%s will burn by %s for the next %u turns.\n"		; break;
+		case STATUS_TYPE_POISON		:	text = "%s will be poisoned by %s for the next %u turns.\n"	; break;
+		default:						text = "An unknown status was added to the character.\n"	; break;
+		}
+			
+		printf(text.c_str(), target.Name.c_str(), sourceName.c_str(), turnCount);
+	}
+
+	return appliedStatus;
 }
 
 // This function returns the damage dealt to the target
@@ -162,51 +216,13 @@ int attack(CCharacter& attacker, CCharacter& target)
 			attacker.Points.Coins	+= actualCoinsGained;
 		}
 
-		if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
-		{
-			int reflectedDamage = damageDealt-finalPassthroughDamage;
-			applyArmorReflect(attacker, target, reflectedDamage);
-		}
+		// Call applyArmorReflect which will cancel automatically if reflect is not available in target's armor.
+		int shieldedDamage = damageDealt-finalPassthroughDamage;
+		applyArmorReflect(attacker, target, shieldedDamage, attackerWeaponName);
 
 		const int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor);
-		for(int i=0; i<MAX_STATUS_COUNT; i++)
-		{
-			STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
-			if(0 == (bitStatus & attackerWeaponStatus) )
-				continue;
-
-			std::string text;
-			if((rand()%100) < targetArmorAbsorption)
-			{
-				switch(bitStatus) {
-				case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
-				case STATUS_TYPE_BLIND		:	text = "Blind"			;	break;
-				case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
-				case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
-				case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
-				default:						text = "Unknown Status"	;	break;
-				}
-
-				printf("%s absorbs \"%s\" inflicted by %s.\n", targetArmorName.c_str(), text.c_str(), attackerWeaponName.c_str());
-				continue;
-			}
-
-			int turns = 2;
-				 
-			switch(bitStatus) {
-			case STATUS_TYPE_STUN		:	text = "%s will be stunned by %s for the next %u turns.\n"	; break;
-			case STATUS_TYPE_BLIND		:	text = "%s will be blind by %s for the next %u turns.\n"	; break;
-			case STATUS_TYPE_BLEEDING	:	text = "%s will bleed by %s for the next %u turns.\n"		; break;
-			case STATUS_TYPE_BURN		:	text = "%s will burn by %s for the next %u turns.\n"		; break;
-			case STATUS_TYPE_POISON		:	text = "%s will be poisoned by %s for the next %u turns.\n"	; break;
-			default:						text = "An unknown status was added to the character.\n"	; break;
-			}
-			
-			addStatus(target.CombatStatus, bitStatus, 1);
-			printf(text.c_str(), target.Name.c_str(), attackerWeaponName.c_str(), turns-1);
-		}
-
-
+		int turns = 1;
+		applyAttackStatus(target, attackerWeaponStatus, turns, attackerWeaponName);
 	}
 	else 
 		printf("%s misses the attack!\n", attacker.Name.c_str());
@@ -690,16 +706,10 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		{
 			finalPassthroughDamage  = applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
 			reflectedDamage			= itemEffectValueSelf - finalPassthroughDamage;
-			if(reflectedDamage)
-			{
-				if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
-				{
-					printf("\n%s reflects damage from %s.\n", getArmorName(thrower.Armor).c_str(), itemDescription.Name.c_str());
-					applyArmorReflect(thrower, thrower, reflectedDamage);
-				}
-			}
+			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
+
 			if(bAddStatus)
-				addStatus(thrower.CombatStatus, grenadeStatus, 1*itemDescription.Grade);
+				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_SELF;
 			printf("%s throws the grenade too close...\n"		
@@ -709,28 +719,16 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		{
 			finalPassthroughDamage  = applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
 			reflectedDamage			= (itemEffectValue>>1) - finalPassthroughDamage;
-			if(reflectedDamage)
-			{
-				if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
-				{
-					printf("\n%s reflects damage from %s.\n", targetArmorName.c_str(), itemDescription.Name.c_str());
-					applyArmorReflect(thrower, target, reflectedDamage);
-				}
-			}
+			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
+
 			finalPassthroughDamage  = applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
 			reflectedDamage			= (itemEffectValueSelf>>1) - finalPassthroughDamage;
-			if(reflectedDamage)
-			{
-				if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
-				{
-					printf("\n%s reflects damage from %s.\n", getArmorName(thrower.Armor).c_str(), itemDescription.Name.c_str());
-					applyArmorReflect(thrower, thrower, reflectedDamage);
-				}
-			}
+			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
+
 			if(bAddStatus)
 			{
-				addStatus(target.CombatStatus	, grenadeStatus, 2*itemDescription.Grade);
-				addStatus(thrower.CombatStatus	, grenadeStatus, 1*itemDescription.Grade);
+				applyAttackStatus(target, grenadeStatus, (uint32_t)(2*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
 			}
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
@@ -740,16 +738,9 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		{
 			finalPassthroughDamage  = applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
 			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
-			if(reflectedDamage)
-			{
-				if(targetArmorEffect & ARMOR_EFFECT_REFLECT)
-				{
-					printf("\n%s reflects damage from %s.\n", targetArmorName.c_str(), itemDescription.Name.c_str());
-					applyArmorReflect(thrower, target, reflectedDamage);
-				}
-			}
+			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
 			if(bAddStatus)
-				addStatus(target.CombatStatus, grenadeStatus, (uint32_t)(3.6f*itemDescription.Grade));
+				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemDescription.Grade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);

@@ -10,6 +10,7 @@
 enum ARMOR_EFFECT
 {	ARMOR_EFFECT_NONE		= 0
 ,	ARMOR_EFFECT_REFLECT	= 0x01
+,	ARMOR_EFFECT_RECHARGE	= 0x02
 };
 
 
@@ -31,17 +32,17 @@ static const CArmorModifier armorModifiers[] =
 };
 
 static const CArmor armorDefinitions[] = 	
-{	{	0,	0, {	0,	0,	10,		0,	0},	ARMOR_EFFECT_NONE, "Underwear"				}
-,	{	1,	10, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Robe"					}
-,	{	2,	20, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Leather Armor"			}
-,	{	3,	30, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Hard Leather Armor"		}
-,	{	4,	40, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Wooden Armor"			}
-,	{	5,	50, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Chainmail Armor"		}
-,	{	6,	60, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Plate Armor"			}
-,	{	7,	70, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Diamond Armor"			}
-,	{	8,	80, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Dragon Scale Armor"		}
-,	{	9,	90, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Stardust Armor"			}
-,	{	10,	100, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE, "Force Field"			}
+{	{	0,	0, {	0,	0,	10,		0,	0},	ARMOR_EFFECT_NONE,		"Underwear"				}
+,	{	1,	10, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Robe"					}
+,	{	2,	20, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Leather Armor"			}
+,	{	3,	30, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Hard Leather Armor"	}
+,	{	4,	40, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Wooden Armor"			}
+,	{	5,	50, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Chainmail Armor"		}
+,	{	6,	60, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Plate Armor"			}
+,	{	7,	70, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Diamond Armor"			}
+,	{	8,	80, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Dragon Scale Armor"	}
+,	{	9,	90, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Stardust Armor"		}
+,	{	10,	100, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_RECHARGE, "Force Field"			}
 };
 
 static std::string getArmorName(const SArmor& armor)
