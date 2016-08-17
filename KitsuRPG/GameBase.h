@@ -106,7 +106,7 @@ struct SCombatStatus
 	};
 };
 
-#define MAX_INVENTORY_SLOTS 9
+#define MAX_INVENTORY_SLOTS 128
 
 struct SCharacterInventory
 {

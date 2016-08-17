@@ -1,5 +1,7 @@
 #include <string>
 
+#include "Menu.h"
+
 #ifndef __ITEM_H__98214809271346928734293846__
 #define __ITEM_H__98214809271346928734293846__
 
@@ -27,9 +29,15 @@ struct CItem
 {
 	ITEM_TYPE		Type;
 	PROPERTY_TYPE	Property;
-	int				Grade;
-	int				Price;
+	int32_t			Grade;
+	int32_t			Price;
 	std::string		Name;
+};
+
+struct SItem
+{
+	int32_t Index;
+	int32_t Grade;
 };
 
 static const CItem itemDescriptions[] = 
@@ -64,4 +72,19 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_POISON	,	3,	30	,	"Large Poison Grenade"			}
 };
 
+template<size_t _Size>
+static int initializeItemMenu(SMenuItem<uint32_t>(&menuItems)[_Size])
+{
+	char itemOption[128] = {};
+	static const size_t descriptionCount = size(itemDescriptions);
+	for(uint32_t i=0, count = descriptionCount-1; i<count; ++i)
+	{
+		sprintf_s(itemOption, "- $%.2u Coins - %s", itemDescriptions[i+1].Price, itemDescriptions[i+1].Name.c_str());
+		menuItems[i].ReturnValue	= i+1;
+		menuItems[i].Text			= itemOption;
+	}
+	menuItems[descriptionCount-1].ReturnValue	= descriptionCount;
+	menuItems[descriptionCount-1].Text		= "Leave the bar";
+	return 0;
+};
 #endif // __ITEM_H__98214809271346928734293846__

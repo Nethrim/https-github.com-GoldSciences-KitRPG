@@ -12,6 +12,9 @@ bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, d
 // Returns final passthrough damage (not blocked by shield) to use by vampire effect.
 int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName)
 {
+	if(0 >= target.Points.HP)	// This character is already dead
+		return 0;
+
 	const std::string	targetArmorName		= getArmorName	(target.Armor);
 	const int32_t		targetArmorShield	= getArmorShield(target.Armor);
 	
@@ -85,6 +88,9 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 
 void applyTurnStatus(CCharacter& character)
 {
+	if(0 >= character.Points.HP)	// This character is already dead
+		return;
+
 	int amount=0;
 	const SCharacterPoints finalPoints = calculateFinalPoints(character);
 	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
@@ -102,6 +108,9 @@ void applyTurnStatus(CCharacter& character)
 
 void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
 {
+	if(0 >= character.Points.HP)	// This character is already dead
+		return;
+
 	if(combatBonus.HP)
 	{
 		if(combatBonus.HP > 0 && (character.Points.HP >= calculateFinalPoints(character).MaxHP)) {}
@@ -126,6 +135,9 @@ void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus
 
 void applyArmorBonus(CCharacter& character)
 {
+	if(0 >= character.Points.HP)	// This character is already dead
+		return;
+
 	const std::string armorName = getArmorName(character.Armor);
 	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
 	applyCombatBonus(character, armorPoints, armorName);
@@ -150,6 +162,9 @@ void applyArmorBonus(CCharacter& character)
 
 void applyTurnStatusAndBonusesAndSkipTurn(CCharacter& adventurer)
 {
+	if(0 >= adventurer.Points.HP)	// This character is already dead
+		return;
+
 	printf("\n");
 	applyTurnStatus(adventurer);
 	applyCombatBonus(adventurer, adventurer.CombatBonus.Points, "Turn Combat Bonus");
@@ -204,7 +219,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 	
 	int32_t absorbChance;
 	if(targetArmorEffect & ARMOR_EFFECT_IMPENETRABLE)
-		absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*2*(target.Shield/(double)targetArmorShield))) : 0;
+		absorbChance = targetArmorShield ? std::min(((int32_t)(targetArmorAbsorption*2*(target.Shield/(double)targetArmorShield))), 100) : 0;
 	else
 		absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*(target.Shield/(double)targetArmorShield))) : 0;
 
@@ -414,7 +429,7 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getWeaponName(loser.Weapon).c_str());
 		}
 		else
-			printf("You don't get to recover %s from %s.\n", loserWeaponName.c_str(), loser.Name.c_str());
+			printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
 	}
 
 	SArmor oldWinnerArmor		= winner.Armor;
@@ -449,7 +464,7 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), getArmorName(loser.Armor).c_str());
 		}
 		else
-			printf("You don't get to recover %s from %s.\n", loserArmorName.c_str(), loser.Name.c_str());
+			printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
 	}
 
 	winner.Points.MaxHP += winner.Points.Attack;
@@ -518,7 +533,7 @@ void printStatuses(const CCharacter& character)
 
 TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 {
-	static const SMenuItem combatOptions[] =
+	static const SMenuItem<TURN_ACTION> combatOptions[] =
 	{ { TURN_ACTION_ATTACK		, "Attack"		}
 	, { TURN_ACTION_INVENTORY	, "Inventory"	}
 	, { TURN_ACTION_RUN			, "Run"			}
@@ -535,7 +550,7 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 		printf("\n-- %s HP is: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s.\nArmor: %s.\n",  currentEnemy	.Name.c_str(), currentEnemy	.Points.HP,	currentEnemy.Shield,	 enemyPoints	.Hit, enemyPoints	.Attack,	currentEnemy	.CombatBonus.TurnsLeft.Hit,currentEnemy	.CombatBonus.TurnsLeft.Attack,	getWeaponName(currentEnemy.Weapon).c_str(), getArmorName(currentEnemy.Armor).c_str());
 		printStatuses(currentEnemy);
 
-		const TURN_ACTION actionChoice = (TURN_ACTION)displayMenu("It's your turn to make a move", combatOptions);
+		const TURN_ACTION actionChoice = displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);
 	}
 	return turnOutcome;
@@ -857,26 +872,28 @@ bool useItems(CCharacter& user, CCharacter& target)
 		return false;
 	}
 
+	SMenuItem<uint32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
+	char itemOption[128] = {};
+	for(uint32_t i=0; i<user.Inventory.ItemCount; ++i)
+	{
+		sprintf_s(itemOption, "- x%.2u %s", user.Inventory.Slots[i].ItemCount, itemDescriptions[user.Inventory.Slots[i].ItemIndex].Name.c_str());
+		itemOptions[i].ReturnValue	= i;
+ 		itemOptions[i].Text			= itemOption;
+	}
+	itemOptions[user.Inventory.ItemCount].ReturnValue	= user.Inventory.ItemCount;
+	itemOptions[user.Inventory.ItemCount].Text			= "Back to combat options";
+
 	if(user.Type == CHARACTER_TYPE_PLAYER) 
 	{
-		while(true)
-		{
-			printf("- Type %u to close your inventory.\n", (uint32_t)(inventorySize+1));
-			showInventory(user);
+		indexInventory = displayMenu(user.Inventory.ItemCount+1, "Select an item to use", itemOptions);
 
-			indexInventory = (uint32_t)(getNumericInput()-1);
-
-			if(indexInventory == inventorySize) // exit option
-				break;
-			else if(indexInventory >= user.Inventory.ItemCount)	// invalid index means it's an invalid option
-				printf("Invalid answer. Answer again...\n");
-			else if (user.Inventory.Slots[indexInventory].ItemCount <= 0)
-				printf("You don't have anymore of that. Use something else...\n"); 
-			else {
-				// if we reached here it means that the input was valid so we select the description and exit the loop
-				bUsedItem = true;
-				break;
-			}
+		if(indexInventory == user.Inventory.ItemCount) // exit option
+			bUsedItem = false;
+		else if (user.Inventory.Slots[indexInventory].ItemCount <= 0)
+			printf("You don't have anymore of that. Use something else...\n"); 
+		else {
+			// if we reached here it means that the input was valid so we select the description and exit the loop
+			bUsedItem = true;
 		}
 	}
 	else // not a player so execute choice by AI

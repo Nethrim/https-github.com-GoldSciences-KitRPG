@@ -23,7 +23,7 @@ void main()
 	std::string Name;
 	getline(std::cin, Name);
 
-	static const SMenuItem playAgainMenu[]
+	static const SMenuItem<uint32_t> playAgainMenu[]
 	{	{ 1,	"Yes"	}
 	,	{ 0,	"No"	}
 	};

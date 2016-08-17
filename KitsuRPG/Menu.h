@@ -5,15 +5,16 @@
 #ifndef __MENU_H__926349827164392740982169862598423__
 #define __MENU_H__926349827164392740982169862598423__
 
+template <typename _ReturnType>
 class SMenuItem
 {
 public:
-	unsigned int	ReturnValue;
+	_ReturnType		ReturnValue;
 	std::string		Text;
 };
 
-template <size_t _ArraySize>
-int displayMenu(size_t optionCount, const std::string& title, const SMenuItem (&menuItems)[_ArraySize])
+template <size_t _ArraySize, typename _ReturnType>
+_ReturnType displayMenu(size_t optionCount, const std::string& title, const SMenuItem<_ReturnType>(&menuItems)[_ArraySize])
 {
 	optionCount = (_ArraySize > optionCount) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
@@ -40,8 +41,8 @@ int displayMenu(size_t optionCount, const std::string& title, const SMenuItem (&
 	}
 }
 
-template <size_t _Size>
-int displayMenu(const std::string& title, const SMenuItem (&menuItems)[_Size]) {
+template <size_t _Size, typename _ReturnType>
+_ReturnType displayMenu(const std::string& title, const SMenuItem<_ReturnType>(&menuItems)[_Size], uint32_t maxItems = ~0U) {
 	return displayMenu(_Size, title, menuItems);
 }
 

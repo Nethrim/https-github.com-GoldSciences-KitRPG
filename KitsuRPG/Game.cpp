@@ -8,7 +8,7 @@
 void tavern(CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
-	static const SMenuItem tavernOptions[] =
+	static const SMenuItem<int> tavernOptions[] =
 	{ { 1, "Rest"						}
 	, { 2, "Look for a mercenary job"	}
 	, { 3, "Go for a drink"				}
@@ -32,21 +32,22 @@ void tavern(CCharacter& adventurer)
 
 void mercenaryJob(CCharacter& adventurer)
 {
-	SMenuItem jobOptions[size(enemyDefinitions)];
-	for(uint32_t i=0, count = size(enemyDefinitions)-1; i<count; ++i)
+	static const size_t enemyCount = size(enemyDefinitions);
+	SMenuItem<uint32_t> jobOptions[enemyCount];
+	for(uint32_t i=0, count = enemyCount-1; i<count; ++i)
 	{
 		jobOptions[i].ReturnValue	= i+1;
 		jobOptions[i].Text			= "Level " + std::to_string(i+1);
 	}
-	jobOptions[size(enemyDefinitions)-1].ReturnValue	= size(enemyDefinitions);
-	jobOptions[size(enemyDefinitions)-1].Text			= "Back to tavern";
+	jobOptions[enemyCount-1].ReturnValue	= enemyCount;
+	jobOptions[enemyCount-1].Text			= "Back to tavern";
 
 	const uint32_t enemyType = displayMenu("You decide to enroll for a mercenary job", jobOptions);
 
 	// Set bCombat to true and the enemy type for executing the combat logic.
 	bool bCombat = false;
 
-	if(size(enemyDefinitions) == enemyType)	// This option cancels the loop which causes to exit to the tavern.
+	if(enemyCount == enemyType)	// This option cancels the loop which causes to exit to the tavern.
 		printf("Welcome back, %s.\n", adventurer.Name.c_str());
 	else {
 		printf("You challenge a %s.\n", enemyDefinitions[enemyType].Name.c_str()); 
@@ -59,22 +60,18 @@ void bar(CCharacter& adventurer)
 	printf("\nDo you want to buy some drinks?\n\n");
 
 	static const size_t descriptionCount = size(itemDescriptions);
+	SMenuItem<uint32_t> itemOptions[descriptionCount];
+	static const int initialized = initializeItemMenu(itemOptions);
+
+	char menuTitle[128] = {};
 	while (true)	// break the loop to leave the shop
 	{
-		printf("-- You have %u coins.\n", adventurer.Points.Coins);
-		printf("Type %u to leave the bar.\n\n", (uint32_t)(descriptionCount));
-		for(size_t i=1; i<descriptionCount; i++)	// Print available items
-			printf("%u: Buy %s for %u coins.\n", i, itemDescriptions[i].Name.c_str(), itemDescriptions[i].Price);
-		printf("\n");
-
-		const uint32_t indexItem = (uint32_t)getNumericInput();
-		
-		if( indexItem == (descriptionCount) ) {
+		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Coins);
+		const uint32_t indexItem = displayMenu(menuTitle, itemOptions);
+		if( indexItem == descriptionCount ) {
 			printf("You leave the bar.\n");
 			break;
 		}
-		else if(indexItem > descriptionCount)
-			printf("You can't buy something that doesn't exist!\n");
 		else 
 		{
 			int itemPrice	= itemDescriptions[indexItem].Price;	// Get a copy of this value because we use it very often.

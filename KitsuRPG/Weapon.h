@@ -36,12 +36,12 @@ static const CWeaponModifier weaponModifiers[] =
 ,	{	{	0,	0,	0,		0,	0	},	WEAPON_EFFECT_STEAL	,	STATUS_TYPE_NONE	,	"Bonny and Clyde's %s"	}
 ,	{	{	3,	0,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Soldier's %s"			}
 ,	{	{	0,	0,	0,		0,	3	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Assassin's %s"			}
-,	{	{	0,	0,	0,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BURN	,	"Plasma %s"				}	
+,	{	{	0,	0,	0,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BURN	,	"Laser %s"				}	
 ,	{	{	0,	0,	0,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_POISON	,	"Acid %s"				}
 ,	{	{	0,	3,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Saint's %s"			}
 ,	{	{	4,	0,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Executioner's %s"		}
 ,	{	{	0,	0,	0,		0,	4	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Stalker's %s"			}
-,	{	{	0,	0,	0,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BURN	,	"Laser %s"				}	
+,	{	{	0,	0,	0,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BURN	,	"Plasma %s"				}	
 ,	{	{	0,	0,	0,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_POISON	,	"Radiactive %s"			}	
 ,	{	{	0,	4,	0,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE	,	"Angel's %s"			}
 ,	{	{	0,	0,	0,		0,	0	},	WEAPON_EFFECT_LEECH	,	STATUS_TYPE_NONE	,	"Vampire's %s"			}
