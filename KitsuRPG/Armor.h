@@ -8,9 +8,10 @@
 
 
 enum ARMOR_EFFECT
-{	ARMOR_EFFECT_NONE		= 0
-,	ARMOR_EFFECT_REFLECT	= 0x01
-,	ARMOR_EFFECT_RECHARGE	= 0x02
+{	ARMOR_EFFECT_NONE			= 0
+,	ARMOR_EFFECT_REFLECT		= 0x01
+,	ARMOR_EFFECT_RECHARGE		= 0x02
+,	ARMOR_EFFECT_IMPENETRABLE	= 0x04
 };
 
 
@@ -29,6 +30,7 @@ static const CArmorModifier armorModifiers[] =
 {	{	0,	0, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"%s"					}
 ,	{	0,	0, {	0,	1,	0,		0,	0},	ARMOR_EFFECT_NONE,		"%s of Regeneration"	}
 ,	{	0,	0, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_REFLECT,	"Reflective %s"			}
+,	{	0,	0, {	0,	1,	0,		0,	0},	ARMOR_EFFECT_RECHARGE,	"Regenerative %s"		}
 };
 
 static const CArmor armorDefinitions[] = 	
@@ -42,7 +44,7 @@ static const CArmor armorDefinitions[] =
 ,	{	7,	70, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Diamond Armor"			}
 ,	{	8,	80, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Dragon Scale Armor"	}
 ,	{	9,	90, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_NONE,		"Stardust Armor"		}
-,	{	10,	100, {	0,	0,	0,		0,	0},	ARMOR_EFFECT_RECHARGE, "Force Field"			}
+,	{	10,	100, {	0,	0,	0,		0,	0},	(ARMOR_EFFECT)(ARMOR_EFFECT_RECHARGE | ARMOR_EFFECT_IMPENETRABLE),	"Force Field"	}
 };
 
 static std::string getArmorName(const SArmor& armor)

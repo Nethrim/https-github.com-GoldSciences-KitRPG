@@ -12,15 +12,30 @@ bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, d
 // Returns final passthrough damage (not blocked by shield) to use by vampire effect.
 int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName)
 {
-	//int32_t scaledDamage		= damageDealt		*100;
-	//int32_t scaledAbsorption	= absorptionRate	*100;
+	const std::string	targetArmorName		= getArmorName	(target.Armor);
+	const int32_t		targetArmorShield	= getArmorShield(target.Armor);
+	
+	// Impenetrable armors always have 100% 
+	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
+	{
+		if(target.Shield)
+			printf("%s damage absorption rate for %s is constant %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
+	}
+	else
+	{	
+		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
+		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
+		if(targetArmorShield)	
+			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Shield/(double)targetArmorShield)), 1) : 0;
+		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
+	}
 
-	const double absorptionFraction = absorptionRate ? (0.01*absorptionRate) : 0.0;
+	const double	absorptionFraction	= absorptionRate ? (0.01*absorptionRate) : 0.0;
 	int shieldedDamage		= (int)(damageDealt * absorptionFraction);
 	int passthroughDamage	= (int)(damageDealt * (1.0-absorptionFraction));
 	int totalDamage			= shieldedDamage+passthroughDamage;
 	
-	printf("Absorption rate: %%%f. Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u.\n", (float)(absorptionFraction*100), shieldedDamage, passthroughDamage, damageDealt, totalDamage);
+	printf("Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u.\n", shieldedDamage, passthroughDamage, damageDealt, totalDamage);
 	if( totalDamage < damageDealt )
 	{
 		int errorDamage = damageDealt-totalDamage;
@@ -67,6 +82,81 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	return finalPassthroughDamage;
 }
 
+void applyTurnStatus(CCharacter& character)
+{
+	int amount=0;
+	const SCharacterPoints finalPoints = calculateFinalPoints(character);
+	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
+	{
+		switch(character.CombatStatus.Status[i])
+		{
+		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
+		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
+		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
+		//case STATUS_TYPE_STUN:		break;
+		//case STATUS_TYPE_BLIND:		break;
+		}
+	}
+};
+
+void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
+{
+	if(combatBonus.HP)
+	{
+		if(combatBonus.HP > 0 && (character.Points.HP >= calculateFinalPoints(character).MaxHP)) {}
+		else 
+		{
+			if(combatBonus.HP > 0)
+				printf("%s gains %u HP from %s.\n", character.Name.c_str(), combatBonus.HP, sourceName.c_str());
+			else if( combatBonus.HP < 0)
+				printf("%s loses %u HP from %s.\n", character.Name.c_str(), combatBonus.HP*-1, sourceName.c_str());
+			character.Points.HP		+= combatBonus.HP;
+		}
+	}
+	if(combatBonus.Coins)
+	{
+		if(combatBonus.Coins > 0)
+			printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
+		else if( combatBonus.Coins < 0)
+			printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
+		character.Points.Coins	+= combatBonus.Coins;
+	}
+};
+
+void applyArmorBonus(CCharacter& character)
+{
+	const std::string armorName = getArmorName(character.Armor);
+	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
+	applyCombatBonus(character, armorPoints, armorName);
+	ARMOR_EFFECT armorBaseEffect		= armorDefinitions	[character.Armor.Index]		.Effect;
+	ARMOR_EFFECT armorModifierEffect	= armorModifiers	[character.Armor.Modifier]	.Effect;
+	int32_t armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Shield;
+	int32_t armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Shield;
+	int32_t totalArmorShield = getArmorShield(character.Armor);
+	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < totalArmorShield) {
+		int32_t shieldToAdd		= totalArmorShield/20;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Shield));
+		character.Shield		+= shieldToAdd;
+		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
+	};
+	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < totalArmorShield) {
+		int32_t shieldToAdd		= totalArmorShield/20;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Shield));
+		character.Shield		+= shieldToAdd;
+		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
+	};
+};
+
+void applyTurnStatusAndBonusesAndSkipTurn(CCharacter& adventurer)
+{
+	applyTurnStatus(adventurer);
+	applyCombatBonus(adventurer, adventurer.CombatBonus.Points, "Turn Combat Bonus");
+	applyArmorBonus(adventurer);
+	adventurer.CombatBonus.NextTurn();
+	adventurer.CombatStatus.NextTurn();
+}
+
+
 static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName) {
 	return applyShieldableDamage(target, damageDealt, getArmorAbsorption(target.Armor), sourceName);
 }
@@ -108,6 +198,8 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 
+	int32_t absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*(target.Shield/(double)targetArmorShield))) : 0;
+	printf("%s final status absorb chance is %%%u.\n", targetArmorName.c_str(), absorbChance);
 	for(int i=0; i<MAX_STATUS_COUNT; i++)
 	{
 		STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
@@ -115,7 +207,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 			continue;
 
 		std::string text;
-		if((rand()%100) < (targetArmorAbsorption*(targetArmorShield/(float)target.Shield)) )
+		if((rand()%100) < absorbChance)
 		{
 			switch(bitStatus) {
 			case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
@@ -221,7 +313,6 @@ int attack(CCharacter& attacker, CCharacter& target)
 		int shieldedDamage = damageDealt-finalPassthroughDamage;
 		applyArmorReflect(attacker, target, shieldedDamage, attackerWeaponName);
 
-		const int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor);
 		int turns = 1;
 		applyAttackStatus(target, attackerWeaponStatus, turns, attackerWeaponName);
 	}
@@ -383,71 +474,6 @@ enum TURN_OUTCOME
 ,	TURN_OUTCOME_ESCAPE
 ,	TURN_OUTCOME_CANCEL
 };
-
-void applyTurnStatus(CCharacter& character)
-{
-	int amount=0;
-	const SCharacterPoints finalPoints = calculateFinalPoints(character);
-	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
-	{
-		switch(character.CombatStatus.Status[i])
-		{
-		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
-		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
-		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
-		//case STATUS_TYPE_STUN:		break;
-		//case STATUS_TYPE_BLIND:		break;
-		}
-	}
-};
-
-void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
-{
-	if(combatBonus.HP)
-	{
-		if(combatBonus.HP > 0 && (character.Points.HP >= calculateFinalPoints(character).MaxHP)) {}
-		else 
-		{
-			if(combatBonus.HP > 0)
-				printf("%s gains %u HP from %s.\n", character.Name.c_str(), combatBonus.HP, sourceName.c_str());
-			else if( combatBonus.HP < 0)
-				printf("%s loses %u HP from %s.\n", character.Name.c_str(), combatBonus.HP*-1, sourceName.c_str());
-			character.Points.HP		+= combatBonus.HP;
-		}
-	}
-	if(combatBonus.Coins)
-	{
-		if(combatBonus.Coins > 0)
-			printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
-		else if( combatBonus.Coins < 0)
-			printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
-		character.Points.Coins	+= combatBonus.Coins;
-	}
-};
-
-void applyArmorBonus(CCharacter& character)
-{
-	const std::string armorName = getArmorName(character.Armor);
-	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
-	applyCombatBonus(character, armorPoints, armorName);
-	ARMOR_EFFECT armorBaseEffect		= armorDefinitions	[character.Armor.Index]		.Effect;
-	ARMOR_EFFECT armorModifierEffect	= armorModifiers	[character.Armor.Modifier]	.Effect;
-	int32_t armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Shield;
-	int32_t armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Shield;
-	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < armorBaseShield) {
-		int32_t shieldToAdd	= std::max(1, armorBaseShield/20);
-		shieldToAdd				= std::min(shieldToAdd, armorBaseShield-character.Shield);
-		character.Shield		+= shieldToAdd;
-		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
-	};
-	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < armorModifierShield) {
-		int32_t shieldToAdd	= std::max(1, armorModifierShield/20);
-		shieldToAdd				= std::min(shieldToAdd, armorModifierShield-character.Shield);
-		character.Shield		+= shieldToAdd;
-		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
-	};
-};
-
 TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CCharacter& target)
 {
 	// If the action is valid then we execute it and break the current while() so the attack turn executes.
@@ -463,13 +489,8 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
-	if(outcome == TURN_OUTCOME_CANCEL && target.Points.HP > 0 && attacker.Points.HP > 0) {
-		applyTurnStatus(attacker);
-		applyCombatBonus(attacker, attacker.CombatBonus.Points, "Turn Combat Bonus");
-		applyArmorBonus(attacker);
-		attacker.CombatBonus.NextTurn();
-		attacker.CombatStatus.NextTurn();
-	}
+	if(outcome == TURN_OUTCOME_CANCEL && target.Points.HP > 0 && attacker.Points.HP > 0)
+		applyTurnStatusAndBonusesAndSkipTurn(attacker);
 
 	return outcome;
 }
@@ -556,6 +577,7 @@ void setupEnemy(CCharacter& currentEnemy, uint32_t enemyType)
 	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
 }
 
+
 //5736	// gasty.bellino@gmail.com
 void combat(CCharacter& adventurer, uint32_t enemyType)
 {
@@ -575,6 +597,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		{
 			printf("%s is stunned and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
+			applyTurnStatusAndBonusesAndSkipTurn(adventurer);
 		}
 		else
 			turnOutcome = playerTurn(adventurer, currentEnemy);
@@ -587,6 +610,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		{
 			printf("%s is stunned and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
+			applyTurnStatusAndBonusesAndSkipTurn(adventurer);
 		}
 		else
 			turnOutcome = enemyTurn(currentEnemy, adventurer);
