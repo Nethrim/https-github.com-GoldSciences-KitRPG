@@ -104,6 +104,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	const int32_t targetArmorAbsorption	= getArmorAbsorption(target.Armor);
 	const std::string targetArmorName	= getArmorName(target.Armor);
+	const int32_t	targetArmorShield	= getArmorShield(target.Armor);
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 
@@ -114,7 +115,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 			continue;
 
 		std::string text;
-		if((rand()%100) < targetArmorAbsorption)
+		if((rand()%100) < (targetArmorAbsorption*(targetArmorShield/(float)target.Shield)) )
 		{
 			switch(bitStatus) {
 			case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
@@ -429,6 +430,22 @@ void applyArmorBonus(CCharacter& character)
 	const std::string armorName = getArmorName(character.Armor);
 	SCharacterPoints armorPoints = getArmorPoints(character.Armor);
 	applyCombatBonus(character, armorPoints, armorName);
+	ARMOR_EFFECT armorBaseEffect		= armorDefinitions	[character.Armor.Index]		.Effect;
+	ARMOR_EFFECT armorModifierEffect	= armorModifiers	[character.Armor.Modifier]	.Effect;
+	int32_t armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Shield;
+	int32_t armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Shield;
+	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < armorBaseShield) {
+		int32_t shieldToAdd	= std::max(1, armorBaseShield/20);
+		shieldToAdd				= std::min(shieldToAdd, armorBaseShield-character.Shield);
+		character.Shield		+= shieldToAdd;
+		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
+	};
+	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < armorModifierShield) {
+		int32_t shieldToAdd	= std::max(1, armorModifierShield/20);
+		shieldToAdd				= std::min(shieldToAdd, armorModifierShield-character.Shield);
+		character.Shield		+= shieldToAdd;
+		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
+	};
 };
 
 TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CCharacter& target)
