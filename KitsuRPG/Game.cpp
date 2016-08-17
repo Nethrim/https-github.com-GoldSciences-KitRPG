@@ -60,7 +60,7 @@ void bar(CCharacter& adventurer)
 	printf("\nDo you want to buy some drinks?\n\n");
 
 	static const size_t descriptionCount = size(itemDescriptions);
-	SMenuItem<uint32_t> itemOptions[descriptionCount];
+	static SMenuItem<uint32_t> itemOptions[descriptionCount];
 	static const int initialized = initializeItemMenu(itemOptions);
 
 	char menuTitle[128] = {};

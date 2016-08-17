@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "Armor.h"
 #include "Weapon.h"
+#include "Profession.h"
+#include "Enemy.h"
 
 #include "Menu.h"
 
@@ -31,12 +33,21 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer					= CCharacter(CHARACTER_TYPE_PLAYER,	30, 50, 5, 100, Name);
-		adventurer.Weapon	.Index		= (int16_t)size(weaponDefinitions	)-1;//(rand() % size(weaponDefinitions	));	//%(size(weaponDefinitions)/5);
-		adventurer.Armor	.Index		= (int16_t)size(armorDefinitions	)-1;//(rand() % size(armorDefinitions	));	//%(size(armorDefinitions)/5);
-		adventurer.Weapon	.Modifier	= (int16_t)size(weaponModifiers		)-1;//(rand() % size(weaponModifiers	));	//%(size(weaponModifiers)/2);
-		adventurer.Armor	.Modifier	= (int16_t)size(armorModifiers		)-1;//(rand() % size(armorModifiers	));
-		adventurer.Shield				= getArmorShield(adventurer.Armor);
+		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
+
+		adventurer.Weapon		.Index		= rand()%4;//(int16_t)(rand() % size(weaponDefinitions		));
+		adventurer.Armor		.Index		= rand()%4;//(int16_t)(rand() % size(armorDefinitions		));
+		adventurer.Profession	.Index		= rand()%4;//(int16_t)(rand() % size(professionDefinitions	));
+
+		adventurer.Weapon		.Modifier	= rand()%4;//(int16_t)(rand() % size(weaponModifiers		));
+		adventurer.Armor		.Modifier	= rand()%4;//(int16_t)(rand() % size(armorModifiers		));
+		adventurer.Profession	.Modifier	= rand()%4;//(int16_t)(rand() % size(professionModifiers	));	
+
+		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+		adventurer.Profession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+
+		adventurer.Shield					= getArmorShield(adventurer.Armor);
 
 		SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 		adventurer.Points.HP = finalPoints.MaxHP;

@@ -56,5 +56,8 @@
     <ClInclude Include="Armor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Profession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

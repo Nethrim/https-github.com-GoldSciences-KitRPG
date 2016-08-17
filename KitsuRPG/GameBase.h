@@ -133,12 +133,21 @@ struct SWeapon
 {
 	uint16_t Index;
 	uint16_t Modifier;
+	uint16_t Level;
 };
 
 struct SArmor
 {
 	uint16_t Index;
 	uint16_t Modifier;
+	uint16_t Level;
+};
+
+struct SProfession
+{
+	uint16_t Index;
+	uint16_t Modifier;
+	uint16_t Level;
 };
 
 // POD to store all the character data that is not a string or object.
@@ -150,10 +159,10 @@ struct SCharacter
 	SCombatStatus		CombatStatus	= {};
 	SCharacterInventory	Inventory		= {};
 	SCharacterScore		Score			= {};	
-	SWeapon				Weapon			= {0,0};
-	SArmor				Armor			= {0,0};
+	SWeapon				Weapon			= {0,0,1};	// Index, ModifierIndex, Level
+	SArmor				Armor			= {0,0,1};	// Index, ModifierIndex, Level
+	SProfession			Profession		= {0,0,1};	// Index, ModifierIndex, Level
 	int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
-	PROFESSION			Profession		= PROFESSION_CIVILIAN;
 
 	constexpr SCharacter() = default;
 	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
@@ -163,8 +172,9 @@ struct SCharacter
 		,CombatStatus	({})
 		,Inventory		({})
 		,Score			({})
-		,Weapon			({0,0})
-		,Armor			({0,0})
+		,Weapon			({0,0,1})
+		,Armor			({0,0,1})
+		,Profession		({0,0,1})
 		,Shield			(0)
 	{};
 

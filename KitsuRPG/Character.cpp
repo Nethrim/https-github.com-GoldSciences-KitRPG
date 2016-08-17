@@ -3,6 +3,7 @@
 #include "Weapon.h"
 #include "Item.h"
 #include "Armor.h"
+#include "Profession.h"
 
 #include "Misc.h"
 
@@ -41,14 +42,15 @@ bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
 SCharacterPoints calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result = {};
-	const SCharacterPoints 		weaponPoints	= getWeaponPoints	(character.Weapon);
-	const SCharacterPoints 		armorPoints		= getArmorPoints	(character.Armor);
+	const SCharacterPoints 		weaponPoints		= getWeaponPoints		(character.Weapon);
+	const SCharacterPoints 		armorPoints			= getArmorPoints		(character.Armor);
+	const SCharacterPoints 		professionPoints	= getProfessionPoints	(character.Profession);
 
-	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	+	weaponPoints.MaxHP	+	armorPoints.MaxHP	;
-	result.HP		=								character.CombatBonus.Points.HP		+	weaponPoints.HP		+	armorPoints.HP		;
-	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit	+	weaponPoints.Hit	+	armorPoints.Hit		;
-	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack	+	weaponPoints.Attack	+	armorPoints.Attack	;
-	result.Coins	=								character.CombatBonus.Points.Coins	+	weaponPoints.Coins	+	armorPoints.Coins	;
+	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP	+	weaponPoints.MaxHP	+	armorPoints.MaxHP	+	professionPoints.MaxHP	;
+	result.HP		=								character.CombatBonus.Points.HP		+	weaponPoints.HP		+	armorPoints.HP		+	professionPoints.HP		;
+	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit	+	weaponPoints.Hit	+	armorPoints.Hit		+	professionPoints.Hit	;
+	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack	+	weaponPoints.Attack	+	armorPoints.Attack	+	professionPoints.Attack	;
+	result.Coins	=								character.CombatBonus.Points.Coins	+	weaponPoints.Coins	+	armorPoints.Coins	+	professionPoints.Coins	;
 
 	return result;
 };
@@ -89,14 +91,16 @@ bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t 
 
 void showInventory(const SCharacter& adventurer)
 {
-	printf("\n-- Your inventory --\n");
+	printf("\n");
+	printf("-- You're a %s level %u.\n", getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
+	printf("-- Your inventory --\n");
 	if(adventurer.Weapon.Index)
-		printf("-- You're carrying %s.\n", getWeaponName(adventurer.Weapon).c_str());
+		printf("-- You're carrying %s level %u.\n", getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
 	else
 		printf("-- You're not carrying any weapons.\n");
 
 	if(adventurer.Armor.Index)
-		printf("-- You're wearing %s.\n", getArmorName(adventurer.Armor).c_str());
+		printf("-- You're wearing %s level %u.\n", getArmorName(adventurer.Armor).c_str(), adventurer.Armor.Level);
 	else
 		printf("-- You're not wearing any armor.\n");
 

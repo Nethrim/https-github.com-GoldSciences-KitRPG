@@ -1,6 +1,7 @@
 #include "GameBase.h"
 
 #include <string>
+#include <algorithm>
 
 #ifndef __WEAPON_H__928364890236498716349825347895236__
 #define __WEAPON_H__928364890236498716349825347895236__
@@ -88,11 +89,11 @@ static inline constexpr STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
 
 static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
 	SCharacterPoints weaponPoints = {};
-	weaponPoints.MaxHP	= weaponDefinitions[weapon.Index].Points.MaxHP	+	weaponModifiers[weapon.Modifier].Points.MaxHP;
-	weaponPoints.Attack	= weaponDefinitions[weapon.Index].Points.Attack	+	weaponModifiers[weapon.Modifier].Points.Attack;
-	weaponPoints.Hit	= weaponDefinitions[weapon.Index].Points.Hit	+	weaponModifiers[weapon.Modifier].Points.Hit;
-	weaponPoints.HP		= weaponDefinitions[weapon.Index].Points.HP		+	weaponModifiers[weapon.Modifier].Points.HP;
-	weaponPoints.Coins	= weaponDefinitions[weapon.Index].Points.Coins	+	weaponModifiers[weapon.Modifier].Points.Coins;
+	weaponPoints.MaxHP	= (int32_t)(	weaponDefinitions[weapon.Index].Points.MaxHP	*	std::max(1.0000001, weapon.Level/1.0)	+	weaponModifiers[weapon.Modifier].Points.MaxHP	);
+	weaponPoints.Attack	= (int32_t)(	weaponDefinitions[weapon.Index].Points.Attack	*	std::max(1.0000001, weapon.Level/2.0)	+	weaponModifiers[weapon.Modifier].Points.Attack	);
+	weaponPoints.Hit	= (int32_t)(	weaponDefinitions[weapon.Index].Points.Hit		*	std::max(1.0000001, weapon.Level/3.0)	+	weaponModifiers[weapon.Modifier].Points.Hit		);
+	weaponPoints.HP		= (int32_t)(	weaponDefinitions[weapon.Index].Points.HP		*	std::max(1.0000001, weapon.Level/5.0)	+	weaponModifiers[weapon.Modifier].Points.HP		);
+	weaponPoints.Coins	= (int32_t)(	weaponDefinitions[weapon.Index].Points.Coins	*	std::max(1.0000001, weapon.Level/4.0)	+	weaponModifiers[weapon.Modifier].Points.Coins	);
 	return weaponPoints;
 }
 

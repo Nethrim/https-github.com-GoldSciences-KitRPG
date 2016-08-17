@@ -25,7 +25,7 @@ _ReturnType displayMenu(size_t optionCount, const std::string& title, const SMen
 		
 		// Print menu options
 		for(size_t i=0; i<optionCount; i++)
-			printf("%u: %s.\n", i+1, menuItems[i].Text.c_str());	
+			printf("%u: %s.\n", (uint32_t)(i+1), menuItems[i].Text.c_str());	
 		
 		// Get user input
 		// Convert the input string to a menuitem index.
