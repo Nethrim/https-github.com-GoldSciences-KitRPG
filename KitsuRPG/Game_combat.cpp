@@ -25,8 +25,9 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	{	
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(targetArmorShield)	
+		if(targetArmorShield) 
 			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Shield/(double)targetArmorShield)), 1) : 0;
+
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
 	}
 
@@ -149,11 +150,13 @@ void applyArmorBonus(CCharacter& character)
 
 void applyTurnStatusAndBonusesAndSkipTurn(CCharacter& adventurer)
 {
+	printf("\n");
 	applyTurnStatus(adventurer);
 	applyCombatBonus(adventurer, adventurer.CombatBonus.Points, "Turn Combat Bonus");
 	applyArmorBonus(adventurer);
 	adventurer.CombatBonus.NextTurn();
 	adventurer.CombatStatus.NextTurn();
+	printf("\n");
 }
 
 
@@ -192,13 +195,19 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 	if(weaponStatus == STATUS_TYPE_NONE)
 		return STATUS_TYPE_NONE;
 
-	const int32_t targetArmorAbsorption	= getArmorAbsorption(target.Armor);
-	const std::string targetArmorName	= getArmorName(target.Armor);
-	const int32_t	targetArmorShield	= getArmorShield(target.Armor);
+	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.Armor);
+	const std::string	targetArmorName			= getArmorName(target.Armor);
+	const int32_t		targetArmorShield		= getArmorShield(target.Armor);
+	const ARMOR_EFFECT	targetArmorEffect		= getArmorEffect(target.Armor);
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
+	
+	int32_t absorbChance;
+	if(targetArmorEffect & ARMOR_EFFECT_IMPENETRABLE)
+		absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*2*(target.Shield/(double)targetArmorShield))) : 0;
+	else
+		absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*(target.Shield/(double)targetArmorShield))) : 0;
 
-	int32_t absorbChance = targetArmorShield ? ((int32_t)(targetArmorAbsorption*(target.Shield/(double)targetArmorShield))) : 0;
 	printf("%s final status absorb chance is %%%u.\n", targetArmorName.c_str(), absorbChance);
 	for(int i=0; i<MAX_STATUS_COUNT; i++)
 	{
@@ -236,7 +245,6 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 			
 		printf(text.c_str(), target.Name.c_str(), sourceName.c_str(), turnCount);
 	}
-
 	return appliedStatus;
 }
 
