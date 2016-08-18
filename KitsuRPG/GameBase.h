@@ -37,36 +37,49 @@ struct SLifePoints
 	int	HP		;
 	int	Mana	;
 	int	Shield	;
+
+	inline constexpr SLifePoints	operator +	(const SLifePoints& other) const	{ return {HP+other.HP, Mana+other.Mana, Shield+other.Shield}; }
+	SLifePoints&					operator +=	(const SLifePoints& other)			{ HP += other.HP; Mana += other.Mana; Shield += other.Shield; return *this; }
+
+	void Print() const
+	{
+		printf("HP     : %u.\n",	HP		);
+		printf("Mana   : %u.\n",	Mana	);
+		printf("Shield : %u.\n",	Shield	);
+	}
 };
 
 struct SCombatPoints
 {
 	int	Hit		;
-	int	Attack	;
+	int	Damage	;
+
+	constexpr SCombatPoints	operator +	(const SCombatPoints& other) const	{ return {Hit+other.Hit, Damage+other.Damage}; }
+	SCombatPoints&			operator +=	(const SCombatPoints& other)		{ Hit += other.Hit; Damage += other.Damage; return *this; }
+
+	void Print() const
+	{
+		printf("Hit    : %u.\n",	Hit		);
+		printf("Damage : %u.\n",	Damage	);
+	}
 };
 
 struct SCharacterPoints
 {
-	int	MaxHP	;
-	int	MaxMana	;
-	int	HP		;
-	int	Mana	;
-
-	int	Hit		;
-	int	Attack	;
-	int	Shield	;
-	int	Coins	;
+	SLifePoints		MaxLife;
+	SLifePoints		CurrentLife;
+	SCombatPoints	Attack;
+	int				Coins;
 
 	void Print() const
 	{
-		printf("MaxHP   : %u.\n",	MaxHP	);
-		printf("MaxMana : %u.\n",	MaxMana	);
-		printf("HP      : %u.\n",	HP		);
-		printf("Mana    : %u.\n",	Mana	);
-		printf("Hit     : %u.\n",	Hit		);
-		printf("Attack  : %u.\n",	Attack	);
-		printf("Shield  : %u.\n",	Shield	);
-		printf("Coins   : %u.\n",	Coins	);
+		printf("\n- Max Life:\n");
+		MaxLife.Print();
+		printf("\n- Current Life:\n");
+		CurrentLife.Print();
+		printf("\n- Attack Points:\n");
+		Attack.Print();
+		printf("\n- Coins: %u.\n",	Coins	);
 	};
 };
 
@@ -80,15 +93,21 @@ typedef SCharacterPoints SBonusTurns;
 
 struct SCombatBonus
 {
-	SCharacterPoints	Points		= {0, 0, 0, 0, 0, 0, 0, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
-	SBonusTurns			TurnsLeft	= {0, 0, 0, 0, 0, 0, 0, 0};	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+	SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
+	SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0};	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 	void				NextTurn() {
-		if( 0 >= --TurnsLeft.MaxHP	)	TurnsLeft.MaxHP		=	Points.MaxHP	= 0;
-		if( 0 >= --TurnsLeft.HP		)	TurnsLeft.HP		=	Points.HP		= 0;
-		if( 0 >= --TurnsLeft.Attack	)	TurnsLeft.Attack	=	Points.Attack	= 0;
-		if( 0 >= --TurnsLeft.Hit	)	TurnsLeft.Hit		=	Points.Hit		= 0;
-		if( 0 >= --TurnsLeft.Coins	)	TurnsLeft.Coins		=	Points.Coins	= 0;
+		if( 0 >= --TurnsLeft.MaxLife.HP			)	TurnsLeft.MaxLife.HP		=	Points.MaxLife.HP		= 0;
+		if( 0 >= --TurnsLeft.MaxLife.Mana		)	TurnsLeft.MaxLife.Mana		=	Points.MaxLife.Mana		= 0;
+		if( 0 >= --TurnsLeft.MaxLife.Shield		)	TurnsLeft.MaxLife.Shield	=	Points.MaxLife.Shield	= 0;
+
+		if( 0 >= --TurnsLeft.CurrentLife.HP		)	TurnsLeft.CurrentLife.HP		=	Points.CurrentLife.HP		= 0;
+		if( 0 >= --TurnsLeft.CurrentLife.Mana	)	TurnsLeft.CurrentLife.Mana		=	Points.CurrentLife.Mana		= 0;
+		if( 0 >= --TurnsLeft.CurrentLife.Shield	)	TurnsLeft.CurrentLife.Shield	=	Points.CurrentLife.Shield	= 0;
+
+		if( 0 >= --TurnsLeft.Attack.Damage		)	TurnsLeft.Attack.Damage		=	Points.Attack.Damage	= 0;
+		if( 0 >= --TurnsLeft.Attack.Hit			)	TurnsLeft.Attack.Hit		=	Points.Attack.Hit		= 0;
+		if( 0 >= --TurnsLeft.Coins				)	TurnsLeft.Coins				=	Points.Coins			= 0;
 	};
 };
 
@@ -169,7 +188,7 @@ struct SProfession
 struct SCharacter
 {
 	CHARACTER_TYPE		Type			= CHARACTER_TYPE_UNKNOWN;
-	SCharacterPoints	Points			= {10, 0, 10, 0,	50, 1, 0, 10};	// These are the base character points.
+	SCharacterPoints	Points			= { {10, 0, 0}, {10, 0,	0}, {50, 1}, 10};	// These are the base character points.
 	SCombatBonus		CombatBonus		= {};
 	SCombatStatus		CombatStatus	= {};
 	SCharacterInventory	Inventory		= {};
@@ -177,12 +196,11 @@ struct SCharacter
 	SWeapon				Weapon			= {0,0,1};	// Index, ModifierIndex, Level
 	SArmor				Armor			= {0,0,1};	// Index, ModifierIndex, Level
 	SProfession			Profession		= {0,0,1};	// Index, ModifierIndex, Level
-	//int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
 
 	constexpr SCharacter() = default;
 	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
 		:Type			(characterType)
-		,Points			({maxHP, 0, maxHP, 0, hitChance, attack, 0, coins})
+		,Points			({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins})
 		,CombatBonus	({})
 		,CombatStatus	({})
 		,Inventory		({})

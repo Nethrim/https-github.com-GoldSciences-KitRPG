@@ -13,7 +13,7 @@ bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, d
 // Returns final passthrough damage (not blocked by shield) to use by vampire effect.
 int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName)
 {
-	if(0 >= target.Points.HP)	// This character is already dead
+	if(0 >= target.Points.CurrentLife.HP)	// This character is already dead
 		return 0;
 
 	const std::string	targetArmorName		= getArmorName	(target.Armor);
@@ -22,7 +22,7 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	// Impenetrable armors always have 100% 
 	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
 	{
-		if(target.Points.Shield)
+		if(target.Points.CurrentLife.Shield)
 		{
 			absorptionRate += 60;
 			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
@@ -32,8 +32,8 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	{	
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(target.Points.Shield) 
-			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.Shield/(double)targetArmorShield)), 1) : 0;
+		if(target.Points.CurrentLife.Shield) 
+			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.CurrentLife.Shield/(double)targetArmorShield)), 1) : 0;
 
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
 	}
@@ -63,21 +63,21 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 
 	if(shieldedDamage)
 	{
-		int remainingShield = target.Points.Shield-shieldedDamage;
-		if(target.Points.Shield)
+		int remainingShield = target.Points.CurrentLife.Shield-shieldedDamage;
+		if(target.Points.CurrentLife.Shield)
 		{
-			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.Shield, shieldedDamage), sourceName.c_str());
-			target.Points.Shield = std::max(0, remainingShield);
+			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.CurrentLife.Shield, shieldedDamage), sourceName.c_str());
+			target.Points.CurrentLife.Shield = std::max(0, remainingShield);
 			if(remainingShield < 0)
 				printf("%s's shield ran out allowing some damage from %s to pass through.\n", target.Name.c_str(), sourceName.c_str());
 			else
-				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.Shield);
+				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.CurrentLife.Shield);
 		}
 		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
 		{
 			finalPassthroughDamage	= remainingShield*-1;
 			printf("%s's wasn't protected against %u shieldable damage from %s.\n", target.Name.c_str(), finalPassthroughDamage, sourceName.c_str());
-			target.Points.HP += remainingShield;
+			target.Points.CurrentLife.HP += remainingShield;
 		}
 	}
 
@@ -85,14 +85,14 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 		printf("%s receives %u passthrough damage from %s.\n", target.Name.c_str(), passthroughDamage, sourceName.c_str());
 	finalPassthroughDamage	+= passthroughDamage;
 
-	target.Points.HP -= passthroughDamage;
+	target.Points.CurrentLife.HP -= passthroughDamage;
 
 	return finalPassthroughDamage;
 }
 
 void applyTurnStatus(CCharacter& character)
 {
-	if(0 >= character.Points.HP)	// This character is already dead
+	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
 		return;
 
 	int amount=0;
@@ -101,9 +101,9 @@ void applyTurnStatus(CCharacter& character)
 	{
 		switch(character.CombatStatus.Status[i])
 		{
-		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
-		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
-		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxHP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
+		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
+		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
+		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
 		//case STATUS_TYPE_STUN:		break;
 		//case STATUS_TYPE_BLIND:		break;
 		}
@@ -112,24 +112,57 @@ void applyTurnStatus(CCharacter& character)
 
 void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
 {
-	if(0 >= character.Points.HP)	// This character is already dead
+	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
 		return;
 
-	if(combatBonus.HP)
+	if(combatBonus.CurrentLife.HP)
 	{
-		if(combatBonus.HP > 0 && character.Points.HP < calculateFinalPoints(character).MaxHP)
+		if(combatBonus.CurrentLife.HP > 0 && character.Points.CurrentLife.HP < calculateFinalPoints(character).MaxLife.HP)
 		{
-			int finalHPAdded = std::min(combatBonus.HP, calculateFinalPoints(character).MaxHP-character.Points.HP);
+			int finalHPAdded = std::min(combatBonus.CurrentLife.HP, calculateFinalPoints(character).MaxLife.HP-character.Points.CurrentLife.HP);
 			printf("%s gains %u HP from %s.\n", character.Name.c_str(), finalHPAdded, sourceName.c_str());
-			character.Points.HP		+= finalHPAdded;
+			character.Points.CurrentLife.HP		+= finalHPAdded;
 		}
-		else if(combatBonus.HP < 0 && character.Points.HP)
+		else if(combatBonus.CurrentLife.HP < 0 && character.Points.CurrentLife.HP)
 		{
-			int finalHPRemoved = std::min(-combatBonus.HP, character.Points.HP);
+			int finalHPRemoved = std::min(-combatBonus.CurrentLife.HP, character.Points.CurrentLife.HP);
 			printf("%s loses %u HP from %s.\n", character.Name.c_str(), finalHPRemoved, sourceName.c_str());
-			character.Points.HP			-= finalHPRemoved;
+			character.Points.CurrentLife.HP			-= finalHPRemoved;
 		}
 	}
+
+	if(combatBonus.CurrentLife.Shield)
+	{
+		if(combatBonus.CurrentLife.Shield > 0 && character.Points.CurrentLife.Shield < calculateFinalPoints(character).MaxLife.Shield)
+		{
+			int finalShieldAdded = std::min(combatBonus.CurrentLife.Shield, calculateFinalPoints(character).MaxLife.Shield-character.Points.CurrentLife.Shield);
+			printf("%s gains %u Shield from %s.\n", character.Name.c_str(), finalShieldAdded, sourceName.c_str());
+			character.Points.CurrentLife.Shield		+= finalShieldAdded;
+		}
+		else if(combatBonus.CurrentLife.Shield < 0 && character.Points.CurrentLife.Shield)
+		{
+			int finalShieldRemoved = std::min(-combatBonus.CurrentLife.Shield, character.Points.CurrentLife.Shield);
+			printf("%s loses %u Shield from %s.\n", character.Name.c_str(), finalShieldRemoved, sourceName.c_str());
+			character.Points.CurrentLife.Shield			-= finalShieldRemoved;
+		}
+	}
+
+	if(combatBonus.CurrentLife.Mana)
+	{
+		if(combatBonus.CurrentLife.Mana > 0 && character.Points.CurrentLife.Mana < calculateFinalPoints(character).MaxLife.Mana)
+		{
+			int finalManaAdded = std::min(combatBonus.CurrentLife.Mana, calculateFinalPoints(character).MaxLife.Mana-character.Points.CurrentLife.Mana);
+			printf("%s gains %u Mana from %s.\n", character.Name.c_str(), finalManaAdded, sourceName.c_str());
+			character.Points.CurrentLife.Mana		+= finalManaAdded;
+		}
+		else if(combatBonus.CurrentLife.Mana < 0 && character.Points.CurrentLife.Mana)
+		{
+			int finalManaRemoved = std::min(-combatBonus.CurrentLife.Mana, character.Points.CurrentLife.Mana);
+			printf("%s loses %u Mana from %s.\n", character.Name.c_str(), finalManaRemoved, sourceName.c_str());
+			character.Points.CurrentLife.Mana			-= finalManaRemoved;
+		}
+	}
+
 	if(combatBonus.Coins)
 	{
 		if(combatBonus.Coins > 0)
@@ -142,32 +175,32 @@ void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus
 
 void applyArmorEffect(CCharacter& character)
 {
-	if(0 >= character.Points.HP)	// This character is already dead
+	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
 		return;
 
 	const std::string armorName = getArmorName(character.Armor);
 	ARMOR_EFFECT	armorBaseEffect			= armorDefinitions	[character.Armor.Index]		.Effect;
 	ARMOR_EFFECT	armorModifierEffect		= armorModifiers	[character.Armor.Modifier]	.Effect;
-	int32_t			armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Shield;
-	int32_t			armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Shield;
-	int32_t			totalArmorShield			= getArmorShield(character.Armor);
-	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Points.Shield < totalArmorShield) {
+	int32_t			armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Points.MaxLife.Shield;
+	int32_t			armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Points.MaxLife.Shield;
+	int32_t			totalArmorShield		= getArmorShield(character.Armor);
+	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.Shield));
-		character.Points.Shield	+= shieldToAdd;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
+		character.Points.CurrentLife.Shield	+= shieldToAdd;
 		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
 	};
-	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Points.Shield < totalArmorShield) {
+	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.Shield));
-		character.Points.Shield	+= shieldToAdd;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
+		character.Points.CurrentLife.Shield	+= shieldToAdd;
 		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
 	};
 };
 
 void applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 {
-	if(0 >= character.Points.HP)	// This character is already dead
+	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
 		return;
 
 	printf("\n");
@@ -221,7 +254,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 
-	if((getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE) && target.Points.Shield)
+	if((getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE) && target.Points.CurrentLife.Shield)
 	{
 		if(absorbChance)
 			absorbChance = std::max(60, absorbChance*2);
@@ -283,8 +316,8 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 	
 	int32_t absorbChance;
 
-	//double absorptionRatio = std::max(0.0, ((target.Shield+target.Points.HP)/(double)(targetArmorShield+calculateFinalPoints(target).MaxHP)));
-	double absorptionRatio = std::max(0.0, (target.Points.Shield/(double)targetArmorShield))/2.0;
+	//double absorptionRatio = std::max(0.0, ((target.Shield+target.Points.HP)/(double)(targetArmorShield+calculateFinalPoints(target).MaxLife.HP)));
+	double absorptionRatio = std::max(0.0, (target.Points.CurrentLife.Shield/(double)targetArmorShield))/2.0;
 	absorbChance = 50+(int32_t)(absorptionRatio*100);
 	absorbChance = std::min(absorbChance, 100);
 
@@ -309,23 +342,23 @@ int attack(CCharacter& attacker, CCharacter& target)
 
 	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND) > 0;
 	if(bIsBlind)
-		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Hit/2);
+		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
 
-	int finalChance = (bIsBlind ? attackerPoints.Hit/2 : attackerPoints.Hit);
+	int finalChance = (bIsBlind ? attackerPoints.Attack.Hit/2 : attackerPoints.Attack.Hit);
 	if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
 	{
-		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Hit);
-		finalChance	+= attackerPoints.Hit;
+		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
+		finalChance	+= attackerPoints.Attack.Hit;
 	}
 	if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND))
 	{
-		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Hit/2);
-		finalChance	+= attackerPoints.Hit/2;
+		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
+		finalChance	+= attackerPoints.Attack.Hit/2;
 	}
 
 	if ((rand() % 100) < finalChance )
 	{
-		damageDealt = attackerPoints.Attack+(rand()%((attackerPoints.Attack)/10+1));
+		damageDealt = attackerPoints.Attack.Damage+(rand()%((attackerPoints.Attack.Damage)/10+1));
 		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
 
 		int finalPassthroughDamage = applyShieldableDamage(target, damageDealt, attacker.Name);
@@ -336,12 +369,12 @@ int attack(CCharacter& attacker, CCharacter& target)
 		// Apply weapon effects for successful hits.
 		if(attackerWeaponEffect & WEAPON_EFFECT_LEECH)
 		{
-			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxHP-attacker.Points.HP);
+			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxLife.HP-attacker.Points.CurrentLife.HP);
 			if(actualHPGained > 0)
 				printf("%s drains %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), attackerWeaponName.c_str());
 			else if(actualHPGained < 0)
 				printf("%s loses %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), attackerWeaponName.c_str());
-			attacker.Points.HP		+= actualHPGained;
+			attacker.Points.CurrentLife.HP		+= actualHPGained;
 		}
 
 		if(attackerWeaponEffect & WEAPON_EFFECT_STEAL)
@@ -499,7 +532,7 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 			printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
 	}
 
-	//winner.Points.MaxHP += winner.Points.Attack;
+	//winner.Points.MaxLife.HP += winner.Points.Attack;
 	winner.Profession.Level++;
 	winner.Armor.Level++;
 	winner.Weapon.Level++;
@@ -515,9 +548,9 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 void determineOutcome(CCharacter& adventurer, CCharacter& enemy, uint32_t enemyType)
 {
 		// Determine the outcome of the battle and give rewards if applicable.
-	if (adventurer.Points.HP <= 0) 
+	if (adventurer.Points.CurrentLife.HP <= 0) 
 		assignDrops(enemy, adventurer);
-	if (enemy.Points.HP <= 0)
+	if (enemy.Points.CurrentLife.HP <= 0)
 		assignDrops(adventurer, enemy);
 }
 
@@ -560,7 +593,7 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
-	if(outcome == TURN_OUTCOME_CANCEL && target.Points.HP > 0 && attacker.Points.HP > 0)
+	if(outcome == TURN_OUTCOME_CANCEL && target.Points.CurrentLife.HP > 0 && attacker.Points.CurrentLife.HP > 0)
 		applyTurnStatusAndBonusesAndSkipTurn(attacker);
 
 	return outcome;
@@ -594,27 +627,32 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
+		printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
 			adventurer		.Name.c_str(), getProfessionName(adventurer.Profession).c_str(),	adventurer		.Profession.Level,	
 			getWeaponName(adventurer.Weapon).c_str(),	adventurer	.Weapon.Level,	
 			getArmorName (adventurer.Armor ).c_str(),	adventurer	.Armor.Level, 
-			adventurer	.CombatBonus.TurnsLeft.Hit,	
-			adventurer		.CombatBonus.TurnsLeft.Attack	);
-		printf("- Base points:\n");
-		adventurer.Points.Print();
-		printf("- Bonus points:\n");
-		playerPoints.Print();
+			adventurer	.CombatBonus.TurnsLeft.Attack.Hit,	
+			adventurer	.CombatBonus.TurnsLeft.Attack.Damage	);
+		
+		printf("-------------- Max points:\n");
+		playerPoints.MaxLife.Print();
+		printf("-------------- Current points:\n");
+		adventurer.Points.CurrentLife.Print();
+		playerPoints.Attack.Print();
 		printStatuses(adventurer);
-		printf("\n-- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
+		
+		printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
 			currentEnemy	.Name.c_str(), getProfessionName(currentEnemy.Profession).c_str(),	currentEnemy	.Profession.Level,	
 			getWeaponName(currentEnemy.Weapon).c_str(),	currentEnemy	.Weapon.Level,	
 			getArmorName (currentEnemy.Armor ).c_str(),	currentEnemy	.Armor.Level, 
-			currentEnemy	.CombatBonus.TurnsLeft.Hit,	
-			currentEnemy	.CombatBonus.TurnsLeft.Attack	);
-		printf("- Base points:\n");
-		currentEnemy.Points.Print();
-		printf("- Bonus points:\n");
-		enemyPoints.Print();
+			currentEnemy	.CombatBonus.TurnsLeft.Attack.Hit,	
+			currentEnemy	.CombatBonus.TurnsLeft.Attack.Damage	);
+		
+		printf("-------------- Max points:\n");
+		enemyPoints.MaxLife.Print();
+		printf("-------------- Current points:\n");
+		currentEnemy.Points.CurrentLife.Print();
+		enemyPoints.Attack.Print();
 		printStatuses(currentEnemy);
 
 		const TURN_ACTION actionChoice = displayMenu("It's your turn to make a move", combatOptions);
@@ -628,7 +666,7 @@ TURN_ACTION resolveAI(CCharacter& enemy, CCharacter& adventurer)
 	TURN_ACTION action = TURN_ACTION_ATTACK;
 	if(enemy.Inventory.ItemCount)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
-	else if(enemy.Points.HP <= (enemy.Points.MaxHP/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
+	else if(enemy.Points.CurrentLife.HP <= (enemy.Points.MaxLife.HP/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
 
 	return action;
@@ -670,10 +708,9 @@ void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemy
 	currentEnemy.Profession	.Level		= std::max( uint32_t(adventurer.Profession	.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Profession	.Level*.11))));
 
 
-	currentEnemy.Points.Shield				= getArmorShield(currentEnemy.Armor);
 
 	SCharacterPoints finalEnemyPoints = calculateFinalPoints(currentEnemy);
-	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
+	currentEnemy.Points.CurrentLife			= finalEnemyPoints.MaxLife;
 }
 
 
@@ -684,10 +721,9 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 	setupEnemy(adventurer, currentEnemy, enemyType);
 
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
-	adventurer.Points.Shield		= getArmorShield(adventurer.Armor);
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
-	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
+	while(combatContinues(turnOutcome, adventurer.Points.CurrentLife.HP, currentEnemy.Points.CurrentLife.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
@@ -701,7 +737,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		else
 			turnOutcome = playerTurn(adventurer, currentEnemy);
 
-		if(!combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))
+		if(!combatContinues(turnOutcome, adventurer.Points.CurrentLife.HP, currentEnemy.Points.CurrentLife.HP))
 			break;
 
 		// Execute enemy attack turn
@@ -733,33 +769,33 @@ void usePotion(const CItem& itemDescription, CCharacter& potionDrinker)
 	case PROPERTY_TYPE_HEALTH:
 		printf("%s starts feeling better...\n", drinkerName.c_str());
 		finalPoints = calculateFinalPoints(potionDrinker);
-		itemEffectValue = (finalPoints.MaxHP/5+1)+(rand()%(finalPoints.MaxHP/10));
+		itemEffectValue = (finalPoints.MaxLife.HP/5+1)+(rand()%(finalPoints.MaxLife.HP/10));
 		itemEffectValue *= itemDescription.Grade;
-		drinkerPoints.HP += itemEffectValue;
-		drinkerPoints.HP = std::min(drinkerPoints.HP, finalPoints.MaxHP);
-		printf("The potion heals %s for %u! %s now has %u HP.\n", drinkerName.c_str(), itemEffectValue, drinkerName.c_str(), drinkerPoints.HP);
+		drinkerPoints.CurrentLife.HP += itemEffectValue;
+		drinkerPoints.CurrentLife.HP = std::min(drinkerPoints.CurrentLife.HP, finalPoints.MaxLife.HP);
+		printf("The potion heals %s for %u! %s now has %u HP.\n", drinkerName.c_str(), itemEffectValue, drinkerName.c_str(), drinkerPoints.CurrentLife.HP);
 		break;
 	case PROPERTY_TYPE_STRENGTH:
 		printf("%s starts feeling stronger...\n", drinkerName.c_str());
 		itemEffectValue = 3*itemGrade;
 		itemEffectValue += rand()%(itemGrade*2);
-		drinkerBonus.Points.Attack		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Attack)
-			drinkerBonus.TurnsLeft.Attack = 1;
-		drinkerBonus.TurnsLeft.Attack	+= itemGrade;
+		drinkerBonus.Points.Attack.Damage		+= itemEffectValue;
+		if(0 == drinkerBonus.TurnsLeft.Attack.Damage)
+			drinkerBonus.TurnsLeft.Attack.Damage = 1;
+		drinkerBonus.TurnsLeft.Attack.Damage	+= itemGrade;
 		finalPoints = calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack, drinkerBonus.TurnsLeft.Attack-1);
+		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Damage, drinkerBonus.TurnsLeft.Attack.Damage-1);
 		break;
 	case PROPERTY_TYPE_HIT:
 		printf("%s starts feeling faster...\n", drinkerName.c_str());
 		itemEffectValue = 10*itemGrade;
 		itemEffectValue += ((rand()%itemGrade)+1)*5;
-		drinkerBonus.Points.Hit		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Hit)
-			drinkerBonus.TurnsLeft.Hit = 1;
-		drinkerBonus.TurnsLeft.Hit	+= itemGrade;
+		drinkerBonus.Points.Attack.Hit		+= itemEffectValue;
+		if(0 == drinkerBonus.TurnsLeft.Attack.Hit)
+			drinkerBonus.TurnsLeft.Attack.Hit = 1;
+		drinkerBonus.TurnsLeft.Attack.Hit	+= itemGrade;
 		finalPoints = calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Hit, drinkerBonus.TurnsLeft.Hit-1);
+		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Hit, drinkerBonus.TurnsLeft.Attack.Hit-1);
 		break;
 	default:
 		printf("Potion type not implemented!");
@@ -799,11 +835,11 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 		finalPointsThrower	= calculateFinalPoints(thrower), 
 		finalPointsTarget	= calculateFinalPoints(target);
 
-	int itemEffectValue				= int(finalPointsTarget.MaxHP*(0.2f*itemDescription.Grade));
-	int itemEffectValueSelf			= int(finalPointsThrower.MaxHP*(0.2f*itemDescription.Grade)) >> 1;
+	int itemEffectValue				= int(finalPointsTarget.MaxLife.HP*(0.2f*itemDescription.Grade));
+	int itemEffectValueSelf			= int(finalPointsThrower.MaxLife.HP*(0.2f*itemDescription.Grade)) >> 1;
 
-	int itemEffectValueReduced		= int(finalPointsTarget.MaxHP*(0.1f*itemDescription.Grade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxHP*(0.1f*itemDescription.Grade)) >> 1;
+	int itemEffectValueReduced		= int(finalPointsTarget.MaxLife.HP*(0.1f*itemDescription.Grade));
+	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxLife.HP*(0.1f*itemDescription.Grade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
@@ -974,7 +1010,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 		// Only use potions if we have less than 80% HP
 		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Type
 			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Property
-			|| user.Points.HP < ((user.Points.MaxHP+user.CombatBonus.Points.MaxHP)*.7f)
+			|| user.Points.CurrentLife.HP < ((user.Points.MaxLife.HP+user.CombatBonus.Points.MaxLife.HP)*.7f)
 			)
 			bUsedItem = true;
 	}
@@ -986,7 +1022,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 		const CItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex];
 		if( ITEM_TYPE_POTION == itemDescription.Type 
 		 && PROPERTY_TYPE_HEALTH == itemDescription.Property 
-		 && user.Points.HP == finalPoints.MaxHP)
+		 && user.Points.CurrentLife.HP == finalPoints.MaxLife.HP)
 		{
 			bUsedItem = false;
 			printf("Your HP is full!");

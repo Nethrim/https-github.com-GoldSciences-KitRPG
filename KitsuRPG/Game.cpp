@@ -98,10 +98,10 @@ void displayScore(const CCharacter& adventurer)
 	const SCharacterScore& gameCounters = adventurer.Score;
 	const SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 
-	printf("\n-- Base points:\n");
-	points.Print();
-	printf("\n-- Bonus points:\n");
-	finalPoints.Print();
+	printf("\n-- Character points:\n");
+	points.CurrentLife.Print();
+	finalPoints.MaxLife.Print();
+	finalPoints.Attack.Print();
 
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"

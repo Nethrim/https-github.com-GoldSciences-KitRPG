@@ -47,10 +47,8 @@ void main()
 		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.Profession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 
-
-		SCharacterPoints finalPoints	= calculateFinalPoints(adventurer);
-		adventurer.Points.HP			= finalPoints.MaxHP;
-		adventurer.Points.Shield		= getArmorShield(adventurer.Armor);
+		SCharacterPoints finalPoints			= calculateFinalPoints(adventurer);
+		adventurer.Points.CurrentLife			= finalPoints.MaxLife;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.

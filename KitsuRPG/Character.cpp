@@ -12,9 +12,9 @@
 void rest(CCharacter& character)
 {
 	SCharacterPoints finalPoints = calculateFinalPoints(character);
-	character.Points.HP = finalPoints.MaxHP;
+	character.Points.CurrentLife	= finalPoints.MaxLife	;
 	printf("\nYou decide to get some rest.\n");
-	printf("Your HP is: %u.\n", character.Points.HP);
+	character.Points.CurrentLife.Print();
 }
 
 bool addItem(SCharacterInventory& inventory, uint32_t itemIndex)
@@ -46,14 +46,10 @@ SCharacterPoints calculateFinalPoints(const CCharacter& character)
 	const SCharacterPoints 		armorPoints			= getArmorPoints		(character.Armor);
 	const SCharacterPoints 		professionPoints	= getProfessionPoints	(character.Profession);
 
-	result.MaxHP	= character.Points.MaxHP	+	character.CombatBonus.Points.MaxHP		+	weaponPoints.MaxHP		+	armorPoints.MaxHP	+	professionPoints.MaxHP		;
-	result.MaxMana	= character.Points.MaxMana	+	character.CombatBonus.Points.MaxMana	+	weaponPoints.MaxMana	+	armorPoints.MaxMana	+	professionPoints.MaxMana	;
-	result.HP		=								character.CombatBonus.Points.HP			+	weaponPoints.HP			+	armorPoints.HP		+	professionPoints.HP			;
-	result.Mana		=								character.CombatBonus.Points.Mana		+	weaponPoints.Mana		+	armorPoints.Mana	+	professionPoints.Mana		;
-	result.Hit		= character.Points.Hit		+	character.CombatBonus.Points.Hit		+	weaponPoints.Hit		+	armorPoints.Hit		+	professionPoints.Hit		;
-	result.Attack	= character.Points.Attack	+	character.CombatBonus.Points.Attack		+	weaponPoints.Attack		+	armorPoints.Attack	+	professionPoints.Attack		;
-	result.Shield	=								character.CombatBonus.Points.Shield		+	weaponPoints.Shield		+	armorPoints.Shield	+	professionPoints.Shield		;
-	result.Coins	=								character.CombatBonus.Points.Coins		+	weaponPoints.Coins		+	armorPoints.Coins	+	professionPoints.Coins		;
+	result.MaxLife		= character.CombatBonus.Points.MaxLife		+ weaponPoints.MaxLife		+ armorPoints.MaxLife		+ professionPoints.MaxLife		+	character.Points.MaxLife;
+	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
+	result.CurrentLife	= character.CombatBonus.Points.CurrentLife	+ weaponPoints.CurrentLife	+ armorPoints.CurrentLife	+ professionPoints.CurrentLife;
+	result.Coins		= character.CombatBonus.Points.Coins		+ weaponPoints.Coins		+ armorPoints.Coins			+ professionPoints.Coins;
 
 	return result;
 };
