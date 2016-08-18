@@ -32,14 +32,29 @@ struct SCharacterScore
 	uint64_t GrenadesUsed		= 0;
 };
 
+struct SLifePointsMultiplier
+{
+	double	HP		;
+	double	Mana	;
+	double	Shield	;
+};
+
+struct SCombatPointsMultiplier
+{
+	double	Hit		;
+	double	Damage	;
+};
+
+
 struct SLifePoints
 {
-	int	HP		;
-	int	Mana	;
-	int	Shield	;
+	int32_t	HP		;
+	int32_t	Mana	;
+	int32_t	Shield	;
 
-	inline constexpr SLifePoints	operator +	(const SLifePoints& other) const	{ return {HP+other.HP, Mana+other.Mana, Shield+other.Shield}; }
-	SLifePoints&					operator +=	(const SLifePoints& other)			{ HP += other.HP; Mana += other.Mana; Shield += other.Shield; return *this; }
+	inline constexpr SLifePoints	operator +	(const SLifePoints& other) const			{ return {HP+other.HP, Mana+other.Mana, Shield+other.Shield}; }
+	inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other) const	{ return { (int32_t)(HP*other.HP), (int32_t)(Mana*other.Mana), (int32_t)(Shield*other.Shield)}; }
+	SLifePoints&					operator +=	(const SLifePoints& other)					{ HP += other.HP; Mana += other.Mana; Shield += other.Shield; return *this; }
 
 	void Print() const
 	{
@@ -51,17 +66,26 @@ struct SLifePoints
 
 struct SCombatPoints
 {
-	int	Hit		;
-	int	Damage	;
+	int32_t	Hit		;
+	int32_t	Damage	;
 
-	constexpr SCombatPoints	operator +	(const SCombatPoints& other) const	{ return {Hit+other.Hit, Damage+other.Damage}; }
-	SCombatPoints&			operator +=	(const SCombatPoints& other)		{ Hit += other.Hit; Damage += other.Damage; return *this; }
+	inline constexpr SCombatPoints	operator +	(const SCombatPoints& other) const				{ return {Hit+other.Hit, Damage+other.Damage}; }
+	inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other) const	{ return { (int32_t)(Hit*other.Hit), (int32_t)(Damage*other.Damage)}; }
+	SCombatPoints&					operator +=	(const SCombatPoints& other)					{ Hit += other.Hit; Damage += other.Damage; return *this; }
 
 	void Print() const
 	{
 		printf("Hit    : %u.\n",	Hit		);
 		printf("Damage : %u.\n",	Damage	);
 	}
+};
+
+struct SCharacterPointsMultipliers
+{
+	SLifePointsMultiplier	MaxLife;
+	SLifePointsMultiplier	CurrentLife;
+	SCombatPointsMultiplier	Attack;
+	double					Coins;
 };
 
 struct SCharacterPoints
@@ -71,6 +95,7 @@ struct SCharacterPoints
 	SCombatPoints	Attack;
 	int				Coins;
 
+	inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other) const	{ return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*other.Coins)}; }
 	void Print() const
 	{
 		printf("\n- Max Life:\n");

@@ -103,18 +103,17 @@ static inline constexpr STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
 
 static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
 	SCharacterPoints weaponPoints = {};
-	weaponPoints.MaxLife.HP			= (int32_t)(	weaponDefinitions[weapon.Index].Points.MaxLife.HP			*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.MaxLife.HP			*	std::max(1.0000001, weapon.Level*0.1	)	);
-	weaponPoints.MaxLife.Mana		= (int32_t)(	weaponDefinitions[weapon.Index].Points.MaxLife.Mana			*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.MaxLife.Mana		*	std::max(1.0000001, weapon.Level*0.1	)	);
-	weaponPoints.MaxLife.Shield		= (int32_t)(	weaponDefinitions[weapon.Index].Points.MaxLife.Shield		*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.MaxLife.Shield		*	std::max(1.0000001, weapon.Level*0.1	)	);
-	
-	weaponPoints.CurrentLife.HP		= (int32_t)(	weaponDefinitions[weapon.Index].Points.CurrentLife.HP		*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.CurrentLife.HP		*	std::max(1.0000001, weapon.Level*0.1	)	);
-	weaponPoints.CurrentLife.Mana	= (int32_t)(	weaponDefinitions[weapon.Index].Points.CurrentLife.Mana		*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.CurrentLife.Mana	*	std::max(1.0000001, weapon.Level*0.1	)	);
-	weaponPoints.CurrentLife.Shield	= (int32_t)(	weaponDefinitions[weapon.Index].Points.CurrentLife.Shield	*	std::max(1.0000001, weapon.Level*0.1	)	+	weaponModifiers[weapon.Modifier].Points.CurrentLife.Shield	*	std::max(1.0000001, weapon.Level*0.1	)	);
-	
-	weaponPoints.Attack.Damage		= (int32_t)(	weaponDefinitions[weapon.Index].Points.Attack.Damage		*	std::max(1.0000001, weapon.Level*0.5	)	+	weaponModifiers[weapon.Modifier].Points.Attack.Damage		*	std::max(1.0000001, weapon.Level*0.5	)	);
-	weaponPoints.Attack.Hit			= (int32_t)(	weaponDefinitions[weapon.Index].Points.Attack.Hit			*	std::max(1.0000001, weapon.Level*0.25	)	+	weaponModifiers[weapon.Modifier].Points.Attack.Hit			*	std::max(1.0000001, weapon.Level*0.25	)	);
+	SCharacterPointsMultipliers	multipliers;
 
-	weaponPoints.Coins				= (int32_t)(	weaponDefinitions[weapon.Index].Points.Coins				*	std::max(1.0000001, weapon.Level*0.125	)	+	weaponModifiers[weapon.Modifier].Points.Coins				*	std::max(1.0000001, weapon.Level*0.125	)	);
+	multipliers.MaxLife		= {.1, .1, .1};
+	multipliers.CurrentLife	= {.1, .1, .1};
+	multipliers.Attack		= {.25, .5};
+	multipliers.Coins		= 0.125;
+
+	weaponPoints.MaxLife		= (	weaponDefinitions[weapon.Index].Points.MaxLife			+	weaponModifiers[weapon.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
+	weaponPoints.CurrentLife	= (	weaponDefinitions[weapon.Index].Points.CurrentLife		+	weaponModifiers[weapon.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
+	weaponPoints.Attack			= (	weaponDefinitions[weapon.Index].Points.Attack			+	weaponModifiers[weapon.Modifier].Points.Attack		)*multipliers.Attack		;
+	weaponPoints.Coins			= (int32_t)((weaponDefinitions[weapon.Index].Points.Coins	+	weaponModifiers[weapon.Modifier].Points.Coins		)*multipliers.Coins)		;
 	return weaponPoints;
 }
 

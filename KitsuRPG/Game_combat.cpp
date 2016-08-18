@@ -17,7 +17,7 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 		return 0;
 
 	const std::string	targetArmorName		= getArmorName	(target.Armor);
-	const int32_t		targetArmorShield	= getArmorShield(target.Armor);
+	const int32_t		targetArmorShield	= calculateFinalPoints(target).MaxLife.Shield;
 	
 	// Impenetrable armors always have 100% 
 	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
@@ -309,16 +309,17 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.Armor);
 	const std::string	targetArmorName			= getArmorName(target.Armor);
-	const int32_t		targetArmorShield		= getArmorShield(target.Armor);
 	const ARMOR_EFFECT	targetArmorEffect		= getArmorEffect(target.Armor);
+
+	const int32_t		targetArmorShield		= calculateFinalPoints(target).MaxLife.Shield;
+
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 	
 	int32_t absorbChance;
 
-	//double absorptionRatio = std::max(0.0, ((target.Shield+target.Points.HP)/(double)(targetArmorShield+calculateFinalPoints(target).MaxLife.HP)));
 	double absorptionRatio = std::max(0.0, (target.Points.CurrentLife.Shield/(double)targetArmorShield))/2.0;
-	absorbChance = 50+(int32_t)(absorptionRatio*100);
+	absorbChance = 50+(int32_t)(absorptionRatio*targetArmorAbsorption);
 	absorbChance = std::min(absorbChance, 100);
 
 	printf("%s status absorb chance after absorption calculation is %%%u.\n", target.Name.c_str(), absorbChance);

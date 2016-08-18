@@ -16,27 +16,27 @@ typedef CProfession CProfessionModifier;
 
 static const CProfessionModifier professionModifiers[] = 
 {	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Novice %s"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Squaddie %s"		}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Scholar %s"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	0	}, "Corporal %s"		}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Sergeant %s"		}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	2,	1,	},	1	}, "Colonel %s"			}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	1,	},	1	}, "Lieutenant %s"		}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	1	}, "Captain %s"			}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	2	}, "Major %s"			}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	2	}, "Colonel %s"			}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	3,	},	2	}, "Zombie %s"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	2	}, "Undead %s"			}
-,	{	{	{	2,	0,	0	},	{	1,	0,	0	},	{	2,	2,	},	2	}, "Possessed %s"		}
-,	{	{	{	2,	0,	0	},	{	1,	0,	0	},	{	2,	3,	},	2	}, "Champion %s"		}
-,	{	{	{	3,	0,	0	},	{	1,	0,	0	},	{	2,	3,	},	2	}, "Elite %s"			}
-,	{	{	{	3,	0,	0	},	{	1,	0,	0	},	{	2,	3,	},	3	}, "King %s"			}
-,	{	{	{	3,	0,	0	},	{	1,	0,	0	},	{	3,	3,	},	3	}, "%s CEO"				}
-,	{	{	{	3,	0,	0	},	{	1,	0,	0	},	{	3,	4,	},	3	}, "%s Mad Scientist"	}
-,	{	{	{	4,	0,	0	},	{	1,	0,	0	},	{	3,	4,	},	3	}, "Emperor %s"			}
-,	{	{	{	4,	0,	0	},	{	2,	0,	0	},	{	3,	4,	},	3	}, "Demigod %s"			}
-,	{	{	{	4,	0,	0	},	{	3,	0,	0	},	{	3,	4,	},	3	}, "Angel %s"			}
-,	{	{	{	4,	0,	0	},	{	3,	0,	0	},	{	4,	4,	},	3	}, "%s God"				}
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Squaddie %s"		}	// 1
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Scholar %s"			}	// 2
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	0	}, "Corporal %s"		}	// 3
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Sergeant %s"		}	// 4
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	2,	1,	},	1	}, "Colonel %s"			}	// 5
+,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	1,	},	1	}, "Lieutenant %s"		}	// 6
+,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	1	}, "Captain %s"			}	// 7
+,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	2	}, "Major %s"			}	// 8
+,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	3,	},	2	}, "Colonel %s"			}	// 9
+,	{	{	{	0,	2,	0	},	{	0,	0,	0	},	{	2,	4,	},	2	}, "Zombie %s"			}	// 10
+,	{	{	{	1,	2,	0	},	{	0,	0,	0	},	{	2,	4,	},	2	}, "Undead %s"			}	// 11
+,	{	{	{	1,	2,	0	},	{	1,	0,	0	},	{	2,	5,	},	1	}, "Possessed %s"		}	// 12
+,	{	{	{	2,	1,	0	},	{	1,	0,	0	},	{	2,	5,	},	2	}, "Champion %s"		}	// 13
+,	{	{	{	3,	1,	0	},	{	1,	0,	0	},	{	2,	5,	},	2	}, "Elite %s"			}	// 14
+,	{	{	{	3,	1,	0	},	{	1,	0,	0	},	{	2,	5,	},	3	}, "King %s"			}	// 15
+,	{	{	{	3,	1,	0	},	{	1,	0,	0	},	{	3,	4,	},	4	}, "%s CEO"				}	// 16
+,	{	{	{	3,	1,	0	},	{	1,	1,	0	},	{	3,	4,	},	4	}, "%s Mad Scientist"	}	// 17
+,	{	{	{	4,	1,	0	},	{	1,	1,	0	},	{	3,	4,	},	4	}, "Emperor %s"			}	// 18
+,	{	{	{	4,	2,	0	},	{	1,	1,	0	},	{	3,	4,	},	4	}, "Demigod %s"			}	// 19
+,	{	{	{	4,	2,	0	},	{	2,	1,	0	},	{	3,	4,	},	4	}, "Angel %s"			}	// 20
+,	{	{	{	4,	2,	0	},	{	2,	1,	0	},	{	4,	4,	},	4	}, "%s God"				}	// 21
 };
 
 static const CProfession professionDefinitions[] =
@@ -74,32 +74,19 @@ static std::string getProfessionName(const SProfession& profession)
 	return formattedName;
 }
 
-//static inline constexpr ARMOR_EFFECT getArmorEffect(const SArmor& profession) {
-//	return ARMOR_EFFECT(professionDefinitions[profession.Index].Effect | professionModifiers[profession.Modifier].Effect);
-//}
-
-//static inline constexpr int32_t getArmorShield(const SArmor& profession) {
-//	return professionDefinitions[profession.Index].Shield + professionModifiers[profession.Modifier].Shield;
-//}
-
-//static inline constexpr int32_t getArmorAbsorption(const SArmor& profession) {
-//	return professionDefinitions[profession.Index].Absorption + professionModifiers[profession.Modifier].Absorption;
-//}
-
 static SCharacterPoints getProfessionPoints(const SProfession& profession) {
 	SCharacterPoints professionPoints = {};
-	professionPoints.MaxLife.HP			= (int32_t)(	professionDefinitions[profession.Index].Points.MaxLife.HP			*	std::max(1.0000001, profession.Level*0.25	)	+	professionModifiers[profession.Modifier].Points.MaxLife.HP			*	std::max(1.0000001, profession.Level*0.25	)	);
-	professionPoints.MaxLife.Mana		= (int32_t)(	professionDefinitions[profession.Index].Points.MaxLife.Mana			*	std::max(1.0000001, profession.Level*0.25	)	+	professionModifiers[profession.Modifier].Points.MaxLife.Mana		*	std::max(1.0000001, profession.Level*0.25	)	);
-	professionPoints.MaxLife.Shield		= (int32_t)(	professionDefinitions[profession.Index].Points.MaxLife.Shield		*	std::max(1.0000001, profession.Level*0.25	)	+	professionModifiers[profession.Modifier].Points.MaxLife.Shield		*	std::max(1.0000001, profession.Level*0.25	)	);
-	
-	professionPoints.CurrentLife.HP		= (int32_t)(	professionDefinitions[profession.Index].Points.CurrentLife.HP		*	std::max(1.0000001, profession.Level*0.125	)	+	professionModifiers[profession.Modifier].Points.CurrentLife.HP		*	std::max(1.0000001, profession.Level*0.125	)	);
-	professionPoints.CurrentLife.Mana	= (int32_t)(	professionDefinitions[profession.Index].Points.CurrentLife.Mana		*	std::max(1.0000001, profession.Level*0.125	)	+	professionModifiers[profession.Modifier].Points.CurrentLife.Mana	*	std::max(1.0000001, profession.Level*0.125	)	);
-	professionPoints.CurrentLife.Shield	= (int32_t)(	professionDefinitions[profession.Index].Points.CurrentLife.Shield	*	std::max(1.0000001, profession.Level*0.25	)	+	professionModifiers[profession.Modifier].Points.CurrentLife.Shield	*	std::max(1.0000001, profession.Level*0.25	)	);
-	
-	professionPoints.Attack.Damage		= (int32_t)(	professionDefinitions[profession.Index].Points.Attack.Damage		*	std::max(1.0000001, profession.Level*0.2	)	+	professionModifiers[profession.Modifier].Points.Attack.Damage		*	std::max(1.0000001, profession.Level*0.2	)	);
-	professionPoints.Attack.Hit			= (int32_t)(	professionDefinitions[profession.Index].Points.Attack.Hit			*	std::max(1.0000001, profession.Level*0.2	)	+	professionModifiers[profession.Modifier].Points.Attack.Hit			*	std::max(1.0000001, profession.Level*0.2	)	);
+	SCharacterPointsMultipliers	multipliers;
 
-	professionPoints.Coins				= (int32_t)(	professionDefinitions[profession.Index].Points.Coins				*	std::max(1.0000001, profession.Level*0.2	)	+	professionModifiers[profession.Modifier].Points.Coins				*	std::max(1.0000001, profession.Level*0.2	)	);
+	multipliers.MaxLife		= {.5, .5, .25};
+	multipliers.CurrentLife	= {.1, .1, .1};
+	multipliers.Attack		= {.1, .1};
+	multipliers.Coins		= 0.125;
+
+	professionPoints.MaxLife		= (	professionDefinitions[profession.Index].Points.MaxLife			+	professionModifiers[profession.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
+	professionPoints.CurrentLife	= (	professionDefinitions[profession.Index].Points.CurrentLife		+	professionModifiers[profession.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
+	professionPoints.Attack			= (	professionDefinitions[profession.Index].Points.Attack			+	professionModifiers[profession.Modifier].Points.Attack		)*multipliers.Attack		;
+	professionPoints.Coins			= (int32_t)((professionDefinitions[profession.Index].Points.Coins	+	professionModifiers[profession.Modifier].Points.Coins		)*multipliers.Coins)		;
 	return professionPoints;
 }
 

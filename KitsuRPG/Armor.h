@@ -68,18 +68,17 @@ static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
 
 static SCharacterPoints getArmorPoints(const SArmor& armor) {
 	SCharacterPoints armorPoints = {};
-	armorPoints.MaxLife.HP			= (int32_t)(	armorDefinitions[armor.Index].Points.MaxLife.HP			*	std::max(1.0000001, armor.Level*0.5		)	+	armorModifiers[armor.Modifier].Points.MaxLife.HP			*	std::max(1.0000001, armor.Level*0.5		)	);
-	armorPoints.MaxLife.Mana		= (int32_t)(	armorDefinitions[armor.Index].Points.MaxLife.Mana		*	std::max(1.0000001, armor.Level*0.25	)	+	armorModifiers[armor.Modifier].Points.MaxLife.Mana			*	std::max(1.0000001, armor.Level*0.25	)	);
-	armorPoints.MaxLife.Shield		= (int32_t)(	armorDefinitions[armor.Index].Points.MaxLife.Shield		*	std::max(1.0000001, armor.Level*0.25	)	+	armorModifiers[armor.Modifier].Points.MaxLife.Shield		*	std::max(1.0000001, armor.Level*0.25	)	);
-	
-	armorPoints.CurrentLife.HP		= (int32_t)(	armorDefinitions[armor.Index].Points.CurrentLife.HP		*	std::max(1.0000001, armor.Level*0.125	)	+	armorModifiers[armor.Modifier].Points.CurrentLife.HP		*	std::max(1.0000001, armor.Level*0.125	)	);
-	armorPoints.CurrentLife.Mana	= (int32_t)(	armorDefinitions[armor.Index].Points.CurrentLife.Mana	*	std::max(1.0000001, armor.Level*0.125	)	+	armorModifiers[armor.Modifier].Points.CurrentLife.Mana		*	std::max(1.0000001, armor.Level*0.125	)	);
-	armorPoints.CurrentLife.Shield	= (int32_t)(	armorDefinitions[armor.Index].Points.CurrentLife.Shield	*	std::max(1.0000001, armor.Level*0.25	)	+	armorModifiers[armor.Modifier].Points.CurrentLife.Shield	*	std::max(1.0000001, armor.Level*0.25	)	);
-	
-	armorPoints.Attack.Damage		= (int32_t)(	armorDefinitions[armor.Index].Points.Attack.Damage		*	std::max(1.0000001, armor.Level*0.1		)	+	armorModifiers[armor.Modifier].Points.Attack.Damage			*	std::max(1.0000001, armor.Level*0.1		)	);
-	armorPoints.Attack.Hit			= (int32_t)(	armorDefinitions[armor.Index].Points.Attack.Hit			*	std::max(1.0000001, armor.Level*0.1		)	+	armorModifiers[armor.Modifier].Points.Attack.Hit			*	std::max(1.0000001, armor.Level*0.1		)	);
+	SCharacterPointsMultipliers multipliers;
 
-	armorPoints.Coins				= (int32_t)(	armorDefinitions[armor.Index].Points.Coins				*	std::max(1.0000001, armor.Level*0.1		)	+	armorModifiers[armor.Modifier].Points.Coins					*	std::max(1.0000001, armor.Level*0.1		)	);
+	multipliers.MaxLife		= {.125, .125, .5};
+	multipliers.CurrentLife	= {.1, .1, .1};
+	multipliers.Attack		= {.1, .1};
+	multipliers.Coins		= 0.125;
+
+	armorPoints.MaxLife		= (	armorDefinitions[armor.Index].Points.MaxLife		+	armorModifiers[armor.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
+	armorPoints.CurrentLife	= (	armorDefinitions[armor.Index].Points.CurrentLife	+	armorModifiers[armor.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
+	armorPoints.Attack		= (	armorDefinitions[armor.Index].Points.Attack			+	armorModifiers[armor.Modifier].Points.Attack		)*multipliers.Attack		;
+	armorPoints.Coins		= (int32_t)((armorDefinitions[armor.Index].Points.Coins	+	armorModifiers[armor.Modifier].Points.Coins			)*multipliers.Coins)		;
 	return armorPoints;
 }
 
