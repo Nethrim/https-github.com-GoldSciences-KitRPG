@@ -37,11 +37,11 @@ void main()
 
 		adventurer.Weapon		.Index		= rand()%4;//(int16_t)(rand() % size(weaponDefinitions		));
 		adventurer.Armor		.Index		= rand()%4;//(int16_t)(rand() % size(armorDefinitions		));
-		adventurer.Profession	.Index		= rand()%4;//(int16_t)(rand() % size(professionDefinitions	));
+		adventurer.Profession	.Index		= (int16_t)(rand() % size(professionDefinitions	));
 
 		adventurer.Weapon		.Modifier	= rand()%4;//(int16_t)(rand() % size(weaponModifiers		));
 		adventurer.Armor		.Modifier	= rand()%4;//(int16_t)(rand() % size(armorModifiers		));
-		adventurer.Profession	.Modifier	= rand()%4;//(int16_t)(rand() % size(professionModifiers	));	
+		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(professionModifiers	));	
 
 		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
