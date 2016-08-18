@@ -9,4 +9,5 @@ void bar(CCharacter& adventurer);								// Displays the available items for buy
 void displayScore(const CCharacter& adventurer);				// Displays the player's character points and statistics.
 void combat(CCharacter& adventurer, uint32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 
+
 #endif // __GAME_H__99823740927349023649827346982734__

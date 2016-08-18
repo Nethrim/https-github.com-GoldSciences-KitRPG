@@ -58,33 +58,61 @@ void mercenaryJob(CCharacter& adventurer)
 	}
 }
 
+static inline constexpr int32_t getFinalItemCount() {
+	return (int32_t)((size(itemDefinitions)-1)*size(itemModifiers));
+}
+
+template<size_t _Size>
+static int initializeItemMenu(SMenuItem<SItem>(&menuItems)[_Size])
+{
+	char itemOption[128] = {};
+	static const size_t descriptionCount = size(itemDefinitions);
+	static const size_t modifierCount = size(itemModifiers);
+	for(uint32_t indexItem=0, itemCount = descriptionCount-1; indexItem<itemCount; ++indexItem)
+	{
+		const int32_t indexDefinition = (int32_t)indexItem+1;
+		for(int32_t grade=0; grade < modifierCount; ++grade)
+		{
+			const int32_t finalMenuItemIndex = indexItem*modifierCount+grade;
+			menuItems[finalMenuItemIndex].ReturnValue	= { indexDefinition, grade };
+			std::string itemName = getItemName( menuItems[finalMenuItemIndex].ReturnValue );
+			sprintf_s(itemOption, "- $%.2u Coins - %s", (uint32_t)getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
+			menuItems[finalMenuItemIndex].Text			= itemOption;
+		}
+	}
+	menuItems[getFinalItemCount()].ReturnValue	= { getFinalItemCount(), 0 };
+	menuItems[getFinalItemCount()].Text			= "Leave the bar";
+	return 0;
+};
+
 void bar(CCharacter& adventurer)
 {
 	printf("\nDo you want to buy some drinks?\n\n");
 
-	static const size_t descriptionCount = size(itemDescriptions);
-	static SMenuItem<uint32_t> itemOptions[descriptionCount];
+	static const size_t menuItemCount = getFinalItemCount()+1;
+	static SMenuItem<SItem> itemOptions[menuItemCount];
 	static const int initialized = initializeItemMenu(itemOptions);
 
 	char menuTitle[128] = {};
 	while (true)	// break the loop to leave the shop
 	{
 		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Coins);
-		const uint32_t indexItem = displayMenu(menuTitle, itemOptions);
-		if( indexItem == descriptionCount ) {
+		const SItem selectedItem = displayMenu(menuTitle, itemOptions);
+		if( selectedItem.Index == getFinalItemCount() ) {
 			printf("You leave the bar.\n");
 			break;
 		}
 		else 
 		{
-			int itemPrice	= itemDescriptions[indexItem].Price;	// Get a copy of this value because we use it very often.
+			int itemPrice	= getItemPrice(selectedItem);	// Get a copy of this value because we use it very often.
+			const std::string itemName = getItemName(selectedItem);
 
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
-				printf("You can't afford to buy that! Choose something else...\n");
-			else if(addItem(adventurer.Inventory, indexItem))	// addItem() returns false if the inventory is full.
+				printf("You can't afford to buy %s! Choose something else...\n", itemName.c_str());
+			else if(addItem(adventurer.Inventory, selectedItem))	// addItem() returns false if the inventory is full.
 			{
-				printf("You spend %u coins buying %s.\n", itemPrice, itemDescriptions[indexItem].Name.c_str());
+				printf("You spend %u coins buying %s.\n", itemPrice, itemName.c_str());
 				adventurer.Points.Coins		-= itemPrice;
 				adventurer.Score.MoneySpent	+= itemPrice;
 			}

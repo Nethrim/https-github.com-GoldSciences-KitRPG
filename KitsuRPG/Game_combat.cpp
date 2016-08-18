@@ -448,10 +448,13 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 		if(rand()%2) 
 		{
 			const SInventorySlot& itemDrop = loser.Inventory.Slots[i];
-			if(addItem(winner.Inventory, itemDrop.ItemIndex))
-				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDescriptions[itemDrop.ItemIndex].Name.c_str());
-			else
-				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDescriptions[itemDrop.ItemIndex].Name.c_str(), loser.Name.c_str());
+			std::string itemDropName = getItemName(itemDrop.Item);
+			if(addItem(winner.Inventory, itemDrop.Item)) {
+				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDropName.c_str());
+			}
+			else {
+				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDropName.c_str(), loser.Name.c_str());
+			}
 
 			removeItem(loser.Inventory, i, loser.Name);
 		}
@@ -693,9 +696,9 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 
 void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemyType)
 {
-	addItem( currentEnemy.Inventory, 1 );
+	addItem( currentEnemy.Inventory, {1, 1} );
 	for(uint32_t i=1; i<enemyType; ++i)
-		addItem( currentEnemy.Inventory, 1+(rand()%(size(itemDescriptions)-1)) );
+		addItem( currentEnemy.Inventory, { 1+(rand()%((int32_t)size(itemDefinitions)-1)), rand()%(int32_t)size(itemModifiers) } );
 
 	currentEnemy.Weapon		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponDefinitions		)));
 	currentEnemy.Armor		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorDefinitions		)));
@@ -762,10 +765,17 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 	determineOutcome(adventurer, currentEnemy, enemyType);
 }
 
-void usePotion(const CItem& itemDescription, CCharacter& potionDrinker) 
+void usePotion(const SItem& itemPotion, CCharacter& potionDrinker) 
 {
 	int itemEffectValue;
-	const int itemGrade = std::max(1, itemDescription.Grade);
+	const CItem& itemDescription = itemDefinitions[itemPotion.Index];
+
+	if(0 == itemPotion.Modifier) {
+		printf("The prop potion drank by %s doesn't seem to taste very well...\n", potionDrinker.Name.c_str());
+		return;
+	}
+
+	const int itemGrade = itemPotion.Modifier;
 	
 	const std::string& drinkerName	= potionDrinker.Name;
 	SCharacterPoints& drinkerPoints	= potionDrinker.Points;
@@ -778,7 +788,7 @@ void usePotion(const CItem& itemDescription, CCharacter& potionDrinker)
 		printf("%s starts feeling better...\n", drinkerName.c_str());
 		finalPoints = calculateFinalPoints(potionDrinker);
 		itemEffectValue = (finalPoints.MaxLife.HP/5+1)+(rand()%(finalPoints.MaxLife.HP/10));
-		itemEffectValue *= itemDescription.Grade;
+		itemEffectValue *= itemGrade;
 		drinkerPoints.CurrentLife.HP += itemEffectValue;
 		drinkerPoints.CurrentLife.HP = std::min(drinkerPoints.CurrentLife.HP, finalPoints.MaxLife.HP);
 		printf("The potion heals %s for %u! %s now has %u HP.\n", drinkerName.c_str(), itemEffectValue, drinkerName.c_str(), drinkerPoints.CurrentLife.HP);
@@ -833,21 +843,30 @@ STATUS_TYPE getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 	return result;
 }
 
-void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& target) 
+void useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
 {
+	const CItem& itemDescription = itemDefinitions[itemGrenade.Index];
+
+	if(0 == itemGrenade.Modifier) {
+		printf("The prop grenade thrown by %s puffs in the air and quickly falls to the ground.\n", thrower.Name.c_str());
+		return;
+	}
+
+	const int itemGrade = itemGrenade.Modifier; //std::max(1, itemGrenade.Modifier);
+
 	// Currently the hit chance for all the grenade types are calculated with the same formula.
-	int	lotteryRange	= 60+(10*itemDescription.Grade);	// calculate hit chance from item grade
+	int	lotteryRange	= 60+(10*itemGrade);	// calculate hit chance from item grade
 	int	lotteryResult	= rand()%100;
 
 	SCharacterPoints 
 		finalPointsThrower	= calculateFinalPoints(thrower), 
 		finalPointsTarget	= calculateFinalPoints(target);
 
-	int itemEffectValue				= int(finalPointsTarget.MaxLife.HP*(0.2f*itemDescription.Grade));
-	int itemEffectValueSelf			= int(finalPointsThrower.MaxLife.HP*(0.2f*itemDescription.Grade)) >> 1;
+	int itemEffectValue				= int(finalPointsTarget .MaxLife.HP*(0.2f*itemGrade));
+	int itemEffectValueSelf			= int(finalPointsThrower.MaxLife.HP*(0.2f*itemGrade)) >> 1;
 
-	int itemEffectValueReduced		= int(finalPointsTarget.MaxLife.HP*(0.1f*itemDescription.Grade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxLife.HP*(0.1f*itemDescription.Grade)) >> 1;
+	int itemEffectValueReduced		= int(finalPointsTarget .MaxLife.HP*(0.1f*itemGrade));
+	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxLife.HP*(0.1f*itemGrade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
@@ -867,7 +886,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 	case PROPERTY_TYPE_STUN:
 		// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
-			applyAttackStatus(target, grenadeStatus, 1+itemDescription.Grade, itemDescription.Name);
+			applyAttackStatus(target, grenadeStatus, 1+itemGrade, itemDescription.Name);
 		else
 			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
 
@@ -888,7 +907,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
 
 			if(bAddStatus)
-				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_SELF;
 			printf("%s throws the grenade too close...\n"		
@@ -906,8 +925,8 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 
 			if(bAddStatus)
 			{
-				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemDescription.Grade), itemDescription.Name);
-				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemGrade), itemDescription.Name);
+				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
 			}
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
@@ -919,7 +938,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
 			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
 			if(bAddStatus)
-				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemGrade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
@@ -947,17 +966,18 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 
 void executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) {
 
-	const CItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex];
-	std::string itemName = itemDescription.Name;
+	const SItem& item = user.Inventory.Slots[indexInventory].Item;
+	std::string itemName = getItemName(item);
+
 	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
-	switch( itemDescription.Type )
+	switch( itemDefinitions[item.Index].Type )
 	{
 	case ITEM_TYPE_POTION:
-		usePotion(itemDescription, user);
+		usePotion(item, user);
 		break;
 
 	case ITEM_TYPE_GRENADE:
-		useGrenade(itemDescription, user, target);
+		useGrenade(item, user, target);
 		break;
 
 	default:
@@ -972,7 +992,6 @@ bool useItems(CCharacter& user, CCharacter& target)
 {
 	bool bUsedItem = false;
 	uint32_t indexInventory = ~0U;
-	CItem itemDescription;
 	static const size_t inventorySize = size(user.Inventory.Slots);
 	if(0 == user.Inventory.ItemCount)
 	{
@@ -984,7 +1003,8 @@ bool useItems(CCharacter& user, CCharacter& target)
 	char itemOption[128] = {};
 	for(uint32_t i=0; i<user.Inventory.ItemCount; ++i)
 	{
-		sprintf_s(itemOption, "- x%.2u %s", user.Inventory.Slots[i].ItemCount, itemDescriptions[user.Inventory.Slots[i].ItemIndex].Name.c_str());
+		std::string itemName = getItemName(user.Inventory.Slots[i].Item);
+		sprintf_s(itemOption, "- x%.2u %s", user.Inventory.Slots[i].ItemCount, itemName.c_str());
 		itemOptions[i].ReturnValue	= i;
  		itemOptions[i].Text			= itemOption;
 	}
@@ -1007,20 +1027,20 @@ bool useItems(CCharacter& user, CCharacter& target)
 	else // not a player so execute choice by AI
 	{
 		indexInventory = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
+		const CItem& itemDescription = itemDefinitions[user.Inventory.Slots[indexInventory].Item.Index];
 		
 		// Only use potions if we have less than 80% HP
-		if	 ( ITEM_TYPE_POTION		!= itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Type
-			|| PROPERTY_TYPE_HEALTH != itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex].Property
+		if	 ( ITEM_TYPE_POTION		!= itemDescription.Type
+			|| PROPERTY_TYPE_HEALTH != itemDescription.Property
 			|| user.Points.CurrentLife.HP < ((user.Points.MaxLife.HP+user.CombatBonus.Points.MaxLife.HP)*.7f)
 			)
 			bUsedItem = true;
 	}
 
-	const SCharacterPoints finalPoints = calculateFinalPoints(user);
-
 	if(bUsedItem)
 	{
-		const CItem& itemDescription = itemDescriptions[user.Inventory.Slots[indexInventory].ItemIndex];
+		const SCharacterPoints finalPoints = calculateFinalPoints(user);
+		const CItem& itemDescription = itemDefinitions[user.Inventory.Slots[indexInventory].Item.Index];
 		if( ITEM_TYPE_POTION == itemDescription.Type 
 		 && PROPERTY_TYPE_HEALTH == itemDescription.Property 
 		 && user.Points.CurrentLife.HP == finalPoints.MaxLife.HP)

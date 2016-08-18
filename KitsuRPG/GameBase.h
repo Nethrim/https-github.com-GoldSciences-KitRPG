@@ -114,11 +114,6 @@ struct SCharacterPoints
 	};
 };
 
-struct SInventorySlot
-{
-	uint32_t	ItemIndex;
-	uint32_t	ItemCount;
-};
 
 typedef SCharacterPoints SBonusTurns;
 
@@ -179,21 +174,6 @@ struct SCombatStatus
 
 #define MAX_INVENTORY_SLOTS 128
 
-struct SCharacterInventory
-{
-	uint32_t			ItemCount					= 0;
-	SInventorySlot		Slots[MAX_INVENTORY_SLOTS]	= {};
-};
-
-enum CHARACTER_TYPE : uint32_t
-{	CHARACTER_TYPE_UNKNOWN
-,	CHARACTER_TYPE_NPC
-,	CHARACTER_TYPE_PLAYER
-,	CHARACTER_TYPE_ENEMY
-,	CHARACTER_TYPE_ALLY
-,	CHARACTER_TYPE_ADMIN
-};
-
 struct SWeapon
 {
 	uint16_t Index;
@@ -213,6 +193,33 @@ struct SProfession
 	uint16_t Index;
 	uint16_t Modifier;
 	uint16_t Level;
+};
+
+struct SItem
+{
+	int32_t Index;
+	int32_t Modifier;
+};
+
+struct SInventorySlot
+{
+	SItem		Item;
+	uint32_t	ItemCount;
+};
+
+struct SCharacterInventory
+{
+	uint32_t			ItemCount					= 0;
+	SInventorySlot		Slots[MAX_INVENTORY_SLOTS]	= {};
+};
+
+enum CHARACTER_TYPE : uint32_t
+{	CHARACTER_TYPE_UNKNOWN
+,	CHARACTER_TYPE_NPC
+,	CHARACTER_TYPE_PLAYER
+,	CHARACTER_TYPE_ENEMY
+,	CHARACTER_TYPE_ALLY
+,	CHARACTER_TYPE_ADMIN
 };
 
 // POD to store all the character data that is not a string or object.
