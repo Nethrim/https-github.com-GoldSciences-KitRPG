@@ -2,6 +2,9 @@
 
 #include "Item.h"
 #include "Enemy.h"
+#include "Profession.h"
+#include "Armor.h"
+#include "Weapon.h"
 
 #include "Menu.h"
 
@@ -95,13 +98,51 @@ void bar(CCharacter& adventurer)
 void displayScore(const CCharacter& adventurer) 
 {
 	const SCharacterPoints& points = adventurer.Points;
-	const SCharacterScore& gameCounters = adventurer.Score;
-	const SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
+	const SCharacterScore& gameCounters		= adventurer.Score;
+	const SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
+	const SCharacterPoints weaponPoints		= getWeaponPoints(adventurer.Weapon);
+	const SCharacterPoints armorPoints		= getArmorPoints(adventurer.Armor);
+	const SCharacterPoints professionPoints	= getProfessionPoints(adventurer.Profession);
 
-	printf("\n-- Character points:\n");
-	points.CurrentLife.Print();
+	printf("\n-- %s final points:\n", adventurer.Name.c_str());
+	printf("\n- Max Life:\n");
 	finalPoints.MaxLife.Print();
+	printf("\n- Current Life:\n");
+	points.CurrentLife.Print();
+	printf("\n- Attack:\n");
 	finalPoints.Attack.Print();
+
+	printf("\n-- %s base character points:\n", adventurer.Name.c_str());
+	printf("\n- Max Life:\n");
+	points.MaxLife.Print();
+	//printf("\n- Current Life:\n");
+	//points.CurrentLife.Print();
+	printf("\n- Attack:\n");
+	points.Attack.Print();
+
+	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
+	printf("\n- Max Life:\n");
+	professionPoints.MaxLife.Print();
+	printf("\n- Current Life:\n");
+	professionPoints.CurrentLife.Print();
+	printf("\n- Attack:\n");
+	professionPoints.Attack.Print();
+
+	printf("\n-- %s is wearing %s level %u:\n", adventurer.Name.c_str(), getArmorName(adventurer.Armor).c_str(), adventurer.Armor.Level);
+	printf("\n- Max Life:\n");
+	armorPoints.MaxLife.Print();
+	printf("\n- Current Life:\n");
+	armorPoints.CurrentLife.Print();
+	printf("\n- Attack:\n");
+	armorPoints.Attack.Print();
+
+	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
+	printf("\n- Max Life:\n");
+	weaponPoints.MaxLife.Print();
+	printf("\n- Current Life:\n");
+	weaponPoints.CurrentLife.Print();
+	printf("\n- Attack:\n");
+	weaponPoints.Attack.Print();
 
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"

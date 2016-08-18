@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <cstdio>
+#include <algorithm>
 
 #ifndef __GAMEBASE_H__98236498027346892734689273__
 #define __GAMEBASE_H__98236498027346892734689273__
@@ -53,7 +54,7 @@ struct SLifePoints
 	int32_t	Shield	;
 
 	inline constexpr SLifePoints	operator +	(const SLifePoints& other) const			{ return {HP+other.HP, Mana+other.Mana, Shield+other.Shield}; }
-	inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other) const	{ return { (int32_t)(HP*other.HP), (int32_t)(Mana*other.Mana), (int32_t)(Shield*other.Shield)}; }
+	inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other) const	{ return { (int32_t)(HP*std::max(1.000001, other.HP)), (int32_t)(Mana*std::max(1.000001, other.Mana)), (int32_t)(Shield*std::max(1.000001, other.Shield))}; }
 	SLifePoints&					operator +=	(const SLifePoints& other)					{ HP += other.HP; Mana += other.Mana; Shield += other.Shield; return *this; }
 
 	void Print() const
@@ -70,7 +71,7 @@ struct SCombatPoints
 	int32_t	Damage	;
 
 	inline constexpr SCombatPoints	operator +	(const SCombatPoints& other) const				{ return {Hit+other.Hit, Damage+other.Damage}; }
-	inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other) const	{ return { (int32_t)(Hit*other.Hit), (int32_t)(Damage*other.Damage)}; }
+	inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other) const	{ return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; }
 	SCombatPoints&					operator +=	(const SCombatPoints& other)					{ Hit += other.Hit; Damage += other.Damage; return *this; }
 
 	void Print() const

@@ -860,7 +860,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 	case PROPERTY_TYPE_STUN:
 		// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
-			applyAttackStatus(target, grenadeStatus, 50, 1+itemDescription.Grade, itemDescription.Name);
+			applyAttackStatus(target, grenadeStatus, 1+itemDescription.Grade, itemDescription.Name);
 		else
 			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
 
@@ -881,7 +881,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
 
 			if(bAddStatus)
-				applyAttackStatus(thrower, grenadeStatus, 45, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_SELF;
 			printf("%s throws the grenade too close...\n"		
@@ -899,8 +899,8 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 
 			if(bAddStatus)
 			{
-				applyAttackStatus(target,	grenadeStatus, 45, (uint32_t)(2*itemDescription.Grade), itemDescription.Name);
-				applyAttackStatus(thrower,	grenadeStatus, 45, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemDescription.Grade), itemDescription.Name);
 			}
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
@@ -912,7 +912,7 @@ void useGrenade(const CItem& itemDescription, CCharacter& thrower, CCharacter& t
 			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
 			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
 			if(bAddStatus)
-				applyAttackStatus(target, grenadeStatus, 50, (uint32_t)(3.6f*itemDescription.Grade), itemDescription.Name);
+				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemDescription.Grade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
