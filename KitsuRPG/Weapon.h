@@ -49,33 +49,37 @@ static const CWeaponModifier weaponModifiers[] =
 };
 
 static const CWeapon weaponDefinitions[] = 
+// 6th grade	No weapon: five points of hit chance.
+{	{	{	0,	0,	5,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE										,	"Glove"						}
 // 5th grade	five points
-{	{	{	0,	0,	5,		0,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_NONE										,	"Glove"				}
-,	{	{	3,	0,	0,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Club"				}
-,	{	{	0,	0,	4,		1,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Knuckle"			}
-,	{	{	1,	0,	1,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Spiked Club"		}
-,	{	{	0,	0,	2,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Knife"				}
-,	{	{	0,	0,	3,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Claw"				}
+,	{	{	3,	0,	0,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Club"						}
+,	{	{	0,	0,	4,		1,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Knuckle"					}
+,	{	{	0,	0,	4,		1,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Dagger"					}
+,	{	{	1,	0,	1,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Spiked Club"				}
+,	{	{	0,	0,	2,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Knife"						}
+,	{	{	0,	0,	3,		2,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Claw"						}
 // 4th grade	six points
-,	{	{	0,	0,	2,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Machete"			}
-,	{	{	2,	0,	1,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Mace"				}
-,	{	{	1,	0,	1,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Sword"				}
-,	{	{	2,	0,	0,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Axe"				}
-,	{	{	1,	0,	-1,		6,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Spear"				}
-,	{	{	-1,	0,	0,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Bow"				}
+,	{	{	0,	0,	2,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Machete"					}
+,	{	{	2,	0,	1,		3,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Mace"						}
+,	{	{	1,	0,	1,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Sword"						}
+,	{	{	2,	0,	0,		4,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Axe"						}
+,	{	{	1,	0,	-1,		6,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Spear"						}
+,	{	{	-1,	0,	0,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Bow"						}
 // 3rd grade	seven points
-,	{	{	0,	0,	1,		6,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Pistol"			}
-,	{	{	1,	0,	1,		5,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Machinegun"		}
-,	{	{	2,	0,	-2,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Shotgun"			}
-,	{	{	2,	0,	0,		6,	-1	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Rocket Launcher"	}
-,	{	{	-2,	0,	2,		7,	0	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_BLIND|STATUS_TYPE_BLEEDING)	,	"Sniper Rifle"		}
+,	{	{	0,	0,	1,		6,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Pistol"					}
+,	{	{	1,	0,	1,		5,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Rifle"						}
+,	{	{	1,	0,	0,		5,	1	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Machinegun"				}
+,	{	{	2,	0,	-2,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Shotgun"					}
+,	{	{	2,	0,	0,		6,	-2	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Rocket Launcher"			}
+,	{	{	-2,	0,	6,		6,	-3	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Guided Rocket Launcher"	}
+,	{	{	-2,	0,	2,		7,	0	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_BLIND|STATUS_TYPE_BLEEDING)	,	"Sniper Rifle"				}
 // 2nd grade	eight points
-,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Thor's Mace"		}
-,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Zeus' Staff"		}
-,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Anhur's Spear"		}
-,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Death Scythe"		}
+,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Thor's Mace"				}
+,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Zeus' Staff"				}
+,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Anhur's Spear"				}
+,	{	{	1,	1,	-1,		7,	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Death Scythe"				}
 // 1st grade
-,	{	{	1,	0,	1,		8,	0	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_BURN|STATUS_TYPE_POISON)		,	"BFG-9000"			}
+,	{	{	1,	0,	1,		8,	0	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_BURN|STATUS_TYPE_POISON)		,	"BFG-9000"					}
 };
 
 static std::string getWeaponName(const SWeapon& weapon)

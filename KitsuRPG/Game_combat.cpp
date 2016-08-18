@@ -23,13 +23,16 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
 	{
 		if(target.Shield)
-			printf("%s damage absorption rate for %s is constant %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
+		{
+			absorptionRate += 60;
+			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
+		}
 	}
 	else
 	{	
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(targetArmorShield) 
+		if(target.Shield) 
 			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Shield/(double)targetArmorShield)), 1) : 0;
 
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
@@ -40,7 +43,7 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	int passthroughDamage	= (int)(damageDealt * std::max(0.0, 1.0-absorptionFraction));
 	int totalDamage			= shieldedDamage+passthroughDamage;
 	
-	printf("Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u.\n", shieldedDamage, passthroughDamage, damageDealt, totalDamage);
+	printf("Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u. Absorption ratio: %%%u.\n", shieldedDamage, passthroughDamage, damageDealt, totalDamage, absorptionRate);
 	if( totalDamage < damageDealt )
 	{
 		int errorDamage = damageDealt-totalDamage;
