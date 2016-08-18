@@ -67,7 +67,6 @@ static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
 }
 
 static SCharacterPoints getArmorPoints(const SArmor& armor) {
-	SCharacterPoints armorPoints = {};
 	SCharacterPointsMultipliers multipliers;
 
 	multipliers.MaxLife		= {.125, .125, .5};
@@ -75,11 +74,7 @@ static SCharacterPoints getArmorPoints(const SArmor& armor) {
 	multipliers.Attack		= {.1, .1};
 	multipliers.Coins		= 0.125;
 
-	armorPoints.MaxLife		= (	armorDefinitions[armor.Index].Points.MaxLife		+	armorModifiers[armor.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
-	armorPoints.CurrentLife	= (	armorDefinitions[armor.Index].Points.CurrentLife	+	armorModifiers[armor.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
-	armorPoints.Attack		= (	armorDefinitions[armor.Index].Points.Attack			+	armorModifiers[armor.Modifier].Points.Attack		)*multipliers.Attack		;
-	armorPoints.Coins		= (int32_t)((armorDefinitions[armor.Index].Points.Coins	+	armorModifiers[armor.Modifier].Points.Coins			)*multipliers.Coins)		;
-	return armorPoints;
+	return (armorDefinitions[armor.Index].Points + armorModifiers[armor.Modifier].Points)*multipliers;
 }
 
 #endif // __ARMOR_H__928364982734698273462834__

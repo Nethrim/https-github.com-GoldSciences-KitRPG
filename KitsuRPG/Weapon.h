@@ -102,7 +102,6 @@ static inline constexpr STATUS_TYPE getWeaponStatus(const SWeapon& weapon) {
 }
 
 static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
-	SCharacterPoints weaponPoints = {};
 	SCharacterPointsMultipliers	multipliers;
 
 	multipliers.MaxLife		= {.1, .1, .1};
@@ -110,11 +109,7 @@ static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
 	multipliers.Attack		= {.25, .5};
 	multipliers.Coins		= 0.125;
 
-	weaponPoints.MaxLife		= (	weaponDefinitions[weapon.Index].Points.MaxLife			+	weaponModifiers[weapon.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
-	weaponPoints.CurrentLife	= (	weaponDefinitions[weapon.Index].Points.CurrentLife		+	weaponModifiers[weapon.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
-	weaponPoints.Attack			= (	weaponDefinitions[weapon.Index].Points.Attack			+	weaponModifiers[weapon.Modifier].Points.Attack		)*multipliers.Attack		;
-	weaponPoints.Coins			= (int32_t)((weaponDefinitions[weapon.Index].Points.Coins	+	weaponModifiers[weapon.Modifier].Points.Coins		)*multipliers.Coins)		;
-	return weaponPoints;
+	return (weaponDefinitions[weapon.Index].Points + weaponModifiers[weapon.Modifier].Points)*multipliers;
 }
 
 #endif // __WEAPON_H__928364890236498716349825347895236__

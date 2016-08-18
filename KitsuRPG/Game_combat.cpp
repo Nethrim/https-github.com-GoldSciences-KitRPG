@@ -440,7 +440,7 @@ bool escape(const std::string& escaperName, SCharacterScore& escaperScore)
 void assignDrops(CCharacter& winner, CCharacter& loser)
 {
 	printf("%s is dead!\n", loser.Name.c_str());
-	int drop = loser.Points.Coins - (rand() % (1+loser.Points.Coins/3));
+	int drop = rand() % (loser.Points.Coins/4);
 	printf("\n%s dropped %u coins!!\n", loser.Name.c_str(), drop);
 	winner.Points.Coins += drop;
 	loser.Points.Coins	-= drop;
@@ -452,7 +452,8 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDescriptions[itemDrop.ItemIndex].Name.c_str());
 			else
 				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDescriptions[itemDrop.ItemIndex].Name.c_str(), loser.Name.c_str());
-			loser.Inventory.Slots[i] = loser.Inventory.Slots[--loser.Inventory.ItemCount];
+
+			removeItem(loser.Inventory, i, loser.Name);
 		}
 
 	SWeapon oldWinnerWeapon		= winner.Weapon;
@@ -718,6 +719,12 @@ void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemy
 //5736	// gasty.bellino@gmail.com
 void combat(CCharacter& adventurer, uint32_t enemyType)
 {
+	if(adventurer.Points.CurrentLife.HP <= 1)
+	{
+		printf("You don't have enough health to engage in combat. Please go rest and come back later.\n");
+		return;
+	}
+
 	CCharacter currentEnemy = enemyDefinitions[enemyType];	// Request the enemy data.
 	setupEnemy(adventurer, currentEnemy, enemyType);
 
@@ -957,14 +964,7 @@ void executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) 
 		printf("This item type does nothing yet... But we still remove it from your inventory!\n");
 	}
 
-	user.Inventory.Slots[indexInventory].ItemCount--;
-	if( user.Inventory.Slots[indexInventory].ItemCount )
-		printf("\n%s has %u %s left.\n", user.Name.c_str(), user.Inventory.Slots[indexInventory].ItemCount, itemName.c_str());
-	else 
-	{
-		user.Inventory.Slots[indexInventory] = user.Inventory.Slots[--user.Inventory.ItemCount];
-		printf("\n%s ran out of %s.\n", user.Name.c_str(), itemName.c_str());
-	}
+	removeItem(user.Inventory, indexInventory, user.Name);
 }
 
 // This function returns true if an item was used or false if the menu was exited without doing anything.

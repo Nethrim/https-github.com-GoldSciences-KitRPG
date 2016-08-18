@@ -75,7 +75,6 @@ static std::string getProfessionName(const SProfession& profession)
 }
 
 static SCharacterPoints getProfessionPoints(const SProfession& profession) {
-	SCharacterPoints professionPoints = {};
 	SCharacterPointsMultipliers	multipliers;
 
 	multipliers.MaxLife		= {.5, .5, .25};
@@ -83,11 +82,7 @@ static SCharacterPoints getProfessionPoints(const SProfession& profession) {
 	multipliers.Attack		= {.1, .1};
 	multipliers.Coins		= 0.125;
 
-	professionPoints.MaxLife		= (	professionDefinitions[profession.Index].Points.MaxLife			+	professionModifiers[profession.Modifier].Points.MaxLife		)*multipliers.MaxLife		;
-	professionPoints.CurrentLife	= (	professionDefinitions[profession.Index].Points.CurrentLife		+	professionModifiers[profession.Modifier].Points.CurrentLife	)*multipliers.CurrentLife	;
-	professionPoints.Attack			= (	professionDefinitions[profession.Index].Points.Attack			+	professionModifiers[profession.Modifier].Points.Attack		)*multipliers.Attack		;
-	professionPoints.Coins			= (int32_t)((professionDefinitions[profession.Index].Points.Coins	+	professionModifiers[profession.Modifier].Points.Coins		)*multipliers.Coins)		;
-	return professionPoints;
+	return (professionDefinitions[profession.Index].Points + professionModifiers[profession.Modifier].Points)*multipliers;
 }
 
 

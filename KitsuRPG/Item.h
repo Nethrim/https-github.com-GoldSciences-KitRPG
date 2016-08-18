@@ -87,4 +87,16 @@ static int initializeItemMenu(SMenuItem<uint32_t>(&menuItems)[_Size])
 	menuItems[descriptionCount-1].Text		= "Leave the bar";
 	return 0;
 };
+
+static void removeItem( SCharacterInventory& inventory, size_t indexInventory, const std::string ownerName)
+{
+	const std::string& itemName = itemDescriptions[inventory.Slots[indexInventory].ItemIndex].Name;
+	if( --inventory.Slots[indexInventory].ItemCount )
+		printf("\n%s has %u %s left.\n", ownerName.c_str(), inventory.Slots[indexInventory].ItemCount, itemName.c_str());
+	else 
+	{
+		inventory.Slots[indexInventory] = inventory.Slots[--inventory.ItemCount];
+		printf("\n%s ran out of %s.\n", ownerName.c_str(), itemName.c_str());
+	}
+}
 #endif // __ITEM_H__98214809271346928734293846__

@@ -96,16 +96,21 @@ struct SCharacterPoints
 	SCombatPoints	Attack;
 	int				Coins;
 
-	inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other) const	{ return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*other.Coins)}; }
+	inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
+		return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins))}; 
+	}
+	inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
+		return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins }; 
+	}
 	void Print() const
 	{
-		printf("\n- Max Life:\n");
+		printf("- Max Life:\n");
 		MaxLife.Print();
-		printf("\n- Current Life:\n");
+		printf("- Current Life:\n");
 		CurrentLife.Print();
-		printf("\n- Attack Points:\n");
+		printf("- Attack Points:\n");
 		Attack.Print();
-		printf("\n- Coins: %u.\n",	Coins	);
+		printf("- Coins: %u.\n",	Coins	);
 	};
 };
 
@@ -240,6 +245,12 @@ struct SCharacter
 	int		Save(FILE* fp)	const;
 	int		Load(FILE* fp);
 };
+
+static SCharacterPoints applyMultipliers(const SCharacterPoints& definitionPoints, const SCharacterPoints& modifierPoints, const SCharacterPointsMultipliers& multipliers ) {
+	SCharacterPoints finalPoints = {};
+	finalPoints				= (definitionPoints + modifierPoints)*multipliers;
+	return finalPoints;
+}
 
 #pragma pack(pop)
 
