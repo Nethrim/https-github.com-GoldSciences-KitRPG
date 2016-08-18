@@ -22,7 +22,7 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	// Impenetrable armors always have 100% 
 	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
 	{
-		if(target.Shield)
+		if(target.Points.Shield)
 		{
 			absorptionRate += 60;
 			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
@@ -32,8 +32,8 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 	{	
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(target.Shield) 
-			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Shield/(double)targetArmorShield)), 1) : 0;
+		if(target.Points.Shield) 
+			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.Shield/(double)targetArmorShield)), 1) : 0;
 
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
 	}
@@ -63,15 +63,15 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 
 	if(shieldedDamage)
 	{
-		int remainingShield = target.Shield-shieldedDamage;
-		if(target.Shield)
+		int remainingShield = target.Points.Shield-shieldedDamage;
+		if(target.Points.Shield)
 		{
-			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Shield, shieldedDamage), sourceName.c_str());
-			target.Shield = std::max(0, remainingShield);
+			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.Shield, shieldedDamage), sourceName.c_str());
+			target.Points.Shield = std::max(0, remainingShield);
 			if(remainingShield < 0)
 				printf("%s's shield ran out allowing some damage from %s to pass through.\n", target.Name.c_str(), sourceName.c_str());
 			else
-				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Shield);
+				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.Shield);
 		}
 		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
 		{
@@ -151,16 +151,16 @@ void applyArmorEffect(CCharacter& character)
 	int32_t			armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Shield;
 	int32_t			armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Shield;
 	int32_t			totalArmorShield			= getArmorShield(character.Armor);
-	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < totalArmorShield) {
+	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Points.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Shield));
-		character.Shield		+= shieldToAdd;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.Shield));
+		character.Points.Shield	+= shieldToAdd;
 		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
 	};
-	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Shield < totalArmorShield) {
+	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Points.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Shield));
-		character.Shield		+= shieldToAdd;
+		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.Shield));
+		character.Points.Shield	+= shieldToAdd;
 		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
 	};
 };
@@ -221,7 +221,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 
-	if((getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE) && target.Shield)
+	if((getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE) && target.Points.Shield)
 	{
 		if(absorbChance)
 			absorbChance = std::max(60, absorbChance*2);
@@ -284,7 +284,7 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 	int32_t absorbChance;
 
 	//double absorptionRatio = std::max(0.0, ((target.Shield+target.Points.HP)/(double)(targetArmorShield+calculateFinalPoints(target).MaxHP)));
-	double absorptionRatio = std::max(0.0, (target.Shield/(double)targetArmorShield))/2.0;
+	double absorptionRatio = std::max(0.0, (target.Points.Shield/(double)targetArmorShield))/2.0;
 	absorbChance = 50+(int32_t)(absorptionRatio*100);
 	absorbChance = std::min(absorbChance, 100);
 
@@ -594,9 +594,27 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n-- %s is a %s level %u.\nHP: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s level %u.\nArmor: %s level %u.\n",  adventurer		.Name.c_str(), getProfessionName(adventurer.Profession).c_str(),	adventurer		.Profession.Level,	adventurer		.Points.HP,	adventurer	.Shield,	 playerPoints	.Hit, playerPoints	.Attack,	adventurer		.CombatBonus.TurnsLeft.Hit,adventurer	.CombatBonus.TurnsLeft.Attack,	getWeaponName(adventurer.Weapon).c_str(),	adventurer		.Weapon.Level,	getArmorName(adventurer.Armor).c_str()		,	adventurer		.Armor.Level	);
+		printf("\n-- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
+			adventurer		.Name.c_str(), getProfessionName(adventurer.Profession).c_str(),	adventurer		.Profession.Level,	
+			getWeaponName(adventurer.Weapon).c_str(),	adventurer	.Weapon.Level,	
+			getArmorName (adventurer.Armor ).c_str(),	adventurer	.Armor.Level, 
+			adventurer	.CombatBonus.TurnsLeft.Hit,	
+			adventurer		.CombatBonus.TurnsLeft.Attack	);
+		printf("- Base points:\n");
+		adventurer.Points.Print();
+		printf("- Bonus points:\n");
+		playerPoints.Print();
 		printStatuses(adventurer);
-		printf("\n-- %s is a %s level %u.\nHP: %u. Shield: %u.\nHit Chance: %u.\nAttack: %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\nWeapon: %s level %u.\nArmor: %s level %u.\n",  currentEnemy	.Name.c_str(), getProfessionName(currentEnemy.Profession).c_str(),		currentEnemy	.Profession.Level,	currentEnemy	.Points.HP,	currentEnemy.Shield,	 enemyPoints	.Hit, enemyPoints	.Attack,	currentEnemy	.CombatBonus.TurnsLeft.Hit,currentEnemy	.CombatBonus.TurnsLeft.Attack,	getWeaponName(currentEnemy.Weapon).c_str(),	currentEnemy	.Weapon.Level,	getArmorName(currentEnemy.Armor).c_str()	,	currentEnemy	.Armor.Level	);
+		printf("\n-- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
+			currentEnemy	.Name.c_str(), getProfessionName(currentEnemy.Profession).c_str(),	currentEnemy	.Profession.Level,	
+			getWeaponName(currentEnemy.Weapon).c_str(),	currentEnemy	.Weapon.Level,	
+			getArmorName (currentEnemy.Armor ).c_str(),	currentEnemy	.Armor.Level, 
+			currentEnemy	.CombatBonus.TurnsLeft.Hit,	
+			currentEnemy	.CombatBonus.TurnsLeft.Attack	);
+		printf("- Base points:\n");
+		currentEnemy.Points.Print();
+		printf("- Bonus points:\n");
+		enemyPoints.Print();
 		printStatuses(currentEnemy);
 
 		const TURN_ACTION actionChoice = displayMenu("It's your turn to make a move", combatOptions);
@@ -652,7 +670,7 @@ void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemy
 	currentEnemy.Profession	.Level		= std::max( uint32_t(adventurer.Profession	.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Profession	.Level*.11))));
 
 
-	currentEnemy.Shield				= getArmorShield(currentEnemy.Armor);
+	currentEnemy.Points.Shield				= getArmorShield(currentEnemy.Armor);
 
 	SCharacterPoints finalEnemyPoints = calculateFinalPoints(currentEnemy);
 	currentEnemy.Points.HP = finalEnemyPoints.MaxHP;
@@ -666,7 +684,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 	setupEnemy(adventurer, currentEnemy, enemyType);
 
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
-	adventurer.Shield				= getArmorShield(adventurer.Armor);
+	adventurer.Points.Shield		= getArmorShield(adventurer.Armor);
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 	while(combatContinues(turnOutcome, adventurer.Points.HP, currentEnemy.Points.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.

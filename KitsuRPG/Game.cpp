@@ -98,18 +98,10 @@ void displayScore(const CCharacter& adventurer)
 	const SCharacterScore& gameCounters = adventurer.Score;
 	const SCharacterPoints finalPoints = calculateFinalPoints(adventurer);
 
-	printf("\n-- Player points:\n\n"
-		"Max HP     : %u.\n"
-		"HP         : %u.\n"
-		"Attack     : %u.\n"
-		"Hit chance : %u.\n"
-		"Coins      : %u.\n"
-		, finalPoints.MaxHP     
-		, std::max(points.HP, 0)
-		, finalPoints.Attack     
-		, finalPoints.Hit
-		, points.Coins		
-	);
+	printf("\n-- Base points:\n");
+	points.Print();
+	printf("\n-- Bonus points:\n");
+	finalPoints.Print();
 
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"

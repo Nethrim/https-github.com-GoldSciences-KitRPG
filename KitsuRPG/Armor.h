@@ -26,26 +26,26 @@ struct CArmor
 typedef CArmor CArmorModifier;
 
 static const CArmorModifier armorModifiers[] = 
-{	{	0,	0,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"%s"					}
-,	{	0,	0,	{	0,	2,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"%s of Regeneration"	}
-,	{	0,	1,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_REFLECT,	"Reflective %s"			}
-,	{	0,	0,	{	0,	1,	0,	0,	0	},	ARMOR_EFFECT_RECHARGE,	"Regenerative %s"		}
+{	{	0,	0,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"%s"					}
+,	{	0,	0,	{	0,	0,	2,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"%s of Regeneration"	}
+,	{	0,	1,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_REFLECT,	"Reflective %s"			}
+,	{	0,	0,	{	0,	0,	1,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_RECHARGE,	"Regenerative %s"		}
 };
 
 static const CArmor armorDefinitions[] = 	
-{	{	0,	0,	{	0,	0,	2,	0,	0	},	ARMOR_EFFECT_NONE,		"Underwear"				}
-,	{	1,	1,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Robe"					}
-,	{	2,	2,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Leather Armor"			}
-,	{	3,	3,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Hard Leather Armor"	}
-,	{	4,	4,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Wooden Armor"			}
-,	{	5,	5,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Chainmail Armor"		}
-,	{	6,	6,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Plate Armor"			}
-,	{	7,	7,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Kevlar Armor"			}
-,	{	8,	8,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Diamond Armor"			}
-,	{	9,	9,	{	0,	0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Dragon Scale Armor"	}
-,	{	10,	10,	{	0,	1,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Stardust Armor"		}
-,	{	10,	10,	{	0,	1,	0,	0,	0	},	ARMOR_EFFECT_RECHARGE,	"Biomech Armor"			}
-,	{	10,	10,	{	0,	0,	0,	0,	0	},	(ARMOR_EFFECT)(ARMOR_EFFECT_RECHARGE | ARMOR_EFFECT_IMPENETRABLE),	"Force Field"	}
+{	{	0,	0,	{	0,	0,	0,	0,		2,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Underwear"				}
+,	{	1,	1,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Robe"					}
+,	{	2,	2,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Leather Armor"			}
+,	{	3,	3,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Hard Leather Armor"	}
+,	{	4,	4,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Wooden Armor"			}
+,	{	5,	5,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Chainmail Armor"		}
+,	{	6,	6,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Plate Armor"			}
+,	{	7,	7,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Kevlar Armor"			}
+,	{	8,	8,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Diamond Armor"			}
+,	{	9,	9,	{	0,	0,	0,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Dragon Scale Armor"	}
+,	{	10,	10,	{	0,	0,	1,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_NONE,		"Stardust Armor"		}
+,	{	10,	10,	{	0,	0,	1,	0,		0,	0,	0,	0	},	ARMOR_EFFECT_RECHARGE,	"Biomech Armor"			}
+,	{	10,	10,	{	0,	0,	0,	0,		0,	0,	0,	0	},	(ARMOR_EFFECT)(ARMOR_EFFECT_RECHARGE | ARMOR_EFFECT_IMPENETRABLE),	"Force Field"	}
 };
 
 static std::string getArmorName(const SArmor& armor)
@@ -73,6 +73,7 @@ static SCharacterPoints getArmorPoints(const SArmor& armor) {
 	armorPoints.Attack	= (int32_t)(	armorDefinitions[armor.Index].Points.Attack	*	std::max(1.0000001, armor.Level*0.34)	+	armorModifiers[armor.Modifier].Points.Attack	*	std::max(1.0000001, armor.Level*0.34)	);
 	armorPoints.Hit		= (int32_t)(	armorDefinitions[armor.Index].Points.Hit	*	std::max(1.0000001, armor.Level*0.5)	+	armorModifiers[armor.Modifier].Points.Hit		*	std::max(1.0000001, armor.Level*0.5)	);
 	armorPoints.HP		= (int32_t)(	armorDefinitions[armor.Index].Points.HP		*	std::max(1.0000001, armor.Level*0.2)	+	armorModifiers[armor.Modifier].Points.HP		*	std::max(1.0000001, armor.Level*0.2)	);
+	armorPoints.Shield	= (int32_t)(	armorDefinitions[armor.Index].Points.Shield	*	std::max(1.0000001, armor.Level*0.25)	+	armorModifiers[armor.Modifier].Points.Shield	*	std::max(1.0000001, armor.Level*0.25)	);
 	armorPoints.Coins	= (int32_t)(	armorDefinitions[armor.Index].Points.Coins	*	std::max(1.0000001, armor.Level*0.25)	+	armorModifiers[armor.Modifier].Points.Coins		*	std::max(1.0000001, armor.Level*0.25)	);
 	return armorPoints;
 }

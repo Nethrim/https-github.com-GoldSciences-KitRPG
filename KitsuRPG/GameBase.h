@@ -32,20 +32,40 @@ struct SCharacterScore
 	uint64_t GrenadesUsed		= 0;
 };
 
+struct SLifePoints
+{
+	int	HP		;
+	int	Mana	;
+	int	Shield	;
+};
+
+struct SCombatPoints
+{
+	int	Hit		;
+	int	Attack	;
+};
+
 struct SCharacterPoints
 {
 	int	MaxHP	;
+	int	MaxMana	;
 	int	HP		;
+	int	Mana	;
+
 	int	Hit		;
 	int	Attack	;
+	int	Shield	;
 	int	Coins	;
 
-	void Print()
+	void Print() const
 	{
 		printf("MaxHP   : %u.\n",	MaxHP	);
+		printf("MaxMana : %u.\n",	MaxMana	);
 		printf("HP      : %u.\n",	HP		);
+		printf("Mana    : %u.\n",	Mana	);
 		printf("Hit     : %u.\n",	Hit		);
 		printf("Attack  : %u.\n",	Attack	);
+		printf("Shield  : %u.\n",	Shield	);
 		printf("Coins   : %u.\n",	Coins	);
 	};
 };
@@ -60,8 +80,8 @@ typedef SCharacterPoints SBonusTurns;
 
 struct SCombatBonus
 {
-	SCharacterPoints	Points		= {0, 0, 0, 0, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
-	SBonusTurns			TurnsLeft	= {0, 0, 0, 0, 0};	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+	SCharacterPoints	Points		= {0, 0, 0, 0, 0, 0, 0, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
+	SBonusTurns			TurnsLeft	= {0, 0, 0, 0, 0, 0, 0, 0};	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 	void				NextTurn() {
 		if( 0 >= --TurnsLeft.MaxHP	)	TurnsLeft.MaxHP		=	Points.MaxHP	= 0;
@@ -149,7 +169,7 @@ struct SProfession
 struct SCharacter
 {
 	CHARACTER_TYPE		Type			= CHARACTER_TYPE_UNKNOWN;
-	SCharacterPoints	Points			= {10, 10, 50, 1, 10};	// These are the base character points.
+	SCharacterPoints	Points			= {10, 0, 10, 0,	50, 1, 0, 10};	// These are the base character points.
 	SCombatBonus		CombatBonus		= {};
 	SCombatStatus		CombatStatus	= {};
 	SCharacterInventory	Inventory		= {};
@@ -157,12 +177,12 @@ struct SCharacter
 	SWeapon				Weapon			= {0,0,1};	// Index, ModifierIndex, Level
 	SArmor				Armor			= {0,0,1};	// Index, ModifierIndex, Level
 	SProfession			Profession		= {0,0,1};	// Index, ModifierIndex, Level
-	int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
+	//int32_t				Shield			= 0;	// Shield can be acquired from armor primarily but also from items and weapons.
 
 	constexpr SCharacter() = default;
 	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
 		:Type			(characterType)
-		,Points			({maxHP, maxHP, hitChance, attack, coins})
+		,Points			({maxHP, 0, maxHP, 0, hitChance, attack, 0, coins})
 		,CombatBonus	({})
 		,CombatStatus	({})
 		,Inventory		({})
@@ -170,7 +190,7 @@ struct SCharacter
 		,Weapon			({0,0,1})
 		,Armor			({0,0,1})
 		,Profession		({0,0,1})
-		,Shield			(0)
+		//,Shield			(0)
 	{};
 
 	int		Save(FILE* fp)	const;
