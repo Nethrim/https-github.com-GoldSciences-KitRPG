@@ -43,6 +43,7 @@ static const CArmor armorDefinitions[] =
 ,	{	8 ,	{	{	0,	0,	8 	},	{	0,	0,	0	},	{	0,	0,	},	0	},	ARMOR_EFFECT_NONE,		"Diamond Armor"			}
 ,	{	9 ,	{	{	0,	0,	9 	},	{	0,	0,	0	},	{	0,	0,	},	0	},	ARMOR_EFFECT_NONE,		"Dragon Scale Armor"	}
 ,	{	10,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0	},	ARMOR_EFFECT_NONE,		"Stardust Armor"		}
+,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0	},	ARMOR_EFFECT_RECHARGE,	"Mech Armor"			}
 ,	{	10,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0	},	ARMOR_EFFECT_RECHARGE,	"Biomech Armor"			}
 ,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0	},	(ARMOR_EFFECT)(ARMOR_EFFECT_RECHARGE | ARMOR_EFFECT_IMPENETRABLE),	"Force Field"	}
 };
@@ -69,6 +70,8 @@ static SCharacterPoints getArmorPoints(const SArmor& armor) {
 	multipliers.CurrentLife	= {.1, .1, .1};
 	multipliers.Attack		= {.1, .1};
 	multipliers.Coins		= 0.125;
+
+	multipliers				= multipliers*armor.Level;
 
 	return (armorDefinitions[armor.Index].Points + armorModifiers[armor.Modifier].Points)*multipliers;
 }

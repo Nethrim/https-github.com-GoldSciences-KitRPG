@@ -38,12 +38,20 @@ struct SLifePointsMultiplier
 	double	HP		;
 	double	Mana	;
 	double	Shield	;
+
+	inline constexpr SLifePointsMultiplier	operator *	(const int32_t level)	const	{ 
+		return { HP*level, Mana*level, Shield*level }; 
+	}
 };
 
 struct SCombatPointsMultiplier
 {
 	double	Hit		;
 	double	Damage	;
+
+	inline constexpr SCombatPointsMultiplier	operator *	(const int32_t level)	const	{ 
+		return { Hit*level, Damage*level }; 
+	}
 };
 
 
@@ -87,6 +95,10 @@ struct SCharacterPointsMultipliers
 	SLifePointsMultiplier	CurrentLife;
 	SCombatPointsMultiplier	Attack;
 	double					Coins;
+
+	inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const	{ 
+		return { MaxLife*level, CurrentLife*level, Attack*level, Coins*level }; 
+	}
 };
 
 struct SCharacterPoints

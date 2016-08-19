@@ -71,14 +71,14 @@ static const CWeapon weaponDefinitions[] =
 ,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	4,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Sword"						}
 ,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	4,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Axe"						}
 ,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	-1,	6,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Spear"						}
-,	{	{	{	-1,	0,	0	},	{	0,	0,	0	},	{	0,	7,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLIND										,	"Bow"						}
+,	{	{	{	-1,	0,	0	},	{	0,	0,	0	},	{	0,	7,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Bow"						}
 // 3rd grade	seven
 ,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	1,	6,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Pistol"					}
 ,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	5,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Rifle"						}
 ,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	5,	},	1	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Machinegun"				}
 ,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	-2,	7,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_BLEEDING									,	"Shotgun"					}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	6,	},	-2	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Rocket Launcher"			}
-,	{	{	{	-2,	0,	0	},	{	0,	0,	0	},	{	6,	6,	},	-3	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Guided Rocket Launcher"	}
+,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	6,	},	-2	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_STUN|STATUS_TYPE_BURN)		,	"Rocket Launcher"			}
+,	{	{	{	-2,	0,	0	},	{	0,	0,	0	},	{	6,	6,	},	-3	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_STUN|STATUS_TYPE_BURN)		,	"Guided Rocket Launcher"	}
 ,	{	{	{	-2,	0,	0	},	{	0,	0,	0	},	{	2,	7,	},	0	},	WEAPON_EFFECT_NONE	,	(STATUS_TYPE)(STATUS_TYPE_BLIND|STATUS_TYPE_BLEEDING)	,	"Sniper Rifle"				}
 // 2nd grade	eight
 ,	{	{	{	1,	0,	0	},	{	1,	0,	0	},	{	-1,	7,	},	0	},	WEAPON_EFFECT_NONE	,	STATUS_TYPE_STUN										,	"Thor's Mace"				}
@@ -111,6 +111,8 @@ static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
 	multipliers.CurrentLife	= {.1, .1, .1};
 	multipliers.Attack		= {.25, .5};
 	multipliers.Coins		= 0.125;
+
+	multipliers				= multipliers*weapon.Level;
 
 	return (weaponDefinitions[weapon.Index].Points + weaponModifiers[weapon.Modifier].Points)*multipliers;
 }

@@ -15,30 +15,30 @@ struct CProfession
 typedef CProfession CProfessionModifier;
 
 static const CProfessionModifier professionModifiers[] = 
-{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Novice %s"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Squaddie %s"		}	// 1
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Scholar %s"			}	// 2
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	0	}, "Corporal %s"		}	// 3
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Sergeant %s"		}	// 4
-,	{	{	{	1,	0,	1	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Colonel %s"			}	// 5
-,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Lieutenant %s"		}	// 6
-,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	1,	1,	},	1	}, "Captain %s"			}	// 7
-,	{	{	{	1,	1,	1	},	{	1,	1,	0	},	{	1,	1,	},	1	}, "Major %s"			}	// 8
-,	{	{	{	1,	1,	1	},	{	1,	1,	1	},	{	1,	1,	},	1	}, "Colonel %s"			}	// 9
-,	{	{	{	2,	1,	1	},	{	1,	1,	1	},	{	1,	1,	},	1	}, "Zombie %s"			}	// 10
-,	{	{	{	2,	2,	1	},	{	1,	1,	1	},	{	1,	1,	},	1	}, "Undead %s"			}	// 11
-,	{	{	{	2,	2,	1	},	{	1,	1,	1	},	{	1,	2,	},	1	}, "Possessed %s"		}	// 12
-,	{	{	{	2,	2,	1	},	{	1,	1,	1	},	{	2,	2,	},	1	}, "Champion %s"		}	// 13
-,	{	{	{	2,	2,	2	},	{	1,	1,	1	},	{	2,	2,	},	1	}, "Elite %s"			}	// 14
-,	{	{	{	2,	2,	2	},	{	1,	1,	1	},	{	2,	2,	},	2	}, "King %s"			}	// 15
-,	{	{	{	2,	2,	2	},	{	1,	2,	1	},	{	2,	2,	},	2	}, "%s CEO"				}	// 16
-,	{	{	{	2,	2,	2	},	{	2,	2,	1	},	{	2,	2,	},	2	}, "Demon %s"			}	// 17
-,	{	{	{	2,	2,	2	},	{	2,	2,	2	},	{	2,	2,	},	2	}, "%s Mad Scientist"	}	// 18
-,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	2,	2,	},	2	}, "Emperor %s"			}	// 19
-,	{	{	{	3,	3,	2	},	{	2,	2,	2	},	{	2,	2,	},	2	}, "Demigod %s"			}	// 10
-,	{	{	{	3,	3,	3	},	{	2,	2,	2	},	{	2,	2,	},	2	}, "Angel %s"			}	// 21
-,	{	{	{	3,	3,	3	},	{	2,	2,	2	},	{	2,	3,	},	2	}, "%s God"				}	// 22
-};
+{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Rookie %s"			}
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Squaddie %s"		}	// points: 1
+,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Corporal %s"		}	// points: 2
+,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Sergeant %s"		}	// points: 3
+,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Lieutenant %s"		}	// points: 4
+,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	1	}, "Captain %s"			}	// points: 6
+,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Major %s"			}	// points: 7
+,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	1,	1,	},	1	}, "Colonel %s"			}	// points: 8
+,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Zombie %s"			}	// points: 9
+,	{	{	{	1,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Undead %s"			}	// points: 10
+,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Possessed %s"		}	// points: 11
+,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	2,	},	1	}, "Champion %s"		}	// points: 12
+,	{	{	{	2,	2,	2	},	{	0,	1,	0	},	{	2,	2,	},	1	}, "Elite %s"			}	// points: 13
+,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	1	}, "King %s"			}	// points: 14
+,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	}, "%s CEO"				}	// points: 15
+,	{	{	{	3,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	}, "Demon %s"			}	// points: 16
+,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	2,	},	2	}, "Robot %s"			}	// points: 17
+,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	3,	},	2	}, "%s Mad Scientist"	}	// points: 18
+,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	3,	3,	},	2	}, "Emperor %s"			}	// points: 19
+,	{	{	{	3,	2,	2	},	{	1,	2,	1	},	{	3,	3,	},	2	}, "Demigod %s"			}	// points: 10
+,	{	{	{	3,	2,	2	},	{	2,	2,	1	},	{	3,	3,	},	2	}, "Angel %s"			}	// points: 11
+,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	}, "%s God"				}	// points: 22
+//,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	}, "%s God"				}	// points: 23
+};																									
 
 // Probably the base points should be 6 instead of five considering we now have more fields to place them in.
 static const CProfession professionDefinitions[] =
@@ -86,6 +86,8 @@ static SCharacterPoints getProfessionPoints(const SProfession& profession) {
 	multipliers.CurrentLife	= {.1, .1, .1};
 	multipliers.Attack		= {.1, .1};
 	multipliers.Coins		= 0.125;
+
+	multipliers				= multipliers*profession.Level;
 
 	return (professionDefinitions[profession.Index].Points + professionModifiers[profession.Modifier].Points)*multipliers;
 }

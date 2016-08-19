@@ -33,7 +33,7 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
+		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, Name);
 
 		adventurer.Weapon		.Index		= (int16_t)(rand() % size(weaponDefinitions		));//rand()%4;
 		adventurer.Armor		.Index		= (int16_t)(rand() % size(armorDefinitions		));//rand()%4;

@@ -481,7 +481,7 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 			loser.Weapon.Level		= 1;
 		}
 	}
-	else if(loser.Weapon.Index == winner.Weapon.Index && (loser.Weapon.Modifier > winner.Weapon.Modifier && loser.Weapon.Level > winner.Weapon.Level))
+	else if(loser.Weapon.Index == winner.Weapon.Index && loser.Weapon.Modifier > winner.Weapon.Modifier)
 	{
 		if(rand()%2)
 		{
@@ -520,7 +520,7 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 			loser.Armor.Level		= 1;
 		}
 	}
-	else if(loser.Armor.Index == winner.Armor.Index && (loser.Armor.Modifier > winner.Armor.Modifier && loser.Armor.Level > winner.Armor.Level))
+	else if(loser.Armor.Index == winner.Armor.Index && loser.Armor.Modifier > winner.Armor.Modifier)
 	{
 		if(rand()%2)
 		{
