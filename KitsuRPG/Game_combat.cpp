@@ -10,413 +10,6 @@
 
 bool useItems(CCharacter& adventurer, CCharacter& target);	// While in combat, displays a list of the available items to use.
 
-// Returns final passthrough damage (not blocked by shield) to use by vampire effect.
-int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName)
-{
-	if(0 >= target.Points.CurrentLife.HP)	// This character is already dead
-		return 0;
-
-	const std::string	targetArmorName		= getArmorName	(target.Armor);
-	SCharacterPoints	targetFinalPoints	= calculateFinalPoints(target);
-	const int32_t		targetArmorShield	= targetFinalPoints.MaxLife.Shield;
-	
-	// Impenetrable armors always have 60% extra absorption rate.
-	if(targetFinalPoints.DefendEffect & DEFEND_EFFECT_IMPENETRABLE)
-	{
-		if(target.Points.CurrentLife.Shield)
-		{
-			absorptionRate += 60;
-			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		}
-	}
-	else
-	{	
-		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
-		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(target.Points.CurrentLife.Shield) 
-			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.CurrentLife.Shield/(double)targetArmorShield)), 1) : 0;
-
-		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
-	}
-	absorptionRate = std::min(absorptionRate, 100);
-	const double	absorptionFraction	= absorptionRate ? (0.01*absorptionRate) : 0.0;
-	int shieldedDamage		= (int)(damageDealt * absorptionFraction);
-	int passthroughDamage	= (int)(damageDealt * std::max(0.0, 1.0-absorptionFraction));
-	int totalDamage			= shieldedDamage+passthroughDamage;
-	
-	printf("Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u. Absorption ratio: %%%u.\n", shieldedDamage, passthroughDamage, damageDealt, totalDamage, absorptionRate);
-	if( totalDamage < damageDealt )
-	{
-		int errorDamage = damageDealt-totalDamage;
-		if( 0 == absorptionRate )
-		{
-			printf("%u damage error will be applied to the health.\n", errorDamage);
-			passthroughDamage += errorDamage;
-		}
-		else
-		{
-			printf("%u damage error will be applied to the shield.\n", errorDamage);
-			shieldedDamage += errorDamage;
-		}
-	}
-
-	int finalPassthroughDamage = 0;
-
-	if(shieldedDamage)
-	{
-		int remainingShield = target.Points.CurrentLife.Shield-shieldedDamage;
-		if(target.Points.CurrentLife.Shield)
-		{
-			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.CurrentLife.Shield, shieldedDamage), sourceName.c_str());
-			target.Points.CurrentLife.Shield = std::max(0, remainingShield);
-			if(remainingShield < 0)
-				printf("%s's shield ran out allowing some damage from %s to pass through.\n", target.Name.c_str(), sourceName.c_str());
-			else
-				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.CurrentLife.Shield);
-		}
-		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
-		{
-			finalPassthroughDamage	= remainingShield*-1;
-			printf("%s's wasn't protected against %u shieldable damage from %s.\n", target.Name.c_str(), finalPassthroughDamage, sourceName.c_str());
-			target.Points.CurrentLife.HP += remainingShield;
-		}
-	}
-
-	if(passthroughDamage)
-		printf("%s receives %u passthrough damage from %s.\n", target.Name.c_str(), passthroughDamage, sourceName.c_str());
-	finalPassthroughDamage	+= passthroughDamage;
-
-	target.Points.CurrentLife.HP -= passthroughDamage;
-
-	return finalPassthroughDamage;
-}
-
-void applyTurnStatus(CCharacter& character)
-{
-	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
-		return;
-
-	int amount=0;
-	const SCharacterPoints finalPoints = calculateFinalPoints(character);
-	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
-	{
-		switch(character.CombatStatus.Status[i])
-		{
-		case STATUS_TYPE_BLEEDING:	amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
-		case STATUS_TYPE_POISON:	amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
-		case STATUS_TYPE_BURN:		amount = std::max(1, finalPoints.MaxLife.HP/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.Armor), "burning");	break;
-		//case STATUS_TYPE_STUN:		break;
-		//case STATUS_TYPE_BLIND:		break;
-		}
-	}
-};
-
-void applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName)
-{
-	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
-		return;
-
-	if(combatBonus.CurrentLife.HP)
-	{
-		if(combatBonus.CurrentLife.HP > 0 && character.Points.CurrentLife.HP < calculateFinalPoints(character).MaxLife.HP)
-		{
-			int finalHPAdded = std::min(combatBonus.CurrentLife.HP, calculateFinalPoints(character).MaxLife.HP-character.Points.CurrentLife.HP);
-			printf("%s gains %u HP from %s.\n", character.Name.c_str(), finalHPAdded, sourceName.c_str());
-			character.Points.CurrentLife.HP		+= finalHPAdded;
-		}
-		else if(combatBonus.CurrentLife.HP < 0 && character.Points.CurrentLife.HP)
-		{
-			int finalHPRemoved = std::min(-combatBonus.CurrentLife.HP, character.Points.CurrentLife.HP);
-			printf("%s loses %u HP from %s.\n", character.Name.c_str(), finalHPRemoved, sourceName.c_str());
-			character.Points.CurrentLife.HP			-= finalHPRemoved;
-		}
-	}
-
-	if(combatBonus.CurrentLife.Shield)
-	{
-		if(combatBonus.CurrentLife.Shield > 0 && character.Points.CurrentLife.Shield < calculateFinalPoints(character).MaxLife.Shield)
-		{
-			int finalShieldAdded = std::min(combatBonus.CurrentLife.Shield, calculateFinalPoints(character).MaxLife.Shield-character.Points.CurrentLife.Shield);
-			printf("%s gains %u Shield from %s.\n", character.Name.c_str(), finalShieldAdded, sourceName.c_str());
-			character.Points.CurrentLife.Shield		+= finalShieldAdded;
-		}
-		else if(combatBonus.CurrentLife.Shield < 0 && character.Points.CurrentLife.Shield)
-		{
-			int finalShieldRemoved = std::min(-combatBonus.CurrentLife.Shield, character.Points.CurrentLife.Shield);
-			printf("%s loses %u Shield from %s.\n", character.Name.c_str(), finalShieldRemoved, sourceName.c_str());
-			character.Points.CurrentLife.Shield			-= finalShieldRemoved;
-		}
-	}
-
-	if(combatBonus.CurrentLife.Mana)
-	{
-		if(combatBonus.CurrentLife.Mana > 0 && character.Points.CurrentLife.Mana < calculateFinalPoints(character).MaxLife.Mana)
-		{
-			int finalManaAdded = std::min(combatBonus.CurrentLife.Mana, calculateFinalPoints(character).MaxLife.Mana-character.Points.CurrentLife.Mana);
-			printf("%s gains %u Mana from %s.\n", character.Name.c_str(), finalManaAdded, sourceName.c_str());
-			character.Points.CurrentLife.Mana		+= finalManaAdded;
-		}
-		else if(combatBonus.CurrentLife.Mana < 0 && character.Points.CurrentLife.Mana)
-		{
-			int finalManaRemoved = std::min(-combatBonus.CurrentLife.Mana, character.Points.CurrentLife.Mana);
-			printf("%s loses %u Mana from %s.\n", character.Name.c_str(), finalManaRemoved, sourceName.c_str());
-			character.Points.CurrentLife.Mana			-= finalManaRemoved;
-		}
-	}
-
-	if(combatBonus.Coins)
-	{
-		if(combatBonus.Coins > 0)
-			printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
-		else if(combatBonus.Coins < 0 && character.Points.Coins)
-			printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
-		character.Points.Coins	+= combatBonus.Coins;
-	}
-};
-
-void applyArmorEffect(CCharacter& character)
-{
-	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
-		return;
-
-	const std::string armorName = getArmorName(character.Armor);
-
-	SCharacterPoints	targetFinalPoints	= calculateFinalPoints(character);
-	int32_t				totalArmorShield	= getArmorPoints(character.Armor).MaxLife.Shield;
-
-	if((targetFinalPoints.PassiveEffect & PASSIVE_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
-		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
-		character.Points.CurrentLife.Shield	+= shieldToAdd;
-		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
-	};
-};
-
-void applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
-{
-	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
-		return;
-
-	printf("\n");
-	applyTurnStatus(character);
-	applyCombatBonus(character, character.CombatBonus.Points, "Turn Combat Bonus");
-	applyCombatBonus(character, getProfessionPoints(character.Profession), getProfessionName(character.Profession).c_str());
-	applyCombatBonus(character, getArmorPoints(character.Armor), getArmorName(character.Armor));
-	applyArmorEffect(character);
-	character.CombatBonus.NextTurn();
-	character.CombatStatus.NextTurn();
-	printf("\n");
-}
-
-
-static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName) {
-	return applyShieldableDamage(target, damageDealt, getArmorAbsorption(target.Armor), sourceName);
-}
-
-static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) {
-	
-	SCharacterPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
-	if( 0 == damageDealt || 0 == (targetFinalPoints.DefendEffect & DEFEND_EFFECT_REFLECT))
-		return 0;
-
-	const std::string	targetArmorName			= getArmorName	(targetReflecting.Armor);
-	const std::string	attackerArmorName		= getArmorName	(attacker.Armor);
-	if(damageDealt > 0)
-		printf("%s reflects %u damage from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
-	else if(damageDealt < 0)
-		printf("%s reflects %u health from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
-	int32_t finalPassthroughDamage = applyShieldableDamage(attacker, damageDealt, targetArmorName);
-	int reflectedDamage = damageDealt-finalPassthroughDamage;
-	if(reflectedDamage)
-	{
-		SCharacterPoints attackerFinalPoints = calculateFinalPoints(attacker);
-		DEFEND_EFFECT attackerArmorEffect = attackerFinalPoints.DefendEffect;
-		if(attackerArmorEffect & DEFEND_EFFECT_REFLECT)
-		{
-			printf("\n%s causes a recursive reflection with %s.\n", attackerArmorName.c_str(), targetArmorName.c_str());
-			applyArmorReflect(targetReflecting, attacker, reflectedDamage, attackerArmorName);
-		}
-	}
-
-	return finalPassthroughDamage;
-}
-
-STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int32_t absorbChance, int32_t turnCount, const std::string& sourceName)
-{
-	if(weaponStatus == STATUS_TYPE_NONE)
-		return STATUS_TYPE_NONE;
-
-	const std::string	targetArmorName			= getArmorName(target.Armor);
-
-	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
-
-	SCharacterPoints targetFinalPoints = calculateFinalPoints(target);
-	if((targetFinalPoints.DefendEffect & DEFEND_EFFECT_IMPENETRABLE) && target.Points.CurrentLife.Shield)
-	{
-		if(absorbChance)
-			absorbChance = std::max(60, absorbChance*2);
-		else
-			absorbChance = 60;
-		printf("%s absorb chance of status by %s is modified to %%%u because of the impenetrable property of %s.\n", target.Name.c_str(), sourceName.c_str(), absorbChance, targetArmorName.c_str());
-	}
-	
-	for(int i=0; i<MAX_STATUS_COUNT; i++)
-	{
-		STATUS_TYPE bitStatus =  (STATUS_TYPE)(1<<i);
-		if(0 == (bitStatus & weaponStatus) )
-			continue;
-
-		std::string text;
-		if((rand()%100) < absorbChance)
-		{
-			switch(bitStatus) {
-			case STATUS_TYPE_STUN		:	text = "Stun"			;	break;
-			case STATUS_TYPE_BLIND		:	text = "Blind"			;	break;
-			case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
-			case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
-			case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
-			default:						text = "Unknown Status"	;	break;
-			}
-
-			printf("%s absorbs \"%s\" inflicted by %s with %%%u absorb chance.\n", targetArmorName.c_str(), text.c_str(), sourceName.c_str(), absorbChance);
-			continue;
-		}
-
-		addStatus(target.CombatStatus, bitStatus, turnCount);
-		appliedStatus = (STATUS_TYPE)(appliedStatus|bitStatus);
-
-		switch(bitStatus) {
-		case STATUS_TYPE_STUN		:	text = "%s will be stunned by %s for the next %u turns.\n"	; break;
-		case STATUS_TYPE_BLIND		:	text = "%s will be blind by %s for the next %u turns.\n"	; break;
-		case STATUS_TYPE_BLEEDING	:	text = "%s will bleed by %s for the next %u turns.\n"		; break;
-		case STATUS_TYPE_BURN		:	text = "%s will burn by %s for the next %u turns.\n"		; break;
-		case STATUS_TYPE_POISON		:	text = "%s will be poisoned by %s for the next %u turns.\n"	; break;
-		default:						text = "An unknown status was added to the character.\n"	; break;
-		}
-			
-		printf(text.c_str(), target.Name.c_str(), sourceName.c_str(), turnCount);
-	}
-	return appliedStatus;
-}
-
-STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int32_t turnCount, const std::string& sourceName)
-{
-	if(weaponStatus == STATUS_TYPE_NONE)
-		return STATUS_TYPE_NONE;
-
-	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.Armor);
-	const std::string	targetArmorName			= getArmorName(target.Armor);
-	SCharacterPoints	targetFinalPoints		= calculateFinalPoints(target);
-	const int32_t		targetArmorShield		= targetFinalPoints.MaxLife.Shield;
-
-
-	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
-	
-	int32_t absorbChance;
-
-	double absorptionRatio = std::max(0.0, (target.Points.CurrentLife.Shield/(double)targetArmorShield))/2.0;
-	absorbChance = 50+(int32_t)(absorptionRatio*targetArmorAbsorption);
-	absorbChance = std::min(absorbChance, 100);
-
-	printf("%s status absorb chance after absorption calculation is %%%u.\n", target.Name.c_str(), absorbChance);
-	return applyAttackStatus(target, weaponStatus, absorbChance, turnCount, sourceName);
-}
-
-// This function returns the damage dealt to the target
-int attack(CCharacter& attacker, CCharacter& target)
-{
-	// Calculate success from the hit chance and apply damage to target or just print the miss message.
-	int32_t damageDealt = 0;
-
-	const std::string	attackerWeaponName		= getWeaponName(attacker.Weapon);
-	SCharacterPoints	attackerPoints		= calculateFinalPoints(attacker);
-
-	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND) > 0;
-
-	int finalChance = attackerPoints.Attack.Hit;
-	if(bIsBlind)
-		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit >>= 1);
-
-	if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
-	{
-		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
-		finalChance	+= attackerPoints.Attack.Hit;
-	}
-	else if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND))
-	{
-		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
-		finalChance	+= attackerPoints.Attack.Hit/2;
-	}
-
-	if ((rand() % 100) < finalChance )
-	{
-
-		damageDealt = attackerPoints.Attack.Damage+(rand()%((attackerPoints.Attack.Damage)/10+1));
-		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
-
-		int finalPassthroughDamage = applyShieldableDamage(target, damageDealt, attacker.Name);
-
-		// Apply combat bonuses from weapon for successful hits.
-		const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
-		applyCombatBonus(attacker, attackerWeaponPoints, attackerWeaponName);
-
-		// Apply weapon effects for successful hits.
-		ATTACK_EFFECT attackerWeaponEffect = attackerPoints.AttackEffect;
-		if(attackerWeaponEffect & ATTACK_EFFECT_LEECH)
-		{
-			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxLife.HP-attacker.Points.CurrentLife.HP);
-			if(actualHPGained > 0)
-				printf("%s drains %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), attackerWeaponName.c_str());
-			else if(actualHPGained < 0)
-				printf("%s loses %u HP from %s with %s.\n", attacker.Name.c_str(), actualHPGained, target.Name.c_str(), attackerWeaponName.c_str());
-			attacker.Points.CurrentLife.HP		+= actualHPGained;
-		}
-
-		if(attackerWeaponEffect & ATTACK_EFFECT_STEAL)
-		{
-			int actualCoinsGained = std::min(finalPassthroughDamage, target.Points.Coins);
-			target.Points.Coins -= actualCoinsGained;
-			if(actualCoinsGained > 0)
-				printf("%s steals %u Coins from %s with %s.\n", attacker.Name.c_str(), actualCoinsGained, target.Name.c_str(), attackerWeaponName.c_str());
-			else if(actualCoinsGained < 0)
-				printf("%s drops %u Coins from %s with %s.\n", attacker.Name.c_str(), actualCoinsGained, target.Name.c_str(), attackerWeaponName.c_str());
-			attacker.Points.Coins	+= actualCoinsGained;
-		}
-
-		// Call applyArmorReflect which will cancel automatically if reflect is not available in target's armor.
-		int shieldedDamage = damageDealt-finalPassthroughDamage;
-		applyArmorReflect(attacker, target, shieldedDamage, attackerWeaponName);
-
-		// Apply attack statuses.
-		int turns = 1;
-		applyAttackStatus(target, attackerPoints.StatusInflict, turns, attackerWeaponName);
-	}
-	else 
-		printf("%s misses the attack!\n", attacker.Name.c_str());
-
-	return damageDealt;
-};
-
-void attackTurn(CCharacter& attacker, CCharacter& target)
-{
-	if(attacker.Type == CHARACTER_TYPE_PLAYER)
-		printf("You decide to attack %s!\n", target.Name.c_str()); 
-
-	const int damageDealt = attack(attacker, target);
-
-	if(damageDealt) {
-		attacker	.Score.DamageDealt += damageDealt;
-		attacker	.Score.AttacksHit++;
-		target		.Score.DamageTaken += damageDealt;
-		target		.Score.AttacksReceived++;
-	}
-	else  {
-		attacker	.Score.AttacksMissed++;
-		target		.Score.AttacksAvoided++;
-	}
-
-}
-
 bool escape(const std::string& escaperName, SCharacterScore& escaperScore)
 {
 	printf("%s tries to escape!\n", escaperName.c_str());
@@ -447,14 +40,14 @@ void assignDrops(CCharacter& winner, CCharacter& loser)
 		{
 			const SInventorySlot& itemDrop = loser.Inventory.Slots[i];
 			std::string itemDropName = getItemName(itemDrop.Item);
-			if(addItem(winner.Inventory, itemDrop.Item)) {
+			if(klib::addItem(winner.Inventory, itemDrop.Item)) {
 				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDropName.c_str());
 			}
 			else {
 				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDropName.c_str(), loser.Name.c_str());
 			}
 
-			removeItem(loser.Inventory, i, loser.Name);
+			klib::removeItem(loser.Inventory, i, loser.Name);
 		}
 
 	SWeapon oldWinnerWeapon		= winner.Weapon;
@@ -582,7 +175,7 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 	// If the action is valid then we execute it and break the current while() so the attack turn executes.
 	TURN_OUTCOME outcome = TURN_OUTCOME_CANCEL;
 	if(TURN_ACTION_ATTACK == combatOption)
-		attackTurn(attacker, target);
+		klib::attack(attacker, target);
 	else if(TURN_ACTION_INVENTORY == combatOption) { 
 		if( !useItems(attacker, target) )
 			outcome = TURN_OUTCOME_CONTINUE;
@@ -597,7 +190,7 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, CCharacter& attacker, CChar
 	}
 
 	if(outcome == TURN_OUTCOME_CANCEL && target.Points.CurrentLife.HP > 0 && attacker.Points.CurrentLife.HP > 0)
-		applyTurnStatusAndBonusesAndSkipTurn(attacker);
+		klib::applyTurnStatusAndBonusesAndSkipTurn(attacker);
 
 	return outcome;
 }
@@ -692,31 +285,6 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 	return true;
 }
 
-void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemyType)
-{
-	addItem( currentEnemy.Inventory, {1, 1} );
-	for(uint32_t i=1; i<enemyType; ++i)
-		addItem( currentEnemy.Inventory, { 1+(rand()%((int32_t)size(itemDefinitions)-1)), rand()%(int32_t)size(itemModifiers) } );
-
-	currentEnemy.Weapon		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponDefinitions		)));
-	currentEnemy.Armor		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorDefinitions		)));
-	currentEnemy.Profession	.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(professionDefinitions	)));
-
-	currentEnemy.Weapon		.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponModifiers		)));
-	currentEnemy.Armor		.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorModifiers			)));
-	currentEnemy.Profession	.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(professionModifiers	)));
-
-	currentEnemy.Weapon		.Level		= std::max( uint32_t(adventurer.Weapon		.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Weapon		.Level*.11))));
-	currentEnemy.Armor		.Level		= std::max( uint32_t(adventurer.Armor		.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Armor		.Level*.11))));
-	currentEnemy.Profession	.Level		= std::max( uint32_t(adventurer.Profession	.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Profession	.Level*.11))));
-
-
-
-	SCharacterPoints finalEnemyPoints = calculateFinalPoints(currentEnemy);
-	currentEnemy.Points.CurrentLife			= finalEnemyPoints.MaxLife;
-}
-
-
 //5736	// gasty.bellino@gmail.com
 void combat(CCharacter& adventurer, uint32_t enemyType)
 {
@@ -726,8 +294,8 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		return;
 	}
 
-	CCharacter currentEnemy = enemyDefinitions[enemyType];	// Request the enemy data.
-	setupEnemy(adventurer, currentEnemy, enemyType);
+	CCharacter currentEnemy = klib::enemyDefinitions[enemyType];	// Request the enemy data.
+	klib::setupEnemy(adventurer, currentEnemy, enemyType);
 
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
 
@@ -741,7 +309,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		{
 			printf("%s is stunned and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
-			applyTurnStatusAndBonusesAndSkipTurn(adventurer);
+			klib::applyTurnStatusAndBonusesAndSkipTurn(adventurer);
 		}
 		else
 			turnOutcome = playerTurn(adventurer, currentEnemy);
@@ -754,7 +322,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 		{
 			printf("%s is stunned and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
-			applyTurnStatusAndBonusesAndSkipTurn(currentEnemy);
+			klib::applyTurnStatusAndBonusesAndSkipTurn(currentEnemy);
 		}
 		else
 			turnOutcome = enemyTurn(currentEnemy, adventurer);
@@ -763,227 +331,6 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 	determineOutcome(adventurer, currentEnemy, enemyType);
 }
 
-void usePotion(const SItem& itemPotion, CCharacter& potionDrinker) 
-{
-	int32_t itemEffectValue;
-	const CItem& itemDescription = itemDefinitions[itemPotion.Index];
-
-	if(0 == itemPotion.Modifier) {
-		printf("The prop potion drank by %s doesn't seem to taste very well...\n", potionDrinker.Name.c_str());
-		return;
-	}
-
-	const int itemGrade = itemPotion.Modifier;
-	
-	const std::string& drinkerName	= potionDrinker.Name;
-	SCharacterPoints& drinkerPoints	= potionDrinker.Points;
-	SCombatBonus& drinkerBonus		= potionDrinker.CombatBonus;
-	SCharacterPoints finalPoints;
-
-	switch(itemDescription.Property)
-	{
-	case PROPERTY_TYPE_HEALTH:
-		printf("%s starts feeling better...\n", drinkerName.c_str());
-		finalPoints = calculateFinalPoints(potionDrinker);
-		itemEffectValue = (int32_t)(finalPoints.MaxLife.HP*.2+1)+(rand()%std::max(1, finalPoints.MaxLife.HP/10));
-		itemEffectValue *= itemGrade;
-		drinkerPoints.CurrentLife.HP += itemEffectValue;
-		drinkerPoints.CurrentLife.HP = std::min(drinkerPoints.CurrentLife.HP, finalPoints.MaxLife.HP);
-		printf("The potion heals %s for %u! %s now has %u HP.\n", drinkerName.c_str(), itemEffectValue, drinkerName.c_str(), drinkerPoints.CurrentLife.HP);
-		break;
-	case PROPERTY_TYPE_STRENGTH:
-		printf("%s starts feeling stronger...\n", drinkerName.c_str());
-		itemEffectValue = 3*itemGrade;
-		itemEffectValue += rand()%std::max(1,itemGrade*2);
-		drinkerBonus.Points.Attack.Damage		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Attack.Damage)
-			drinkerBonus.TurnsLeft.Attack.Damage = 1;
-		drinkerBonus.TurnsLeft.Attack.Damage	+= itemGrade;
-		finalPoints = calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Damage, drinkerBonus.TurnsLeft.Attack.Damage-1);
-		break;
-	case PROPERTY_TYPE_HIT:
-		printf("%s starts feeling faster...\n", drinkerName.c_str());
-		itemEffectValue = 10*itemGrade;
-		itemEffectValue += ((rand()%std::max(1,itemGrade))+1)*5;
-		drinkerBonus.Points.Attack.Hit		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Attack.Hit)
-			drinkerBonus.TurnsLeft.Attack.Hit = 1;
-		drinkerBonus.TurnsLeft.Attack.Hit	+= itemGrade;
-		finalPoints = calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Hit, drinkerBonus.TurnsLeft.Attack.Hit-1);
-		break;
-	default:
-		printf("Potion type not implemented!");
-	};
-
-	potionDrinker.Score.PotionsUsed++;
-}
-
-enum ATTACK_TARGET
-{	ATTACK_TARGET_MISS
-,	ATTACK_TARGET_SELF
-,	ATTACK_TARGET_OTHER
-};
-
-STATUS_TYPE getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
-{
-	STATUS_TYPE result = STATUS_TYPE_NONE;
-	switch(grenadeProperty) {
-	case PROPERTY_TYPE_STUN		:		result = STATUS_TYPE_STUN		; break;
-	case PROPERTY_TYPE_SMOKE	:		result = STATUS_TYPE_BLIND		; break;
-	case PROPERTY_TYPE_PIERCING	:		result = STATUS_TYPE_BLEEDING	; break;
-	case PROPERTY_TYPE_FIRE		:		result = STATUS_TYPE_BURN		; break;
-	case PROPERTY_TYPE_POISON	:		result = STATUS_TYPE_POISON		; break;
-	//case PROPERTY_TYPE_FREEZE	:		result = STATUS_TYPE_; break;
-	//case PROPERTY_TYPE_			:		result = STATUS_TYPE_; break;
-	}
-	return result;
-}
-
-void useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
-{
-	const CItem& itemDescription = itemDefinitions[itemGrenade.Index];
-
-	if(0 == itemGrenade.Modifier) {
-		printf("The prop grenade thrown by %s puffs in the air and quickly falls to the ground.\n", thrower.Name.c_str());
-		return;
-	}
-
-	const int itemGrade = itemGrenade.Modifier; //std::max(1, itemGrenade.Modifier);
-
-	// Currently the hit chance for all the grenade types are calculated with the same formula.
-	int	lotteryRange	= 60+(10*itemGrade);	// calculate hit chance from item grade
-	int	lotteryResult	= rand()%100;
-
-	SCharacterPoints 
-		finalPointsThrower	= calculateFinalPoints(thrower), 
-		finalPointsTarget	= calculateFinalPoints(target);
-
-	int itemEffectValue				= int(finalPointsTarget .MaxLife.HP*(0.2f*itemGrade));
-	int itemEffectValueSelf			= int(finalPointsThrower.MaxLife.HP*(0.2f*itemGrade)) >> 1;
-
-	int itemEffectValueReduced		= int(finalPointsTarget .MaxLife.HP*(0.1f*itemGrade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxLife.HP*(0.1f*itemGrade)) >> 1;
-
-	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
-
-	printf("%s throws %s to %s.\n", thrower.Name.c_str(), getItemName(itemGrenade).c_str(), target.Name.c_str());
-	bool bAddStatus = false;
-
-	int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;
-	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.DefendEffect;
-	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget.DefendEffect;
-
-	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
-	STATUS_TYPE		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
-	const std::string targetArmorName = getArmorName(target.Armor);
-	switch(grenadeProperty)
-	{
-	case PROPERTY_TYPE_SMOKE:
-	case PROPERTY_TYPE_STUN:
-		// Apply status with fixed 50% chance
-		if( lotteryResult < lotteryRange )
-			applyAttackStatus(target, grenadeStatus, 1+itemGrade, itemDescription.Name);
-		else
-			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
-
-		break;
-
-	case PROPERTY_TYPE_PIERCING:
-	case PROPERTY_TYPE_FIRE:
-	case PROPERTY_TYPE_POISON:
-		itemEffectValueSelf = itemEffectValueReducedSelf;
-		itemEffectValue		= itemEffectValueReduced;
-		bAddStatus			= true;
-
-	case PROPERTY_TYPE_BLAST:
-		if(lotteryResult == lotteryRange)
-		{
-			finalPassthroughDamage  = applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
-			reflectedDamage			= itemEffectValueSelf - finalPassthroughDamage;
-			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
-
-			if(bAddStatus)
-				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
-
-			hitTarget = ATTACK_TARGET_SELF;
-			printf("%s throws the grenade too close...\n"		
-				"The grenade explodes near %s doing %u damage!\n", thrower.Name.c_str(), thrower.Name.c_str(), itemEffectValueSelf);
-		}
-		else if( lotteryResult == (lotteryRange-1) )
-		{
-			finalPassthroughDamage  = applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
-			reflectedDamage			= (itemEffectValue>>1) - finalPassthroughDamage;
-			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
-
-			finalPassthroughDamage  = applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
-			reflectedDamage			= (itemEffectValueSelf>>1) - finalPassthroughDamage;
-			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
-
-			if(bAddStatus)
-			{
-				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemGrade), itemDescription.Name);
-				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
-			}
-
-			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
-			printf("%s doesn't throw the grenade far enough so %s receives %u damage but also %s receives %u damage.\n", thrower.Name.c_str(), target.Name.c_str(), itemEffectValue, thrower.Name.c_str(), itemEffectValueSelf);
-		}
-		else if( lotteryResult < lotteryRange )
-		{
-			finalPassthroughDamage  = applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
-			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
-			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
-			if(bAddStatus)
-				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemGrade), itemDescription.Name);
-
-			hitTarget = ATTACK_TARGET_OTHER;
-			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
-		}
-		else
-			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
-
-		if(hitTarget & ATTACK_TARGET_OTHER) {
-			thrower	.Score.DamageDealt += itemEffectValue; 
-			target	.Score.DamageTaken += itemEffectValue; 
-		}
-	
-		if(hitTarget & ATTACK_TARGET_SELF)  {
-			thrower	.Score.DamageDealt += itemEffectValueSelf; 
-			thrower	.Score.DamageTaken += itemEffectValueSelf; 
-		}
-		break;
-	default:
-		printf("Grenade type not implemented!");
-	};
-
-
-	thrower.Score.GrenadesUsed++;
-}
-
-void executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) {
-
-	const SItem& item = user.Inventory.Slots[indexInventory].Item;
-	std::string itemName = getItemName(item);
-
-	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
-	switch( itemDefinitions[item.Index].Type )
-	{
-	case ITEM_TYPE_POTION:
-		usePotion(item, user);
-		break;
-
-	case ITEM_TYPE_GRENADE:
-		useGrenade(item, user, target);
-		break;
-
-	default:
-		printf("This item type does nothing yet... But we still remove it from your inventory!\n");
-	}
-
-	removeItem(user.Inventory, indexInventory, user.Name);
-}
 
 // This function returns true if an item was used or false if the menu was exited without doing anything.
 bool useItems(CCharacter& user, CCharacter& target)
@@ -1047,7 +394,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 			printf("Your HP is full!");
 		}
 		else
-			executeItem(indexInventory, user, target);
+			klib::executeItem(indexInventory, user, target);
 	}
 	
 	return bUsedItem;

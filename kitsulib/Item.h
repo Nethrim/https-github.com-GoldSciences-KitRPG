@@ -1,6 +1,7 @@
-#include <string>
+#include "Inventory.h"
+#include "Misc.h"
 
-#include "Menu.h"
+#include <string>
 
 #ifndef __ITEM_H__98214809271346928734293846__
 #define __ITEM_H__98214809271346928734293846__
@@ -39,6 +40,16 @@ struct CItemModifier
 	std::string Name;
 };
 
+
+static const CItemModifier itemGrades[] = 
+{	{	"Prop %s"		}
+,	{	"Small %s"		}
+,	{	"Regular %s"	}
+,	{	"Large %s"		}
+,	{	"Huge %s"		}
+,	{	"Pack %s"		}
+};
+
 static const CItemModifier itemModifiers[] = 
 {	{	"Prop %s"		}
 ,	{	"Small %s"		}
@@ -62,6 +73,9 @@ static const CItem itemDefinitions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_POISON	,	10	,	"Poison Grenade"				}
 };
 
+static inline constexpr int32_t getFinalItemCount() {
+	return (int32_t)((size(itemDefinitions)-1)*size(itemModifiers));
+}
 
 static std::string getItemName(const SItem& item)
 {
@@ -70,20 +84,10 @@ static std::string getItemName(const SItem& item)
 	return formattedName;
 }
 
-static int32_t getItemPrice(const SItem& item)
+static inline int32_t getItemPrice(const SItem& item)
 {
 	return itemDefinitions[item.Index].Price*item.Modifier;
 }
 
-static void removeItem( SCharacterInventory& inventory, size_t indexInventory, const std::string ownerName)
-{
-	const std::string itemName = getItemName(inventory.Slots[indexInventory].Item);
-	if( --inventory.Slots[indexInventory].ItemCount )
-		printf("\n%s has %u %s left.\n", ownerName.c_str(), inventory.Slots[indexInventory].ItemCount, itemName.c_str());
-	else 
-	{
-		inventory.Slots[indexInventory] = inventory.Slots[--inventory.ItemCount];
-		printf("\n%s ran out of %s.\n", ownerName.c_str(), itemName.c_str());
-	}
-}
+
 #endif // __ITEM_H__98214809271346928734293846__

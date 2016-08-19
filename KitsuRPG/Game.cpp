@@ -5,8 +5,20 @@
 #include "Profession.h"
 #include "Armor.h"
 #include "Weapon.h"
+#include "Inventory.h"
 
 #include "Menu.h"
+
+void displayInventory(const SCharacterInventory& inventory)
+{
+	printf("\n-- Your inventory --\n");
+	if(inventory.ItemCount) {
+		printf("You look at the remaining supplies in your backpack...\n");
+		for (unsigned int i = 0; i < inventory.ItemCount; i++)
+			printf("%u: x%.2u %s.\n", i + 1, inventory.Slots[i].ItemCount, getItemName(inventory.Slots[i].Item).c_str());
+	}
+	printf("\n");
+}
 
 void tavern(CCharacter& adventurer)
 {
@@ -28,7 +40,7 @@ void tavern(CCharacter& adventurer)
 			 if( 1 == tavernChoice )	{	rest			(adventurer);	}	// Rest and ask again for the action.
 		else if( 2 == tavernChoice )	{	mercenaryJob	(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
 		else if( 3 == tavernChoice )	{	bar				(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 4 == tavernChoice )	{	showInventory	(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	displayInventory(adventurer.Inventory);	}	// Display the inventory and coins and ask again for action once it's done.
 		else if( 5 == tavernChoice )	{	displayEquip	(adventurer);	}	// Display score and player points and ask again for action once it's done.
 		else if( 6 == tavernChoice )	{	displayScore	(adventurer.Score);	}	// Display score and player points and ask again for action once it's done.
 		else if( 10 == tavernChoice )	{	break;						}	// Exit the main loop, which effectively closes the game.
@@ -37,7 +49,7 @@ void tavern(CCharacter& adventurer)
 
 void mercenaryJob(CCharacter& adventurer)
 {
-	static const size_t enemyCount = size(enemyDefinitions);
+	static const size_t enemyCount = size(klib::enemyDefinitions);
 	SMenuItem<uint32_t> jobOptions[enemyCount];
 	for(uint32_t i=0, count = enemyCount-1; i<count; ++i)
 	{
@@ -55,14 +67,11 @@ void mercenaryJob(CCharacter& adventurer)
 	if(enemyCount == enemyType)	// This option cancels the loop which causes to exit to the tavern.
 		printf("Welcome back, %s.\n", adventurer.Name.c_str());
 	else {
-		printf("You challenge a %s.\n", enemyDefinitions[enemyType].Name.c_str()); 
+		printf("You challenge a %s.\n", klib::enemyDefinitions[enemyType].Name.c_str()); 
 		combat(adventurer, enemyType);
 	}
 }
 
-static inline constexpr int32_t getFinalItemCount() {
-	return (int32_t)((size(itemDefinitions)-1)*size(itemModifiers));
-}
 
 template<size_t _Size>
 static int initializeItemMenu(SMenuItem<SItem>(&menuItems)[_Size])
@@ -112,7 +121,7 @@ void bar(CCharacter& adventurer)
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy %s! Choose something else...\n", itemName.c_str());
-			else if(addItem(adventurer.Inventory, selectedItem))	// addItem() returns false if the inventory is full.
+			else if(klib::addItem(adventurer.Inventory, selectedItem))	// addItem() returns false if the inventory is full.
 			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemName.c_str());
 				adventurer.Points.Coins		-= itemPrice;
@@ -122,7 +131,7 @@ void bar(CCharacter& adventurer)
 				printf("Not enough space in inventory!\n");
 		}
 	}
-	showInventory(adventurer);
+	displayInventory(adventurer.Inventory);
 }
 
 void displayEquip(const CCharacter& adventurer) 

@@ -22,9 +22,11 @@ public:
 
 SCharacterPoints calculateFinalPoints(const CCharacter& character);
 
-bool addItem(SCharacterInventory& adventurer, const SItem& item);
 bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount);
 void rest(CCharacter& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
-void showInventory(const SCharacter& adventurer);
+
+namespace klib
+{
+} // namespace
 
 #endif // __CHARACTER_H__928346902734698713649875239841__
