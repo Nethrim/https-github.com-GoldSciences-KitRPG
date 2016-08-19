@@ -17,10 +17,11 @@ int32_t applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t a
 		return 0;
 
 	const std::string	targetArmorName		= getArmorName	(target.Armor);
-	const int32_t		targetArmorShield	= calculateFinalPoints(target).MaxLife.Shield;
+	SCharacterPoints	targetFinalPoints	= calculateFinalPoints(target);
+	const int32_t		targetArmorShield	= targetFinalPoints.MaxLife.Shield;
 	
-	// Impenetrable armors always have 100% 
-	if(getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE)
+	// Impenetrable armors always have 60% extra absorption rate.
+	if(targetFinalPoints.DefendEffect & DEFEND_EFFECT_IMPENETRABLE)
 	{
 		if(target.Points.CurrentLife.Shield)
 		{
@@ -179,18 +180,11 @@ void applyArmorEffect(CCharacter& character)
 		return;
 
 	const std::string armorName = getArmorName(character.Armor);
-	ARMOR_EFFECT	armorBaseEffect			= armorDefinitions	[character.Armor.Index]		.Effect;
-	ARMOR_EFFECT	armorModifierEffect		= armorModifiers	[character.Armor.Modifier]	.Effect;
-	int32_t			armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Points.MaxLife.Shield;
-	int32_t			armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Points.MaxLife.Shield;
-	int32_t			totalArmorShield		= getArmorPoints(character.Armor).MaxLife.Shield;
-	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
-		int32_t shieldToAdd		= totalArmorShield/20;
-		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
-		character.Points.CurrentLife.Shield	+= shieldToAdd;
-		printf("%s recharges by %u.\n", armorName.c_str(), shieldToAdd);
-	};
-	if((armorModifierEffect & ARMOR_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
+
+	SCharacterPoints	targetFinalPoints	= calculateFinalPoints(character);
+	int32_t				totalArmorShield	= getArmorPoints(character.Armor).MaxLife.Shield;
+
+	if((targetFinalPoints.PassiveEffect & PASSIVE_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
 		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
 		character.Points.CurrentLife.Shield	+= shieldToAdd;
@@ -221,7 +215,8 @@ static inline int32_t applyShieldableDamage(CCharacter& target, int32_t damageDe
 
 static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) {
 	
-	if( 0 == damageDealt || 0 == (getArmorEffect(targetReflecting.Armor) & ARMOR_EFFECT_REFLECT))
+	SCharacterPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
+	if( 0 == damageDealt || 0 == (targetFinalPoints.DefendEffect & DEFEND_EFFECT_REFLECT))
 		return 0;
 
 	const std::string	targetArmorName			= getArmorName	(targetReflecting.Armor);
@@ -234,8 +229,9 @@ static int32_t applyArmorReflect(CCharacter& attacker, CCharacter& targetReflect
 	int reflectedDamage = damageDealt-finalPassthroughDamage;
 	if(reflectedDamage)
 	{
-		ARMOR_EFFECT attackerArmorEffect = (ARMOR_EFFECT)getArmorEffect(attacker.Armor);
-		if(attackerArmorEffect & ARMOR_EFFECT_REFLECT)
+		SCharacterPoints attackerFinalPoints = calculateFinalPoints(attacker);
+		DEFEND_EFFECT attackerArmorEffect = attackerFinalPoints.DefendEffect;
+		if(attackerArmorEffect & DEFEND_EFFECT_REFLECT)
 		{
 			printf("\n%s causes a recursive reflection with %s.\n", attackerArmorName.c_str(), targetArmorName.c_str());
 			applyArmorReflect(targetReflecting, attacker, reflectedDamage, attackerArmorName);
@@ -254,7 +250,8 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
 
-	if((getArmorEffect(target.Armor) & ARMOR_EFFECT_IMPENETRABLE) && target.Points.CurrentLife.Shield)
+	SCharacterPoints targetFinalPoints = calculateFinalPoints(target);
+	if((targetFinalPoints.DefendEffect & DEFEND_EFFECT_IMPENETRABLE) && target.Points.CurrentLife.Shield)
 	{
 		if(absorbChance)
 			absorbChance = std::max(60, absorbChance*2);
@@ -309,9 +306,8 @@ STATUS_TYPE applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus, int3
 
 	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.Armor);
 	const std::string	targetArmorName			= getArmorName(target.Armor);
-	const ARMOR_EFFECT	targetArmorEffect		= getArmorEffect(target.Armor);
-
-	const int32_t		targetArmorShield		= calculateFinalPoints(target).MaxLife.Shield;
+	SCharacterPoints	targetFinalPoints		= calculateFinalPoints(target);
+	const int32_t		targetArmorShield		= targetFinalPoints.MaxLife.Shield;
 
 
 	STATUS_TYPE appliedStatus = STATUS_TYPE_NONE;
@@ -331,27 +327,22 @@ int attack(CCharacter& attacker, CCharacter& target)
 {
 	// Calculate success from the hit chance and apply damage to target or just print the miss message.
 	int32_t damageDealt = 0;
-	const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
 
-	STATUS_TYPE			attackerWeaponStatus	= (STATUS_TYPE)		getWeaponStatus(attacker.Weapon);
-	WEAPON_EFFECT		attackerWeaponEffect	= (WEAPON_EFFECT)	getWeaponEffect(attacker.Weapon);
-	ARMOR_EFFECT		targetArmorEffect		= (ARMOR_EFFECT)	getArmorEffect(target.Armor);
-	const std::string	attackerWeaponName		= getWeaponName	(attacker.Weapon);
-	const std::string	targetArmorName			= getArmorName	(target.Armor);
-
-	SCharacterPoints attackerPoints = calculateFinalPoints(attacker);
+	const std::string	attackerWeaponName		= getWeaponName(attacker.Weapon);
+	SCharacterPoints	attackerPoints		= calculateFinalPoints(attacker);
 
 	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND) > 0;
-	if(bIsBlind)
-		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
 
-	int finalChance = (bIsBlind ? attackerPoints.Attack.Hit/2 : attackerPoints.Attack.Hit);
+	int finalChance = attackerPoints.Attack.Hit;
+	if(bIsBlind)
+		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit >>= 1);
+
 	if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_STUN))
 	{
 		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
 		finalChance	+= attackerPoints.Attack.Hit;
 	}
-	if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND))
+	else if(target.CombatStatus.GetStatusTurns(STATUS_TYPE_BLIND))
 	{
 		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
 		finalChance	+= attackerPoints.Attack.Hit/2;
@@ -359,16 +350,19 @@ int attack(CCharacter& attacker, CCharacter& target)
 
 	if ((rand() % 100) < finalChance )
 	{
+
 		damageDealt = attackerPoints.Attack.Damage+(rand()%((attackerPoints.Attack.Damage)/10+1));
 		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
 
 		int finalPassthroughDamage = applyShieldableDamage(target, damageDealt, attacker.Name);
 
 		// Apply combat bonuses from weapon for successful hits.
+		const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
 		applyCombatBonus(attacker, attackerWeaponPoints, attackerWeaponName);
 
 		// Apply weapon effects for successful hits.
-		if(attackerWeaponEffect & WEAPON_EFFECT_LEECH)
+		ATTACK_EFFECT attackerWeaponEffect = attackerPoints.AttackEffect;
+		if(attackerWeaponEffect & ATTACK_EFFECT_LEECH)
 		{
 			int actualHPGained = std::min(finalPassthroughDamage, attackerPoints.MaxLife.HP-attacker.Points.CurrentLife.HP);
 			if(actualHPGained > 0)
@@ -378,7 +372,7 @@ int attack(CCharacter& attacker, CCharacter& target)
 			attacker.Points.CurrentLife.HP		+= actualHPGained;
 		}
 
-		if(attackerWeaponEffect & WEAPON_EFFECT_STEAL)
+		if(attackerWeaponEffect & ATTACK_EFFECT_STEAL)
 		{
 			int actualCoinsGained = std::min(finalPassthroughDamage, target.Points.Coins);
 			target.Points.Coins -= actualCoinsGained;
@@ -395,7 +389,7 @@ int attack(CCharacter& attacker, CCharacter& target)
 
 		// Apply attack statuses.
 		int turns = 1;
-		applyAttackStatus(target, attackerWeaponStatus, turns, attackerWeaponName);
+		applyAttackStatus(target, attackerPoints.StatusInflict, turns, attackerWeaponName);
 	}
 	else 
 		printf("%s misses the attack!\n", attacker.Name.c_str());
@@ -878,8 +872,8 @@ void useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& targe
 	bool bAddStatus = false;
 
 	int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;
-	ARMOR_EFFECT attackerArmorEffect = (ARMOR_EFFECT)getArmorEffect(thrower.Armor);
-	ARMOR_EFFECT targetArmorEffect = (ARMOR_EFFECT)getArmorEffect(target.Armor);
+	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.DefendEffect;
+	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget.DefendEffect;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	STATUS_TYPE		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);

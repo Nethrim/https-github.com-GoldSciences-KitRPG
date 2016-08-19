@@ -61,9 +61,23 @@ struct SLifePoints
 	int32_t	Mana	;
 	int32_t	Shield	;
 
-	inline constexpr SLifePoints	operator +	(const SLifePoints& other) const			{ return {HP+other.HP, Mana+other.Mana, Shield+other.Shield}; }
-	inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other) const	{ return { (int32_t)(HP*std::max(1.000001, other.HP)), (int32_t)(Mana*std::max(1.000001, other.Mana)), (int32_t)(Shield*std::max(1.000001, other.Shield))}; }
-	SLifePoints&					operator +=	(const SLifePoints& other)					{ HP += other.HP; Mana += other.Mana; Shield += other.Shield; return *this; }
+	inline constexpr SLifePoints	operator +	(const SLifePoints& other)				const	{ 
+		return { HP+other.HP, Mana+other.Mana, Shield+other.Shield }; 
+	}
+
+	inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other)	const	{ 
+		return { 
+			(int32_t)(	HP		*	std::max(	1.000001, other.HP		)), 
+			(int32_t)(	Mana	*	std::max(	1.000001, other.Mana	)), 
+			(int32_t)(	Shield	*	std::max(	1.000001, other.Shield	))}; 
+	}
+
+	SLifePoints&					operator +=	(const SLifePoints& other)						{ 
+		HP		+= other.HP; 
+		Mana	+= other.Mana; 
+		Shield	+= other.Shield; 
+		return *this; 
+	}
 
 	void Print() const
 	{
@@ -78,9 +92,17 @@ struct SCombatPoints
 	int32_t	Hit		;
 	int32_t	Damage	;
 
-	inline constexpr SCombatPoints	operator +	(const SCombatPoints& other) const				{ return {Hit+other.Hit, Damage+other.Damage}; }
-	inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other) const	{ return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; }
-	SCombatPoints&					operator +=	(const SCombatPoints& other)					{ Hit += other.Hit; Damage += other.Damage; return *this; }
+	inline constexpr SCombatPoints	operator +	(const SCombatPoints& other)			const	{ 
+		return {Hit+other.Hit, Damage+other.Damage}; 
+	}
+
+	inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other)	const	{ 
+		return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; 
+	}
+
+	SCombatPoints&					operator +=	(const SCombatPoints& other)					{ 
+		Hit += other.Hit; Damage += other.Damage; return *this; 
+	}
 
 	void Print() const
 	{
@@ -101,18 +123,51 @@ struct SCharacterPointsMultipliers
 	}
 };
 
+#define MAX_STATUS_COUNT 8
+enum STATUS_TYPE : uint16_t
+{	STATUS_TYPE_NONE		= 0x00
+,	STATUS_TYPE_BLIND		= 0x01
+,	STATUS_TYPE_STUN		= 0x02
+,	STATUS_TYPE_BLEEDING	= 0x04
+,	STATUS_TYPE_BURN		= 0x08
+,	STATUS_TYPE_POISON		= 0x10
+,	STATUS_TYPE_FREEZE		= 0x20
+};
+
+enum ATTACK_EFFECT : uint16_t
+{	ATTACK_EFFECT_NONE
+,	ATTACK_EFFECT_LEECH	= 0x01
+,	ATTACK_EFFECT_STEAL	= 0x02
+};
+
+enum DEFEND_EFFECT : uint16_t
+{	DEFEND_EFFECT_NONE			= 0
+,	DEFEND_EFFECT_REFLECT		= 0x01
+,	DEFEND_EFFECT_IMPENETRABLE	= 0x04
+};
+
+enum PASSIVE_EFFECT : uint16_t
+{	PASSIVE_EFFECT_NONE			= 0
+,	PASSIVE_EFFECT_RECHARGE		= 0x02
+};
+
 struct SCharacterPoints
 {
 	SLifePoints		MaxLife;
 	SLifePoints		CurrentLife;
 	SCombatPoints	Attack;
-	int				Coins;
+	int32_t			Coins;
+	ATTACK_EFFECT	AttackEffect;
+	DEFEND_EFFECT	DefendEffect;
+	PASSIVE_EFFECT	PassiveEffect;
+	STATUS_TYPE		StatusInflict;
+	STATUS_TYPE		StatusImmunity;
 
 	inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
-		return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins))}; 
+		return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), AttackEffect, DefendEffect, PassiveEffect, StatusInflict, StatusImmunity }; 
 	}
 	inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-		return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins }; 
+		return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, (ATTACK_EFFECT)(AttackEffect | other.AttackEffect), (DEFEND_EFFECT)(DefendEffect | other.DefendEffect), (PASSIVE_EFFECT)(PassiveEffect | other.PassiveEffect), (STATUS_TYPE)(StatusInflict | other.StatusInflict), (STATUS_TYPE)(StatusImmunity | other.StatusImmunity) }; 
 	}
 	void Print() const
 	{
@@ -131,8 +186,8 @@ typedef SCharacterPoints SBonusTurns;
 
 struct SCombatBonus
 {
-	SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0};	// these are points that are calculated during combat depending on equipment or item consumption.
-	SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0};	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+	SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_NONE };	// these are points that are calculated during combat depending on equipment or item consumption.
+	SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_NONE };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 	void				NextTurn() {
 		if( 0 >= --TurnsLeft.MaxLife.HP			)	TurnsLeft.MaxLife.HP		=	Points.MaxLife.HP		= 0;
@@ -149,16 +204,6 @@ struct SCombatBonus
 	};
 };
 
-#define MAX_STATUS_COUNT 8
-enum STATUS_TYPE : uint16_t
-{	STATUS_TYPE_NONE		= 0x00
-,	STATUS_TYPE_BLIND		= 0x01
-,	STATUS_TYPE_STUN		= 0x02
-,	STATUS_TYPE_BLEEDING	= 0x04
-,	STATUS_TYPE_BURN		= 0x08
-,	STATUS_TYPE_POISON		= 0x10
-,	STATUS_TYPE_FREEZE		= 0x20
-};
 
 #define MAX_COMBAT_STATUS	16
 

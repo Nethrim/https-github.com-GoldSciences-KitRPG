@@ -53,6 +53,12 @@ SCharacterPoints calculateFinalPoints(const CCharacter& character)
 	result.CurrentLife	= character.CombatBonus.Points.CurrentLife	+ weaponPoints.CurrentLife	+ armorPoints.CurrentLife	+ professionPoints.CurrentLife;
 	result.Coins		= character.CombatBonus.Points.Coins		+ weaponPoints.Coins		+ armorPoints.Coins			+ professionPoints.Coins;
 
+	result.AttackEffect		= (ATTACK_EFFECT	)( character.CombatBonus.Points.AttackEffect	| weaponPoints.AttackEffect		| armorPoints.AttackEffect		| professionPoints.AttackEffect		|	character.Points.AttackEffect	);
+	result.DefendEffect		= (DEFEND_EFFECT	)( character.CombatBonus.Points.DefendEffect	| weaponPoints.DefendEffect		| armorPoints.DefendEffect		| professionPoints.DefendEffect		|	character.Points.DefendEffect	);
+	result.PassiveEffect	= (PASSIVE_EFFECT	)( character.CombatBonus.Points.PassiveEffect	| weaponPoints.PassiveEffect	| armorPoints.PassiveEffect		| professionPoints.PassiveEffect	|	character.Points.PassiveEffect	);
+	result.StatusInflict	= (STATUS_TYPE		)( character.CombatBonus.Points.StatusInflict	| weaponPoints.StatusInflict	| armorPoints.StatusInflict		| professionPoints.StatusInflict	|	character.Points.StatusInflict	);
+	result.StatusImmunity	= (STATUS_TYPE		)( character.CombatBonus.Points.StatusImmunity	| weaponPoints.StatusImmunity	| armorPoints.StatusImmunity	| professionPoints.StatusImmunity	|	character.Points.StatusImmunity	);
+
 	return result;
 };
 
