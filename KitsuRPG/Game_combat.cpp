@@ -183,7 +183,7 @@ void applyArmorEffect(CCharacter& character)
 	ARMOR_EFFECT	armorModifierEffect		= armorModifiers	[character.Armor.Modifier]	.Effect;
 	int32_t			armorBaseShield			= armorDefinitions	[character.Armor.Index]		.Points.MaxLife.Shield;
 	int32_t			armorModifierShield		= armorModifiers	[character.Armor.Modifier]	.Points.MaxLife.Shield;
-	int32_t			totalArmorShield		= getArmorShield(character.Armor);
+	int32_t			totalArmorShield		= getArmorPoints(character.Armor).MaxLife.Shield;
 	if((armorBaseEffect & ARMOR_EFFECT_RECHARGE) && character.Points.CurrentLife.Shield < totalArmorShield) {
 		int32_t shieldToAdd		= totalArmorShield/20;
 		shieldToAdd				= std::max(1, std::min(shieldToAdd, totalArmorShield-character.Points.CurrentLife.Shield));
@@ -870,7 +870,7 @@ void useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& targe
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
-	printf("%s throws %s to %s.\n", thrower.Name.c_str(), itemDescription.Name.c_str(), target.Name.c_str());
+	printf("%s throws %s to %s.\n", thrower.Name.c_str(), getItemName(itemGrenade).c_str(), target.Name.c_str());
 	bool bAddStatus = false;
 
 	int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;

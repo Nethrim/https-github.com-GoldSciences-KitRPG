@@ -58,10 +58,6 @@ static inline constexpr ARMOR_EFFECT getArmorEffect(const SArmor& armor) {
 	return ARMOR_EFFECT(armorDefinitions[armor.Index].Effect | armorModifiers[armor.Modifier].Effect);
 }
 
-static inline constexpr int32_t getArmorShield(const SArmor& armor) {
-	return	(int32_t)(	armorDefinitions[armor.Index].Points.MaxLife.Shield		*	std::max(1.0000001, armor.Level*0.25	)	+	armorModifiers[armor.Modifier].Points.MaxLife.Shield		*	std::max(1.0000001, armor.Level*0.25	)	);
-}
-
 static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
 	return	(int32_t)(	armorDefinitions[armor.Index].Absorption * armor.Level + armorModifiers[armor.Modifier].Absorption * armor.Level);
 }

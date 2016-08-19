@@ -92,27 +92,14 @@ bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t 
 
 void showInventory(const SCharacter& adventurer)
 {
-	printf("\n");
-	printf("-- You're a %s level %u.\n", getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
-	printf("-- Your inventory --\n");
-	if(adventurer.Weapon.Index)
-		printf("-- You're carrying %s level %u.\n", getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
-	else
-		printf("-- You're not carrying any weapons.\n");
-
-	if(adventurer.Armor.Index)
-		printf("-- You're wearing %s level %u.\n", getArmorName(adventurer.Armor).c_str(), adventurer.Armor.Level);
-	else
-		printf("-- You're not wearing any armor.\n");
-
-	printf("-- You look at your wallet and count %u coins.\n", adventurer.Points.Coins);
+	printf("\n-- Your inventory --\n");
+	printf("-- You look at your wallet and count %i coins.\n", adventurer.Points.Coins);
 	if(adventurer.Inventory.ItemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
 		for (unsigned int i = 0; i < adventurer.Inventory.ItemCount; i++)
 			printf("%u: x%.2u %s.\n", i + 1, adventurer.Inventory.Slots[i].ItemCount, getItemName(adventurer.Inventory.Slots[i].Item).c_str());
-		printf("\n");
 	}
-
+	printf("\n");
 }
 
 int	SCharacter::Save(FILE* fp)	const

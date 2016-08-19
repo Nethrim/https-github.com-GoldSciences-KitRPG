@@ -16,20 +16,22 @@ void tavern(CCharacter& adventurer)
 	, { 2, "Look for a mercenary job"	}
 	, { 3, "Go for a drink"				}
 	, { 4, "Show inventory"				}
-	, { 5, "Display score"				}
-	, { 6, "Exit game"					}
+	, { 5, "Show equipment"				}
+	, { 6, "Display score"				}
+	, { 10, "Exit game"					}
 	};
 
 	while (true)  // If the last action didn't go well we cancel the loop and exit the game.
 	{
 		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
-			 if( 1 == tavernChoice )	{	rest(adventurer);			}	// Rest and ask again for the action.
-		else if( 2 == tavernChoice )	{	mercenaryJob(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
-		else if( 3 == tavernChoice )	{	bar(adventurer);			}	// Go to the shop and ask again for action once it's done.
-		else if( 4 == tavernChoice )	{	showInventory(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
-		else if( 5 == tavernChoice )	{	displayScore(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if( 6 == tavernChoice )	{	break;						}	// Exit the main loop, which effectively closes the game.
+			 if( 1 == tavernChoice )	{	rest			(adventurer);	}	// Rest and ask again for the action.
+		else if( 2 == tavernChoice )	{	mercenaryJob	(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
+		else if( 3 == tavernChoice )	{	bar				(adventurer);	}	// Go to the shop and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	showInventory	(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 5 == tavernChoice )	{	displayEquip	(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 6 == tavernChoice )	{	displayScore	(adventurer.Score);	}	// Display score and player points and ask again for action once it's done.
+		else if( 10 == tavernChoice )	{	break;						}	// Exit the main loop, which effectively closes the game.
 	}
 }
 
@@ -123,10 +125,9 @@ void bar(CCharacter& adventurer)
 	showInventory(adventurer);
 }
 
-void displayScore(const CCharacter& adventurer) 
+void displayEquip(const CCharacter& adventurer) 
 {
-	const SCharacterPoints& points = adventurer.Points;
-	const SCharacterScore& gameCounters		= adventurer.Score;
+	const SCharacterPoints& basePoints = adventurer.Points;
 	const SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
 	const SCharacterPoints weaponPoints		= getWeaponPoints(adventurer.Weapon);
 	const SCharacterPoints armorPoints		= getArmorPoints(adventurer.Armor);
@@ -136,17 +137,17 @@ void displayScore(const CCharacter& adventurer)
 	printf("- Max Life:\n");
 	finalPoints.MaxLife.Print();
 	printf("- Current Life:\n");
-	points.CurrentLife.Print();
+	basePoints.CurrentLife.Print();
 	printf("- Attack:\n");
 	finalPoints.Attack.Print();
-	printf("- Coins: %u.\n", points.Coins);
-	printf("- Bonus Coins per turn: %u.\n", finalPoints.Coins);
+	printf("- Coins: %i.\n", basePoints.Coins);
+	printf("- Bonus Coins per turn: %i.\n", finalPoints.Coins);
 
 	printf("\n-- %s base character points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
-	points.MaxLife.Print();
+	basePoints.MaxLife.Print();
 	printf("- Attack:\n");
-	points.Attack.Print();
+	basePoints.Attack.Print();
 
 	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
 	professionPoints.Print();
@@ -156,7 +157,11 @@ void displayScore(const CCharacter& adventurer)
 
 	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
 	weaponPoints.Print();
+}
 
+void displayScore(const SCharacterScore& score) 
+{
+	const SCharacterScore& gameCounters		= score;
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"
 		"Battles Lost        : %llu\n"

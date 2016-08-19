@@ -35,12 +35,12 @@ void main()
 	{
 		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	10, 50, 1, 100, Name);
 
-		adventurer.Weapon		.Index		= rand()%4;//(int16_t)(rand() % size(weaponDefinitions		));
-		adventurer.Armor		.Index		= rand()%4;//(int16_t)(rand() % size(armorDefinitions		));
+		adventurer.Weapon		.Index		= (int16_t)(rand() % size(weaponDefinitions		));//rand()%4;
+		adventurer.Armor		.Index		= (int16_t)(rand() % size(armorDefinitions		));//rand()%4;
 		adventurer.Profession	.Index		= (int16_t)(rand() % size(professionDefinitions	));
 
-		adventurer.Weapon		.Modifier	= rand()%4;//(int16_t)(rand() % size(weaponModifiers		));
-		adventurer.Armor		.Modifier	= rand()%4;//(int16_t)(rand() % size(armorModifiers		));
+		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(weaponModifiers		));//rand()%4;
+		adventurer.Armor		.Modifier	= (int16_t)(rand() % size(armorModifiers		));//rand()%4;
 		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(professionModifiers	));	
 
 		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
@@ -54,7 +54,7 @@ void main()
 		tavern(adventurer);	// Tavern is the main menu of our game.
 
 		printf("\n-- Game Over! --\n");
-		displayScore(adventurer);
+		displayScore(adventurer.Score);
 
 		bPlayAgain = displayMenu("Play again? ..", playAgainMenu) ? true : false;
 	}

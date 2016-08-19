@@ -59,9 +59,9 @@ struct SLifePoints
 
 	void Print() const
 	{
-		printf("HP     : %u.\n",	HP		);
-		printf("Mana   : %u.\n",	Mana	);
-		printf("Shield : %u.\n",	Shield	);
+		printf("HP     : %i.\n",	HP		);
+		printf("Mana   : %i.\n",	Mana	);
+		printf("Shield : %i.\n",	Shield	);
 	}
 };
 
@@ -76,8 +76,8 @@ struct SCombatPoints
 
 	void Print() const
 	{
-		printf("Hit    : %u.\n",	Hit		);
-		printf("Damage : %u.\n",	Damage	);
+		printf("Hit    : %i.\n",	Hit		);
+		printf("Damage : %i.\n",	Damage	);
 	}
 };
 
@@ -110,7 +110,7 @@ struct SCharacterPoints
 		CurrentLife.Print();
 		printf("- Attack Points:\n");
 		Attack.Print();
-		printf("- Coins: %u.\n",	Coins	);
+		printf("- Coins: %i.\n",	Coins	);
 	};
 };
 
