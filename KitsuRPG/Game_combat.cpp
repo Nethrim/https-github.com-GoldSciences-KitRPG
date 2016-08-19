@@ -208,6 +208,44 @@ void printStatuses(const CCharacter& character)
 		}
 }
 
+
+void printBonuses(const CCharacter& character)
+{
+	if( character.CombatBonus.TurnsLeft.Attack.Hit			> 0 ) printf("%s has an additional bonus for the next %u turns: %i Hit.\n"				, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Attack.Hit			,	character.CombatBonus.Points.Attack.Hit			);
+	if( character.CombatBonus.TurnsLeft.Attack.Damage		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Damage.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Attack.Damage		,	character.CombatBonus.Points.Attack.Damage		);
+	if( character.CombatBonus.TurnsLeft.MaxLife.HP			> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max HP.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.HP			,	character.CombatBonus.Points.MaxLife.HP			);
+	if( character.CombatBonus.TurnsLeft.MaxLife.Mana		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Mana.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.Mana		,	character.CombatBonus.Points.MaxLife.Mana		);
+	if( character.CombatBonus.TurnsLeft.MaxLife.Shield		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Shield.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.Shield		,	character.CombatBonus.Points.MaxLife.Shield		);
+	if( character.CombatBonus.TurnsLeft.CurrentLife.HP		> 0 ) printf("%s has an additional bonus for the next %u turns: %i HP Recovery.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.HP		,	character.CombatBonus.Points.CurrentLife.HP		);
+	if( character.CombatBonus.TurnsLeft.CurrentLife.Mana	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Mana Recovery.\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.Mana	,	character.CombatBonus.Points.CurrentLife.Mana	);
+	if( character.CombatBonus.TurnsLeft.CurrentLife.Shield	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Shield Recovery.\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.Shield	,	character.CombatBonus.Points.CurrentLife.Shield	);
+	if( character.CombatBonus.TurnsLeft.Coins				> 0 ) printf("%s has an additional bonus for the next %u turns: %i Coin Earning.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Coins				,	character.CombatBonus.Points.Coins				);
+
+	// The following messages should be improved by taking every possible status into account.
+	if( character.CombatBonus.TurnsLeft.AttackEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Attack Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.AttackEffect	, character.CombatBonus.Points.AttackEffect		);
+	if( character.CombatBonus.TurnsLeft.DefendEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Defend Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.DefendEffect	, character.CombatBonus.Points.DefendEffect		);
+	if( character.CombatBonus.TurnsLeft.PassiveEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Passive Effect  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.PassiveEffect	, character.CombatBonus.Points.PassiveEffect	);
+	if( character.CombatBonus.TurnsLeft.StatusImmunity		> 0 ) printf("%s has additional flags for the next %u turn(s): Status Immunity (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.StatusImmunity	, character.CombatBonus.Points.StatusImmunity	);
+	if( character.CombatBonus.TurnsLeft.StatusInflict		> 0 ) printf("%s has additional flags for the next %u turn(s): Status Inflict  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.StatusInflict	, character.CombatBonus.Points.StatusInflict	);
+
+}
+
+void printCharacterShortInfo(CCharacter& character)
+{
+	SCharacterPoints characterPoints = calculateFinalPoints(character);
+	printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\n",  
+		character.Name.c_str(), 
+		getProfessionName	(character.Profession)	.c_str(),	character.Profession.Level,	
+		getWeaponName		(character.Weapon)		.c_str(),	character.Weapon.Level,	
+		getArmorName		(character.Armor )		.c_str(),	character.Armor.Level);
+		
+	printf("-------------- Max points:\n");
+	characterPoints.MaxLife.Print();
+	printf("-------------- Current points:\n");
+	character.Points.CurrentLife.Print();
+	characterPoints.Attack.Print();
+}
+
 TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 {
 	static const SMenuItem<TURN_ACTION> combatOptions[] =
@@ -223,33 +261,13 @@ TURN_OUTCOME playerTurn(CCharacter& adventurer, CCharacter& currentEnemy)
 	SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
-		printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
-			adventurer		.Name.c_str(), getProfessionName(adventurer.Profession).c_str(),	adventurer		.Profession.Level,	
-			getWeaponName(adventurer.Weapon).c_str(),	adventurer	.Weapon.Level,	
-			getArmorName (adventurer.Armor ).c_str(),	adventurer	.Armor.Level, 
-			adventurer	.CombatBonus.TurnsLeft.Attack.Hit,	
-			adventurer	.CombatBonus.TurnsLeft.Attack.Damage	);
-		
-		printf("-------------- Max points:\n");
-		playerPoints.MaxLife.Print();
-		printf("-------------- Current points:\n");
-		adventurer.Points.CurrentLife.Print();
-		playerPoints.Attack.Print();
+		printCharacterShortInfo(adventurer);
 		printStatuses(adventurer);
+		printBonuses(adventurer);
 		
-		printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\nHit Chance Bonus Turns: %u.\nAttack Bonus Turns: %u.\n",  
-			currentEnemy	.Name.c_str(), getProfessionName(currentEnemy.Profession).c_str(),	currentEnemy	.Profession.Level,	
-			getWeaponName(currentEnemy.Weapon).c_str(),	currentEnemy	.Weapon.Level,	
-			getArmorName (currentEnemy.Armor ).c_str(),	currentEnemy	.Armor.Level, 
-			currentEnemy	.CombatBonus.TurnsLeft.Attack.Hit,	
-			currentEnemy	.CombatBonus.TurnsLeft.Attack.Damage	);
-		
-		printf("-------------- Max points:\n");
-		enemyPoints.MaxLife.Print();
-		printf("-------------- Current points:\n");
-		currentEnemy.Points.CurrentLife.Print();
-		enemyPoints.Attack.Print();
+		printCharacterShortInfo(currentEnemy);
 		printStatuses(currentEnemy);
+		printBonuses(currentEnemy);
 
 		const TURN_ACTION actionChoice = displayMenu("It's your turn to make a move", combatOptions);
 		turnOutcome = characterTurn(actionChoice, adventurer, currentEnemy);

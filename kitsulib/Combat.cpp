@@ -46,7 +46,7 @@ int32_t klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, int
 	if( totalDamage < damageDealt )
 	{
 		int errorDamage = damageDealt-totalDamage;
-		if( 0 == absorptionRate )
+		if(0 == absorptionRate || 0 == target.Points.CurrentLife.Shield)
 		{
 			printf("%u damage error will be applied to the health.\n", errorDamage);
 			passthroughDamage += errorDamage;
