@@ -14,6 +14,9 @@ namespace klib
 	int32_t			applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
 	void			applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName);
 	void			applyArmorEffect(CCharacter& character);
+	void			applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
+	void			applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
+
 	int				attack(CCharacter& attacker, CCharacter& target);
 	void			applyTurnStatus(CCharacter& character);
 	void			applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character);

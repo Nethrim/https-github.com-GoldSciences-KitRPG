@@ -20,9 +20,9 @@ void rest(CCharacter& character)
 SCharacterPoints calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result = {};
-	const SCharacterPoints 		weaponPoints		= getWeaponPoints		(character.Weapon);
-	const SCharacterPoints 		armorPoints			= getArmorPoints		(character.Armor);
-	const SCharacterPoints 		professionPoints	= getProfessionPoints	(character.Profession);
+	const SCharacterPoints 		weaponPoints		= klib::getWeaponPoints		(character.Weapon);
+	const SCharacterPoints 		armorPoints			= klib::getArmorPoints		(character.Armor);
+	const SCharacterPoints 		professionPoints	= klib::getProfessionPoints	(character.Profession);
 
 	result.MaxLife		= character.CombatBonus.Points.MaxLife		+ weaponPoints.MaxLife		+ armorPoints.MaxLife		+ professionPoints.MaxLife		+	character.Points.MaxLife;
 	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;

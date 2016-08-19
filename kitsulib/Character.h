@@ -11,8 +11,8 @@ public:
 	std::string			Name			= "Unnamed";
 
 	CCharacter() = default;
-	CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, const std::string& name)
-		:SCharacter	(characterType, maxHP, hitChance, attack, coins)
+	CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, STATUS_TYPE inflictStatus, STATUS_TYPE immunities, const std::string& name)
+		:SCharacter	(characterType, maxHP, hitChance, attack, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities)
 		,Name		(name)
 		{};
 

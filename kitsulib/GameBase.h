@@ -55,14 +55,16 @@ enum ATTACK_EFFECT : uint16_t
 };
 
 enum DEFEND_EFFECT : uint16_t
-{	DEFEND_EFFECT_NONE			= 0
+{	DEFEND_EFFECT_NONE			= 0x00
 ,	DEFEND_EFFECT_REFLECT		= 0x01
 ,	DEFEND_EFFECT_IMPENETRABLE	= 0x04
 };
 
 enum PASSIVE_EFFECT : uint16_t
-{	PASSIVE_EFFECT_NONE			= 0
-,	PASSIVE_EFFECT_RECHARGE		= 0x02
+{	PASSIVE_EFFECT_NONE				= 0x00
+,	PASSIVE_EFFECT_SHIELD_REPAIR	= 0x01
+,	PASSIVE_EFFECT_LIFE_REGEN		= 0x02
+,	PASSIVE_EFFECT_MANA_REGEN		= 0x04
 };
 
 struct SCharacterPoints
@@ -83,6 +85,15 @@ struct SCharacterPoints
 	inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
 		return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, (ATTACK_EFFECT)(AttackEffect | other.AttackEffect), (DEFEND_EFFECT)(DefendEffect | other.DefendEffect), (PASSIVE_EFFECT)(PassiveEffect | other.PassiveEffect), (STATUS_TYPE)(StatusInflict | other.StatusInflict), (STATUS_TYPE)(StatusImmunity | other.StatusImmunity) }; 
 	}
+	void PrintStatusAndEffect() const
+	{
+		printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (uint32_t)	AttackEffect		);
+		printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (uint32_t)	DefendEffect		);
+		printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (uint32_t)	PassiveEffect		);
+		printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (uint32_t)	StatusInflict		);
+		printf("- Flags for Status Immunity : 0x%.04x.\n"	, (uint32_t)	StatusImmunity		);
+	}
+
 	void Print() const
 	{
 		printf("- Max Life:\n");
@@ -91,7 +102,8 @@ struct SCharacterPoints
 		CurrentLife.Print();
 		printf("- Attack Points:\n");
 		Attack.Print();
-		printf("- Coins: %i.\n",	Coins	);
+		printf("- Coins                     : %i.\n"		, (int32_t)		Coins				);
+		PrintStatusAndEffect();
 	};
 };
 
@@ -187,9 +199,9 @@ struct SCharacter
 	SProfession			Profession		= {0,0,1};	// Index, ModifierIndex, Level
 
 	constexpr SCharacter() = default;
-	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins) 
+	constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, STATUS_TYPE inflictStatus, STATUS_TYPE immunities) 
 		:Type			(characterType)
-		,Points			({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins})
+		,Points			({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities})
 		,CombatBonus	({})
 		,CombatStatus	({})
 		,Inventory		({})

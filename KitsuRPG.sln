@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KitsuRPG", "KitsuRPG\KitsuRPG.vcxproj", "{C0EE0B86-9A24-490A-B06D-BDC9059FB4CA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{86AFE1C6-A424-4AC4-9246-DB029CC942D5} = {86AFE1C6-A424-4AC4-9246-DB029CC942D5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kitsulib", "kitsulib\kitsulib.vcxproj", "{86AFE1C6-A424-4AC4-9246-DB029CC942D5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KitsuTBS", "KitsuTBS\KitsuTBS.vcxproj", "{61D5AC6E-492E-42B1-ADF5-57C550938602}"
+	ProjectSection(ProjectDependencies) = postProject
+		{86AFE1C6-A424-4AC4-9246-DB029CC942D5} = {86AFE1C6-A424-4AC4-9246-DB029CC942D5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

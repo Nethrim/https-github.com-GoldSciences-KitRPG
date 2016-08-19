@@ -15,9 +15,9 @@ void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t
 	currentEnemy.Armor		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorDefinitions		)));
 	currentEnemy.Profession	.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(professionDefinitions	)));
 
-	currentEnemy.Weapon		.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponModifiers		)));
-	currentEnemy.Armor		.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorModifiers			)));
-	currentEnemy.Profession	.Modifier	= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(professionModifiers	)));
+	currentEnemy.Weapon		.Modifier	= rand()%(uint32_t)size(weaponModifiers		);	//uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponModifiers		)));
+	currentEnemy.Armor		.Modifier	= rand()%(uint32_t)size(armorModifiers		);	//uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorModifiers			)));
+	currentEnemy.Profession	.Modifier	= rand()%(uint32_t)size(professionModifiers	);	//uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(professionModifiers	)));
 
 	currentEnemy.Weapon		.Level		= std::max( uint32_t(adventurer.Weapon		.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Weapon		.Level*.11))));
 	currentEnemy.Armor		.Level		= std::max( uint32_t(adventurer.Armor		.Level*.8),	1U+(rand() %	std::max(1U, uint32_t(adventurer.Armor		.Level*.11))));

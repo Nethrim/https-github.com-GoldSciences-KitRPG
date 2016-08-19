@@ -33,22 +33,22 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, Name);
+		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_STUN, Name);
 
-		adventurer.Weapon		.Index		= (int16_t)(rand() % size(weaponDefinitions		));//rand()%4;
-		adventurer.Armor		.Index		= (int16_t)(rand() % size(armorDefinitions		));//rand()%4;
-		adventurer.Profession	.Index		= (int16_t)(rand() % size(professionDefinitions	));
+		adventurer.Weapon		.Index		= (int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
+		adventurer.Armor		.Index		= 13;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
+		adventurer.Profession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
 
-		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(weaponModifiers		));//rand()%4;
-		adventurer.Armor		.Modifier	= (int16_t)(rand() % size(armorModifiers		));//rand()%4;
-		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(professionModifiers	));	
+		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
+		adventurer.Armor		.Modifier	= 2;//(int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
+		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(klib::professionModifiers	));	
 
 		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.Profession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 
-		SCharacterPoints finalPoints			= calculateFinalPoints(adventurer);
-		adventurer.Points.CurrentLife			= finalPoints.MaxLife;
+		SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
+		adventurer.Points.CurrentLife		= finalPoints.MaxLife;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.

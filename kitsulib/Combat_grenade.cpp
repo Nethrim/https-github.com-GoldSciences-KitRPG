@@ -66,7 +66,7 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_STUN:
 		// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
-			klib::applyAttackStatus(target, grenadeStatus, 1+itemGrade, itemDescription.Name);
+			applyAttackStatus(target, grenadeStatus, 1+itemGrade, itemDescription.Name);
 		else
 			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
 
@@ -82,12 +82,12 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_BLAST:
 		if(lotteryResult == lotteryRange)
 		{
-			finalPassthroughDamage  = klib::applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
 			reflectedDamage			= itemEffectValueSelf - finalPassthroughDamage;
-			klib::applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
+			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
 
 			if(bAddStatus)
-				klib::applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
+				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_SELF;
 			printf("%s throws the grenade too close...\n"		
@@ -95,18 +95,18 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		}
 		else if( lotteryResult == (lotteryRange-1) )
 		{
-			finalPassthroughDamage  = klib::applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
 			reflectedDamage			= (itemEffectValue>>1) - finalPassthroughDamage;
-			klib::applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
+			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
 
-			finalPassthroughDamage  = klib::applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
 			reflectedDamage			= (itemEffectValueSelf>>1) - finalPassthroughDamage;
-			klib::applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
+			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
 
 			if(bAddStatus)
 			{
-				klib::applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemGrade), itemDescription.Name);
-				klib::applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
+				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemGrade), itemDescription.Name);
+				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
 			}
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
@@ -114,11 +114,11 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		}
 		else if( lotteryResult < lotteryRange )
 		{
-			finalPassthroughDamage  = klib::applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
+			finalPassthroughDamage  = applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
 			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
-			klib::applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
+			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
 			if(bAddStatus)
-				klib::applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemGrade), itemDescription.Name);
+				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemGrade), itemDescription.Name);
 
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);

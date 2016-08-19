@@ -138,9 +138,9 @@ void displayEquip(const CCharacter& adventurer)
 {
 	const SCharacterPoints& basePoints = adventurer.Points;
 	const SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
-	const SCharacterPoints weaponPoints		= getWeaponPoints(adventurer.Weapon);
-	const SCharacterPoints armorPoints		= getArmorPoints(adventurer.Armor);
-	const SCharacterPoints professionPoints	= getProfessionPoints(adventurer.Profession);
+	const SCharacterPoints weaponPoints		= klib::getWeaponPoints(adventurer.Weapon);
+	const SCharacterPoints armorPoints		= klib::getArmorPoints(adventurer.Armor);
+	const SCharacterPoints professionPoints	= klib::getProfessionPoints(adventurer.Profession);
 
 	printf("\n-- %s final points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
@@ -151,20 +151,22 @@ void displayEquip(const CCharacter& adventurer)
 	finalPoints.Attack.Print();
 	printf("- Coins: %i.\n", basePoints.Coins);
 	printf("- Bonus Coins per turn: %i.\n", finalPoints.Coins);
+	finalPoints.PrintStatusAndEffect();
 
 	printf("\n-- %s base character points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
 	basePoints.MaxLife.Print();
 	printf("- Attack:\n");
 	basePoints.Attack.Print();
+	basePoints.PrintStatusAndEffect();
 
-	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
+	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), klib::getProfessionName(adventurer.Profession).c_str(), adventurer.Profession.Level);
 	professionPoints.Print();
 
-	printf("\n-- %s is wearing %s level %u:\n", adventurer.Name.c_str(), getArmorName(adventurer.Armor).c_str(), adventurer.Armor.Level);
+	printf("\n-- %s is wearing %s level %u:\n", adventurer.Name.c_str(), klib::getArmorName(adventurer.Armor).c_str(), adventurer.Armor.Level);
 	armorPoints.Print();
 
-	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
+	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), klib::getWeaponName(adventurer.Weapon).c_str(), adventurer.Weapon.Level);
 	weaponPoints.Print();
 }
 

@@ -3,25 +3,28 @@
 #ifndef __ENEMY_H__923409234902364897234__
 #define __ENEMY_H__923409234902364897234__
 
+#define DEATH_STATUS_INFLICT ((STATUS_TYPE)(STATUS_TYPE_BLIND|STATUS_TYPE_STUN|STATUS_TYPE_BLEEDING|STATUS_TYPE_BURN|STATUS_TYPE_FREEZE|STATUS_TYPE_POISON))
+#define DEATH_STATUS_IMMUNITY ((STATUS_TYPE)(STATUS_TYPE_BLIND|STATUS_TYPE_BLEEDING|STATUS_TYPE_BURN|STATUS_TYPE_FREEZE|STATUS_TYPE_POISON))
+
 namespace klib
 {
 	static const CCharacter enemyDefinitions[] =	
-	//	type,					MaxHP,	Hit,	Atk,	dropCoins,		name.
-	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,		1,			"Unknown"	}
-	,	{CHARACTER_TYPE_ENEMY,	1,		50,		1,		1,			"Bug"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	2,		50,		1,		10,			"Wolf"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	3,		50,		2,		20,			"Raider"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	4,		45,		3,		30,			"Soldier"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	5,		45,		4,		40,			"Knight"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	6,		50,		6,		60,			"T-Rex"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	7,		55,		7,		75,			"Dragon"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	8,		55,		8,		85,			"Behemot"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	9,		60,		9,		90,			"Jean Grey"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	10,		60,		10,		100,		"Cthulhu"	}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	11,		60,		13,		150,		"Thor"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	12,		70,		11,		150,		"Zeus"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	13,		60,		11,		150,		"Anhur"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
-	,	{CHARACTER_TYPE_ENEMY,	14,		70,		15,		250,		"Death"		}	//type, MaxHP, HitChance, Atk, dropCoins, name.
+	//	type,					MaxHP,	Hit,	Atk,	dropCoins,	AttackEffect,	DefendEffect,			PassiveEffect,					Status Inflict			Status Immunity name.
+	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,		1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_NONE		,	"Unknown"	}
+	,	{CHARACTER_TYPE_ENEMY,	1,		50,		1,		1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BLIND		,	"Bug"		}	
+	,	{CHARACTER_TYPE_ENEMY,	2,		50,		1,		10	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BURN		,	"Wolf"		}	
+	,	{CHARACTER_TYPE_ENEMY,	3,		50,		2,		20	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BURN		,	"Raider"	}	
+	,	{CHARACTER_TYPE_ENEMY,	4,		45,		3,		30	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_STUN		,	"Soldier"	}	
+	,	{CHARACTER_TYPE_ENEMY,	5,		45,		4,		40	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BLEEDING	,	"Knight"	}	
+	,	{CHARACTER_TYPE_ENEMY,	6,		50,		6,		60	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_POISON		,	"T-Rex"		}	
+	,	{CHARACTER_TYPE_ENEMY,	7,		55,		7,		75	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_POISON		,	"Dragon"	}	
+	,	{CHARACTER_TYPE_ENEMY,	8,		55,		8,		85	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_NONE		,	"Behemot"	}	
+	,	{CHARACTER_TYPE_ENEMY,	9,		60,		9,		90	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_NONE		,	"Jean Grey"	}	
+	,	{CHARACTER_TYPE_ENEMY,	10,		60,		10,		100	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_NONE		,	"Cthulhu"	}	
+	,	{CHARACTER_TYPE_ENEMY,	11,		60,		13,		150	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_STUN		,	"Thor"		}	
+	,	{CHARACTER_TYPE_ENEMY,	12,		70,		11,		150	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BLIND		,	"Zeus"		}	
+	,	{CHARACTER_TYPE_ENEMY,	13,		60,		11,		150	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE		,	STATUS_TYPE_BLEEDING	,	"Anhur"		}	
+	,	{CHARACTER_TYPE_ENEMY,	14,		70,		15,		250	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	DEATH_STATUS_INFLICT	,	DEATH_STATUS_IMMUNITY	,	"Death"		}	
 	};
 
 	void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemyType);

@@ -6,95 +6,98 @@
 #ifndef __PROFESSION_H__986349827346982734__
 #define __PROFESSION_H__986349827346982734__
 
-struct CProfession
+namespace klib
 {
-	SCharacterPoints	Points;
-	std::string			Name;
-};
 
-typedef CProfession CProfessionModifier;
+	struct CProfession
+	{
+		SCharacterPoints	Points;
+		std::string			Name;
+	};
 
-static const CProfessionModifier professionModifiers[] = 
-{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Rookie %s"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Squaddie %s"		}	// points: 1
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Corporal %s"		}	// points: 2
-,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Sergeant %s"		}	// points: 3
-,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	0	}, "Lieutenant %s"		}	// points: 4
-,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	1	}, "Captain %s"			}	// points: 5
-,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	1,	},	1	}, "Major %s"			}	// points: 6
-,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	1,	1,	},	1	}, "Colonel %s"			}	// points: 7
-,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Zombie %s"			}	// points: 8
-,	{	{	{	1,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Undead %s"			}	// points: 9
-,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	}, "Possessed %s"		}	// points: 10
-,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	2,	},	1	}, "Mutant %s"			}	// points: 11
-,	{	{	{	2,	2,	2	},	{	0,	1,	0	},	{	2,	2,	},	1	}, "Champion %s"		}	// points: 12
-,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	1	}, "Elite %s"			}	// points: 13
-,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	}, "King %s"			}	// points: 14
-,	{	{	{	3,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	}, "%s CEO"				}	// points: 15
-,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	2,	},	2	}, "Demon %s"			}	// points: 16
-,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	3,	},	2	}, "%s Mad Scientist"	}	// points: 18
-,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	3,	3,	},	2	}, "Robot %s"			}	// points: 17
-,	{	{	{	3,	2,	2	},	{	1,	2,	1	},	{	3,	3,	},	2	}, "Emperor %s"			}	// points: 19
-,	{	{	{	3,	2,	2	},	{	2,	2,	1	},	{	3,	3,	},	2	}, "Demigod %s"			}	// points: 10
-,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	}, "Angel %s"			}	// points: 11
-,	{	{	{	3,	2,	3	},	{	2,	2,	2	},	{	3,	3,	},	2	}, "%s God"				}	// points: 22
-//,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	}, "%s God"				}	// points: 23
-};																							
+	typedef CProfession CProfessionModifier;
 
-// Probably the base points should be 6 instead of five considering we now have more fields to place them in.
-static const CProfession professionDefinitions[] =
-{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	}, "Nobody"			}
-,	{	{	{	2,	0,	1	},	{	0,	0,	0	},	{	1,	2,	},	0	}, "Swordman"		}
-,	{	{	{	0,	1,	0	},	{	0,	1,	0	},	{	1,	3,	},	0	}, "Mage"			}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	3,	2,	},	1	}, "Thief"			}
-,	{	{	{	1,	2,	0	},	{	1,	1,	0	},	{	1,	0,	},	0	}, "Acolyte"		}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	2,	},	2	}, "Merchant"		}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	0	}, "Archer"			}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	3,	3,	},	0	}, "Sniper"			}
-,	{	{	{	2,	1,	0	},	{	0,	0,	0	},	{	1,	2,	},	0	}, "Driver"			}
-,	{	{	{	1,	0,	1	},	{	0,	0,	0	},	{	2,	2,	},	0	}, "Raider"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	2,	3,	},	0	}, "Assault"		}
-,	{	{	{	3,	0,	0	},	{	0,	0,	0	},	{	0,	3,	},	0	}, "Heavy"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	4,	},	0	}, "Sorcerer"		}
-,	{	{	{	1,	0,	0	},	{	2,	0,	0	},	{	2,	1,	},	0	}, "Medic"			}
-,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	3,	2,	},	0	}, "Ninja"			}
-,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	0,	4,	},	0	}, "Grenadier"		}
-,	{	{	{	1,	0,	0	},	{	1,	1,	0	},	{	0,	2,	},	1	}, "Biochemist"		}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	4,	},	0	}, "Assassin"		}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	1,	3,	},	0	}, "Engineer"		}
-,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	4,	},	0	}, "Executioner"	}
-,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	2,	2,	},	0	}, "Commando"		}
-,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	1,	3,	},	0	}, "Sectoid"		}
-,	{	{	{	0,	0,	0	},	{	0,	0,	2	},	{	2,	2,	},	0	}, "Android"		}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	4,	},	0	}, "Drone"			}
-,	{	{	{	2,	1,	0	},	{	1,	0,	0	},	{	0,	2,	},	0	}, "Vampire"		}
-,	{	{	{	2,	0,	0	},	{	1,	0,	0	},	{	0,	3,	},	0	}, "Valkyr"			}
-,	{	{	{	2,	1,	0	},	{	2,	1,	0	},	{	0,	0,	},	0	}, "Trinity"		}
-,	{	{	{	3,	2,	0	},	{	0,	0,	0	},	{	0,	2,	},	0	}, "Rhino"			}
-,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	4,	2,	},	0	}, "Mesa"			}
-,	{	{	{	0,	1,	1	},	{	0,	1,	1	},	{	0,	2,	},	0	}, "Mag"			}
-,	{	{	{	0,	3,	0	},	{	0,	1,	0	},	{	0,	1,	},	1	}, "Loki"			}
-};
+	static const CProfessionModifier professionModifiers[] = 
+	{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Rookie %s"			}
+	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Squaddie %s"		}	// points: 1
+	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Corporal %s"		}	// points: 2
+	,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Sergeant %s"		}	// points: 3
+	,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Lieutenant %s"		}	// points: 4
+	,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	0,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Captain %s"			}	// points: 5
+	,	{	{	{	1,	1,	1	},	{	0,	0,	0	},	{	1,	1,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Major %s"			}	// points: 6
+	,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	1,	1,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Colonel %s"			}	// points: 7
+	,	{	{	{	1,	1,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLEEDING	}, "Zombie %s"			}	// points: 8
+	,	{	{	{	1,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLIND		}, "Undead %s"			}	// points: 9
+	,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	1,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_STUN		}, "Possessed %s"		}	// points: 10
+	,	{	{	{	2,	2,	1	},	{	0,	1,	0	},	{	2,	2,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Mutant %s"			}	// points: 11
+	,	{	{	{	2,	2,	2	},	{	0,	1,	0	},	{	2,	2,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Champion %s"		}	// points: 12
+	,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Elite %s"			}	// points: 13
+	,	{	{	{	2,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "King %s"			}	// points: 14
+	,	{	{	{	3,	2,	2	},	{	1,	1,	0	},	{	2,	2,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "%s CEO"				}	// points: 15
+	,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	2,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Demon %s"			}	// points: 16
+	,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	2,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "%s Mad Scientist"	}	// points: 18
+	,	{	{	{	3,	2,	2	},	{	1,	1,	1	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLEEDING	}, "Robot %s"			}	// points: 17
+	,	{	{	{	3,	2,	2	},	{	1,	2,	1	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Emperor %s"			}	// points: 19
+	,	{	{	{	3,	2,	2	},	{	2,	2,	1	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Demigod %s"			}	// points: 10
+	,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Angel %s"			}	// points: 11
+	,	{	{	{	3,	2,	3	},	{	2,	2,	2	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "%s God"				}	// points: 22
+	//,	{	{	{	3,	2,	2	},	{	2,	2,	2	},	{	3,	3,	},	2	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "%s God"				}	// points: 23
+	};
 
-static std::string getProfessionName(const SProfession& profession)
-{
-	char formattedName[128] = {};
-	sprintf_s(formattedName, professionModifiers[profession.Modifier].Name.c_str(), professionDefinitions[profession.Index].Name.c_str());
-	return formattedName;
+	// Probably the base points should be 6 instead of five considering we now have more fields to place them in.	
+	static const CProfession professionDefinitions[] =
+	{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Nobody"			}
+	,	{	{	{	2,	0,	1	},	{	0,	0,	0	},	{	1,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Swordman"		}
+	,	{	{	{	0,	1,	0	},	{	0,	1,	0	},	{	1,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Mage"			}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	3,	2,	},	1	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Thief"			}
+	,	{	{	{	1,	2,	0	},	{	1,	1,	0	},	{	1,	0,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Acolyte"		}
+	,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	2,	},	2	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Merchant"		}
+	,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	2,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Archer"			}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	3,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Sniper"			}
+	,	{	{	{	2,	1,	0	},	{	0,	0,	0	},	{	1,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Driver"			}
+	,	{	{	{	1,	0,	1	},	{	0,	0,	0	},	{	2,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Raider"			}
+	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	2,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Assault"		}
+	,	{	{	{	3,	0,	0	},	{	0,	0,	0	},	{	0,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Heavy"			}
+	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	4,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Sorcerer"		}
+	,	{	{	{	1,	0,	0	},	{	2,	0,	0	},	{	2,	1,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Medic"			}
+	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	3,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Ninja"			}
+	,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	0,	4,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Grenadier"		}
+	,	{	{	{	1,	0,	0	},	{	1,	1,	0	},	{	0,	2,	},	1	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Biochemist"		}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	4,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Assassin"		}
+	,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	1,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Engineer"		}
+	,	{	{	{	2,	0,	0	},	{	0,	0,	0	},	{	0,	4,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Executioner"	}
+	,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	2,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Commando"		}
+	,	{	{	{	1,	1,	0	},	{	0,	0,	0	},	{	1,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Sectoid"		}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	2	},	{	2,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Android"		}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	4,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_BURN	,	STATUS_TYPE_BLEEDING	}, "Drone"			}
+	,	{	{	{	2,	1,	0	},	{	1,	0,	0	},	{	0,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Vampire"		}
+	,	{	{	{	2,	0,	0	},	{	1,	0,	0	},	{	0,	3,	},	0	,	ATTACK_EFFECT_LEECH,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Valkyr"			}
+	,	{	{	{	2,	1,	0	},	{	2,	1,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Trinity"		}
+	,	{	{	{	3,	2,	0	},	{	0,	0,	0	},	{	0,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Rhino"			}
+	,	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	4,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Mesa"			}
+	,	{	{	{	0,	1,	1	},	{	0,	1,	1	},	{	0,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Mag"			}
+	,	{	{	{	0,	3,	0	},	{	0,	1,	0	},	{	0,	1,	},	1	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_BLIND	,	STATUS_TYPE_NONE		}, "Loki"			}
+	};
+
+	static std::string getProfessionName(const SProfession& profession)
+	{
+		char formattedName[128] = {};
+		sprintf_s(formattedName, professionModifiers[profession.Modifier].Name.c_str(), professionDefinitions[profession.Index].Name.c_str());
+		return formattedName;
+	}
+
+	static SCharacterPoints getProfessionPoints(const SProfession& profession) {
+		SCharacterPointsMultipliers	multipliers;
+
+		multipliers.MaxLife		= {.5, .5, .25};
+		multipliers.CurrentLife	= {.1, .1, .1};
+		multipliers.Attack		= {.1, .1};
+		multipliers.Coins		= 0.125;
+
+		multipliers				= multipliers*profession.Level;
+
+		return (professionDefinitions[profession.Index].Points + professionModifiers[profession.Modifier].Points)*multipliers;
+	}
 }
-
-static SCharacterPoints getProfessionPoints(const SProfession& profession) {
-	SCharacterPointsMultipliers	multipliers;
-
-	multipliers.MaxLife		= {.5, .5, .25};
-	multipliers.CurrentLife	= {.1, .1, .1};
-	multipliers.Attack		= {.1, .1};
-	multipliers.Coins		= 0.125;
-
-	multipliers				= multipliers*profession.Level;
-
-	return (professionDefinitions[profession.Index].Points + professionModifiers[profession.Modifier].Points)*multipliers;
-}
-
 
 #endif __PROFESSION_H__986349827346982734__
