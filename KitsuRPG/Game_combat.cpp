@@ -440,7 +440,11 @@ bool escape(const std::string& escaperName, SCharacterScore& escaperScore)
 void assignDrops(CCharacter& winner, CCharacter& loser)
 {
 	printf("%s is dead!\n", loser.Name.c_str());
-	int drop = rand() % (loser.Points.Coins/4);
+	int drop = rand() % (std::max(1,loser.Points.Coins>>2));
+
+	if(loser.Type == CHARACTER_TYPE_ENEMY)
+		drop = loser.Points.Coins-drop;
+
 	printf("\n%s dropped %u coins!!\n", loser.Name.c_str(), drop);
 	winner.Points.Coins += drop;
 	loser.Points.Coins	-= drop;
@@ -767,7 +771,7 @@ void combat(CCharacter& adventurer, uint32_t enemyType)
 
 void usePotion(const SItem& itemPotion, CCharacter& potionDrinker) 
 {
-	int itemEffectValue;
+	int32_t itemEffectValue;
 	const CItem& itemDescription = itemDefinitions[itemPotion.Index];
 
 	if(0 == itemPotion.Modifier) {
@@ -787,7 +791,7 @@ void usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 	case PROPERTY_TYPE_HEALTH:
 		printf("%s starts feeling better...\n", drinkerName.c_str());
 		finalPoints = calculateFinalPoints(potionDrinker);
-		itemEffectValue = (finalPoints.MaxLife.HP/5+1)+(rand()%(finalPoints.MaxLife.HP/10));
+		itemEffectValue = (int32_t)(finalPoints.MaxLife.HP*.2+1)+(rand()%std::max(1, finalPoints.MaxLife.HP/10));
 		itemEffectValue *= itemGrade;
 		drinkerPoints.CurrentLife.HP += itemEffectValue;
 		drinkerPoints.CurrentLife.HP = std::min(drinkerPoints.CurrentLife.HP, finalPoints.MaxLife.HP);
@@ -796,7 +800,7 @@ void usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 	case PROPERTY_TYPE_STRENGTH:
 		printf("%s starts feeling stronger...\n", drinkerName.c_str());
 		itemEffectValue = 3*itemGrade;
-		itemEffectValue += rand()%(itemGrade*2);
+		itemEffectValue += rand()%std::max(1,itemGrade*2);
 		drinkerBonus.Points.Attack.Damage		+= itemEffectValue;
 		if(0 == drinkerBonus.TurnsLeft.Attack.Damage)
 			drinkerBonus.TurnsLeft.Attack.Damage = 1;
@@ -807,7 +811,7 @@ void usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 	case PROPERTY_TYPE_HIT:
 		printf("%s starts feeling faster...\n", drinkerName.c_str());
 		itemEffectValue = 10*itemGrade;
-		itemEffectValue += ((rand()%itemGrade)+1)*5;
+		itemEffectValue += ((rand()%std::max(1,itemGrade))+1)*5;
 		drinkerBonus.Points.Attack.Hit		+= itemEffectValue;
 		if(0 == drinkerBonus.TurnsLeft.Attack.Hit)
 			drinkerBonus.TurnsLeft.Attack.Hit = 1;
