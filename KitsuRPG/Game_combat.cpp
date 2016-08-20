@@ -36,7 +36,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	winner.Points.Coins += drop;
 	loser.Points.Coins	-= drop;
 	for(uint32_t i=0; i<loser.Inventory.ItemCount; i++) 
-		if(rand()%2) 
+		if( 0 == (rand()%2) )
 		{
 			const klib::SInventorySlot& itemDrop = loser.Inventory.Slots[i];
 			std::string itemDropName = klib::getItemName(itemDrop.Item);
@@ -51,7 +51,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		}
 
 	std::string loserWeaponName = klib::getWeaponName(loser.CurrentWeapon);
-	if(rand()%2)
+	if( 0 == (rand()%2) )
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
 		klib::SWeapon oldWinnerWeapon	= winner.CurrentWeapon;
@@ -67,7 +67,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
 
 	std::string loserArmorName = klib::getArmorName(loser.CurrentArmor);
-	if(rand()%2)
+	if( 0 == (rand()%2) )
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
 		klib::SArmor oldWinnerArmor	= winner.CurrentArmor;

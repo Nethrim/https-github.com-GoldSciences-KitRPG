@@ -55,12 +55,12 @@ void research
 
 		if(bIsProgressive) {
 			if(bIsModifier) {
-				if(value < adventurerMaxEquip.Modifier)
+				if(value > adventurerMaxEquip.Modifier)
 					continue;
 			}
 			else
 			{
-				if(value < adventurerMaxEquip.Index)
+				if(value > adventurerMaxEquip.Index)
 					continue;
 			}
 		}
