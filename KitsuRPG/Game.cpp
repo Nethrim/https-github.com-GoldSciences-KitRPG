@@ -9,18 +9,18 @@
 
 #include "Menu.h"
 
-void displayInventory(const SCharacterInventory& inventory)
+void displayInventory(const klib::SCharacterInventory& inventory)
 {
 	printf("\n-- Your inventory --\n");
 	if(inventory.ItemCount) {
 		printf("You look at the remaining supplies in your backpack...\n");
 		for (unsigned int i = 0; i < inventory.ItemCount; i++)
-			printf("%u: x%.2u %s.\n", i + 1, inventory.Slots[i].ItemCount, getItemName(inventory.Slots[i].Item).c_str());
+			printf("%u: x%.2u %s.\n", i + 1, inventory.Slots[i].ItemCount, klib::getItemName(inventory.Slots[i].Item).c_str());
 	}
 	printf("\n");
 }
 
-void tavern(CCharacter& adventurer)
+void tavern(klib::CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
 	static const SMenuItem<int> tavernOptions[] =
@@ -47,7 +47,7 @@ void tavern(CCharacter& adventurer)
 	}
 }
 
-void mercenaryJob(CCharacter& adventurer)
+void mercenaryJob(klib::CCharacter& adventurer)
 {
 	static const size_t enemyCount = size(klib::enemyDefinitions);
 	SMenuItem<uint32_t> jobOptions[enemyCount];
@@ -74,11 +74,11 @@ void mercenaryJob(CCharacter& adventurer)
 
 
 template<size_t _Size>
-static int initializeItemMenu(SMenuItem<SItem>(&menuItems)[_Size])
+static int initializeItemMenu(SMenuItem<klib::SItem>(&menuItems)[_Size])
 {
 	char itemOption[128] = {};
-	static const size_t descriptionCount = size(itemDefinitions);
-	static const size_t modifierCount = size(itemModifiers);
+	static const size_t descriptionCount = size(klib::itemDefinitions);
+	static const size_t modifierCount = size(klib::itemModifiers);
 	for(uint32_t indexItem=0, itemCount = descriptionCount-1; indexItem<itemCount; ++indexItem)
 	{
 		const int32_t indexDefinition = (int32_t)indexItem+1;
@@ -86,37 +86,37 @@ static int initializeItemMenu(SMenuItem<SItem>(&menuItems)[_Size])
 		{
 			const int32_t finalMenuItemIndex = indexItem*modifierCount+grade;
 			menuItems[finalMenuItemIndex].ReturnValue	= { indexDefinition, grade };
-			std::string itemName = getItemName( menuItems[finalMenuItemIndex].ReturnValue );
-			sprintf_s(itemOption, "- $%.2u Coins - %s", (uint32_t)getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
+			std::string itemName = klib::getItemName( menuItems[finalMenuItemIndex].ReturnValue );
+			sprintf_s(itemOption, "- $%.2u Coins - %s", (uint32_t)klib::getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
 			menuItems[finalMenuItemIndex].Text			= itemOption;
 		}
 	}
-	menuItems[getFinalItemCount()].ReturnValue	= { getFinalItemCount(), 0 };
-	menuItems[getFinalItemCount()].Text			= "Leave the bar";
+	menuItems[klib::getFinalItemCount()].ReturnValue	= { klib::getFinalItemCount(), 0 };
+	menuItems[klib::getFinalItemCount()].Text			= "Leave the bar";
 	return 0;
 };
 
-void bar(CCharacter& adventurer)
+void bar(klib::CCharacter& adventurer)
 {
 	printf("\nDo you want to buy some drinks?\n\n");
 
-	static const size_t menuItemCount = getFinalItemCount()+1;
-	static SMenuItem<SItem> itemOptions[menuItemCount];
+	static const size_t menuItemCount = klib::getFinalItemCount()+1;
+	static SMenuItem<klib::SItem> itemOptions[menuItemCount];
 	static const int initialized = initializeItemMenu(itemOptions);
 
 	char menuTitle[128] = {};
 	while (true)	// break the loop to leave the shop
 	{
 		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Coins);
-		const SItem selectedItem = displayMenu(menuTitle, itemOptions);
-		if( selectedItem.Index == getFinalItemCount() ) {
+		const klib::SItem selectedItem = displayMenu(menuTitle, itemOptions);
+		if( selectedItem.Index == klib::getFinalItemCount() ) {
 			printf("You leave the bar.\n");
 			break;
 		}
 		else 
 		{
-			int itemPrice	= getItemPrice(selectedItem);	// Get a copy of this value because we use it very often.
-			const std::string itemName = getItemName(selectedItem);
+			int itemPrice	= klib::getItemPrice(selectedItem);	// Get a copy of this value because we use it very often.
+			const std::string itemName = klib::getItemName(selectedItem);
 
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
@@ -134,13 +134,13 @@ void bar(CCharacter& adventurer)
 	displayInventory(adventurer.Inventory);
 }
 
-void displayEquip(const CCharacter& adventurer) 
+void displayEquip(const klib::CCharacter& adventurer) 
 {
-	const SCharacterPoints& basePoints = adventurer.Points;
-	const SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
-	const SCharacterPoints weaponPoints		= klib::getWeaponPoints(adventurer.Weapon);
-	const SCharacterPoints armorPoints		= klib::getArmorPoints(adventurer.Armor);
-	const SCharacterPoints professionPoints	= klib::getProfessionPoints(adventurer.Profession);
+	const klib::SCharacterPoints& basePoints = adventurer.Points;
+	const klib::SCharacterPoints finalPoints		= klib::calculateFinalPoints(adventurer);
+	const klib::SCharacterPoints weaponPoints		= klib::getWeaponPoints(adventurer.Weapon);
+	const klib::SCharacterPoints armorPoints		= klib::getArmorPoints(adventurer.Armor);
+	const klib::SCharacterPoints professionPoints	= klib::getProfessionPoints(adventurer.Profession);
 
 	printf("\n-- %s final points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
@@ -170,9 +170,9 @@ void displayEquip(const CCharacter& adventurer)
 	weaponPoints.Print();
 }
 
-void displayScore(const SCharacterScore& score) 
+void displayScore(const klib::SCharacterScore& score) 
 {
-	const SCharacterScore& gameCounters		= score;
+	const klib::SCharacterScore& gameCounters		= score;
 	printf("\n-- Player statistics:\n\n"
 		"Battles Won         : %llu\n"
 		"Battles Lost        : %llu\n"

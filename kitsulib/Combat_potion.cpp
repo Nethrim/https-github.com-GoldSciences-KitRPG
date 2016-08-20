@@ -1,6 +1,8 @@
 #include "Item.h"
 #include "Combat.h"
 
+using namespace klib;
+
 bool potionRestore(const CCharacter& potionDrinker, int32_t potionGrade, int32_t maxPoints, int32_t& currentPoints, const std::string& pointName)
 {
 	if(maxPoints <= currentPoints)

@@ -4,6 +4,8 @@
 #include "Profession.h"
 #include "Item.h"
 
+using namespace klib;
+
 int32_t klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName) {
 	return applyShieldableDamage(target, damageDealt, getArmorAbsorption(target.Armor), sourceName);
 }
@@ -121,7 +123,8 @@ STATUS_TYPE klib::applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus
 		case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
 		case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
 		case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
-		case STATUS_TYPE_FREEZE		:	text = "Freeze"			;	break;
+		case STATUS_TYPE_FREEZING	:	text = "Freezing"		;	break;
+		case STATUS_TYPE_FROZEN		:	text = "Frozen"			;	break;
 		case STATUS_TYPE_PETRIFY	:	text = "Petrify"		;	break;
 		case STATUS_TYPE_SHOCK		:	text = "Shock"			;	break;
 		default:						
@@ -435,8 +438,8 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 	applyPassiveEffect	(character, getProfessionPoints	(character.Profession	).PassiveEffect, getProfessionName(character.Profession));
 	applyPassiveEffect	(character, getWeaponPoints		(character.Weapon		).PassiveEffect, getWeaponName(character.Weapon));
 
-	character.CombatBonus.NextTurn();
-	character.CombatStatus.NextTurn();
+	character.CombatBonus	.NextTurn();
+	character.CombatStatus	.NextTurn();
 	printf("\n");
 }
 

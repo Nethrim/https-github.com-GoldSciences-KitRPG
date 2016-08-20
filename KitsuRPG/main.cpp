@@ -20,7 +20,7 @@ void main()
 
 	srand((unsigned int)time(NULL));
 
-	CCharacter adventurer;	// This class instance will contain all our game data.
+	klib::CCharacter adventurer;	// This class instance will contain all our game data.
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
@@ -35,7 +35,7 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_STUN, Name);
+		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, klib::ATTACK_EFFECT_NONE, klib::DEFEND_EFFECT_NONE, klib::PASSIVE_EFFECT_NONE, klib::STATUS_TYPE_NONE, klib::STATUS_TYPE_STUN, Name);
 
 		adventurer.Weapon		.Index		= (int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
 		adventurer.Armor		.Index		= 12;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
@@ -49,7 +49,7 @@ void main()
 		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.Profession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 
-		SCharacterPoints finalPoints		= calculateFinalPoints(adventurer);
+		klib::SCharacterPoints finalPoints	= klib::calculateFinalPoints(adventurer);
 		adventurer.Points.CurrentLife		= finalPoints.MaxLife;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";

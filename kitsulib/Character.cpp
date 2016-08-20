@@ -9,15 +9,17 @@
 
 #include <algorithm>
 
-void rest(CCharacter& character)
+using namespace klib;
+
+void klib::rest(CCharacter& character)
 {
-	SCharacterPoints finalPoints = calculateFinalPoints(character);
+	SCharacterPoints finalPoints	= calculateFinalPoints(character);
 	character.Points.CurrentLife	= finalPoints.MaxLife	;
 	printf("\nYou decide to get some rest.\n");
 	character.Points.CurrentLife.Print();
 }
 
-SCharacterPoints calculateFinalPoints(const CCharacter& character)
+SCharacterPoints klib::calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result = {};
 	const SCharacterPoints 		weaponPoints		= klib::getWeaponPoints		(character.Weapon);
@@ -38,7 +40,7 @@ SCharacterPoints calculateFinalPoints(const CCharacter& character)
 	return result;
 };
 
-bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount)
+bool klib::addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount)
 {
 	for(int i=0, count=MAX_STATUS_COUNT; i<count; ++i)
 	{

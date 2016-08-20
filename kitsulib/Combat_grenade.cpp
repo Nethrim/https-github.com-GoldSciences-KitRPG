@@ -2,6 +2,8 @@
 #include "Item.h"
 #include "Armor.h"
 
+using namespace klib;
+
 enum ATTACK_TARGET
 {	ATTACK_TARGET_MISS
 ,	ATTACK_TARGET_SELF
