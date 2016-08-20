@@ -158,27 +158,58 @@ namespace klib
 		};
 	};
 
-	struct SWeapon
+	struct SEquip
 	{
-		int16_t Index;
-		int16_t Modifier;
-		int16_t Level;
+		int16_t Index		= 0;
+		int16_t Modifier	= 0;
+		int16_t Level		= 1;
+		inline constexpr SEquip() = default;
+		inline constexpr SEquip(int16_t index, int16_t modifier, int16_t level=1)
+			: Index		(index		)
+			, Modifier	(modifier	)
+			, Level		(level		)
+		{};
 	};
 
-	struct SArmor
-	{
-		int16_t Index;
-		int16_t Modifier;
-		int16_t Level;
+	struct SWeapon : public SEquip {
+		using SEquip::SEquip;
 	};
 
-	struct SProfession
-	{
-		int16_t Index;
-		int16_t Modifier;
-		int16_t Level;
+	struct SArmor : public SEquip {
+		using SEquip::SEquip;
 	};
 
+	struct SProfession : public SEquip {
+		using SEquip::SEquip;
+	};
+
+	template<typename _T, size_t _Size>
+	struct SEquipContainer
+	{
+		uint32_t	Count			= 0;
+		_T			Slots[_Size]	= {};
+
+		inline constexpr int32_t	GetMaxSize() const { return _Size; };
+
+		inline bool					AddElement(const _T& element) { 
+			if(Count >= _Size)
+				return false;
+			Slots[Count++]	= element;
+			return true; 
+		};
+		inline bool					RemoveElement(size_t index) { 
+			if(index >= Count)
+				return false;
+			Slots[index]	= Slots[--Count];
+			return true; 
+		};
+		inline int32_t				FindElement(const _T& element) { 
+			for(uint32_t i=0, count=std::max((uint32_t)_Size, Count); i<count; i++)
+				if(Slots[i] == element)
+					return i;
+			return -1;
+		};
+	};
 
 	enum CHARACTER_TYPE : uint32_t
 	{	CHARACTER_TYPE_UNKNOWN
@@ -192,28 +223,54 @@ namespace klib
 	// POD to store all the character data that is not a string or object.
 	struct SCharacter
 	{
-		CHARACTER_TYPE		Type			= CHARACTER_TYPE_UNKNOWN;
-		SCharacterPoints	Points			= { {10, 0, 0}, {10, 0,	0}, {50, 1}, 10};	// These are the base character points.
-		SCombatBonus		CombatBonus		= {};
-		SCombatStatus		CombatStatus	= {};
-		SCharacterInventory	Inventory		= {};
-		SCharacterScore		Score			= {};	
-		SWeapon				Weapon			= {0,0,1};	// Index, ModifierIndex, Level
-		SArmor				Armor			= {0,0,1};	// Index, ModifierIndex, Level
-		SProfession			Profession		= {0,0,1};	// Index, ModifierIndex, Level
+		CHARACTER_TYPE		Type				= CHARACTER_TYPE_UNKNOWN;
+		SCharacterPoints	Points				= { {10, 0, 0}, {10, 0,	0}, {50, 1}, 10};	// These are the base character points.
+		SCombatBonus		CombatBonus			= {};
+		SCombatStatus		CombatStatus		= {};
+		SCharacterInventory	Inventory			= {};
+		SCharacterScore		Score				= {};	
+		SWeapon				CurrentWeapon		= {0,0,1};	// Index, ModifierIndex, Level
+		SArmor				CurrentArmor		= {0,0,1};	// Index, ModifierIndex, Level
+		SProfession			CurrentProfession	= {0,0,1};	// Index, ModifierIndex, Level
+
+		SWeapon				MaxWeapon			= {0,0,1};	// Index, ModifierIndex, Level
+		SArmor				MaxArmor			= {0,0,1};	// Index, ModifierIndex, Level
+		SProfession			MaxProfession		= {0,0,1};	// Index, ModifierIndex, Level
+
+		SEquipContainer<SWeapon		, 256>	Weapons		= {};
+		SEquipContainer<SArmor		, 256>	Armors		= {};
+		SEquipContainer<SProfession	, 256>	Professions	= {};
+
+		SEquipContainer<int16_t, 256>	ResearchedDefinitionsWeapon		= {};
+		SEquipContainer<int16_t, 256>	ResearchedDefinitionsArmor		= {};
+		SEquipContainer<int16_t, 256>	ResearchedDefinitionsProfession	= {};
+		SEquipContainer<int16_t, 256>	ResearchedModifiersWeapon		= {};
+		SEquipContainer<int16_t, 256>	ResearchedModifiersArmor		= {};
+		SEquipContainer<int16_t, 256>	ResearchedModifiersProfession	= {};
+
+		void				UnloadWeapon	()	{	Weapons.AddElement(CurrentWeapon);	};
+		void				UnloadArmor		()	{	Armors.AddElement(CurrentArmor);	};
+		void				EquipWeapon		(size_t slotIndex);
+		void				EquipArmor		(size_t slotIndex);
+
 
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, STATUS_TYPE inflictStatus, STATUS_TYPE immunities) 
-			:Type			(characterType)
-			,Points			({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities})
-			,CombatBonus	({})
-			,CombatStatus	({})
-			,Inventory		({})
-			,Score			({})
-			,Weapon			({0,0,1})
-			,Armor			({0,0,1})
-			,Profession		({0,0,1})
-			//,Shield			(0)
+			:Type				(characterType)
+			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities})
+			,CombatBonus		({})
+			,CombatStatus		({})
+			,Inventory			({})
+			,Score				({})
+			,CurrentWeapon		({0,0,1})
+			,CurrentArmor		({0,0,1})
+			,CurrentProfession	({0,0,1})
+			,MaxWeapon			({0,0,1})
+			,MaxArmor			({0,0,1})
+			,MaxProfession		({0,0,1})
+			,Weapons			({})
+			,Armors				({})
+			,Professions		({})
 		{};
 
 		int32_t		Save(FILE* fp)	const;

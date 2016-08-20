@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="Game_combat.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_research.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

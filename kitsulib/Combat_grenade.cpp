@@ -57,13 +57,13 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	printf("%s throws %s to %s.\n", thrower.Name.c_str(), getItemName(itemGrenade).c_str(), target.Name.c_str());
 	bool bAddStatus = false;
 
-	int32_t targetArmorAbsorption = getArmorAbsorption(target.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;
+	int32_t targetArmorAbsorption = getArmorAbsorption(target.CurrentArmor), finalPassthroughDamage = 0, reflectedDamage = 0;
 	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.DefendEffect;
 	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget.DefendEffect;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	STATUS_TYPE		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
-	const std::string targetArmorName = getArmorName(target.Armor);
+	const std::string targetArmorName = getArmorName(target.CurrentArmor);
 	switch(grenadeProperty)
 	{
 	case PROPERTY_TYPE_SMOKE:

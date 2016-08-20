@@ -34,7 +34,7 @@ void main()
 	std::string Name;
 	getline(std::cin, Name);
 
-	static const SMenuItem<uint32_t> playAgainMenu[]
+	static const klib::SMenuItem<uint32_t> playAgainMenu[]
 	{	{ 1,	"Yes"	}
 	,	{ 0,	"No"	}
 	};
@@ -44,17 +44,26 @@ void main()
 	{
 		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, klib::ATTACK_EFFECT_NONE, klib::DEFEND_EFFECT_NONE, klib::PASSIVE_EFFECT_NONE, klib::STATUS_TYPE_NONE, klib::STATUS_TYPE_STUN, Name);
 
-		adventurer.Weapon		.Index		= (int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
-		adventurer.Armor		.Index		= 12;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
-		adventurer.Profession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
+		adventurer.	CurrentWeapon		.Index		= (int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
+		adventurer.	CurrentArmor		.Index		= 12;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
+		adventurer.	CurrentProfession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
+		adventurer.	CurrentWeapon		.Modifier	= (int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
+		adventurer.	CurrentArmor		.Modifier	= (int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
+		adventurer.	CurrentProfession	.Modifier	= (int16_t)(rand() % size(klib::professionModifiers	));	
+		adventurer.	CurrentWeapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+		adventurer.	CurrentArmor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+		adventurer.	CurrentProfession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 
-		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
-		adventurer.Armor		.Modifier	= (int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
-		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(klib::professionModifiers	));	
+		adventurer.MaxWeapon		.Index		= adventurer.CurrentWeapon		.Index;		
+		adventurer.MaxArmor			.Index		= adventurer.CurrentArmor		.Index;		
+		adventurer.MaxProfession	.Index		= adventurer.CurrentProfession	.Index;		
+		adventurer.MaxWeapon		.Modifier	= adventurer.CurrentWeapon		.Modifier;
+		adventurer.MaxArmor			.Modifier	= adventurer.CurrentArmor		.Modifier;
+		adventurer.MaxProfession	.Modifier	= adventurer.CurrentProfession	.Modifier;
+		adventurer.MaxWeapon		.Level		= adventurer.CurrentWeapon		.Level;
+		adventurer.MaxArmor			.Level		= adventurer.CurrentArmor		.Level;
+		adventurer.MaxProfession	.Level		= adventurer.CurrentProfession	.Level;
 
-		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
-		adventurer.Armor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
-		adventurer.Profession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 
 		klib::SCharacterPoints finalPoints	= klib::calculateFinalPoints(adventurer);
 		adventurer.Points.CurrentLife		= finalPoints.MaxLife;

@@ -22,9 +22,9 @@ void klib::rest(CCharacter& character)
 SCharacterPoints klib::calculateFinalPoints(const CCharacter& character)
 {
 	SCharacterPoints result = {};
-	const SCharacterPoints 		weaponPoints		= klib::getWeaponPoints		(character.Weapon);
-	const SCharacterPoints 		armorPoints			= klib::getArmorPoints		(character.Armor);
-	const SCharacterPoints 		professionPoints	= klib::getProfessionPoints	(character.Profession);
+	const SCharacterPoints 		weaponPoints		= klib::getWeaponPoints		(character.CurrentWeapon);
+	const SCharacterPoints 		armorPoints			= klib::getArmorPoints		(character.CurrentArmor);
+	const SCharacterPoints 		professionPoints	= klib::getProfessionPoints	(character.CurrentProfession);
 
 	result.MaxLife		= character.CombatBonus.Points.MaxLife		+ weaponPoints.MaxLife		+ armorPoints.MaxLife		+ professionPoints.MaxLife		+	character.Points.MaxLife;
 	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
@@ -73,6 +73,10 @@ bool klib::addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uin
 	}
 	return true;
 }
+
+void SCharacter::EquipWeapon	(size_t slotIndex)	{	if(slotIndex < Weapons.Count)	{	printf("You store %s in your arsenal.\n", klib::getWeaponName(CurrentWeapon	).c_str()); UnloadWeapon();	CurrentWeapon	= Weapons.Slots[slotIndex]; Weapons.RemoveElement(slotIndex);	printf("You equip %s.\n", klib::getWeaponName(CurrentWeapon	).c_str()); };	};
+void SCharacter::EquipArmor		(size_t slotIndex)	{	if(slotIndex < Armors.Count)	{	printf("You leave %s in your wardrobe.\n", klib::getArmorName (CurrentArmor	).c_str()); UnloadArmor();	CurrentArmor	= Armors.Slots[slotIndex]; 	Armors.RemoveElement(slotIndex);	printf("You equip %s.\n", klib::getArmorName (CurrentArmor	).c_str()); };	};
+
 
 int	SCharacter::Save(FILE* fp)	const
 {	
