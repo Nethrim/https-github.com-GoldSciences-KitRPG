@@ -4,17 +4,93 @@
 #include "Profession.h"
 #include "Menu.h"
 
-void researchWeaponDefinition		(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::weaponDefinitions	)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Weapons		.Count; ++i )	if( -1 == adventurer.ResearchedDefinitionsWeapon	.FindElement(adventurer.Weapons		.Slots[i].Index		) )	{	sprintf_s(menuItemText, "%s Blueprint"	, klib::weaponDefinitions		[adventurer.Weapons		.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Weapons		.Slots[i].Index		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount ) { printf("You don't have any weapon research available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::weaponDefinitions		), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select blueprint to research."	, menuItems, menuItemCount); if(klib::size(klib::weaponDefinitions		) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start researching %s blueprint.\n"				, klib::weaponDefinitions		[selectedValue].Name.c_str()); adventurer.ResearchedDefinitionsWeapon		.AddElement((int32_t)selectedValue); adventurer.MaxWeapon		.Index		= std::max(adventurer.MaxWeapon		.Index		, (int16_t)selectedValue); printf("%s blueprint has been researched!\n"	, klib::weaponDefinitions		[selectedValue].Name.c_str()); };
-void researchArmorDefinition		(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::armorDefinitions		)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Armors			.Count; ++i )	if( -1 == adventurer.ResearchedDefinitionsArmor		.FindElement(adventurer.Armors		.Slots[i].Index		) )	{	sprintf_s(menuItemText, "%s Design"		, klib::armorDefinitions		[adventurer.Armors		.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Armors		.Slots[i].Index		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any armor research available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::armorDefinitions		), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select design to research."		, menuItems, menuItemCount); if(klib::size(klib::armorDefinitions		) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start researching %s design.\n"					, klib::armorDefinitions		[selectedValue].Name.c_str()); adventurer.ResearchedDefinitionsArmor		.AddElement((int32_t)selectedValue); adventurer.MaxArmor		.Index		= std::max(adventurer.MaxArmor		.Index		, (int16_t)selectedValue); printf("%s design has been researched!\n"	, klib::armorDefinitions		[selectedValue].Name.c_str()); };
-void researchProfessionDefinition	(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::professionDefinitions)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Professions	.Count; ++i )	if( -1 == adventurer.ResearchedDefinitionsProfession.FindElement(adventurer.Professions	.Slots[i].Index		) )	{	sprintf_s(menuItemText, "%s Mastery"	, klib::professionDefinitions	[adventurer.Professions	.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Professions	.Slots[i].Index		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any mastery learning available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::professionDefinitions	), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select mastery to learn."			, menuItems, menuItemCount); if(klib::size(klib::professionDefinitions	) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start learning %s mastery.\n"					, klib::professionDefinitions	[selectedValue].Name.c_str()); adventurer.ResearchedDefinitionsProfession	.AddElement((int32_t)selectedValue); adventurer.MaxProfession	.Index		= std::max(adventurer.MaxProfession	.Index		, (int16_t)selectedValue); printf("%s mastery has been learned!\n"		, klib::professionDefinitions	[selectedValue].Name.c_str()); };
-void researchWeaponModifier			(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::weaponModifiers		)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Weapons		.Count; ++i )	if( -1 == adventurer.ResearchedModifiersWeapon		.FindElement(adventurer.Weapons		.Slots[i].Modifier	) )	{	sprintf_s(menuItemText, klib::weaponModifiers			[adventurer.Weapons		.Slots[i].Modifier	].Name.c_str(), "Science"		);	menuItems[menuItemCount]	= {	adventurer.Weapons		.Slots[i].Modifier	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount ) { printf("You don't have any science study available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::weaponModifiers			), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select science to investigate."	, menuItems, menuItemCount); if(klib::size(klib::weaponModifiers		) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start investigating %s science.\n"				, klib::weaponModifiers			[selectedValue].Name.c_str()); adventurer.ResearchedModifiersWeapon			.AddElement((int32_t)selectedValue); adventurer.MaxWeapon		.Modifier	= std::max(adventurer.MaxWeapon		.Modifier	, (int16_t)selectedValue); printf("%s science has been discovered!\n"	, klib::weaponModifiers			[selectedValue].Name.c_str()); };
-void researchArmorModifier			(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::armorModifiers		)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Armors			.Count; ++i )	if( -1 == adventurer.ResearchedModifiersArmor		.FindElement(adventurer.Armors		.Slots[i].Modifier	) )	{	sprintf_s(menuItemText, klib::armorModifiers			[adventurer.Armors		.Slots[i].Modifier	].Name.c_str(), "Techonolgy"	);	menuItems[menuItemCount]	= {	adventurer.Armors		.Slots[i].Modifier	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount ) { printf("You don't have any technology development available yet!\n"	);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::armorModifiers			), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select technology to develop."	, menuItems, menuItemCount); if(klib::size(klib::armorModifiers			) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start developing %s technology.\n"				, klib::armorModifiers			[selectedValue].Name.c_str()); adventurer.ResearchedModifiersArmor			.AddElement((int32_t)selectedValue); adventurer.MaxArmor		.Modifier	= std::max(adventurer.MaxArmor		.Modifier	, (int16_t)selectedValue); printf("%s technology has been developed!\n"	, klib::armorModifiers			[selectedValue].Name.c_str()); };
-void researchProfessionModifier		(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::professionModifiers	)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Professions	.Count; ++i )	if( -1 == adventurer.ResearchedModifiersProfession	.FindElement(adventurer.Professions	.Slots[i].Modifier	) )	{	sprintf_s(menuItemText, klib::professionModifiers		[adventurer.Professions	.Slots[i].Modifier	].Name.c_str(), "Rank"			);	menuItems[menuItemCount]	= {	adventurer.Professions	.Slots[i].Modifier	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any profession research available yet!\n"		);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::professionModifiers		), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select rank to train."			, menuItems, menuItemCount); if(klib::size(klib::professionModifiers	) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start training %s rank.\n"						, klib::professionModifiers		[selectedValue].Name.c_str()); adventurer.ResearchedModifiersProfession		.AddElement((int32_t)selectedValue); adventurer.MaxProfession	.Modifier	= std::max(adventurer.MaxProfession	.Modifier	, (int16_t)selectedValue); printf("%s rank has been reached!\n"			, klib::professionModifiers		[selectedValue].Name.c_str()); };
+template <typename _TEquipClass, typename _TInventory, typename _TResearched, size_t _SizeInventory, size_t _SizeResearched, size_t _SizeDefinitions>
+void research
+	( klib::SEquipContainer<_TInventory, _SizeInventory>& equipInventory 
+	, klib::SEquipContainer<_TResearched, _SizeResearched>& researchedList
+	, const _TEquipClass (&definitionsTable)[_SizeDefinitions]
+	, _TInventory& adventurerMaxEquip
+	, bool bIsModifier
+	, const std::string& postFix
+	, const std::string& sourceName
+	, const std::string& lowercaseName
+	, const std::string& verbPresentPerfect
+	, const std::string& verbPresentContinuous
+	, const std::string& verbSimplePast
+	) 
+{ 
+	static char menuItemText[256] = {}; 
 
-//void researchWeaponLevel			(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[256];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Weapons		.Count; ++i )	if( -1 == adventurer.ResearchedLevelsWeapon			.FindElement(adventurer.Weapons		.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::weaponDefinitions		[adventurer.Weapons		.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Weapons		.Slots[i].Level	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount ) { printf("You don't have any weapon level available yet!\n"					);	return; } menuItems[menuItemCount] = {(int16_t)256, "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select science to investigate."	, menuItems, menuItemCount); if(klib::size(klib::weaponLevels		) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start rasising your level of knowledge on weapons"		" up to level %u.\n"	, selectedValue); adventurer.MaxWeapon		.Level	= std::max(adventurer.MaxWeapon		.Level	, (int16_t)selectedValue); printf("Level %u has been reached!\n", selectedValue); };
-//void researchArmorLevel				(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[256];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Armors			.Count; ++i )	if( -1 == adventurer.ResearchedLevelsArmor			.FindElement(adventurer.Armors		.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::armorDefinitions		[adventurer.Armors		.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Armors		.Slots[i].Level	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount ) { printf("You don't have any armor level available yet!\n"					);	return; } menuItems[menuItemCount] = {(int16_t)256, "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select technology to develop."	, menuItems, menuItemCount); if(klib::size(klib::armorLevels			) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start rasising your level of knowledge on armors"		" up to level %u.\n"	, selectedValue); adventurer.MaxArmor		.Level	= std::max(adventurer.MaxArmor		.Level	, (int16_t)selectedValue); printf("Level %u has been reached!\n", selectedValue); };
-//void researchProfessionLevel		(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[256];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Professions	.Count; ++i )	if( -1 == adventurer.ResearchedLevelsProfession		.FindElement(adventurer.Professions	.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::professionDefinitions	[adventurer.Professions	.Slots[i].Index		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Professions	.Slots[i].Level	, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any profession level available yet!\n"				);	return; } menuItems[menuItemCount] = {(int16_t)256, "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select rank to train."			, menuItems, menuItemCount); if(klib::size(klib::professionLevels	) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start rasising your level of knowledge on professions"	" up to level %u.\n"	, selectedValue); adventurer.MaxProfession	.Level	= std::max(adventurer.MaxProfession	.Level	, (int16_t)selectedValue); printf("Level %u has been reached!\n", selectedValue); };
+	static const size_t maxItemCount = 256;
 
-//void researchWeaponLevel			(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::weaponLevels			)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Weapons		.Count; ++i )	if( -1 == adventurer.ResearchedLevelsWeapon			.FindElement(adventurer.Weapons		.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::weaponLevels			[adventurer.Weapons		.Slots[i].Level		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Weapons		.Slots[i].Level		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any weapon research available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::weaponLevels			), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select research to develop."		, menuItems, menuItemCount); if(klib::size(klib::weaponLevels			) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start training %s\n"					, klib::weaponLevels			[selectedValue].Name.c_str()); adventurer.ResearchedLevelsWeapon			.AddElement((int32_t)selectedValue); printf("Weapon level %u has been reached!\n"		, selectedValue].Name.c_str()); };
-//void researchArmorLevel			(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::armorLevels			)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Armors			.Count; ++i )	if( -1 == adventurer.ResearchedLevelsArmor			.FindElement(adventurer.Armors		.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::armorLevels				[adventurer.Armors		.Slots[i].Level		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Armors		.Slots[i].Level		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any armor research available yet!\n"			);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::armorLevels				), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select research to develop."		, menuItems, menuItemCount); if(klib::size(klib::armorLevels			) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start training %s\n"					, klib::armorLevels				[selectedValue].Name.c_str()); adventurer.ResearchedLevelsArmor				.AddElement((int32_t)selectedValue); printf("Armor level %u has been reached!\n"		, selectedValue].Name.c_str()); };
-//void researchProfessionLevel		(klib::CCharacter& adventurer)	{ static char menuItemText[256] = {}; static klib::SMenuItem<int32_t>	menuItems[klib::size(klib::professionLevels		)+1];	int32_t menuItemCount=0; for( uint32_t i=0; i<adventurer.Professions	.Count; ++i )	if( -1 == adventurer.ResearchedLevelsProfession		.FindElement(adventurer.Professions	.Slots[i].Level		) )	{	sprintf_s(menuItemText, "Level %u"		, klib::professionLevels		[adventurer.Professions	.Slots[i].Level		].Name.c_str());	menuItems[menuItemCount]	= {	adventurer.Professions	.Slots[i].Level		, menuItemText };	menuItemCount++; } if( 0 == menuItemCount )	{ printf("You don't have any profession research available yet!\n"		);	return; } menuItems[menuItemCount] = {(int16_t)klib::size(klib::professionLevels		), "Back to tavern"}; menuItemCount++; int32_t selectedValue = klib::displayMenu("Select research to develop."		, menuItems, menuItemCount); if(klib::size(klib::professionLevels		) == selectedValue) { printf("You exit the labs.\n"); return; } printf("You start training %s\n"					, klib::professionLevels		[selectedValue].Name.c_str()); adventurer.ResearchedLevelsProfession		.AddElement((int32_t)selectedValue); printf("Profession level %u has been reached!\n"	, selectedValue].Name.c_str()); };
+
+	static klib::SMenuItem<int32_t> menuItems[maxItemCount]; 
+	int32_t menuItemCount=0; 
+	for( uint32_t i=0; i<equipInventory.Count; ++i ) 
+	{
+		if(bIsModifier)
+		{
+			if( -1 == researchedList.FindElement(equipInventory.Slots[i].Modifier) )  
+			{ 
+				sprintf_s(menuItemText, definitionsTable[equipInventory.Slots[i].Modifier].Name.c_str(), postFix.c_str());
+				menuItems[menuItemCount] = { equipInventory.Slots[i].Modifier, menuItemText }; menuItemCount++; 
+			}
+		} 
+		else
+		{
+			if( -1 == researchedList.FindElement(equipInventory.Slots[i].Index) )  
+			{
+				sprintf_s(menuItemText, postFix.c_str(), definitionsTable[equipInventory.Slots[i].Index].Name.c_str()); 
+				menuItems[menuItemCount] = { equipInventory.Slots[i].Index, menuItemText }; menuItemCount++; 
+			}
+		}
+	}
+
+	if( 0 == menuItemCount ) { 
+		printf("You don't have any %s avaiable to %s yet!\n", sourceName.c_str(), verbPresentPerfect.c_str()); 
+		return; 
+	} 
+	
+	menuItems[menuItemCount] = {(int16_t)maxItemCount, "Back to tavern"}; 
+	menuItemCount++; 
+	
+	sprintf_s(menuItemText, "Select %s to %s", lowercaseName.c_str(), verbPresentPerfect.c_str());
+
+	int32_t selectedValue = klib::displayMenu(menuItemText, menuItems, menuItemCount); 
+	
+	if(maxItemCount == selectedValue) { 
+		printf("You exit the labs.\n"); 
+		return; 
+	} 
+	
+	static char activityName[64] = {}; 
+
+	if(bIsModifier)
+	{
+		sprintf_s(activityName, definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str());
+		printf("You start %s %s.\n", verbPresentContinuous.c_str(), activityName); 
+	}
+	else
+		printf("You start %s %s %s.\n", verbPresentContinuous.c_str(), definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str()); 
+
+	researchedList.AddElement((int32_t)selectedValue); 
+
+	if(bIsModifier)
+	{
+		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)selectedValue); 
+		printf("%s has been %s!\n", activityName, verbSimplePast.c_str()); 
+	}
+	else
+	{
+		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)selectedValue); 
+		printf("%s %s has been %s!\n", definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str(), verbSimplePast.c_str()); 
+	}
+};
+
+
+void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::weaponDefinitions		, adventurer.MaxWeapon		, false	, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
+void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::armorDefinitions		, adventurer.MaxArmor		, false	, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
+void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::professionDefinitions	, adventurer.MaxProfession	, false	, "%s Mastery"		, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
+void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::weaponModifiers			, adventurer.MaxWeapon		, true	, "Science"			, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
+void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::armorModifiers			, adventurer.MaxArmor		, true	, "Technology"		, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
+void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, "Rank"			, "rank"					, "profession"	, "achieve"	, "achieving"	, "achieved"	); }
