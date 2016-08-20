@@ -67,7 +67,7 @@ void research
 	}
 
 	if( 0 == menuItemCount ) { 
-		printf("You don't have any %s avaiable to %s yet!\n", sourceName.c_str(), verbPresentPerfect.c_str()); 
+		printf("You don't have any %s available to %s yet!\n", sourceName.c_str(), verbPresentPerfect.c_str()); 
 		return; 
 	} 
 	
