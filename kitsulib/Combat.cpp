@@ -451,7 +451,7 @@ bool klib::executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& ta
 	bool bUsedItem = false;
 
 	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
-	switch( itemDefinitions[item.Index].Type )
+	switch( itemDescriptions[item.Index].Type )
 	{
 	case ITEM_TYPE_POTION:
 		bUsedItem = usePotion(item, user);

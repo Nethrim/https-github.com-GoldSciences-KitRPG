@@ -77,15 +77,15 @@ template<size_t _Size>
 static int initializeItemMenu(SMenuItem<klib::SItem>(&menuItems)[_Size])
 {
 	char itemOption[128] = {};
-	static const size_t descriptionCount = size(klib::itemDefinitions);
-	static const size_t modifierCount = size(klib::itemModifiers);
+	static const size_t descriptionCount = size(klib::itemDescriptions);
+	static const size_t gradeCount = size(klib::itemGrades);
 	for(uint32_t indexItem=0, itemCount = descriptionCount-1; indexItem<itemCount; ++indexItem)
 	{
 		const int32_t indexDefinition = (int32_t)indexItem+1;
-		for(int32_t grade=0; grade < modifierCount; ++grade)
+		for(int32_t grade=0; grade < gradeCount; ++grade)
 		{
-			const int32_t finalMenuItemIndex = indexItem*modifierCount+grade;
-			menuItems[finalMenuItemIndex].ReturnValue	= { indexDefinition, grade };
+			const int32_t finalMenuItemIndex = indexItem*gradeCount+grade;
+			menuItems[finalMenuItemIndex].ReturnValue	= { indexDefinition, 0, grade };
 			std::string itemName = klib::getItemName( menuItems[finalMenuItemIndex].ReturnValue );
 			sprintf_s(itemOption, "- $%.2u Coins - %s", (uint32_t)klib::getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
 			menuItems[finalMenuItemIndex].Text			= itemOption;

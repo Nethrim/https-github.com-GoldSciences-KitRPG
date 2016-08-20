@@ -16,7 +16,14 @@
 // After leaving the tavern() we display the score of the player.
 void main()
 {	
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF|_CRTDBG_LEAK_CHECK_DF|_CRTDBG_DELAY_FREE_MEM_DF);
+#if defined(DEBUG) || defined(_DEBUG)
+	int tmp = _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF|_CRTDBG_LEAK_CHECK_DF|_CRTDBG_DELAY_FREE_MEM_DF);
+	// Clear the upper 16 bits and OR in the desired freqency
+	tmp = (tmp & 0x0000FFFF) | _CRTDBG_CHECK_EVERY_16_DF;
+
+	// Set the new bits
+	_CrtSetDbgFlag(tmp);
+#endif
 
 	srand((unsigned int)time(NULL));
 
@@ -42,7 +49,7 @@ void main()
 		adventurer.Profession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
 
 		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
-		adventurer.Armor		.Modifier	= 2;//(int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
+		adventurer.Armor		.Modifier	= (int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
 		adventurer.Profession	.Modifier	= (int16_t)(rand() % size(klib::professionModifiers	));	
 
 		adventurer.Weapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));

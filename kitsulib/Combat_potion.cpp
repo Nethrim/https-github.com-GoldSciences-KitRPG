@@ -3,11 +3,11 @@
 
 using namespace klib;
 
-bool potionRestore(const CCharacter& potionDrinker, int32_t potionGrade, int32_t maxPoints, int32_t& currentPoints, const std::string& pointName)
+bool potionRestore(const CCharacter& potionDrinker, const int32_t potionGrade, const int32_t maxPoints, int32_t& currentPoints, const std::string& pointName)
 {
 	if(maxPoints <= currentPoints)
 	{
-		printf("Your %s is full!", pointName.c_str());
+		printf("Your %s is full!\n", pointName.c_str());
 		return false;
 	}
 	int32_t itemEffectValue = (int32_t)(maxPoints*.2+1)+(rand()%std::max(1, maxPoints/10));
@@ -20,7 +20,7 @@ bool potionRestore(const CCharacter& potionDrinker, int32_t potionGrade, int32_t
 	return true;
 }
 
-bool potionAttackBonus(const CCharacter& potionDrinker, int32_t potionGrade, int32_t& currentPoints, int32_t& turnsLeft, const std::string& pointName)
+bool potionAttackBonus(const CCharacter& potionDrinker, const int32_t potionGrade, int32_t& currentPoints, int32_t& turnsLeft, const std::string& pointName)
 {
 	int32_t itemEffectValue = 5*potionGrade;
 	itemEffectValue += rand() % std::max(2, itemEffectValue>>2);
@@ -39,42 +39,24 @@ bool potionAttackBonus(const CCharacter& potionDrinker, int32_t potionGrade, int
 
 bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker) 
 {
-	if(0 == itemPotion.Modifier) {
+	if(0 == itemPotion.Level) {
 		printf("The prop potion drank by %s doesn't seem to taste very well...\n", potionDrinker.Name.c_str());
 		return true;
 	}
 
-	const CItem& itemDescription = itemDefinitions[itemPotion.Index];
+	const CItem& itemDescription = itemDescriptions[itemPotion.Index];
 
 	bool bUsedItem = false;
 
-	const int itemGrade = itemPotion.Modifier;
-	
-	const std::string& drinkerName	= potionDrinker.Name;
-	SCharacterPoints& drinkerPoints	= potionDrinker.Points;
-	SCombatBonus& drinkerBonus		= potionDrinker.CombatBonus;
-	SCharacterPoints finalPoints	= calculateFinalPoints(potionDrinker);
+	SLifePoints& currentPoints	= potionDrinker.Points.CurrentLife;
+	SCombatBonus& drinkerBonus	= potionDrinker.CombatBonus;
+	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).MaxLife;
 
-	switch(itemDescription.Property)
-	{
-	case PROPERTY_TYPE_HEALTH:
-		bUsedItem = potionRestore(potionDrinker, itemGrade, finalPoints.MaxLife.HP, drinkerPoints.CurrentLife.HP, "HP");
-		break;
-	case PROPERTY_TYPE_MANA:
-		bUsedItem = potionRestore(potionDrinker, itemGrade, finalPoints.MaxLife.Mana, drinkerPoints.CurrentLife.Mana, "Mana");
-		break;
-	case PROPERTY_TYPE_SHIELD:
-		bUsedItem = potionRestore(potionDrinker, itemGrade, finalPoints.MaxLife.Shield, drinkerPoints.CurrentLife.Shield, "Shield");
-		break;
-	case PROPERTY_TYPE_STRENGTH:
-		bUsedItem = potionAttackBonus(potionDrinker, itemGrade, drinkerBonus.Points.Attack.Damage, drinkerBonus.TurnsLeft.Attack.Damage, "Damage");;
-		break;
-	case PROPERTY_TYPE_HIT:
-		bUsedItem = potionAttackBonus(potionDrinker, itemGrade, drinkerBonus.Points.Attack.Hit, drinkerBonus.TurnsLeft.Attack.Hit, "Hit");
-		break;
-	default:
-		printf("Potion type not implemented!");
-	};
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.HP						, currentPoints.HP						, "HP"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA		)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Mana						, currentPoints.Mana					, "Mana"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Shield					, currentPoints.Shield					, "Shield"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_STRENGTH	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Damage	, drinkerBonus.TurnsLeft.Attack.Damage	, "Damage"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HIT		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Hit		, drinkerBonus.TurnsLeft.Attack.Hit		, "Hit"		);
 
 	if(bUsedItem)
 		potionDrinker.Score.PotionsUsed++;

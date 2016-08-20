@@ -29,7 +29,7 @@ _ReturnType displayMenu(size_t optionCount, const std::string& title, const SMen
 		
 		// Get user input
 		// Convert the input string to a menuitem index.
-		const uint32_t selectedIndex = (uint32_t)(getNumericInput()-1);	// 
+		const uint32_t selectedIndex = (uint32_t)(klib::getNumericInput()-1);	// 
 
 		if(selectedIndex >= optionCount)	// We only accept from 0 to optionCount
 			printf("Invalid answer. Answer again...\n");

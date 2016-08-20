@@ -12,6 +12,7 @@ namespace klib
 	{
 		int32_t Index;
 		int32_t Modifier;
+		int32_t Level;
 	};
 
 	struct SInventorySlot

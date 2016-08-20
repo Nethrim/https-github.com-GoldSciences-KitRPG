@@ -390,7 +390,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	else // not a player so execute choice by AI
 	{
 		indexInventory = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
-		const klib::CItem& itemDescription = klib::itemDefinitions[user.Inventory.Slots[indexInventory].Item.Index];
+		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
 		
 		// Only use potions if we have less than 80% HP
 		if	 ( klib::ITEM_TYPE_POTION		!= itemDescription.Type
@@ -403,7 +403,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	if(bUsedItem)
 	{
 		const klib::SCharacterPoints finalPoints = calculateFinalPoints(user);
-		const klib::CItem& itemDescription = klib::itemDefinitions[user.Inventory.Slots[indexInventory].Item.Index];
+		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
 		 && klib::PROPERTY_TYPE_HEALTH == itemDescription.Property 
 		 && user.Points.CurrentLife.HP == finalPoints.MaxLife.HP)

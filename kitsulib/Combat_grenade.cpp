@@ -17,24 +17,26 @@ STATUS_TYPE getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 	case PROPERTY_TYPE_STUN		:		result = STATUS_TYPE_STUN		; break;
 	case PROPERTY_TYPE_SMOKE	:		result = STATUS_TYPE_BLIND		; break;
 	case PROPERTY_TYPE_PIERCING	:		result = STATUS_TYPE_BLEEDING	; break;
+	case PROPERTY_TYPE_FRAG		:		result = STATUS_TYPE_BLEEDING	; break;
 	case PROPERTY_TYPE_FIRE		:		result = STATUS_TYPE_BURN		; break;
 	case PROPERTY_TYPE_POISON	:		result = STATUS_TYPE_POISON		; break;
-	//case PROPERTY_TYPE_FREEZE	:		result = STATUS_TYPE_; break;
-	//case PROPERTY_TYPE_			:		result = STATUS_TYPE_; break;
+	case PROPERTY_TYPE_COLD		:		result = STATUS_TYPE_FREEZING	; break;
+	case PROPERTY_TYPE_FREEZE	:		result = STATUS_TYPE_FROZEN		; break;
+	case PROPERTY_TYPE_SHOCK	:		result = STATUS_TYPE_SHOCK		; break;
 	}
 	return result;
 }
 
 bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
 {
-	const CItem& itemDescription = itemDefinitions[itemGrenade.Index];
+	const CItem& itemDescription = itemDescriptions[itemGrenade.Index];
 
-	if(0 == itemGrenade.Modifier) {
+	if(0 == itemGrenade.Level) {
 		printf("The prop grenade thrown by %s puffs in the air and quickly falls to the ground.\n", thrower.Name.c_str());
 		return true;
 	}
 
-	const int itemGrade = itemGrenade.Modifier; //std::max(1, itemGrenade.Modifier);
+	const int itemGrade = itemGrenade.Level; 
 
 	// Currently the hit chance for all the grenade types are calculated with the same formula.
 	int	lotteryRange	= 60+(10*itemGrade);	// calculate hit chance from item grade
@@ -66,6 +68,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	{
 	case PROPERTY_TYPE_SMOKE:
 	case PROPERTY_TYPE_STUN:
+	case PROPERTY_TYPE_FREEZE:
+	case PROPERTY_TYPE_COLD:
 		// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
 			applyAttackStatus(target, grenadeStatus, itemGrade ? 1+itemGrade : 0, itemDescription.Name);
@@ -75,8 +79,10 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		break;
 
 	case PROPERTY_TYPE_PIERCING:
+	case PROPERTY_TYPE_FRAG:
 	case PROPERTY_TYPE_FIRE:
 	case PROPERTY_TYPE_POISON:
+	case PROPERTY_TYPE_SHOCK:
 		itemEffectValueSelf = itemEffectValueReducedSelf;
 		itemEffectValue		= itemEffectValueReduced;
 		bAddStatus			= true;

@@ -7,9 +7,9 @@
 
 void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t enemyType)
 {
-	addItem( currentEnemy.Inventory, {1, 1} );
+	addItem( currentEnemy.Inventory, {1, 1, 1} );
 	for(uint32_t i=1; i<enemyType; ++i)
-		addItem( currentEnemy.Inventory, { 1+(rand()%((int32_t)size(itemDefinitions)-1)), rand()%(int32_t)size(itemModifiers) } );
+		addItem( currentEnemy.Inventory, { 1+(rand()%((int32_t)size(itemDescriptions)-1)), 1+rand()%(int32_t)size(itemModifiers), rand()%(int32_t)size(itemGrades) } );
 
 	currentEnemy.Weapon		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(weaponDefinitions		)));
 	currentEnemy.Armor		.Index		= uint16_t(rand()%	std::min(enemyType*2, (uint32_t)size(armorDefinitions		)));
