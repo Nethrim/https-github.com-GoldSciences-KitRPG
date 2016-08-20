@@ -20,9 +20,9 @@ void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, uint32_t
 	currentEnemy.CurrentArmor		.Modifier	= std::max((int16_t)0, std::min	((int16_t)	(adventurer.CurrentArmor		.Modifier-2	+(rand()%5)), (int16_t)(size(armorModifiers			)-1)));
 	currentEnemy.CurrentProfession	.Modifier	= std::max((int16_t)0, std::min	((int16_t)	(adventurer.CurrentProfession	.Modifier-2	+(rand()%5)), (int16_t)(size(professionModifiers	)-1)));
 
-	currentEnemy.CurrentWeapon		.Level		= std::max(0, (adventurer.CurrentWeapon		.Level-2+(rand()%5)));
-	currentEnemy.CurrentArmor		.Level		= std::max(0, (adventurer.CurrentArmor		.Level-2+(rand()%5)));
-	currentEnemy.CurrentProfession	.Level		= std::max(0, (adventurer.CurrentProfession	.Level-2+(rand()%5)));
+	currentEnemy.CurrentWeapon		.Level		= std::max(1, (adventurer.CurrentWeapon		.Level-2+(rand()%5)));
+	currentEnemy.CurrentArmor		.Level		= std::max(1, (adventurer.CurrentArmor		.Level-2+(rand()%5)));
+	currentEnemy.CurrentProfession	.Level		= std::max(1, (adventurer.CurrentProfession	.Level-2+(rand()%5)));
 
 	currentEnemy.MaxWeapon		.Index		= currentEnemy.CurrentWeapon		.Index;		
 	currentEnemy.MaxArmor		.Index		= currentEnemy.CurrentArmor			.Index;		
