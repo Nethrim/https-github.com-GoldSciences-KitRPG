@@ -23,8 +23,7 @@ int32_t klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, int
 	// Impenetrable armors always have 60% extra absorption rate.
 	if(targetFinalPoints.DefendEffect & DEFEND_EFFECT_IMPENETRABLE)
 	{
-		if(target.Points.CurrentLife.Shield)
-		{
+		if(target.Points.CurrentLife.Shield) {
 			absorptionRate += 60;
 			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
 		}
@@ -38,6 +37,7 @@ int32_t klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, int
 
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
 	}
+
 	absorptionRate = std::min(absorptionRate, 100);
 	const double	absorptionFraction	= absorptionRate ? (0.01*absorptionRate) : 0.0;
 	int shieldedDamage		= (int)(damageDealt * absorptionFraction);
@@ -230,10 +230,10 @@ int32_t klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, int32
 
 int32_t klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, int32_t damage, int32_t absorptionRate, bool bAddStatus, STATUS_TYPE grenadeStatus, int32_t statusTurns, const std::string& sourceName)
 {
-	int32_t finalPassthroughDamage  = klib::applyShieldableDamage(target, damage, sourceName);
+	int32_t finalPassthroughDamage	= klib::applyShieldableDamage(target, damage, sourceName);
 	int32_t reflectedDamage			= damage - finalPassthroughDamage;
 	klib::applyArmorReflect(attacker, target, reflectedDamage, sourceName);
-
+	
 	if(bAddStatus)
 		applyAttackStatus(target, grenadeStatus, statusTurns, sourceName);
 
@@ -244,13 +244,16 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	applySuccessfulWeaponHit(attacker, targetReflecting, damageDealt, getArmorAbsorption(targetReflecting.Armor), sourceName);
 }
 
-void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName) {
-	
+void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName) 
+{
+	if(calculateFinalPoints(targetReflecting).DefendEffect & DEFEND_EFFECT_BLIND)
+		applyAttackStatus(targetReflecting, STATUS_TYPE_BLIND, 1, getArmorName(targetReflecting.Armor));
+
 	if( 0 == damageDealt )
 		return;
 
-	SCharacterPoints	attackerPoints			= calculateFinalPoints(attacker);
-	int32_t weaponPassthroughDamage = applySuccessfulHit(attacker, targetReflecting, damageDealt, absorptionRate, attackerPoints.StatusInflict != STATUS_TYPE_NONE, attackerPoints.StatusInflict, 1, sourceName);
+	SCharacterPoints	attackerPoints	= calculateFinalPoints(attacker);
+	int32_t weaponPassthroughDamage		= applySuccessfulHit(attacker, targetReflecting, damageDealt, absorptionRate, attackerPoints.StatusInflict != STATUS_TYPE_NONE, attackerPoints.StatusInflict, 1, sourceName);
 
 	// Apply combat bonuses from weapon for successful hits.
 	const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
@@ -261,8 +264,7 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	// Apply weapon effects for successful hits.
 	ATTACK_EFFECT		attackerWeaponEffect	= attackerPoints.AttackEffect;
 	applyAttackEffect(ATTACK_EFFECT_LEECH, attackerWeaponEffect, weaponPassthroughDamage, attackerPoints.MaxLife.HP, attacker.Points.CurrentLife.HP, attacker.Name, targetReflecting.Name, sourceName, "HP", "drains", "loses" );
-	applyAttackEffect(ATTACK_EFFECT_STEAL, attackerWeaponEffect, weaponPassthroughDamage, 0xFFFFFFFF, attacker.Points.Coins, attacker.Name, targetReflecting.Name, sourceName, "Coins", "steals", "drops" );
-
+	applyAttackEffect(ATTACK_EFFECT_STEAL, attackerWeaponEffect, weaponPassthroughDamage, 0x7FFFFFFF, attacker.Points.Coins, attacker.Name, targetReflecting.Name, sourceName, "Coins", "steals", "drops" );
 }
 
 // This function returns the damage dealt to the target

@@ -27,11 +27,12 @@ namespace klib
 	,	PROPERTY_TYPE_COLD		= 0x0080
 	,	PROPERTY_TYPE_FREEZE	= 0x0100
 	,	PROPERTY_TYPE_SHOCK		= 0x0200
-	,	PROPERTY_TYPE_HEALTH	= 0x0400
-	,	PROPERTY_TYPE_MANA		= 0x0800
-	,	PROPERTY_TYPE_SHIELD	= 0x1000
-	,	PROPERTY_TYPE_STRENGTH	= 0x2000
-	,	PROPERTY_TYPE_HIT		= 0x4000
+	,	PROPERTY_TYPE_EMP		= 0x0400
+	,	PROPERTY_TYPE_HEALTH	= 0x0800
+	,	PROPERTY_TYPE_MANA		= 0x1000
+	,	PROPERTY_TYPE_SHIELD	= 0x2000
+	,	PROPERTY_TYPE_STRENGTH	= 0x4000
+	,	PROPERTY_TYPE_HIT		= 0x8000
 	};
 
 	struct CItem 
@@ -62,11 +63,11 @@ namespace klib
 	};
 
 static const CItemGrade itemGrades[] = 
-{	{	"Prop %s"		}
-,	{	"Small %s"		}
-,	{	"Regular %s"	}
-,	{	"Large %s"		}
-//,	{	"Huge %s"		}
+{	{	"%s (Prop)"		}
+,	{	"%s (Small)"	}
+,	{	"%s (Regular)"	}
+,	{	"%s (Large)"	}
+//,	{	"%s (Huge)"		}
 };
 
 static const CItemModifier itemModifiers[] = 
@@ -106,7 +107,7 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_STRENGTH										,	10	,	"Potion of Strength"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SMOKE											,	10	,	"Smoke Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_STUN											,	10	,	"Stun Grenade"					}
-,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_BLAST											,	10	,	"Grenade"						}
+,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_BLAST											,	10	,	"Blast Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FIRE											,	10	,	"Fire Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_PIERCING										,	10	,	"Needle Grenade"				}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FRAG											,	10	,	"Fragmentary Grenade"			}
@@ -114,6 +115,7 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SHOCK											,	10	,	"Shock Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_COLD											,	10	,	"Cold Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_FREEZE										,	10	,	"Freeze Grenade"				}
+,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_EMP											,	10	,	"EMP Grenade"					}
 };
 
 	static inline constexpr int32_t getFinalItemCount() {

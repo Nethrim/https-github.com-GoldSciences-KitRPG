@@ -60,14 +60,15 @@ namespace klib
 	enum DEFEND_EFFECT : uint16_t
 	{	DEFEND_EFFECT_NONE			= 0x00
 	,	DEFEND_EFFECT_REFLECT		= 0x01
+	,	DEFEND_EFFECT_BLIND			= 0x02
 	,	DEFEND_EFFECT_IMPENETRABLE	= 0x04
 	};
 
 	enum PASSIVE_EFFECT : uint16_t
 	{	PASSIVE_EFFECT_NONE				= 0x00
-	,	PASSIVE_EFFECT_SHIELD_REPAIR	= 0x01
-	,	PASSIVE_EFFECT_LIFE_REGEN		= 0x02
-	,	PASSIVE_EFFECT_MANA_REGEN		= 0x04
+	,	PASSIVE_EFFECT_LIFE_REGEN		= 0x01
+	,	PASSIVE_EFFECT_MANA_REGEN		= 0x02
+	,	PASSIVE_EFFECT_SHIELD_REPAIR	= 0x04
 	};
 
 	struct SCharacterPoints
@@ -159,23 +160,23 @@ namespace klib
 
 	struct SWeapon
 	{
-		uint16_t Index;
-		uint16_t Modifier;
-		uint16_t Level;
+		int16_t Index;
+		int16_t Modifier;
+		int16_t Level;
 	};
 
 	struct SArmor
 	{
-		uint16_t Index;
-		uint16_t Modifier;
-		uint16_t Level;
+		int16_t Index;
+		int16_t Modifier;
+		int16_t Level;
 	};
 
 	struct SProfession
 	{
-		uint16_t Index;
-		uint16_t Modifier;
-		uint16_t Level;
+		int16_t Index;
+		int16_t Modifier;
+		int16_t Level;
 	};
 
 
@@ -215,8 +216,8 @@ namespace klib
 			//,Shield			(0)
 		{};
 
-		int		Save(FILE* fp)	const;
-		int		Load(FILE* fp);
+		int32_t		Save(FILE* fp)	const;
+		int32_t		Load(FILE* fp);
 	};
 
 	static SCharacterPoints applyMultipliers(const SCharacterPoints& definitionPoints, const SCharacterPoints& modifierPoints, const SCharacterPointsMultipliers& multipliers ) {

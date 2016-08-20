@@ -154,6 +154,7 @@ enum TURN_ACTION
 {	TURN_ACTION_ATTACK
 ,	TURN_ACTION_INVENTORY
 ,	TURN_ACTION_SKILL
+,	TURN_ACTION_SENSE
 ,	TURN_ACTION_RUN
 };
 
@@ -183,6 +184,10 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 	else if(TURN_ACTION_SKILL == combatOption) { 
 		if( !useSkills(attacker, target) )
 			outcome = TURN_OUTCOME_CONTINUE;
+	}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
+	else if(TURN_ACTION_SENSE == combatOption) { 
+		displayEquip(target);
+		outcome = TURN_OUTCOME_CONTINUE;
 	}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
 	else if(TURN_ACTION_RUN == combatOption) {
 		if( escape(attacker.Name, attacker.Score) )
@@ -252,6 +257,7 @@ TURN_OUTCOME playerTurn(klib::CCharacter& adventurer, klib::CCharacter& currentE
 	{ { TURN_ACTION_ATTACK		, "Attack"		}
 	, { TURN_ACTION_INVENTORY	, "Inventory"	}
 	, { TURN_ACTION_SKILL		, "Skills"		}
+	, { TURN_ACTION_SENSE		, "Sense"		}
 	, { TURN_ACTION_RUN			, "Run"			}
 	};
 
