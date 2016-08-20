@@ -121,7 +121,12 @@ STATUS_TYPE klib::applyAttackStatus(CCharacter& target, STATUS_TYPE weaponStatus
 		case STATUS_TYPE_BLEEDING	:	text = "Bleeding"		;	break;
 		case STATUS_TYPE_BURN		:	text = "Burn"			;	break;
 		case STATUS_TYPE_POISON		:	text = "Poison"			;	break;
-		default:						text = "Unknown Status"	;	break;
+		case STATUS_TYPE_FREEZE		:	text = "Freeze"			;	break;
+		case STATUS_TYPE_PETRIFY	:	text = "Petrify"		;	break;
+		case STATUS_TYPE_SHOCK		:	text = "Shock"			;	break;
+		default:						
+			text = "Unknown Status"	;	
+			continue;
 		}
 
 		if(bitStatus & targetFinalPoints.StatusImmunity)
@@ -216,6 +221,22 @@ void applyAttackEffect(ATTACK_EFFECT testEffectBit, ATTACK_EFFECT attackerWeapon
 	}
 }
 
+int32_t klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, int32_t damage, bool bAddStatus, STATUS_TYPE grenadeStatus, int32_t statusTurns, const std::string& sourceName) {
+	return applySuccessfulHit(attacker, target, damage, getArmorAbsorption(target.Armor), bAddStatus, grenadeStatus, statusTurns, sourceName);
+}
+
+int32_t klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, int32_t damage, int32_t absorptionRate, bool bAddStatus, STATUS_TYPE grenadeStatus, int32_t statusTurns, const std::string& sourceName)
+{
+	int32_t finalPassthroughDamage  = klib::applyShieldableDamage(target, damage, sourceName);
+	int32_t reflectedDamage			= damage - finalPassthroughDamage;
+	klib::applyArmorReflect(attacker, target, reflectedDamage, sourceName);
+
+	if(bAddStatus)
+		applyAttackStatus(target, grenadeStatus, statusTurns, sourceName);
+
+	return finalPassthroughDamage;
+}
+
 void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) {
 	applySuccessfulWeaponHit(attacker, targetReflecting, damageDealt, getArmorAbsorption(targetReflecting.Armor), sourceName);
 }
@@ -225,28 +246,20 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	if( 0 == damageDealt )
 		return;
 
-	SCharacterPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
-
-	int32_t weaponPassthroughDamage		= applyShieldableDamage(targetReflecting, damageDealt, absorptionRate, attacker.Name);
-	int32_t reflectedDamage				= damageDealt-weaponPassthroughDamage;
-
-	const std::string targetArmorName	= getArmorName(targetReflecting.Armor);
-	applyArmorReflect(attacker, targetReflecting, reflectedDamage, sourceName);	// try to apply reflect if required.
+	SCharacterPoints	attackerPoints			= calculateFinalPoints(attacker);
+	int32_t weaponPassthroughDamage = applySuccessfulHit(attacker, targetReflecting, damageDealt, absorptionRate, attackerPoints.StatusInflict != STATUS_TYPE_NONE, attackerPoints.StatusInflict, 1, sourceName);
 
 	// Apply combat bonuses from weapon for successful hits.
 	const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.Weapon);
 	applyCombatBonus(attacker, attackerWeaponPoints, sourceName);
+	attackerPoints			= calculateFinalPoints(attacker);
 
 	printf("\n");
 	// Apply weapon effects for successful hits.
-	SCharacterPoints	attackerPoints			= calculateFinalPoints(attacker);
 	ATTACK_EFFECT		attackerWeaponEffect	= attackerPoints.AttackEffect;
 	applyAttackEffect(ATTACK_EFFECT_LEECH, attackerWeaponEffect, weaponPassthroughDamage, attackerPoints.MaxLife.HP, attacker.Points.CurrentLife.HP, attacker.Name, targetReflecting.Name, sourceName, "HP", "drains", "loses" );
 	applyAttackEffect(ATTACK_EFFECT_STEAL, attackerWeaponEffect, weaponPassthroughDamage, 0xFFFFFFFF, attacker.Points.Coins, attacker.Name, targetReflecting.Name, sourceName, "Coins", "steals", "drops" );
 
-	// Apply attack statuses.
-	int turns = 1;
-	applyAttackStatus(targetReflecting, attackerPoints.StatusInflict, turns, sourceName);
 }
 
 // This function returns the damage dealt to the target
@@ -425,25 +438,30 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 	printf("\n");
 }
 
-void klib::executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) {
+bool klib::executeItem(uint32_t indexInventory, CCharacter& user, CCharacter& target) {
 
 	const SItem& item = user.Inventory.Slots[indexInventory].Item;
 	std::string itemName = getItemName(item);
+
+	bool bUsedItem = false;
 
 	printf("\n%s uses: %s.\n\n", user.Name.c_str(), itemName.c_str());
 	switch( itemDefinitions[item.Index].Type )
 	{
 	case ITEM_TYPE_POTION:
-		usePotion(item, user);
+		bUsedItem = usePotion(item, user);
 		break;
 
 	case ITEM_TYPE_GRENADE:
-		useGrenade(item, user, target);
+		bUsedItem = useGrenade(item, user, target);
 		break;
 
 	default:
 		printf("This item type does nothing yet... But we still remove it from your inventory!\n");
 	}
 
-	removeItem(user.Inventory, indexInventory, user.Name);
+	if(bUsedItem)
+		removeItem(user.Inventory, indexInventory, user.Name);
+
+	return bUsedItem;
 }

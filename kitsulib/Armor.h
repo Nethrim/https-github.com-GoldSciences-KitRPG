@@ -19,27 +19,27 @@ namespace klib
 	typedef CArmor CArmorModifier;
 
 	static const CArmorModifier armorModifiers[] = 
-	{	{	0,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"%s"					}
-	,	{	0,	{	{	0,	0,	0	},	{	2,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"%s of Regeneration"	}
-	,	{	1,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_REFLECT		,	PASSIVE_EFFECT_NONE				},	"Reflective %s"			}
-	,	{	0,	{	{	0,	0,	0	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	},	"Regenerative %s"		}
+	{	{	0,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	"%s"					}
+	,	{	0,	{	{	0,	0,	0	},	{	2,	1,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	"%s of Regeneration"	}
+	,	{	1,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_REFLECT		,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	"Reflective %s"			}
+	,	{	2,	{	{	0,	0,	1	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_STUN	},	"Tough %s"				}
+	,	{	0,	{	{	0,	0,	0	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	"Regenerative %s"		}
 	};											
 											
 	static const CArmor armorDefinitions[] = 	
-	{	{	0 ,	{	{	0,	0,	0 	},	{	0,	0,	0	},	{	2,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Underwear"				}
-	,	{	1 ,	{	{	0,	0,	1 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Robe"					}
-	,	{	2 ,	{	{	0,	0,	2 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Leather Armor"			}
-	,	{	3 ,	{	{	0,	0,	3 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Hard Leather Armor"	}
-	,	{	4 ,	{	{	0,	0,	4 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Wooden Armor"			}
-	,	{	5 ,	{	{	0,	0,	5 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Chainmail Armor"		}
-	,	{	6 ,	{	{	0,	0,	6 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Plate Armor"			}
-	,	{	7 ,	{	{	0,	0,	7 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Kevlar Armor"			}
-	,	{	8 ,	{	{	0,	0,	8 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Diamond Armor"			}
-	,	{	9 ,	{	{	0,	0,	9 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Dragon Scale Armor"	}
-	,	{	10,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				},	"Stardust Armor"		}
-	,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	},	"Mech Armor"			}
-	,	{	10,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	},	"Biomech Armor"			}
-	,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_IMPENETRABLE	,	PASSIVE_EFFECT_SHIELD_REPAIR	},	"Force Field"			}
+	{	{	0 ,	{	{	0,	0,	0 	},	{	0,	0,	0	},	{	2,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Underwear"				}
+	,	{	1 ,	{	{	0,	0,	1 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLIND		},	"Robe"					}
+	,	{	2 ,	{	{	0,	0,	2 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Leather Armor"			}
+	,	{	3 ,	{	{	0,	0,	4 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Wooden Armor"			}
+	,	{	4 ,	{	{	0,	0,	5 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Chainmail Armor"		}
+	,	{	5 ,	{	{	0,	0,	6 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLEEDING	},	"Plate Armor"			}
+	,	{	6 ,	{	{	0,	0,	7 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Kevlar Armor"			}
+	,	{	7 ,	{	{	0,	0,	8 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Diamond Armor"			}
+	,	{	8 ,	{	{	0,	0,	9 	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Dragon Scale Armor"	}
+	,	{	9 ,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_BLIND	,	STATUS_TYPE_STUN		},	"Stardust Armor"		}
+	,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_SHOCK	,	STATUS_TYPE_NONE		},	"Mech Armor"			}
+	,	{	10,	{	{	0,	0,	10	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_SHOCK	,	STATUS_TYPE_NONE		},	"Biomech Armor"			}
+	,	{	10,	{	{	0,	0,	10	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_IMPENETRABLE	,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Force Field"			}
 	};
 
 	static std::string getArmorName(const SArmor& armor)
@@ -50,7 +50,7 @@ namespace klib
 	}
 
 	static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
-		return	(int32_t)(	armorDefinitions[armor.Index].Absorption * armor.Level + armorModifiers[armor.Modifier].Absorption * armor.Level);
+		return	(int32_t)((armorDefinitions[armor.Index].Absorption + armorModifiers[armor.Modifier].Absorption) * armor.Level);
 	}
 
 	static SCharacterPoints getArmorPoints(const SArmor& armor) {

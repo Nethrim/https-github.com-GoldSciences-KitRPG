@@ -23,13 +23,13 @@ STATUS_TYPE getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 	return result;
 }
 
-void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
+bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
 {
 	const CItem& itemDescription = itemDefinitions[itemGrenade.Index];
 
 	if(0 == itemGrenade.Modifier) {
 		printf("The prop grenade thrown by %s puffs in the air and quickly falls to the ground.\n", thrower.Name.c_str());
-		return;
+		return true;
 	}
 
 	const int itemGrade = itemGrenade.Modifier; //std::max(1, itemGrenade.Modifier);
@@ -66,7 +66,7 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_STUN:
 		// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
-			applyAttackStatus(target, grenadeStatus, 1+itemGrade, itemDescription.Name);
+			applyAttackStatus(target, grenadeStatus, itemGrade ? 1+itemGrade : 0, itemDescription.Name);
 		else
 			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
 
@@ -82,12 +82,7 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_BLAST:
 		if(lotteryResult == lotteryRange)
 		{
-			finalPassthroughDamage  = applyShieldableDamage(thrower, itemEffectValueSelf, itemDescription.Name);
-			reflectedDamage			= itemEffectValueSelf - finalPassthroughDamage;
-			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
-
-			if(bAddStatus)
-				applyAttackStatus(thrower, grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
+			applySuccessfulHit(thrower, thrower, itemEffectValueSelf, bAddStatus, grenadeStatus, 1*itemGrade, getItemName(itemGrenade));
 
 			hitTarget = ATTACK_TARGET_SELF;
 			printf("%s throws the grenade too close...\n"		
@@ -95,31 +90,15 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		}
 		else if( lotteryResult == (lotteryRange-1) )
 		{
-			finalPassthroughDamage  = applyShieldableDamage(target,	itemEffectValue		>> 1, itemDescription.Name);
-			reflectedDamage			= (itemEffectValue>>1) - finalPassthroughDamage;
-			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
-
-			finalPassthroughDamage  = applyShieldableDamage(thrower,	itemEffectValueSelf	>> 1, itemDescription.Name);
-			reflectedDamage			= (itemEffectValueSelf>>1) - finalPassthroughDamage;
-			applyArmorReflect(thrower, thrower, reflectedDamage, itemDescription.Name);
-
-			if(bAddStatus)
-			{
-				applyAttackStatus(target,	grenadeStatus, (uint32_t)(2*itemGrade), itemDescription.Name);
-				applyAttackStatus(thrower,	grenadeStatus, (uint32_t)(1*itemGrade), itemDescription.Name);
-			}
+			applySuccessfulHit(thrower, target,		itemEffectValue		>> 1, bAddStatus, grenadeStatus, 2*itemGrade, getItemName(itemGrenade));
+			applySuccessfulHit(thrower, thrower,	itemEffectValueSelf	>> 1, bAddStatus, grenadeStatus, 1*itemGrade, getItemName(itemGrenade));
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
 			printf("%s doesn't throw the grenade far enough so %s receives %u damage but also %s receives %u damage.\n", thrower.Name.c_str(), target.Name.c_str(), itemEffectValue, thrower.Name.c_str(), itemEffectValueSelf);
 		}
 		else if( lotteryResult < lotteryRange )
 		{
-			finalPassthroughDamage  = applyShieldableDamage(target, itemEffectValue, itemDescription.Name);
-			reflectedDamage			= itemEffectValue - finalPassthroughDamage;
-			applyArmorReflect(thrower, target, reflectedDamage, itemDescription.Name);
-			if(bAddStatus)
-				applyAttackStatus(target, grenadeStatus, (uint32_t)(3.6f*itemGrade), itemDescription.Name);
-
+			applySuccessfulHit(thrower, target, itemEffectValue >> 1, bAddStatus, grenadeStatus, uint32_t(3.6*itemGrade), getItemName(itemGrenade));
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
 		}
@@ -142,4 +121,6 @@ void klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 
 
 	thrower.Score.GrenadesUsed++;
+
+	return true;
 }

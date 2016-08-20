@@ -412,7 +412,7 @@ bool useItems(CCharacter& user, CCharacter& target)
 			printf("Your HP is full!");
 		}
 		else
-			klib::executeItem(indexInventory, user, target);
+			bUsedItem = klib::executeItem(indexInventory, user, target);
 	}
 	
 	return bUsedItem;

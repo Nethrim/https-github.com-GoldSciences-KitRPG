@@ -23,8 +23,10 @@ enum PROPERTY_TYPE : uint16_t
 ,	PROPERTY_TYPE_POISON	= 0x020
 ,	PROPERTY_TYPE_FREEZE	= 0x040
 ,	PROPERTY_TYPE_HEALTH	= 0x080
-,	PROPERTY_TYPE_STRENGTH	= 0x100
-,	PROPERTY_TYPE_HIT		= 0x200
+,	PROPERTY_TYPE_MANA		= 0x100
+,	PROPERTY_TYPE_SHIELD	= 0x200
+,	PROPERTY_TYPE_STRENGTH	= 0x400
+,	PROPERTY_TYPE_HIT		= 0x800
 };
 
 struct CItem 
@@ -56,13 +58,14 @@ static const CItemModifier itemModifiers[] =
 ,	{	"Regular %s"	}
 ,	{	"Large %s"		}
 ,	{	"Huge %s"		}
-,	{	"Pack %s"		}
 };
 
 static const CItem itemDefinitions[] = 
 	// Type					Property				Price	Name
 {	{ITEM_TYPE_UNKNOWN	,	PROPERTY_TYPE_NONE		,	0	,	"This item doesn't exist. Bug?"	}	// the invalid description should be always in the last element
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH	,	10	,	"Potion of Healing"				}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_MANA		,	10	,	"Potion of Mana"				}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_SHIELD	,	10	,	"Potion of Shield"				}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HIT		,	10	,	"Potion of Focus"				}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_STRENGTH	,	10	,	"Potion of Strength"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SMOKE		,	10	,	"Smoke Grenade"					}

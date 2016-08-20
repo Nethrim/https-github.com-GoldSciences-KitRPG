@@ -16,6 +16,8 @@
 // After leaving the tavern() we display the score of the player.
 void main()
 {	
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF|_CRTDBG_LEAK_CHECK_DF|_CRTDBG_DELAY_FREE_MEM_DF);
+
 	srand((unsigned int)time(NULL));
 
 	CCharacter adventurer;	// This class instance will contain all our game data.
@@ -36,7 +38,7 @@ void main()
 		adventurer							= CCharacter(CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_STUN, Name);
 
 		adventurer.Weapon		.Index		= (int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
-		adventurer.Armor		.Index		= 13;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
+		adventurer.Armor		.Index		= 12;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
 		adventurer.Profession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
 
 		adventurer.Weapon		.Modifier	= (int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
