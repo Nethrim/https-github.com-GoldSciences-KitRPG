@@ -11,6 +11,7 @@ void research
 	, const _TEquipClass (&definitionsTable)[_SizeDefinitions]
 	, _TInventory& adventurerMaxEquip
 	, bool bIsModifier
+	, bool bIsProgressive
 	, const std::string& itemFormat
 	, const std::string& sourceName
 	, const std::string& lowercaseName
@@ -51,6 +52,19 @@ void research
 			else 
 				continue;
 		}
+
+		if(bIsProgressive) {
+			if(bIsModifier) {
+				if(value < adventurerMaxEquip.Modifier)
+					continue;
+			}
+			else
+			{
+				if(value < adventurerMaxEquip.Index)
+					continue;
+			}
+		}
+
 
 		sprintf_s(menuItemText, stringLeft, stringRight);
 		bool bRequiresInserting = true;
@@ -106,9 +120,9 @@ void research
 };
 
 
-void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::weaponDefinitions		, adventurer.MaxWeapon		, false	, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
-void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::armorDefinitions		, adventurer.MaxArmor		, false	, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
-void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::professionDefinitions	, adventurer.MaxProfession	, false	, "%s Mastery"		, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
-void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::weaponModifiers			, adventurer.MaxWeapon		, true	, "Science"			, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
-void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::armorModifiers			, adventurer.MaxArmor		, true	, "Technology"		, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
-void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
+void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::weaponDefinitions		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
+void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::armorDefinitions		, adventurer.MaxArmor		, false	, true, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
+void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::professionDefinitions	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
+void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::weaponModifiers			, adventurer.MaxWeapon		, true	, false, "Science"		, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
+void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::armorModifiers			, adventurer.MaxArmor		, true	, false, "Technology"	, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
+void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, true, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
