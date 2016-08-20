@@ -50,73 +50,56 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 			klib::removeItem(loser.Inventory, i, loser.Name);
 		}
 
-	klib::SWeapon oldWinnerWeapon	= winner.CurrentWeapon;
 	std::string loserWeaponName = klib::getWeaponName(loser.CurrentWeapon);
 	if(rand()%2)
 	{
-			if (loser.CurrentWeapon.Index > winner.CurrentWeapon.Index
-			|| (loser.CurrentWeapon.Index == winner.CurrentWeapon.Index && loser.CurrentWeapon.Modifier > winner.CurrentWeapon.Modifier)
-			|| (loser.CurrentWeapon.Index == winner.CurrentWeapon.Index && loser.CurrentWeapon.Modifier == winner.CurrentWeapon.Modifier && loser.CurrentWeapon.Level > winner.CurrentWeapon.Level)
-			)
-		{
-			printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
-			winner.Weapons.AddElement(loser.CurrentWeapon);
-			loser.CurrentWeapon.Index		= rand() % (oldWinnerWeapon.Index+1);
-			loser.CurrentWeapon.Modifier	= rand() % (oldWinnerWeapon.Modifier+1);
-			loser.CurrentWeapon.Level		= 1+(rand() % (oldWinnerWeapon.Level));
-			if(loser.CurrentWeapon.Index)
-				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), klib::getWeaponName(loser.CurrentWeapon).c_str());
-		}
+		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
+		klib::SWeapon oldWinnerWeapon	= winner.CurrentWeapon;
+		winner.Weapons.AddElement(loser.CurrentWeapon);
+
+		loser.CurrentWeapon.Index		= rand() % (oldWinnerWeapon.Index+1);
+		loser.CurrentWeapon.Modifier	= rand() % (oldWinnerWeapon.Modifier+1);
+		loser.CurrentWeapon.Level		= 1+(rand() % (oldWinnerWeapon.Level));
+		if(loser.CurrentWeapon.Index)
+			printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), klib::getWeaponName(loser.CurrentWeapon).c_str());
 	}
 	else
-			printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
+		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
 
-	klib::SArmor oldWinnerArmor	= winner.CurrentArmor;
 	std::string loserArmorName = klib::getArmorName(loser.CurrentArmor);
 	if(rand()%2)
 	{
-			if (loser.CurrentArmor.Index > winner.CurrentArmor.Index
-			|| (loser.CurrentArmor.Index == winner.CurrentArmor.Index && loser.CurrentArmor.Modifier > winner.CurrentArmor.Modifier)
-			|| (loser.CurrentArmor.Index == winner.CurrentArmor.Index && loser.CurrentArmor.Modifier == winner.CurrentArmor.Modifier && loser.CurrentArmor.Level > winner.CurrentArmor.Level)
-			)
-		{
-			printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
-			winner.Armors.AddElement(loser.CurrentArmor);
-			loser.CurrentArmor.Index		= rand() % (oldWinnerArmor.Index+1);
-			loser.CurrentArmor.Modifier		= rand() % (oldWinnerArmor.Modifier+1);
-			loser.CurrentArmor.Level		= 1+(rand() % (oldWinnerArmor.Level));
-			if(loser.CurrentArmor.Index)
-				printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loser.CurrentArmor).c_str());
-		}
+		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.CurrentArmor.Level, loser.Name.c_str());
+		klib::SArmor oldWinnerArmor	= winner.CurrentArmor;
+		winner.Armors.AddElement(loser.CurrentArmor);
+
+		loser.CurrentArmor.Index		= rand() % (oldWinnerArmor.Index+1);
+		loser.CurrentArmor.Modifier		= rand() % (oldWinnerArmor.Modifier+1);
+		loser.CurrentArmor.Level		= 1+(rand() % (oldWinnerArmor.Level));
+		if(loser.CurrentArmor.Index)
+			printf("%s recovers a used %s from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loser.CurrentArmor).c_str());
 	}
 	else
-			printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
+		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
 
-
-	klib::SProfession oldWinnerProfession	= winner.CurrentProfession;
 	std::string loserProfessionName = klib::getProfessionName(loser.CurrentProfession);
 	if(rand()%2)
 	{
-			if (loser.CurrentProfession.Index > winner.CurrentProfession.Index
-			|| (loser.CurrentProfession.Index == winner.CurrentProfession.Index && loser.CurrentProfession.Modifier > winner.CurrentProfession.Modifier)
-			|| (loser.CurrentProfession.Index == winner.CurrentProfession.Index && loser.CurrentProfession.Modifier == winner.CurrentProfession.Modifier && loser.CurrentProfession.Level > winner.CurrentProfession.Level)
-			)
-		{
-			printf("%s takes some notes about the %s level %u moves displayed by from %s.\n", winner.Name.c_str(), loserProfessionName.c_str(), loser.CurrentProfession.Level, loser.Name.c_str());
-			winner.Professions.AddElement(loser.CurrentProfession);
-		}
+		printf("%s takes some notes about the %s level %u moves displayed by from %s.\n", winner.Name.c_str(), loserProfessionName.c_str(), loser.CurrentProfession.Level, loser.Name.c_str());
+		winner.Professions.AddElement(loser.CurrentProfession);
 	}
 	else
 		printf("%s doens't get to learn %s from %s because of the poor performance displayed in combat.\n", winner.Name.c_str(), loserProfessionName.c_str(), loser.Name.c_str());
 
 	bool bResigned=false;
-	if(loser.CurrentProfession.Modifier	)		{ bResigned=true; --loser.CurrentProfession.Modifier;	};
-	if(loser.CurrentProfession.Level	> 1)	{ bResigned=true; --loser.CurrentProfession.Level	;	};
-		if( 0 == loser.CurrentProfession.Modifier
-		 && 0 == loser.CurrentProfession.Level	)
+	klib::SProfession oldLoserProfession	= loser.CurrentProfession;
+	if(loser.CurrentProfession.Modifier	)	{ bResigned=true; --loser.CurrentProfession.Modifier;	};
+	if(loser.CurrentProfession.Level > 1)	{ bResigned=true; --loser.CurrentProfession.Level	;	};
+		if( 0 == oldLoserProfession.Modifier
+		 && 0 == oldLoserProfession.Level	)
 			printf("%s couldn't fall any lower!!", loser.Name.c_str());
 		else
-			printf("%s loses his licence as %s and tries to get a new job as %s level %u instead.\n", loser.Name.c_str(), loserProfessionName.c_str(), klib::getProfessionName(loser.CurrentProfession).c_str(), loser.CurrentProfession.Level);
+			printf("%s loses his job as %s level %u and tries to get a new job as %s level %u instead.\n", loser.Name.c_str(), loserProfessionName.c_str(), oldLoserProfession.Level, klib::getProfessionName(loser.CurrentProfession).c_str(), loser.CurrentProfession.Level);
 
 	//winner.Points.MaxLife.HP += winner.Points.Attack;
 	winner.CurrentProfession.Level++;
