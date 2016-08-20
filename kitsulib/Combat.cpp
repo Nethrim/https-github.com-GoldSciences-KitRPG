@@ -176,7 +176,7 @@ int32_t klib::applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecti
 	SCharacterPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
 		if( 0 == damageDealt 
 		||	0 == (targetFinalPoints.DefendEffect & DEFEND_EFFECT_REFLECT) 
-		||	0 == targetReflecting.Points.CurrentLife.Shield 
+		||	0 >= targetReflecting.Points.CurrentLife.Shield 
 		||	0 >= attacker.Points.CurrentLife.HP
 		||	0 >= targetReflecting.Points.CurrentLife.HP
 		)
@@ -388,18 +388,15 @@ void applyRegenBonus(PASSIVE_EFFECT testEffectBit, PASSIVE_EFFECT characterActiv
 	}
 }
 
-void klib::applyArmorEffect(CCharacter& character)
-{
-	if(0 >= character.Points.CurrentLife.HP)	// This character is already dead
-		return;
 
-	const std::string	armorName				= getArmorName(character.Armor);
-	SCharacterPoints	armorFinalPoints		= getArmorPoints(character.Armor);
+void applyPassiveEffect(CCharacter& character, PASSIVE_EFFECT equipmentEffects, const std::string& sourceName)
+{
+	SCharacterPoints	armorFinalPoints		= klib::getArmorPoints(character.Armor);
 	SCharacterPoints	characterFinalPoints	= calculateFinalPoints(character);
 
-	applyRegenBonus(PASSIVE_EFFECT_LIFE_REGEN		,	characterFinalPoints.PassiveEffect,	characterFinalPoints.MaxLife.HP		,	character.Points.CurrentLife.HP		, "HP"		, armorName);
-	applyRegenBonus(PASSIVE_EFFECT_MANA_REGEN		,	characterFinalPoints.PassiveEffect,	characterFinalPoints.MaxLife.Mana	,	character.Points.CurrentLife.Mana	, "Mana"	, armorName);
-	applyRegenBonus(PASSIVE_EFFECT_SHIELD_REPAIR	,	characterFinalPoints.PassiveEffect,	armorFinalPoints	.MaxLife.Shield	,	character.Points.CurrentLife.Shield	, "Shield"	, armorName);
+	applyRegenBonus(PASSIVE_EFFECT_LIFE_REGEN		,	equipmentEffects,	characterFinalPoints.MaxLife.HP		,	character.Points.CurrentLife.HP		, "HP"		, sourceName);
+	applyRegenBonus(PASSIVE_EFFECT_MANA_REGEN		,	equipmentEffects,	characterFinalPoints.MaxLife.Mana	,	character.Points.CurrentLife.Mana	, "Mana"	, sourceName);
+	applyRegenBonus(PASSIVE_EFFECT_SHIELD_REPAIR	,	equipmentEffects,	armorFinalPoints	.MaxLife.Shield	,	character.Points.CurrentLife.Shield	, "Shield"	, sourceName);
 };
 
 void klib::applyTurnStatus(CCharacter& character)
@@ -428,11 +425,16 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 		return;
 
 	printf("\n");
-	applyTurnStatus(character);
-	applyCombatBonus(character, character.CombatBonus.Points, "Turn Combat Bonus");
-	applyCombatBonus(character, getProfessionPoints(character.Profession), getProfessionName(character.Profession).c_str());
-	applyCombatBonus(character, getArmorPoints(character.Armor), getArmorName(character.Armor));
-	applyArmorEffect(character);
+	applyTurnStatus		(character);
+	
+	applyCombatBonus	(character, character.CombatBonus.Points, "Turn Combat Bonus");
+	applyCombatBonus	(character, getProfessionPoints	(character.Profession	), getProfessionName(character.Profession).c_str());
+	applyCombatBonus	(character, getArmorPoints		(character.Armor		), getArmorName(character.Armor));
+
+	applyPassiveEffect	(character, getArmorPoints		(character.Armor		).PassiveEffect, getArmorName(character.Armor));
+	applyPassiveEffect	(character, getProfessionPoints	(character.Profession	).PassiveEffect, getProfessionName(character.Profession));
+	applyPassiveEffect	(character, getWeaponPoints		(character.Weapon		).PassiveEffect, getWeaponName(character.Weapon));
+
 	character.CombatBonus.NextTurn();
 	character.CombatStatus.NextTurn();
 	printf("\n");

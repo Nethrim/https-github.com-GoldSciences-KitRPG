@@ -18,6 +18,23 @@ bool potionRestore(const CCharacter& potionDrinker, int32_t potionGrade, int32_t
 	return true;
 }
 
+bool potionAttackBonus(const CCharacter& potionDrinker, int32_t potionGrade, int32_t& currentPoints, int32_t& turnsLeft, const std::string& pointName)
+{
+	int32_t itemEffectValue = 5*potionGrade;
+	itemEffectValue += rand() % std::max(2, itemEffectValue>>2);
+
+	currentPoints		+= itemEffectValue;
+	if(0 == turnsLeft)
+		turnsLeft = 1;
+	turnsLeft	+= potionGrade;
+
+	SCharacterPoints finalPoints	= calculateFinalPoints(potionDrinker);
+	printf("The potion gives %s %u %s points for %u turns. %s now has %u %s points for the next %u turns.\n", 
+		potionDrinker.Name.c_str(), itemEffectValue, pointName.c_str(), potionGrade, potionDrinker.Name.c_str(), finalPoints.Attack.Damage, pointName.c_str(), turnsLeft-1);
+
+	return true;
+}
+
 bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker) 
 {
 	if(0 == itemPotion.Modifier) {
@@ -25,7 +42,6 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 		return true;
 	}
 
-	int32_t itemEffectValue;
 	const CItem& itemDescription = itemDefinitions[itemPotion.Index];
 
 	bool bUsedItem = false;
@@ -49,28 +65,10 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 		bUsedItem = potionRestore(potionDrinker, itemGrade, finalPoints.MaxLife.Shield, drinkerPoints.CurrentLife.Shield, "Shield");
 		break;
 	case PROPERTY_TYPE_STRENGTH:
-		printf("%s starts feeling stronger...\n", drinkerName.c_str());
-		itemEffectValue = 3*itemGrade;
-		itemEffectValue += rand()%std::max(1,itemGrade*2);
-		drinkerBonus.Points.Attack.Damage		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Attack.Damage)
-			drinkerBonus.TurnsLeft.Attack.Damage = 1;
-		drinkerBonus.TurnsLeft.Attack.Damage	+= itemGrade;
-		finalPoints	= calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Attack points for %u turns. %s now has %u Attack points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Damage, drinkerBonus.TurnsLeft.Attack.Damage-1);
-		bUsedItem = true;
+		bUsedItem = potionAttackBonus(potionDrinker, itemGrade, drinkerBonus.Points.Attack.Damage, drinkerBonus.TurnsLeft.Attack.Damage, "Damage");;
 		break;
 	case PROPERTY_TYPE_HIT:
-		printf("%s starts feeling faster...\n", drinkerName.c_str());
-		itemEffectValue = 10*itemGrade;
-		itemEffectValue += ((rand()%std::max(1,itemGrade))+1)*5;
-		drinkerBonus.Points.Attack.Hit		+= itemEffectValue;
-		if(0 == drinkerBonus.TurnsLeft.Attack.Hit)
-			drinkerBonus.TurnsLeft.Attack.Hit = 1;
-		drinkerBonus.TurnsLeft.Attack.Hit	+= itemGrade;
-		finalPoints	= calculateFinalPoints(potionDrinker);
-		printf("The potion gives %s %u Hit chance points for %u turns. %s now has %u Hit chance points for the next %u turns.\n", drinkerName.c_str(), itemEffectValue, itemGrade, drinkerName.c_str(), finalPoints.Attack.Hit, drinkerBonus.TurnsLeft.Attack.Hit-1);
-		bUsedItem = true;
+		bUsedItem = potionAttackBonus(potionDrinker, itemGrade, drinkerBonus.Points.Attack.Hit, drinkerBonus.TurnsLeft.Attack.Hit, "Hit");
 		break;
 	default:
 		printf("Potion type not implemented!");
