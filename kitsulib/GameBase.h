@@ -248,10 +248,12 @@ namespace klib
 		SEquipContainer<int16_t, 256>	ResearchedModifiersArmor		= {};
 		SEquipContainer<int16_t, 256>	ResearchedModifiersProfession	= {};
 
-		void				UnloadWeapon	()	{	Weapons.AddElement(CurrentWeapon);	};
-		void				UnloadArmor		()	{	Armors.AddElement(CurrentArmor);	};
-		void				EquipWeapon		(size_t slotIndex);
-		void				EquipArmor		(size_t slotIndex);
+		void				UnloadWeapon		()	{	Weapons.AddElement(CurrentWeapon);	};
+		void				UnloadArmor			()	{	Armors.AddElement(CurrentArmor);	};
+		void				UnloadProfession	()	{	Professions.AddElement(CurrentProfession);	};
+		void				EquipWeapon			(size_t slotIndex);
+		void				EquipArmor			(size_t slotIndex);
+		void				EquipProfession		(size_t slotIndex);
 
 
 		constexpr SCharacter() = default;

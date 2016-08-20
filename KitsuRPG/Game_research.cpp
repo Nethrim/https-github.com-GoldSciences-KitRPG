@@ -11,7 +11,7 @@ void research
 	, const _TEquipClass (&definitionsTable)[_SizeDefinitions]
 	, _TInventory& adventurerMaxEquip
 	, bool bIsModifier
-	, const std::string& postFix
+	, const std::string& itemFormat
 	, const std::string& sourceName
 	, const std::string& lowercaseName
 	, const std::string& verbPresentPerfect
@@ -19,31 +19,51 @@ void research
 	, const std::string& verbSimplePast
 	) 
 { 
-	static char menuItemText[256] = {}; 
+	static const int32_t			maxItemCount = 256;
+	static char						menuItemText[maxItemCount]	= {}; 
+	static klib::SMenuItem<int32_t>	menuItems	[maxItemCount]	= {}; 
 
-	static const size_t maxItemCount = 256;
-
-
-	static klib::SMenuItem<int32_t> menuItems[maxItemCount]; 
 	int32_t menuItemCount=0; 
+	int32_t duplicatedSamples=0;
 	for( uint32_t i=0; i<equipInventory.Count; ++i ) 
 	{
+		int32_t value = 0;
+		const char* stringLeft="Left error", *stringRight="Right error";
 		if(bIsModifier)
 		{
 			if( -1 == researchedList.FindElement(equipInventory.Slots[i].Modifier) )  
 			{ 
-				sprintf_s(menuItemText, definitionsTable[equipInventory.Slots[i].Modifier].Name.c_str(), postFix.c_str());
-				menuItems[menuItemCount] = { equipInventory.Slots[i].Modifier, menuItemText }; menuItemCount++; 
+				stringLeft	= definitionsTable[equipInventory.Slots[i].Modifier].Name.c_str();
+				stringRight	= itemFormat.c_str();
+				value = equipInventory.Slots[i].Modifier;
 			}
+			else 
+				continue;
 		} 
 		else
 		{
 			if( -1 == researchedList.FindElement(equipInventory.Slots[i].Index) )  
 			{
-				sprintf_s(menuItemText, postFix.c_str(), definitionsTable[equipInventory.Slots[i].Index].Name.c_str()); 
-				menuItems[menuItemCount] = { equipInventory.Slots[i].Index, menuItemText }; menuItemCount++; 
+				stringRight	= definitionsTable[equipInventory.Slots[i].Index].Name.c_str();
+				stringLeft	= itemFormat.c_str();
+				value = equipInventory.Slots[i].Index; 
 			}
+			else 
+				continue;
 		}
+
+		sprintf_s(menuItemText, stringLeft, stringRight);
+		bool bRequiresInserting = true;
+		for(int32_t i=0; i<menuItemCount; ++i)
+			if(menuItems[i].ReturnValue == value)
+			{
+				printf("You seem to have an extra %s for the next %s %s.\n", menuItemText, lowercaseName.c_str(), verbPresentPerfect.c_str() );
+				bRequiresInserting = false;
+				break;
+			}
+
+		if(bRequiresInserting)
+			menuItems[menuItemCount++] = { value, menuItemText };
 	}
 
 	if( 0 == menuItemCount ) { 
@@ -51,7 +71,7 @@ void research
 		return; 
 	} 
 	
-	menuItems[menuItemCount] = {(int16_t)maxItemCount, "Back to tavern"}; 
+	menuItems[menuItemCount] = {maxItemCount, "Back to tavern"}; 
 	menuItemCount++; 
 	
 	sprintf_s(menuItemText, "Select %s to %s", lowercaseName.c_str(), verbPresentPerfect.c_str());
@@ -63,12 +83,10 @@ void research
 		return; 
 	} 
 	
-	static char activityName[64] = {}; 
-
 	if(bIsModifier)
 	{
-		sprintf_s(activityName, definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str());
-		printf("You start %s %s.\n", verbPresentContinuous.c_str(), activityName); 
+		sprintf_s(menuItemText, definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str());
+		printf("You start %s %s.\n", verbPresentContinuous.c_str(), menuItemText); 
 	}
 	else
 		printf("You start %s %s %s.\n", verbPresentContinuous.c_str(), definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str()); 
@@ -78,7 +96,7 @@ void research
 	if(bIsModifier)
 	{
 		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)selectedValue); 
-		printf("%s has been %s!\n", activityName, verbSimplePast.c_str()); 
+		printf("%s has been %s!\n", menuItemText, verbSimplePast.c_str()); 
 	}
 	else
 	{
@@ -93,4 +111,4 @@ void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventu
 void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::professionDefinitions	, adventurer.MaxProfession	, false	, "%s Mastery"		, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
 void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::weaponModifiers			, adventurer.MaxWeapon		, true	, "Science"			, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
 void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::armorModifiers			, adventurer.MaxArmor		, true	, "Technology"		, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
-void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, "Rank"			, "rank"					, "profession"	, "achieve"	, "achieving"	, "achieved"	); }
+void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
