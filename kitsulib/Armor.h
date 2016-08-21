@@ -31,7 +31,7 @@ namespace klib
 		std::string			Name;
 	};
 
-static const CArmorModifier armorModifiers[] = 
+static const CArmorModifier modifiersArmor[] = 
 {	{	0	,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE											,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"%s"					}
 ,	{	0	,	{	{	0,	0,	0	},	{	2,	1,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE											,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"%s of Regeneration"	}
 ,	{	2	,	{	{	0,	0,	1	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE											,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_STUN		},	"Tough %s"				}
@@ -45,7 +45,7 @@ static const CArmorModifier armorModifiers[] =
 ,	{	0	,	{	{	0,	0,	0	},	{	1,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE											,	PASSIVE_EFFECT_SHIELD_REPAIR	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Regenerative %s"		}
 };
 
-static const CArmor armorDefinitions[] = 	
+static const CArmor definitionsArmor[] = 	
 {	{	0	,	ARMOR_GRADE_NONE	,	{	{	0,	0,	0	},	{	0,	0,	0	},	{	2,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		},	"Underwear"				}
 ,	{	1	,	ARMOR_GRADE_LIGHT	,	{	{	0,	0,	1	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_BLIND		},	"Robe"					}
 ,	{	2	,	ARMOR_GRADE_LIGHT	,	{	{	0,	0,	2	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE			,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_FREEZING	},	"Leather Armor"			}
@@ -64,12 +64,12 @@ static const CArmor armorDefinitions[] =
 	static std::string getArmorName(const SArmor& armor)
 	{
 		char formattedName[128] = {};
-		sprintf_s(formattedName, armorModifiers[armor.Modifier].Name.c_str(), armorDefinitions[armor.Index].Name.c_str());
+		sprintf_s(formattedName, modifiersArmor[armor.Modifier].Name.c_str(), definitionsArmor[armor.Index].Name.c_str());
 		return formattedName;
 	}
 
 	static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
-		return	(int32_t)((armorDefinitions[armor.Index].Absorption + armorModifiers[armor.Modifier].Absorption) * armor.Level);
+		return	(int32_t)((definitionsArmor[armor.Index].Absorption + modifiersArmor[armor.Modifier].Absorption) * armor.Level);
 	}
 
 	static SCharacterPoints getArmorPoints(const SArmor& armor) {
@@ -82,7 +82,7 @@ static const CArmor armorDefinitions[] =
 
 		multipliers				= multipliers*armor.Level;
 
-		return (armorDefinitions[armor.Index].Points + armorModifiers[armor.Modifier].Points)*multipliers;
+		return (definitionsArmor[armor.Index].Points + modifiersArmor[armor.Modifier].Points)*multipliers;
 	}
 }
 

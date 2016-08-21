@@ -44,12 +44,12 @@ void main()
 	{
 		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, klib::ATTACK_EFFECT_NONE, klib::DEFEND_EFFECT_NONE, klib::PASSIVE_EFFECT_NONE, klib::STATUS_TYPE_NONE, klib::STATUS_TYPE_STUN, Name);
 
-		adventurer.	CurrentWeapon		.Index		= rand()%2;//(int16_t)(rand() % size(klib::weaponDefinitions		));//rand()%4;
-		adventurer.	CurrentArmor		.Index		= rand()%2;//12;//(int16_t)(rand() % size(klib::armorDefinitions		));//rand()%4;
-		adventurer.	CurrentProfession	.Index		= (int16_t)(rand() % size(klib::professionDefinitions	));
-		adventurer.	CurrentWeapon		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::weaponModifiers		));//rand()%4;
-		adventurer.	CurrentArmor		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::armorModifiers		));//rand()%4;
-		adventurer.	CurrentProfession	.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::professionModifiers	));	
+		adventurer.	CurrentWeapon		.Index		= rand()%2;//(int16_t)(rand() % size(klib::definitionsWeapon		));//rand()%4;
+		adventurer.	CurrentArmor		.Index		= rand()%2;//12;//(int16_t)(rand() % size(klib::definitionsArmor		));//rand()%4;
+		adventurer.	CurrentProfession	.Index		= (int16_t)(rand() % size(klib::definitionsProfession	));
+		adventurer.	CurrentWeapon		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersWeapon		));//rand()%4;
+		adventurer.	CurrentArmor		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersArmor		));//rand()%4;
+		adventurer.	CurrentProfession	.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersProfession	));	
 		adventurer.	CurrentWeapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.	CurrentArmor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
 		adventurer.	CurrentProfession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));

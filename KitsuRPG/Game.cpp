@@ -46,6 +46,7 @@ void equipWeapon	(klib::CCharacter& adventurer)
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
+	printf("You're currently carrying a %s level %u.\n", klib::getWeaponName(adventurer.CurrentWeapon).c_str(), adventurer.CurrentWeapon.Level);
 	menuItems[menuItemCount++] = {256, "Back to tavern"}; 
 	int32_t selectedValue = klib::displayMenu("Select your weapon of choice", menuItems, menuItemCount);	
 	if(selectedValue == 256) 
@@ -69,6 +70,7 @@ void equipArmor		(klib::CCharacter& adventurer)
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
+	printf("You're currently wearing a %s level %u.\n", klib::getArmorName(adventurer.CurrentArmor).c_str(), adventurer.CurrentArmor.Level);
 	menuItems[menuItemCount++] = {256, "Back to tavern"};
 	int32_t selectedValue = klib::displayMenu("Select your armor of choice", menuItems, menuItemCount);	
 	if(selectedValue == 256) 
@@ -94,6 +96,7 @@ void equipProfession	(klib::CCharacter& adventurer)
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
+	printf("You're currently assigned as a %s level %u.\n", klib::getProfessionName(adventurer.CurrentProfession).c_str(), adventurer.CurrentProfession.Level);
 	menuItems[menuItemCount++] = {256, "Back to tavern"};
 	int32_t selectedValue = klib::displayMenu("Select your mastery of choice", menuItems, menuItemCount);	
 	if(selectedValue == 256) 

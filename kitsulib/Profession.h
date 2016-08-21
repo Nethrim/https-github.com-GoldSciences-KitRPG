@@ -17,7 +17,7 @@ namespace klib
 
 	typedef CProfession CProfessionModifier;
 
-	static const CProfessionModifier professionModifiers[] = 
+	static const CProfessionModifier modifiersProfession[] = 
 	{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Rookie %s"			}
 	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Squaddie %s"		}	// points: 1
 	,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	1,	0,	},	0	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Corporal %s"		}	// points: 2
@@ -45,7 +45,7 @@ namespace klib
 	};
 
 	// Probably the base points should be 6 instead of five considering we now have more fields to place them in.	
-	static const CProfession professionDefinitions[] =
+	static const CProfession definitionsProfession[] =
 	{	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Nobody"			}
 	,	{	{	{	2,	0,	1	},	{	0,	0,	0	},	{	1,	2,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Swordman"		}
 	,	{	{	{	0,	1,	0	},	{	0,	1,	0	},	{	1,	3,	},	0	,	ATTACK_EFFECT_NONE,		DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE		}, "Mage"			}
@@ -82,7 +82,7 @@ namespace klib
 	static std::string getProfessionName(const SProfession& profession)
 	{
 		char formattedName[128] = {};
-		sprintf_s(formattedName, professionModifiers[profession.Modifier].Name.c_str(), professionDefinitions[profession.Index].Name.c_str());
+		sprintf_s(formattedName, modifiersProfession[profession.Modifier].Name.c_str(), definitionsProfession[profession.Index].Name.c_str());
 		return formattedName;
 	}
 
@@ -96,7 +96,7 @@ namespace klib
 
 		multipliers				= multipliers*profession.Level;
 
-		return (professionDefinitions[profession.Index].Points + professionModifiers[profession.Modifier].Points)*multipliers;
+		return (definitionsProfession[profession.Index].Points + modifiersProfession[profession.Modifier].Points)*multipliers;
 	}
 }
 

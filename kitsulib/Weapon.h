@@ -16,7 +16,7 @@ namespace klib
 
 	typedef CWeapon CWeaponModifier;
 
-static const CWeaponModifier weaponModifiers[] = 
+static const CWeaponModifier modifiersWeapon[] = 
 //		MaxHP MaxMana HP Mana	Hit Attack Shield Coins
 {	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE		},	"%s"					}
 ,	{	{	{	1,	0,	0	},	{	0,	0,	0	},	{	0,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE		},	"%s of Resistance"		}
@@ -52,7 +52,7 @@ static const CWeaponModifier weaponModifiers[] =
 
 #define DEATH_SCYTHE_STATUS_INFLICT ((klib::STATUS_TYPE)(klib::STATUS_TYPE_BLEEDING|klib::STATUS_TYPE_BURN|klib::STATUS_TYPE_POISON|klib::STATUS_TYPE_FROZEN|klib::STATUS_TYPE_PETRIFY))
 
-static const CWeapon weaponDefinitions[] = 
+static const CWeapon definitionsWeapon[] = 
 // 6th grade	No weapon: five points of hit chance.
 //		MaxHP MaxMana HP Mana	Hit Attack Shield Coins
 {	{	{	{	0,	0,	0	},	{	0,	0,	0	},	{	5,	0,	},	0,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE										},	"Glove"						}
@@ -90,7 +90,7 @@ static const CWeapon weaponDefinitions[] =
 	static std::string getWeaponName(const SWeapon& weapon)
 	{
 		char formattedName[128] = {};
-		sprintf_s(formattedName, weaponModifiers[weapon.Modifier].Name.c_str(), weaponDefinitions[weapon.Index].Name.c_str());
+		sprintf_s(formattedName, modifiersWeapon[weapon.Modifier].Name.c_str(), definitionsWeapon[weapon.Index].Name.c_str());
 		return formattedName;
 	}
 
@@ -104,7 +104,7 @@ static const CWeapon weaponDefinitions[] =
 
 		multipliers				= multipliers*weapon.Level;
 
-		return (weaponDefinitions[weapon.Index].Points + weaponModifiers[weapon.Modifier].Points)*multipliers;
+		return (definitionsWeapon[weapon.Index].Points + modifiersWeapon[weapon.Modifier].Points)*multipliers;
 	}
 }
 

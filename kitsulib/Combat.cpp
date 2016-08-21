@@ -33,13 +33,15 @@ int32_t klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, int
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
 		if(target.Points.CurrentLife.Shield) 
-			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.CurrentLife.Shield/(double)targetArmorShield)), 1) : 0;
+			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.CurrentLife.Shield/(double)std::max(targetArmorShield, 1))), 1) : 0;
+		else
+			absorptionRate = 0;
 
 		printf("%s final damage absorption rate taking deterioration into account is %%%u.\n", targetArmorName.c_str(), absorptionRate);
 	}
 
 	absorptionRate = std::min(absorptionRate, 100);
-	const double	absorptionFraction	= absorptionRate ? (0.01*absorptionRate) : 0.0;
+	const double	absorptionFraction	= 0.01*absorptionRate;
 	int shieldedDamage		= (int)(damageDealt * absorptionFraction);
 	int passthroughDamage	= (int)(damageDealt * std::max(0.0, 1.0-absorptionFraction));
 	int totalDamage			= shieldedDamage+passthroughDamage;

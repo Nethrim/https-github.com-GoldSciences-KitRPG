@@ -64,7 +64,7 @@ void research
 			if(bIsModifier) {
 				if(value > adventurerMaxEquip.Modifier)
 				{
-					printf("%s can't be %s because it's grade %u and your max grade researched is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Modifier);
+					printf("%s can't be %s because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Modifier);
 					continue;
 				}
 			}
@@ -72,7 +72,7 @@ void research
 			{
 				if(value > adventurerMaxEquip.Index)
 				{
-					printf("%s can't be %s because it's grade %u and your max grade researched is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Index);
+					printf("%s can't be %s because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Index);
 					continue;
 				}
 			}
@@ -133,9 +133,9 @@ void research
 };
 
 
-void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::weaponDefinitions		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
-void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::armorDefinitions		, adventurer.MaxArmor		, false	, true, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
-void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::professionDefinitions	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
-void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::weaponModifiers			, adventurer.MaxWeapon		, true	, false, "Science"		, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
-void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::armorModifiers			, adventurer.MaxArmor		, true	, false, "Technology"	, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
-void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::professionModifiers		, adventurer.MaxProfession	, true	, true, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
+void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::definitionsWeapon		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
+void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::definitionsArmor		, adventurer.MaxArmor		, false	, true, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
+void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::definitionsProfession	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
+void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::modifiersWeapon			, adventurer.MaxWeapon		, true	, false, "Science"		, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
+void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::modifiersArmor			, adventurer.MaxArmor		, true	, false, "Technology"	, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
+void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::modifiersProfession		, adventurer.MaxProfession	, true	, true, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
