@@ -110,22 +110,22 @@ void tavern(klib::CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
 	static const klib::SMenuItem<int> tavernOptions[] =
-	{ {  1, "Rest"								}
-	, {  2, "Look for a mercenary job"			}
-	, {  3, "Go for a drink"					}
-	, {  4, "Show inventory"					}
-	, {  5, "Show equipment"					}
-	, {  6, "Equip weapon (new!)"				}
-	, {  7, "Equip armor (new!)"				}
-	, {  8, "Study for next task (new!)"			}
-	, {  9, "Research new weapons (new!)"		}
-	, { 10, "Research new sciences (new!)"		}
-	, { 11, "Research new armors (new!)"		}
-	, { 12, "Research new technologies (new!)"	}
-	, { 13, "Learn new professions (new!)"		}
-	, { 14, "Train for new ranks (new!)"		}
-	, { 15, "Display score"						}
-	, { 16, "Exit game"							}
+	{ {  1, "Rest"						}
+	, {  2, "Look for a mercenary job"	}
+	, {  3, "Go for a drink"			}
+	, {  4, "Show inventory"			}
+	, {  5, "Show equipment"			}
+	, {  6, "Equip weapon"				}
+	, {  7, "Equip armor"				}
+	, {  8, "Study for next task"		}
+	, {  9, "Research new weapons"		}
+	, { 10, "Research new sciences"		}
+	, { 11, "Research new armors"		}
+	, { 12, "Research new technologies"	}
+	, { 13, "Learn new professions"		}
+	, { 14, "Train for new ranks"		}
+	, { 15, "Display score"				}
+	, { 16, "Exit game"					}
 	};
 
 	while (true)  // If the last action didn't go well we cancel the loop and exit the game.
