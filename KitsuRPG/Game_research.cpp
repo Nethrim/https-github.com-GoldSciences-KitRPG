@@ -53,21 +53,30 @@ void research
 				continue;
 		}
 
+		sprintf_s(menuItemText, stringLeft, stringRight);
+
+		bool bRequiresInserting = true;
 		if(bIsProgressive) {
 			if(bIsModifier) {
 				if(value > adventurerMaxEquip.Modifier)
+				{
+					printf("%s can't be %s because it's grade %u and your max grade researched is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Modifier);
 					continue;
+				}
 			}
 			else
 			{
 				if(value > adventurerMaxEquip.Index)
+				{
+					printf("%s can't be %s because it's grade %u and your max grade researched is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Index);
 					continue;
+				}
 			}
 		}
 
+		if(!bRequiresInserting)
+			continue;
 
-		sprintf_s(menuItemText, stringLeft, stringRight);
-		bool bRequiresInserting = true;
 		for(int32_t i=0; i<menuItemCount; ++i)
 			if(menuItems[i].ReturnValue == value)
 			{
@@ -109,12 +118,12 @@ void research
 
 	if(bIsModifier)
 	{
-		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)selectedValue); 
+		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)selectedValue+1); 
 		printf("%s has been %s!\n", menuItemText, verbSimplePast.c_str()); 
 	}
 	else
 	{
-		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)selectedValue); 
+		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)selectedValue+1); 
 		printf("%s %s has been %s!\n", definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str(), verbSimplePast.c_str()); 
 	}
 };
