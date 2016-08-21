@@ -24,6 +24,10 @@ void research
 	static char						menuItemText[maxItemCount]	= {}; 
 	static klib::SMenuItem<int32_t>	menuItems	[maxItemCount]	= {}; 
 
+	adventurerMaxEquip.Modifier	= std::max(adventurerMaxEquip.Modifier	, (int16_t)1);
+	adventurerMaxEquip.Index	= std::max(adventurerMaxEquip.Index		, (int16_t)1);
+	adventurerMaxEquip.Level	= std::max(adventurerMaxEquip.Level		, (int16_t)1);
+
 	int32_t menuItemCount=0; 
 	int32_t duplicatedSamples=0;
 	for( uint32_t i=0; i<equipInventory.Count; ++i ) 
