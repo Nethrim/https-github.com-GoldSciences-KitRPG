@@ -118,12 +118,12 @@ void research
 
 	if(bIsModifier)
 	{
-		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)selectedValue+1); 
+		adventurerMaxEquip.Modifier		= std::max(adventurerMaxEquip.Modifier, (int16_t)(selectedValue+1)); 
 		printf("%s has been %s!\n", menuItemText, verbSimplePast.c_str()); 
 	}
 	else
 	{
-		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)selectedValue+1); 
+		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)(selectedValue+1)); 
 		printf("%s %s has been %s!\n", definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str(), verbSimplePast.c_str()); 
 	}
 };
