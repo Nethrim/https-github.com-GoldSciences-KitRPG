@@ -157,8 +157,8 @@ void tavern(klib::CCharacter& adventurer)
 void mercenaryJob(klib::CCharacter& adventurer)
 {
 	static const size_t enemyCount = size(klib::enemyDefinitions);
-	klib::SMenuItem<uint32_t> jobOptions[enemyCount];
-	for(uint32_t i=0, count = enemyCount-1; i<count; ++i)
+	klib::SMenuItem<int32_t> jobOptions[enemyCount];
+	for(int32_t i=0, count = enemyCount-1; i<count; ++i)
 	{
 		jobOptions[i].ReturnValue	= i+1;
 		jobOptions[i].Text			= "Level " + std::to_string(i+1);
@@ -166,7 +166,7 @@ void mercenaryJob(klib::CCharacter& adventurer)
 	jobOptions[enemyCount-1].ReturnValue	= enemyCount;
 	jobOptions[enemyCount-1].Text			= "Back to tavern";
 
-	const uint32_t enemyType = displayMenu("You decide to enroll for a mercenary job", jobOptions);
+	const int32_t enemyType = displayMenu("You decide to enroll for a mercenary job", jobOptions);
 
 	// Set bCombat to true and the enemy type for executing the combat logic.
 	bool bCombat = false;
@@ -186,19 +186,19 @@ static int initializeItemMenu(klib::SMenuItem<klib::SItem>(&menuItems)[_Size])
 	char itemOption[128] = {};
 	static const size_t descriptionCount = size(klib::itemDescriptions);
 	static const size_t gradeCount = size(klib::itemGrades);
-	for(uint32_t indexItem=0, itemCount = descriptionCount-1; indexItem<itemCount; ++indexItem)
+	for(int32_t indexItem=0, itemCount = descriptionCount-1; indexItem<itemCount; ++indexItem)
 	{
 		const int32_t indexDefinition = (int32_t)indexItem+1;
 		for(int32_t grade=0; grade < gradeCount; ++grade)
 		{
 			const int32_t finalMenuItemIndex = indexItem*gradeCount+grade;
-			menuItems[finalMenuItemIndex].ReturnValue	= { indexDefinition, 0, grade };
+			menuItems[finalMenuItemIndex].ReturnValue	= { (int16_t)indexDefinition, 0, (int16_t)grade };
 			std::string itemName = klib::getItemName( menuItems[finalMenuItemIndex].ReturnValue );
-			sprintf_s(itemOption, "- $%.2u Coins - %s", (uint32_t)klib::getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
+			sprintf_s(itemOption, "- $%.2u Coins - %s", (int32_t)klib::getItemPrice(menuItems[finalMenuItemIndex].ReturnValue), itemName.c_str());
 			menuItems[finalMenuItemIndex].Text			= itemOption;
 		}
 	}
-	menuItems[klib::getFinalItemCount()].ReturnValue	= { klib::getFinalItemCount(), 0 };
+	menuItems[klib::getFinalItemCount()].ReturnValue	= { (int16_t)klib::getFinalItemCount() };
 	menuItems[klib::getFinalItemCount()].Text			= "Leave the bar";
 	return 0;
 };

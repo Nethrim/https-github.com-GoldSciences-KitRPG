@@ -10,19 +10,20 @@ enum ATTACK_TARGET
 ,	ATTACK_TARGET_OTHER
 };
 
-STATUS_TYPE getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
+COMBAT_STATUS getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 {
-	STATUS_TYPE result = STATUS_TYPE_NONE;
+	COMBAT_STATUS result = COMBAT_STATUS_NONE;
 	switch(grenadeProperty) {
-	case PROPERTY_TYPE_STUN		:		result = STATUS_TYPE_STUN		; break;
-	case PROPERTY_TYPE_SMOKE	:		result = STATUS_TYPE_BLIND		; break;
-	case PROPERTY_TYPE_PIERCING	:		result = STATUS_TYPE_BLEEDING	; break;
-	case PROPERTY_TYPE_FRAG		:		result = STATUS_TYPE_BLEEDING	; break;
-	case PROPERTY_TYPE_FIRE		:		result = STATUS_TYPE_BURN		; break;
-	case PROPERTY_TYPE_POISON	:		result = STATUS_TYPE_POISON		; break;
-	case PROPERTY_TYPE_COLD		:		result = STATUS_TYPE_FREEZING	; break;
-	case PROPERTY_TYPE_FREEZE	:		result = STATUS_TYPE_FROZEN		; break;
-	case PROPERTY_TYPE_SHOCK	:		result = STATUS_TYPE_SHOCK		; break;
+	case PROPERTY_TYPE_STUN		:		result = COMBAT_STATUS_STUN		; break;
+	case PROPERTY_TYPE_SMOKE	:		result = COMBAT_STATUS_BLIND	; break;
+	case PROPERTY_TYPE_PIERCING	:		result = COMBAT_STATUS_BLEEDING	; break;
+	case PROPERTY_TYPE_FRAG		:		result = COMBAT_STATUS_BLEEDING	; break;
+	case PROPERTY_TYPE_FIRE		:		result = COMBAT_STATUS_BURN		; break;
+	case PROPERTY_TYPE_POISON	:		result = COMBAT_STATUS_POISON	; break;
+	case PROPERTY_TYPE_COLD		:		result = COMBAT_STATUS_FREEZING	; break;
+	case PROPERTY_TYPE_FREEZE	:		result = COMBAT_STATUS_FROZEN	; break;
+	case PROPERTY_TYPE_SHOCK	:		result = COMBAT_STATUS_SHOCK	; break;
+	case PROPERTY_TYPE_EMP		:		result = COMBAT_STATUS_BLACKOUT	; break;
 	}
 	return result;
 }
@@ -62,7 +63,7 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget.DefendEffect;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
-	STATUS_TYPE		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
+	COMBAT_STATUS		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
 	const std::string targetArmorName = getArmorName(target.CurrentArmor);
 	switch(grenadeProperty)
 	{
@@ -106,7 +107,7 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		}
 		else if( lotteryResult < lotteryRange )
 		{
-			applySuccessfulHit(thrower, target, itemEffectValue >> 1, bAddStatus, grenadeStatus, uint32_t(3.6*itemGrade), getItemName(itemGrenade));
+			applySuccessfulHit(thrower, target, itemEffectValue >> 1, bAddStatus, grenadeStatus, int32_t(3.6*itemGrade), getItemName(itemGrenade));
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
 		}

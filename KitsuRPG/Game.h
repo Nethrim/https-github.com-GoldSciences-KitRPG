@@ -10,7 +10,7 @@ void bar				(klib::CCharacter& adventurer);				// Displays the available items f
 void displayEquip		(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
 void displayScore		(const klib::SCharacterScore&	adventurer);	// Displays the player's character points and statistics.
 
-void combat(klib::CCharacter& adventurer, uint32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
+void combat(klib::CCharacter& adventurer, int32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 
 
 

@@ -10,9 +10,9 @@ namespace klib
 {
 	struct SItem
 	{
-		int32_t Index;
-		int32_t Modifier;
-		int32_t Level;
+		int16_t Index;
+		int16_t Modifier;
+		int16_t Level;
 	};
 
 	struct SInventorySlot

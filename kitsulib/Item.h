@@ -71,22 +71,22 @@ static const CItemGrade itemGrades[] =
 };
 
 static const CItemModifier itemModifiers[] = 
-{	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	0	,	"%s"					}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	0	,	"%s	of Healing"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"%s	of Mana"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	10	,	"%s	of Shield"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	10	,	"%s	of Rejuvenation"	}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"%s	of Focus"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	10	,	"Strength %s"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	0	,	"Smoke %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Stun %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Blast %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Fire %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Needle %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Poison %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Cold %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Freeze %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	STATUS_TYPE_NONE	,	STATUS_TYPE_NONE	},	5	,	"Shock %s"				}
+{	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"%s"					}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"%s	of Healing"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"%s	of Mana"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"%s	of Shield"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"%s	of Rejuvenation"	}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"%s	of Focus"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"Strength %s"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"Smoke %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Stun %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Blast %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Fire %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Needle %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Poison %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Cold %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Freeze %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Shock %s"				}
 };
 
 static const CItemV2 itemDefinitions[] = 

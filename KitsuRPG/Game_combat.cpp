@@ -58,9 +58,9 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Weapons.AddElement(loser.CurrentWeapon);
 
 		klib::SWeapon loserNewWeapon = 
-		{	rand() % (oldWinnerWeapon.Index+1)
-		,	rand() % (oldWinnerWeapon.Modifier+1)
-		,	1+(rand() % (oldWinnerWeapon.Level))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Index	)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Modifier	)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Level	)	))
 		};
 
 		if(loserNewWeapon.Index || loserNewWeapon.Modifier || loserNewWeapon.Level > 1)
@@ -79,10 +79,11 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Armors.AddElement(loser.CurrentArmor);
 
 		klib::SArmor loserNewArmor = 
-		{	rand()		% (oldWinnerArmor.Index+1)
-		,	rand()		% (oldWinnerArmor.Modifier+1)
-		,	1+(rand()	% (oldWinnerArmor.Level))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Index		)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Modifier	)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerArmor.Level		)	))
 		};
+
 
 		if(loserNewArmor.Index || loserNewArmor.Modifier || loserNewArmor.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loserNewArmor).c_str(), loserNewArmor.Level);
@@ -125,7 +126,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 }
 
-void determineOutcome(klib::CCharacter& adventurer, klib::CCharacter& enemy, uint32_t enemyType)
+void determineOutcome(klib::CCharacter& adventurer, klib::CCharacter& enemy, int32_t enemyType)
 {
 		// Determine the outcome of the battle and give rewards if applicable.
 	if (adventurer.Points.CurrentLife.HP <= 0) 
@@ -187,14 +188,10 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 void printStatuses(const klib::CCharacter& character)
 {
 	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
-		switch(character.CombatStatus.Status[i])
-		{
-		case klib::STATUS_TYPE_BLIND:		printf("%s is blind for the next %u turn(s).\n"		, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
-		case klib::STATUS_TYPE_BLEEDING:	printf("%s is bleeding for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
-		case klib::STATUS_TYPE_STUN:		printf("%s is stunned for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
-		case klib::STATUS_TYPE_BURN:		printf("%s is burning for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
-		case klib::STATUS_TYPE_POISON:	printf("%s is poisoned for the next %u turn(s).\n"	, character.Name.c_str(), character.CombatStatus.TurnsLeft[i]);	break;
-		}
+	{
+		const std::string text = klib::getStringFromBit(character.CombatStatus.Status[i]);
+		printf("%s is affected by \"%s\" for the next %u turn(s).\n", character.Name.c_str(), text.c_str(), character.CombatStatus.TurnsLeft[i]);	
+	}
 }
 
 
@@ -294,7 +291,7 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 }
 
 //5736	// gasty.bellino@gmail.com
-void combat(klib::CCharacter& adventurer, uint32_t enemyType)
+void combat(klib::CCharacter& adventurer, int32_t enemyType)
 {
 	if(adventurer.Points.CurrentLife.HP <= 1)
 	{
@@ -313,7 +310,7 @@ void combat(klib::CCharacter& adventurer, uint32_t enemyType)
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
 
-		if(adventurer.CombatStatus.GetStatusTurns(klib::STATUS_TYPE_STUN))
+		if(adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN))
 		{
 			printf("%s is stunned and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
@@ -326,7 +323,7 @@ void combat(klib::CCharacter& adventurer, uint32_t enemyType)
 			break;
 
 		// Execute enemy attack turn
-		if(currentEnemy.CombatStatus.GetStatusTurns(klib::STATUS_TYPE_STUN))
+		if(currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN))
 		{
 			printf("%s is stunned and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
@@ -344,7 +341,7 @@ void combat(klib::CCharacter& adventurer, uint32_t enemyType)
 bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 {
 	bool bUsedItem = false;
-	uint32_t indexInventory = ~0U;
+	int32_t indexInventory = ~0U;
 	static const size_t inventorySize = size(user.Inventory.Slots);
 	if(0 == user.Inventory.ItemCount)
 	{
@@ -352,7 +349,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 		return false;
 	}
 
-	klib::SMenuItem<uint32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
+	klib::SMenuItem<int32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
 	char itemOption[128] = {};
 	for(uint32_t i=0; i<user.Inventory.ItemCount; ++i)
 	{
@@ -379,7 +376,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	}
 	else // not a player so execute choice by AI
 	{
-		indexInventory = (uint32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
+		indexInventory = (int32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
 		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
 		
 		// Only use potions if we have less than 80% HP

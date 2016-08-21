@@ -13,7 +13,7 @@ namespace klib
 		std::string			Name			= "Unnamed";
 
 		CCharacter() = default;
-		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, STATUS_TYPE inflictStatus, STATUS_TYPE immunities, const std::string& name)
+		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, COMBAT_STATUS inflictStatus, COMBAT_STATUS immunities, const std::string& name)
 			:SCharacter	(characterType, maxHP, hitChance, attack, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities)
 			,Name		(name)
 			{};
@@ -24,7 +24,7 @@ namespace klib
 
 	SCharacterPoints calculateFinalPoints(const CCharacter& character);
 
-	bool addStatus(SCombatStatus& characterStatus, STATUS_TYPE statusType, uint32_t turnCount);
+	bool addStatus(SCombatStatus& characterStatus, COMBAT_STATUS statusType, int32_t turnCount);
 	void rest(CCharacter& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
 } // namespace
 

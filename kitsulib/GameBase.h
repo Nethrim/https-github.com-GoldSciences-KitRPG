@@ -1,5 +1,6 @@
 #include "Inventory.h"
 #include "CombatPoints.h"
+#include "CombatStatus.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -37,40 +38,6 @@ namespace klib
 		uint64_t GrenadesUsed		= 0;
 	};
 
-#define MAX_STATUS_COUNT 9
-	enum STATUS_TYPE : uint16_t
-	{	STATUS_TYPE_NONE		= 0x000
-	,	STATUS_TYPE_BLIND		= 0x001
-	,	STATUS_TYPE_STUN		= 0x002
-	,	STATUS_TYPE_SHOCK		= 0x004
-	,	STATUS_TYPE_BLEEDING	= 0x008
-	,	STATUS_TYPE_BURN		= 0x010
-	,	STATUS_TYPE_POISON		= 0x020
-	,	STATUS_TYPE_FREEZING	= 0x040
-	,	STATUS_TYPE_PETRIFY		= 0x080
-	,	STATUS_TYPE_FROZEN		= 0x100
-	};
-
-	enum ATTACK_EFFECT : uint16_t
-	{	ATTACK_EFFECT_NONE
-	,	ATTACK_EFFECT_LEECH	= 0x01
-	,	ATTACK_EFFECT_STEAL	= 0x02
-	};
-
-	enum DEFEND_EFFECT : uint16_t
-	{	DEFEND_EFFECT_NONE			= 0x00
-	,	DEFEND_EFFECT_REFLECT		= 0x01
-	,	DEFEND_EFFECT_BLIND			= 0x02
-	,	DEFEND_EFFECT_IMPENETRABLE	= 0x04
-	};
-
-	enum PASSIVE_EFFECT : uint16_t
-	{	PASSIVE_EFFECT_NONE				= 0x00
-	,	PASSIVE_EFFECT_LIFE_REGEN		= 0x01
-	,	PASSIVE_EFFECT_MANA_REGEN		= 0x02
-	,	PASSIVE_EFFECT_SHIELD_REPAIR	= 0x04
-	};
-
 	struct SCharacterPoints
 	{
 		SLifePoints		MaxLife;
@@ -80,22 +47,22 @@ namespace klib
 		ATTACK_EFFECT	AttackEffect;
 		DEFEND_EFFECT	DefendEffect;
 		PASSIVE_EFFECT	PassiveEffect;
-		STATUS_TYPE		StatusInflict;
-		STATUS_TYPE		StatusImmunity;
+		COMBAT_STATUS	StatusInflict;
+		COMBAT_STATUS	StatusImmunity;
 
 		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
 			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), AttackEffect, DefendEffect, PassiveEffect, StatusInflict, StatusImmunity }; 
 		}
 		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, (ATTACK_EFFECT)(AttackEffect | other.AttackEffect), (DEFEND_EFFECT)(DefendEffect | other.DefendEffect), (PASSIVE_EFFECT)(PassiveEffect | other.PassiveEffect), (STATUS_TYPE)(StatusInflict | other.StatusInflict), (STATUS_TYPE)(StatusImmunity | other.StatusImmunity) }; 
+			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, (ATTACK_EFFECT)(AttackEffect | other.AttackEffect), (DEFEND_EFFECT)(DefendEffect | other.DefendEffect), (PASSIVE_EFFECT)(PassiveEffect | other.PassiveEffect), (COMBAT_STATUS)(StatusInflict | other.StatusInflict), (COMBAT_STATUS)(StatusImmunity | other.StatusImmunity) }; 
 		}
 		void PrintStatusAndEffect() const
 		{
-			printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (uint32_t)	AttackEffect		);
-			printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (uint32_t)	DefendEffect		);
-			printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (uint32_t)	PassiveEffect		);
-			printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (uint32_t)	StatusInflict		);
-			printf("- Flags for Status Immunity : 0x%.04x.\n"	, (uint32_t)	StatusImmunity		);
+			printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (int32_t)	AttackEffect		);
+			printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (int32_t)	DefendEffect		);
+			printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (int32_t)	PassiveEffect		);
+			printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (int32_t)	StatusInflict		);
+			printf("- Flags for Status Immunity : 0x%.04x.\n"	, (int32_t)	StatusImmunity		);
 		}
 
 		void Print() const
@@ -116,8 +83,8 @@ namespace klib
 
 	struct SCombatBonus
 	{
-		SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_NONE };	// these are points that are calculated during combat depending on equipment or item consumption.
-		SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, STATUS_TYPE_NONE, STATUS_TYPE_NONE };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+		SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, COMBAT_STATUS_NONE, COMBAT_STATUS_NONE };	// these are points that are calculated during combat depending on equipment or item consumption.
+		SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, COMBAT_STATUS_NONE, COMBAT_STATUS_NONE };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 		void				NextTurn() {
 			if( 0 >= --TurnsLeft.MaxLife.HP			)	TurnsLeft.MaxLife.HP		=	Points.MaxLife.HP		= 0;
@@ -134,14 +101,13 @@ namespace klib
 		};
 	};
 
-	#define MAX_COMBAT_STATUS	16
-
+#define MAX_COMBAT_STATUS	16
 	struct SCombatStatus
 	{
 		uint32_t			Count	= 0;
-		STATUS_TYPE			Status		[MAX_COMBAT_STATUS]	= {};
+		COMBAT_STATUS		Status		[MAX_COMBAT_STATUS]	= {};
 		int8_t				TurnsLeft	[MAX_COMBAT_STATUS]	= {};
-		int					GetStatusTurns(STATUS_TYPE status)
+		int					GetStatusTurns(COMBAT_STATUS status)
 		{
 			for(uint32_t i=0; i<Count; ++i)
 				if(Status[i] == status)
@@ -149,7 +115,7 @@ namespace klib
 			return 0;
 		};
 		void				NextTurn() {
-			for( uint32_t i=0; i<Count; ++i)
+			for(uint32_t i=0; i<Count; ++i)
 				if(TurnsLeft[i] && 0 == --TurnsLeft[i])
 				{
 					Status		[i]	=	Status		[--Count];
@@ -211,7 +177,7 @@ namespace klib
 		};
 	};
 
-	enum CHARACTER_TYPE : uint32_t
+	enum CHARACTER_TYPE : int32_t
 	{	CHARACTER_TYPE_UNKNOWN
 	,	CHARACTER_TYPE_NPC
 	,	CHARACTER_TYPE_PLAYER
@@ -257,7 +223,7 @@ namespace klib
 
 
 		constexpr SCharacter() = default;
-		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, STATUS_TYPE inflictStatus, STATUS_TYPE immunities) 
+		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, COMBAT_STATUS inflictStatus, COMBAT_STATUS immunities) 
 			:Type				(characterType)
 			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities})
 			,CombatBonus		({})

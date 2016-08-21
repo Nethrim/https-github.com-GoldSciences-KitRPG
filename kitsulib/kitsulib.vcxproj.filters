@@ -51,6 +51,9 @@
     <ClInclude Include="CombatPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CombatStatus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Character.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Combat_potion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
