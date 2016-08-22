@@ -311,9 +311,9 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
 
-		if(adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN))
+		if(adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP))
 		{
-			printf("%s is stunned and loses his turn!\n", adventurer.Name.c_str());
+			printf("%s is stunned/asleep and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
 			klib::applyTurnStatusAndBonusesAndSkipTurn(adventurer);
 		}
@@ -324,9 +324,9 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 			break;
 
 		// Execute enemy attack turn
-		if(currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN))
+		if(currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP))
 		{
-			printf("%s is stunned and loses his turn!\n", currentEnemy.Name.c_str());
+			printf("%s is stunned/asleep  and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
 			klib::applyTurnStatusAndBonusesAndSkipTurn(currentEnemy);
 		}

@@ -14,16 +14,17 @@ COMBAT_STATUS getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 {
 	COMBAT_STATUS result = COMBAT_STATUS_NONE;
 	switch(grenadeProperty) {
-	case PROPERTY_TYPE_STUN		:		result = COMBAT_STATUS_STUN		; break;
-	case PROPERTY_TYPE_SMOKE	:		result = COMBAT_STATUS_BLIND	; break;
-	case PROPERTY_TYPE_PIERCING	:		result = COMBAT_STATUS_BLEEDING	; break;
-	case PROPERTY_TYPE_FRAG		:		result = COMBAT_STATUS_BLEEDING	; break;
-	case PROPERTY_TYPE_FIRE		:		result = COMBAT_STATUS_BURN		; break;
-	case PROPERTY_TYPE_POISON	:		result = COMBAT_STATUS_POISON	; break;
-	case PROPERTY_TYPE_COLD		:		result = COMBAT_STATUS_FREEZING	; break;
-	case PROPERTY_TYPE_FREEZE	:		result = COMBAT_STATUS_FROZEN	; break;
-	case PROPERTY_TYPE_SHOCK	:		result = COMBAT_STATUS_SHOCK	; break;
-	case PROPERTY_TYPE_EMP		:		result = COMBAT_STATUS_BLACKOUT	; break;
+	case PROPERTY_TYPE_STUN		:	result = COMBAT_STATUS_STUN		; break;
+	case PROPERTY_TYPE_SMOKE	:	result = COMBAT_STATUS_BLIND	; break;
+	case PROPERTY_TYPE_PIERCING	:	result = COMBAT_STATUS_BLEEDING	; break;
+	case PROPERTY_TYPE_FRAG		:	result = COMBAT_STATUS_BLEEDING	; break;
+	case PROPERTY_TYPE_FIRE		:	result = COMBAT_STATUS_BURN		; break;
+	case PROPERTY_TYPE_POISON	:	result = COMBAT_STATUS_POISON	; break;
+	case PROPERTY_TYPE_COLD		:	result = COMBAT_STATUS_FREEZING	; break;
+	case PROPERTY_TYPE_FREEZE	:	result = COMBAT_STATUS_FROZEN	; break;
+	case PROPERTY_TYPE_SHOCK	:	result = COMBAT_STATUS_SHOCK	; break;
+	case PROPERTY_TYPE_EMP		:	result = COMBAT_STATUS_BLACKOUT	; break;
+	case PROPERTY_TYPE_SLEEP	:	result = COMBAT_STATUS_SLEEP	; break;
 	}
 	return result;
 }
@@ -71,7 +72,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_STUN:
 	case PROPERTY_TYPE_FREEZE:
 	case PROPERTY_TYPE_COLD:
-		// Apply status with fixed 50% chance
+	case PROPERTY_TYPE_SLEEP:
+	// Apply status with fixed 50% chance
 		if( lotteryResult < lotteryRange )
 			applyAttackStatus(target, grenadeStatus, itemGrade ? 1+itemGrade : 0, itemDescription.Name);
 		else
@@ -84,6 +86,7 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_FIRE:
 	case PROPERTY_TYPE_POISON:
 	case PROPERTY_TYPE_SHOCK:
+	case PROPERTY_TYPE_EMP:
 		itemEffectValueSelf = itemEffectValueReducedSelf;
 		itemEffectValue		= itemEffectValueReduced;
 		bAddStatus			= true;

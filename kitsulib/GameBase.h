@@ -71,7 +71,6 @@ namespace klib
 		};
 	};
 
-
 	struct SCharacterPoints
 	{
 		SLifePoints			MaxLife;

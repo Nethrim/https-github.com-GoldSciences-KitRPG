@@ -4,6 +4,8 @@
 #include "Profession.h"
 #include "Menu.h"
 
+//#define DISABLE_RESEARCH_REQUIREMENTS
+
 template <typename _TEquipClass, typename _TInventory, typename _TResearched, size_t _SizeInventory, size_t _SizeResearched, size_t _SizeDefinitions>
 void research
 	( klib::SEquipContainer<_TInventory, _SizeInventory>& equipInventory 
@@ -20,6 +22,11 @@ void research
 	, const std::string& verbSimplePast
 	) 
 { 
+	if(researchedList.Count >= _SizeDefinitions-1) {
+		printf("You've done %s all %ss available (%u?)!\n", verbPresentContinuous.c_str(), sourceName.c_str(), researchedList.Count);
+		return;
+	}
+
 	static const int32_t			maxItemCount = 256;
 	static char						menuItemText[maxItemCount]	= {}; 
 	static klib::SMenuItem<int32_t>	menuItems	[maxItemCount]	= {}; 
@@ -60,23 +67,24 @@ void research
 		sprintf_s(menuItemText, stringLeft, stringRight);
 
 		bool bRequiresInserting = true;
+#ifndef DISABLE_RESEARCH_REQUIREMENTS
 		if(bIsProgressive) {
-			if(bIsModifier) {
-				if(value > adventurerMaxEquip.Modifier)
-				{
+			if(bIsModifier) 
+			{
+				if(value > adventurerMaxEquip.Modifier) {
 					printf("%s can't be %s because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Modifier);
 					continue;
 				}
 			}
 			else
 			{
-				if(value > adventurerMaxEquip.Index)
-				{
+				if(value > adventurerMaxEquip.Index) {
 					printf("%s can't be %s because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, verbSimplePast.c_str(), value, adventurerMaxEquip.Index);
 					continue;
 				}
 			}
 		}
+#endif
 
 		if(!bRequiresInserting)
 			continue;
@@ -130,12 +138,26 @@ void research
 		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)(selectedValue+1)); 
 		printf("%s %s has been %s!\n", definitionsTable[selectedValue].Name.c_str(), lowercaseName.c_str(), verbSimplePast.c_str()); 
 	}
+	research
+		( equipInventory 
+		, researchedList
+		, definitionsTable
+		, adventurerMaxEquip
+		, bIsModifier
+		, bIsProgressive
+		, itemFormat
+		, sourceName
+		, lowercaseName
+		, verbPresentPerfect
+		, verbPresentContinuous
+		, verbSimplePast
+		);
 };
 
 
 void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedDefinitionsWeapon		, klib::definitionsWeapon		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
 void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedDefinitionsArmor			, klib::definitionsArmor		, adventurer.MaxArmor		, false	, true, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
-void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::definitionsProfession	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession techniques"	, "profession"	, "learn"	, "learning"	, "learned"		); }
+void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedDefinitionsProfession	, klib::definitionsProfession	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession technique"	, "profession"	, "learn"	, "learning"	, "learned"		); }
 void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.ResearchedModifiersWeapon			, klib::modifiersWeapon			, adventurer.MaxWeapon		, true	, false, "Science"		, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
 void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.ResearchedModifiersArmor			, klib::modifiersArmor			, adventurer.MaxArmor		, true	, false, "Technology"	, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
 void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.ResearchedModifiersProfession		, klib::modifiersProfession		, adventurer.MaxProfession	, true	, true, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
