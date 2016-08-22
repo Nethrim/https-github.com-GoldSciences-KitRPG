@@ -5,25 +5,24 @@
 
 namespace klib
 {
-	int32_t			applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
-	int32_t			applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName);
+	SLifePoints			applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
+	SLifePoints			applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName);
 	COMBAT_STATUS		applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t absorbChance, int32_t turnCount, const std::string& sourceName);
 	COMBAT_STATUS		applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t turnCount, const std::string& sourceName);
-	int32_t			applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
-	void			applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName);
-	void			applyArmorEffect(CCharacter& character);
-	int32_t			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, int32_t absorptionRate, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
-	int32_t			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
-	void			applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
-	void			applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
+	int32_t				applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
+	void				applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName);
+	SLifePoints			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, int32_t absorptionRate, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
+	SLifePoints			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
+	void				applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
+	void				applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
 
-	int				attack(CCharacter& attacker, CCharacter& target);
-	void			applyTurnStatus(CCharacter& character);
-	void			applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character);
+	bool				attack(CCharacter& attacker, CCharacter& target);
+	void				applyTurnStatus(CCharacter& character);
+	void				applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character);
 
-	bool			useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target);
-	bool			usePotion(const SItem& itemPotion, CCharacter& potionDrinker);
-	bool			executeItem(int32_t indexInventory, CCharacter& user, CCharacter& target);
+	bool				useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target);
+	bool				usePotion(const SItem& itemPotion, CCharacter& potionDrinker);
+	bool				executeItem(int32_t indexInventory, CCharacter& user, CCharacter& target);
 }
 
 

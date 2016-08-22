@@ -9,12 +9,12 @@ namespace klib
 {
 	struct SLifePointsMultiplier
 	{
-		double	HP		;
+		double	Health	;
 		double	Mana	;
 		double	Shield	;
 
 		inline constexpr SLifePointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { HP*level, Mana*level, Shield*level }; 
+			return { Health*level, Mana*level, Shield*level }; 
 		}
 	};
 
@@ -30,23 +30,23 @@ namespace klib
 
 	struct SLifePoints
 	{
-		int32_t	HP		;
+		int32_t	Health	;
 		int32_t	Mana	;
 		int32_t	Shield	;
 
 		inline constexpr SLifePoints	operator +	(const SLifePoints& other)				const	{ 
-			return { HP+other.HP, Mana+other.Mana, Shield+other.Shield }; 
+			return { Health+other.Health, Mana+other.Mana, Shield+other.Shield }; 
 		}
 
 		inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other)	const	{ 
 			return { 
-				(int32_t)(	HP		*	std::max(	1.000001, other.HP		)), 
+				(int32_t)(	Health	*	std::max(	1.000001, other.Health	)), 
 				(int32_t)(	Mana	*	std::max(	1.000001, other.Mana	)), 
 				(int32_t)(	Shield	*	std::max(	1.000001, other.Shield	))}; 
 		}
 
 		SLifePoints&					operator +=	(const SLifePoints& other)						{ 
-			HP		+= other.HP; 
+			Health	+= other.Health; 
 			Mana	+= other.Mana; 
 			Shield	+= other.Shield; 
 			return *this; 
@@ -54,7 +54,7 @@ namespace klib
 
 		void Print() const
 		{
-			printf("HP     : %i.\n",	HP		);
+			printf("HP     : %i.\n",	Health	);
 			printf("Mana   : %i.\n",	Mana	);
 			printf("Shield : %i.\n",	Shield	);
 		}
@@ -81,18 +81,6 @@ namespace klib
 		{
 			printf("Hit    : %i.\n",	Hit		);
 			printf("Damage : %i.\n",	Damage	);
-		}
-	};
-
-	struct SCharacterPointsMultipliers
-	{
-		SLifePointsMultiplier	MaxLife;
-		SLifePointsMultiplier	CurrentLife;
-		SCombatPointsMultiplier	Attack;
-		double					Coins;
-
-		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const	{ 
-			return { MaxLife*level, CurrentLife*level, Attack*level, Coins*level }; 
 		}
 	};
 

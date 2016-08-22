@@ -9,7 +9,7 @@
 namespace klib
 {
 	static const CCharacter enemyDefinitions[] =	
-	//	type,					MaxHP,	Hit,	Atk,	dropCoins,	AttackEffect,	DefendEffect,			PassiveEffect,					Status Inflict			Status Immunity name.
+	//	type,					MaxHP,	Hit,	Atk,	dropCoins,	Attack,	Defend,			Passive,					Status Inflict			Status Immunity name.
 	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,		1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	COMBAT_STATUS_NONE		,	COMBAT_STATUS_NONE		,	"Unknown"	}
 	,	{CHARACTER_TYPE_ENEMY,	1,		50,		1,		1	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	COMBAT_STATUS_NONE		,	COMBAT_STATUS_BLIND		,	"Bug"		}	
 	,	{CHARACTER_TYPE_ENEMY,	2,		50,		1,		10	,	ATTACK_EFFECT_NONE,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE				,	COMBAT_STATUS_NONE		,	COMBAT_STATUS_BURN		,	"Wolf"		}	

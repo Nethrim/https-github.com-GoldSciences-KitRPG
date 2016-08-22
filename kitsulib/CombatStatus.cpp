@@ -29,7 +29,9 @@ std::string klib::getStringFromBit(ATTACK_EFFECT bitStatus)
 {
 	switch(bitStatus) {
 	case ATTACK_EFFECT_NONE				:	return "No defend effect"	;
-	case ATTACK_EFFECT_LEECH			:	return "Leech"				;
+	case ATTACK_EFFECT_LEECH_HEALTH		:	return "Health Drain"		;
+	case ATTACK_EFFECT_LEECH_MANA		:	return "Mana Drain"			;
+	case ATTACK_EFFECT_LEECH_SHIELD		:	return "Shield Steal"		;
 	case ATTACK_EFFECT_STEAL			:	return "Steal"				;
 	default:						
 		return "Unknown attack effect"	;	
@@ -67,16 +69,16 @@ std::string klib::getStringFromBit(EQUIP_TECHNOLOGY bitStatus)
 	case EQUIP_TECHNOLOGY_NONE			:	return "Undefined equipment technology"	;
 	case EQUIP_TECHNOLOGY_BASIC			:	return "Basic"							;
 	case EQUIP_TECHNOLOGY_MECHANIC		:	return "Mechanic"						;
-	case EQUIP_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
-	case EQUIP_TECHNOLOGY_BALLISTIC		:	return "Ballistic"						;
-	case EQUIP_TECHNOLOGY_LAUNCHER		:	return "Launcher"						;
+	//case EQUIP_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
+	//case EQUIP_TECHNOLOGY_BALLISTIC		:	return "Ballistic"						;
+	//case EQUIP_TECHNOLOGY_LAUNCHER		:	return "Launcher"						;
 	case EQUIP_TECHNOLOGY_DIGITAL		:	return "Digital"						;
 	case EQUIP_TECHNOLOGY_GENETIC		:	return "Genetic"						;
-	case EQUIP_TECHNOLOGY_SOUND			:	return "Sound"							;
-	case EQUIP_TECHNOLOGY_MICROWAVE		:	return "Microwave"						;
-	case EQUIP_TECHNOLOGY_RADIACTIVE	:	return "Radiactive"						;
-	case EQUIP_TECHNOLOGY_RAY			:	return "Ray"							;
-	case EQUIP_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
+	//case EQUIP_TECHNOLOGY_SOUND			:	return "Sound"							;
+	//case EQUIP_TECHNOLOGY_MICROWAVE		:	return "Microwave"						;
+	//case EQUIP_TECHNOLOGY_RADIACTIVE	:	return "Radiactive"						;
+	//case EQUIP_TECHNOLOGY_RAY			:	return "Ray"							;
+	//case EQUIP_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
 	default:						
 		return "Unknown equipment technology"	;	
 	};

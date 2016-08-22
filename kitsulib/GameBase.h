@@ -38,31 +38,63 @@ namespace klib
 		uint64_t GrenadesUsed		= 0;
 	};
 
+	struct SCharacterPointsMultipliers
+	{
+		SLifePointsMultiplier	MaxLife;
+		SLifePointsMultiplier	CurrentLife;
+		SCombatPointsMultiplier	Attack;
+		double					Coins;
+
+		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const	{ 
+			return { MaxLife*level, CurrentLife*level, Attack*level, Coins*level }; 
+		}
+	};
+
+	struct SCharacterEffect
+	{
+		ATTACK_EFFECT	Attack;
+		DEFEND_EFFECT	Defend;
+		PASSIVE_EFFECT	Passive;
+
+		inline constexpr SCharacterEffect operator | (const SCharacterEffect& other) const {
+			return { (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
+		};
+	};
+	
+	struct SCharacterStatus
+	{
+		COMBAT_STATUS	Inflict;
+		COMBAT_STATUS	Immunity;
+
+		inline constexpr SCharacterStatus operator | (const SCharacterStatus& other) const {
+			return { (COMBAT_STATUS)(Inflict | other.Inflict), (COMBAT_STATUS)(Immunity | other.Immunity) };
+		};
+	};
+
+
 	struct SCharacterPoints
 	{
-		SLifePoints		MaxLife;
-		SLifePoints		CurrentLife;
-		SCombatPoints	Attack;
-		int32_t			Coins;
-		ATTACK_EFFECT	AttackEffect;
-		DEFEND_EFFECT	DefendEffect;
-		PASSIVE_EFFECT	PassiveEffect;
-		COMBAT_STATUS	StatusInflict;
-		COMBAT_STATUS	StatusImmunity;
+		SLifePoints			MaxLife;
+		SLifePoints			CurrentLife;
+		SCombatPoints		Attack;
+		int32_t				Coins;
+		SCharacterEffect	Effect;
+		SCharacterStatus	Status;
+		EQUIP_TECHNOLOGY	Tech;
 
 		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
-			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), AttackEffect, DefendEffect, PassiveEffect, StatusInflict, StatusImmunity }; 
+			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Effect, Status, Tech }; 
 		}
 		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, (ATTACK_EFFECT)(AttackEffect | other.AttackEffect), (DEFEND_EFFECT)(DefendEffect | other.DefendEffect), (PASSIVE_EFFECT)(PassiveEffect | other.PassiveEffect), (COMBAT_STATUS)(StatusInflict | other.StatusInflict), (COMBAT_STATUS)(StatusImmunity | other.StatusImmunity) }; 
+			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, Effect | other.Effect, Status | other.Status, (EQUIP_TECHNOLOGY)(Tech | other.Tech) }; 
 		}
 		void PrintStatusAndEffect() const
 		{
-			printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (int32_t)	AttackEffect		);
-			printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (int32_t)	DefendEffect		);
-			printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (int32_t)	PassiveEffect		);
-			printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (int32_t)	StatusInflict		);
-			printf("- Flags for Status Immunity : 0x%.04x.\n"	, (int32_t)	StatusImmunity		);
+			printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (int32_t)	Effect.Attack		);
+			printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (int32_t)	Effect.Defend		);
+			printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (int32_t)	Effect.Passive	);
+			printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (int32_t)	Status.Inflict	);
+			printf("- Flags for Status Immunity : 0x%.04x.\n"	, (int32_t)	Status.Immunity	);
 		}
 
 		void Print() const
@@ -87,11 +119,11 @@ namespace klib
 		SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, COMBAT_STATUS_NONE, COMBAT_STATUS_NONE };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 		void				NextTurn() {
-			if( 0 >= --TurnsLeft.MaxLife.HP			)	TurnsLeft.MaxLife.HP		=	Points.MaxLife.HP		= 0;
+			if( 0 >= --TurnsLeft.MaxLife.Health			)	TurnsLeft.MaxLife.Health		=	Points.MaxLife.Health		= 0;
 			if( 0 >= --TurnsLeft.MaxLife.Mana		)	TurnsLeft.MaxLife.Mana		=	Points.MaxLife.Mana		= 0;
 			if( 0 >= --TurnsLeft.MaxLife.Shield		)	TurnsLeft.MaxLife.Shield	=	Points.MaxLife.Shield	= 0;
 
-			if( 0 >= --TurnsLeft.CurrentLife.HP		)	TurnsLeft.CurrentLife.HP		=	Points.CurrentLife.HP		= 0;
+			if( 0 >= --TurnsLeft.CurrentLife.Health		)	TurnsLeft.CurrentLife.Health		=	Points.CurrentLife.Health		= 0;
 			if( 0 >= --TurnsLeft.CurrentLife.Mana	)	TurnsLeft.CurrentLife.Mana		=	Points.CurrentLife.Mana		= 0;
 			if( 0 >= --TurnsLeft.CurrentLife.Shield	)	TurnsLeft.CurrentLife.Shield	=	Points.CurrentLife.Shield	= 0;
 

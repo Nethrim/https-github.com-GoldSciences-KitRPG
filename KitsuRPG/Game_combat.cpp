@@ -84,7 +84,6 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerArmor.Level		)	))
 		};
 
-
 		if(loserNewArmor.Index || loserNewArmor.Modifier || loserNewArmor.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loserNewArmor).c_str(), loserNewArmor.Level);
 		loser.Armors.AddElement(loserNewArmor);
@@ -113,7 +112,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		else
 			printf("%s loses his job as %s level %u and tries to get a new job as %s level %u instead.\n", loser.Name.c_str(), loserProfessionName.c_str(), oldLoserProfession.Level, klib::getProfessionName(loser.CurrentProfession).c_str(), loser.CurrentProfession.Level);
 
-	//winner.Points.MaxLife.HP += winner.Points.Attack;
+	//winner.Points.MaxLife.Health += winner.Points.Attack;
 	winner.CurrentProfession.Level++;
 	winner.CurrentArmor.Level++;
 	winner.CurrentWeapon.Level++;
@@ -129,9 +128,9 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 void determineOutcome(klib::CCharacter& adventurer, klib::CCharacter& enemy, int32_t enemyType)
 {
 		// Determine the outcome of the battle and give rewards if applicable.
-	if (adventurer.Points.CurrentLife.HP <= 0) 
+	if (adventurer.Points.CurrentLife.Health <= 0) 
 		assignDrops(enemy, adventurer);
-	if (enemy.Points.CurrentLife.HP <= 0)
+	if (enemy.Points.CurrentLife.Health <= 0)
 		assignDrops(adventurer, enemy);
 }
 
@@ -160,8 +159,10 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 {
 	// If the action is valid then we execute it and break the current while() so the attack turn executes.
 	TURN_OUTCOME outcome = TURN_OUTCOME_CANCEL;
-	if(TURN_ACTION_ATTACK == combatOption)
-		klib::attack(attacker, target);
+	if(TURN_ACTION_ATTACK == combatOption) {
+		if( !klib::attack(attacker, target) )
+			outcome = TURN_OUTCOME_CONTINUE;
+	}
 	else if(TURN_ACTION_INVENTORY == combatOption) { 
 		if( !useItems(attacker, target) )
 			outcome = TURN_OUTCOME_CONTINUE;
@@ -179,7 +180,7 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
-	if(outcome == TURN_OUTCOME_CANCEL && target.Points.CurrentLife.HP > 0 && attacker.Points.CurrentLife.HP > 0)
+	if(outcome == TURN_OUTCOME_CANCEL && target.Points.CurrentLife.Health > 0 && attacker.Points.CurrentLife.Health > 0)
 		klib::applyTurnStatusAndBonusesAndSkipTurn(attacker);
 
 	return outcome;
@@ -199,21 +200,21 @@ void printBonuses(const klib::CCharacter& character)
 {
 	if( character.CombatBonus.TurnsLeft.Attack.Hit			> 0 ) printf("%s has an additional bonus for the next %u turns: %i Hit.\n"				, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Attack.Hit			,	character.CombatBonus.Points.Attack.Hit			);
 	if( character.CombatBonus.TurnsLeft.Attack.Damage		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Damage.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Attack.Damage		,	character.CombatBonus.Points.Attack.Damage		);
-	if( character.CombatBonus.TurnsLeft.MaxLife.HP			> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max HP.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.HP			,	character.CombatBonus.Points.MaxLife.HP			);
+	if( character.CombatBonus.TurnsLeft.MaxLife.Health		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max HP.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.Health		,	character.CombatBonus.Points.MaxLife.Health		);
 	if( character.CombatBonus.TurnsLeft.MaxLife.Mana		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Mana.\n"			, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.Mana		,	character.CombatBonus.Points.MaxLife.Mana		);
 	if( character.CombatBonus.TurnsLeft.MaxLife.Shield		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Shield.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.MaxLife.Shield		,	character.CombatBonus.Points.MaxLife.Shield		);
-	if( character.CombatBonus.TurnsLeft.CurrentLife.HP		> 0 ) printf("%s has an additional bonus for the next %u turns: %i HP Recovery.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.HP		,	character.CombatBonus.Points.CurrentLife.HP		);
+	if( character.CombatBonus.TurnsLeft.CurrentLife.Health	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Health Recovery.\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.Health	,	character.CombatBonus.Points.CurrentLife.Health	);
 	if( character.CombatBonus.TurnsLeft.CurrentLife.Mana	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Mana Recovery.\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.Mana	,	character.CombatBonus.Points.CurrentLife.Mana	);
 	if( character.CombatBonus.TurnsLeft.CurrentLife.Shield	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Shield Recovery.\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.CurrentLife.Shield	,	character.CombatBonus.Points.CurrentLife.Shield	);
 	if( character.CombatBonus.TurnsLeft.Coins				> 0 ) printf("%s has an additional bonus for the next %u turns: %i Coin Earning.\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Coins				,	character.CombatBonus.Points.Coins				);
 
 	// The following messages should be improved by taking every possible status into account.
-	if( character.CombatBonus.TurnsLeft.AttackEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Attack Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.AttackEffect	, character.CombatBonus.Points.AttackEffect		);
-	if( character.CombatBonus.TurnsLeft.DefendEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Defend Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.DefendEffect	, character.CombatBonus.Points.DefendEffect		);
-	if( character.CombatBonus.TurnsLeft.PassiveEffect		> 0 ) printf("%s has additional flags for the next %u turn(s): Passive Effect  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.PassiveEffect	, character.CombatBonus.Points.PassiveEffect	);
-	if( character.CombatBonus.TurnsLeft.StatusImmunity		> 0 ) printf("%s has additional flags for the next %u turn(s): Status Immunity (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.StatusImmunity	, character.CombatBonus.Points.StatusImmunity	);
-	if( character.CombatBonus.TurnsLeft.StatusInflict		> 0 ) printf("%s has additional flags for the next %u turn(s): Status Inflict  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.StatusInflict	, character.CombatBonus.Points.StatusInflict	);
-
+	if( character.CombatBonus.TurnsLeft.Effect.Attack	> 0 ) printf("%s has additional flags for the next %u turn(s): Attack Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Effect.Attack	, character.CombatBonus.Points.Effect.Attack	);
+	if( character.CombatBonus.TurnsLeft.Effect.Defend	> 0 ) printf("%s has additional flags for the next %u turn(s): Defend Effect   (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Effect.Defend	, character.CombatBonus.Points.Effect.Defend	);
+	if( character.CombatBonus.TurnsLeft.Effect.Passive	> 0 ) printf("%s has additional flags for the next %u turn(s): Passive Effect  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Effect.Passive	, character.CombatBonus.Points.Effect.Passive	);
+	if( character.CombatBonus.TurnsLeft.Status.Immunity	> 0 ) printf("%s has additional flags for the next %u turn(s): Status Immunity (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Status.Immunity	, character.CombatBonus.Points.Status.Immunity	);
+	if( character.CombatBonus.TurnsLeft.Status.Inflict	> 0 ) printf("%s has additional flags for the next %u turn(s): Status Inflict  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Status.Inflict	, character.CombatBonus.Points.Status.Inflict	);
+	if( character.CombatBonus.TurnsLeft.Tech			> 0 ) printf("%s has additional flags for the next %u turn(s): Technology      (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Tech			, character.CombatBonus.Points.Tech				);
 }
 
 void printCharacterShortInfo(klib::CCharacter& character)
@@ -267,7 +268,7 @@ TURN_ACTION resolveAI(klib::CCharacter& enemy, klib::CCharacter& adventurer)
 	TURN_ACTION action = TURN_ACTION_ATTACK;
 	if(enemy.Inventory.ItemCount)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
-	else if(enemy.Points.CurrentLife.HP <= (enemy.Points.MaxLife.HP/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
+	else if(enemy.Points.CurrentLife.Health <= (enemy.Points.MaxLife.Health/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
 
 	return action;
@@ -293,7 +294,7 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 //5736	// gasty.bellino@gmail.com
 void combat(klib::CCharacter& adventurer, int32_t enemyType)
 {
-	if(adventurer.Points.CurrentLife.HP <= 1)
+	if(adventurer.Points.CurrentLife.Health <= 1)
 	{
 		printf("You don't have enough health to engage in combat. Please go rest and come back later.\n");
 		return;
@@ -305,7 +306,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
-	while(combatContinues(turnOutcome, adventurer.Points.CurrentLife.HP, currentEnemy.Points.CurrentLife.HP))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
+	while(combatContinues(turnOutcome, adventurer.Points.CurrentLife.Health, currentEnemy.Points.CurrentLife.Health))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
@@ -319,7 +320,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 		else
 			turnOutcome = playerTurn(adventurer, currentEnemy);
 
-		if(!combatContinues(turnOutcome, adventurer.Points.CurrentLife.HP, currentEnemy.Points.CurrentLife.HP))
+		if(!combatContinues(turnOutcome, adventurer.Points.CurrentLife.Health, currentEnemy.Points.CurrentLife.Health))
 			break;
 
 		// Execute enemy attack turn
@@ -382,7 +383,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 		// Only use potions if we have less than 80% HP
 		if	 ( klib::ITEM_TYPE_POTION		!= itemDescription.Type
 			|| klib::PROPERTY_TYPE_HEALTH != itemDescription.Property
-			|| user.Points.CurrentLife.HP < ((user.Points.MaxLife.HP+user.CombatBonus.Points.MaxLife.HP)*.7f)
+			|| user.Points.CurrentLife.Health < ((user.Points.MaxLife.Health+user.CombatBonus.Points.MaxLife.Health)*.7f)
 			)
 			bUsedItem = true;
 	}
@@ -393,7 +394,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
 		 && klib::PROPERTY_TYPE_HEALTH == itemDescription.Property 
-		 && user.Points.CurrentLife.HP == finalPoints.MaxLife.HP)
+		 && user.Points.CurrentLife.Health == finalPoints.MaxLife.Health)
 		{
 			bUsedItem = false;
 			printf("Your HP is full!");
