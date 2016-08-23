@@ -39,10 +39,10 @@ namespace klib
 		}
 
 		inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other)	const	{ 
-			return { 
-				(int32_t)(	Health	*	std::max(	1.000001, other.Health	)), 
-				(int32_t)(	Mana	*	std::max(	1.000001, other.Mana	)), 
-				(int32_t)(	Shield	*	std::max(	1.000001, other.Shield	))}; 
+			return { (int32_t)(	Health	*	std::max(	1.000001, other.Health	)), 
+					 (int32_t)(	Mana	*	std::max(	1.000001, other.Mana	)), 
+					 (int32_t)(	Shield	*	std::max(	1.000001, other.Shield	)) 
+			}; 
 		}
 
 		SLifePoints&					operator +=	(const SLifePoints& other)						{ 

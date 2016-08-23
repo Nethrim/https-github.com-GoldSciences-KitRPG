@@ -12,27 +12,29 @@ namespace klib
 	{	ITEM_TYPE_UNKNOWN	= 0x00
 	,	ITEM_TYPE_POTION	= 0x01
 	,	ITEM_TYPE_GRENADE	= 0x02
-	,	ITEM_TYPE_PACK		= 0x04
+	,	ITEM_TYPE_BOX		= 0x04
 	};
 
 	enum PROPERTY_TYPE : uint32_t
 	{	PROPERTY_TYPE_NONE		= 0x00000
-	,	PROPERTY_TYPE_BLAST		= 0x00001
-	,	PROPERTY_TYPE_PIERCING	= 0x00002
-	,	PROPERTY_TYPE_FRAG		= 0x00004
-	,	PROPERTY_TYPE_STUN		= 0x00008
-	,	PROPERTY_TYPE_SMOKE		= 0x00010
-	,	PROPERTY_TYPE_FIRE		= 0x00020
-	,	PROPERTY_TYPE_POISON	= 0x00040
-	,	PROPERTY_TYPE_COLD		= 0x00080
-	,	PROPERTY_TYPE_FREEZE	= 0x00100
-	,	PROPERTY_TYPE_SHOCK		= 0x00200
-	,	PROPERTY_TYPE_EMP		= 0x00400
-	,	PROPERTY_TYPE_HEALTH	= 0x00800
-	,	PROPERTY_TYPE_MANA		= 0x01000
-	,	PROPERTY_TYPE_SHIELD	= 0x02000
-	,	PROPERTY_TYPE_STRENGTH	= 0x04000
-	,	PROPERTY_TYPE_HIT		= 0x08000
+		// good properties
+	,	PROPERTY_TYPE_HEALTH	= 0x00001
+	,	PROPERTY_TYPE_MANA		= 0x00002
+	,	PROPERTY_TYPE_SHIELD	= 0x00004
+	,	PROPERTY_TYPE_STRENGTH	= 0x00008
+	,	PROPERTY_TYPE_HIT		= 0x00010
+		// bad properties
+	,	PROPERTY_TYPE_BLAST		= 0x00020
+	,	PROPERTY_TYPE_PIERCING	= 0x00040
+	,	PROPERTY_TYPE_FRAG		= 0x00080
+	,	PROPERTY_TYPE_STUN		= 0x00100
+	,	PROPERTY_TYPE_SMOKE		= 0x00200
+	,	PROPERTY_TYPE_FIRE		= 0x00400
+	,	PROPERTY_TYPE_POISON	= 0x00800
+	,	PROPERTY_TYPE_COLD		= 0x01000
+	,	PROPERTY_TYPE_FREEZE	= 0x02000
+	,	PROPERTY_TYPE_SHOCK		= 0x04000
+	,	PROPERTY_TYPE_EMP		= 0x08000
 	,	PROPERTY_TYPE_SLEEP		= 0x10000
 	};
 
@@ -72,29 +74,32 @@ static const CItemGrade itemGrades[] =
 };
 
 static const CItemModifier itemModifiers[] = 
-{	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"%s"					}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"%s	of Healing"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"%s	of Mana"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"%s	of Shield"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"%s	of Rejuvenation"	}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"%s	of Focus"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	10	,	"Strength %s"			}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	0	,	"Smoke %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Stun %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Blast %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Fire %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Needle %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Poison %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Cold %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Freeze %s"				}
-,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	ATTACK_EFFECT_NONE	,	DEFEND_EFFECT_NONE	,	PASSIVE_EFFECT_NONE	,	COMBAT_STATUS_NONE	,	COMBAT_STATUS_NONE	},	5	,	"Shock %s"				}
+{	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	0	,	"%s"					}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	0	,	"%s	of Healing"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"%s	of Mana"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	10	,	"%s	of Shield"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	10	,	"%s	of Rejuvenation"	}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"%s	of Focus"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	10	,	"Strength %s"			}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	0	,	"Smoke %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	0	,	"Sleep %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Stun %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Blast %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Fire %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Needle %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Poison %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Cold %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Freeze %s"				}
+,	{	{	{	0	,	0	,	0	},	{	0	,	0	,	0	},	{	0	,	0	},	0	,	{}	,	{}	},	5	,	"Shock %s"				}
 };
 
 static const CItemV2 itemDefinitions[] = 
-	// Type					Property				Price	Name
-{	{ITEM_TYPE_UNKNOWN	,	0	,	"Water"		}	// the invalid description should be always in the last element
-,	{ITEM_TYPE_POTION	,	10	,	"Potion"	}
-,	{ITEM_TYPE_GRENADE	,	20	,	"Grenade"	}
+	// Type										Price		Name
+{	{ITEM_TYPE_UNKNOWN							,	0	,	"Water"			}	// the invalid description should be always in the last element
+,	{ITEM_TYPE_POTION							,	10	,	"Potion"		}
+,	{ITEM_TYPE_GRENADE							,	20	,	"Grenade"		}
+,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_POTION	),	100	,	"Potion Box"	}
+,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_GRENADE),	200	,	"Grenade Box"	}
 };
 
 static const CItem itemDescriptions[] = 

@@ -77,6 +77,16 @@ namespace klib
 	,	EQUIP_TECHNOLOGY_MAGIC		= 0x0010
 	};
 
+#define MAX_EQUIP_TECHNOLOGY_COUNT 13
+	enum EQUIP_MATERIAL : uint16_t
+	{	EQUIP_MATERIAL_WOOD
+	,	EQUIP_MATERIAL_METAL
+	,	EQUIP_MATERIAL_BIO
+	,	EQUIP_MATERIAL_CLOTH
+	,	EQUIP_MATERIAL_POWER
+	};
+
+
 	std::string getStringFromBit(COMBAT_STATUS		bitStatus);
 	std::string getStringFromBit(ATTACK_EFFECT		bitStatus);
 	std::string getStringFromBit(DEFEND_EFFECT		bitStatus);

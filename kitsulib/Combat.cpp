@@ -220,9 +220,12 @@ SLifePoints klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, i
 	
 	// Clear sleep on successful hit.
 	if(finalDamage.Health || finalDamage.Shield || finalDamage.Mana) {
-		for(uint32_t i=0; i<target.CombatStatus.Count; ++i)
+		for(uint32_t i=0; i < target.CombatStatus.Count; ++i)
 			if( target.CombatStatus.Status[i] == COMBAT_STATUS_SLEEP )
+			{
+				printf("%s awakes from his induced nap!\n", target.Name.c_str());
 				target.CombatStatus.TurnsLeft[i] = 0;
+			}
 	}
 
 	if(bAddStatus)
@@ -384,6 +387,8 @@ void klib::applyTurnStatus(CCharacter& character)
 		case COMBAT_STATUS_BLEEDING	:	amount = std::max(1, finalPoints.MaxLife.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
 		case COMBAT_STATUS_POISON	:	amount = std::max(1, finalPoints.MaxLife.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
 		case COMBAT_STATUS_BURN		:	amount = std::max(1, finalPoints.MaxLife.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "burning");	break;
+		case COMBAT_STATUS_FREEZING	:	amount = std::max(1, finalPoints.MaxLife.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "freezing");	break;
+		case COMBAT_STATUS_SHOCK	:	amount = std::max(1, finalPoints.MaxLife.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "shocked");	break;
 		//case COMBAT_STATUS_STUN	:		break;
 		//case COMBAT_STATUS_BLIND	:	break;
 		}
