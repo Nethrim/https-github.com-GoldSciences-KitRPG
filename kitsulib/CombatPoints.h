@@ -1,5 +1,4 @@
 #include <cstdint>
-
 #include <algorithm>
 
 #ifndef __COMBATPOINTS_H__928374092873409238650160213__
@@ -104,6 +103,16 @@ namespace klib
 			printf("Absorption-: %%%i.\n",	Damage	);
 		}
 	};
+
+	//struct SCombatPoints 
+	//{
+	//	SLifePoints		LifeMax;
+	//	SLifePoints		LifeCurrent;
+	//	SLifePoints		LifeTurn;
+	//	SAttackPoints	Attack;
+	//};
+
+
 
 } //namespace
 

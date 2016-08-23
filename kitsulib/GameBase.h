@@ -2,6 +2,7 @@
 #include "CombatPoints.h"
 #include "CombatStatus.h"
 #include "Entity.h"
+#include "EntityPoints.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -12,7 +13,7 @@
 
 namespace klib
 {
-	#pragma pack(push, 1)
+#pragma pack(push, 1)
 	// This struct holds a counter for every action that we want to record mostly for score purposes.
 	struct SCharacterScore 
 	{
@@ -46,39 +47,8 @@ namespace klib
 		SAttackPointsMultiplier	Attack;
 		double					Coins;
 
-		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const	{ 
-			return { MaxLife*level, CurrentLife*level, Attack*level, Coins*level }; 
-		}
-	};
-
-	struct SCharacterEffect
-	{
-		ATTACK_EFFECT		Attack;
-		DEFEND_EFFECT		Defend;
-		PASSIVE_EFFECT		Passive;
-
-		inline constexpr SCharacterEffect operator | (const SCharacterEffect& other) const {
-			return { (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
-		};
-	};
-	
-	struct SCharacterStatus
-	{
-		COMBAT_STATUS		Inflict;
-		COMBAT_STATUS		Immunity;
-
-		inline constexpr SCharacterStatus operator | (const SCharacterStatus& other) const {
-			return { (COMBAT_STATUS)(Inflict | other.Inflict), (COMBAT_STATUS)(Immunity | other.Immunity) };
-		};
-	};
-
-	struct SCharacterGrade
-	{
-		EQUIP_TECHNOLOGY	Tech;
-		GRADE				Level;
-
-		inline constexpr SCharacterGrade operator | (const SCharacterGrade& other) const {
-			return { (EQUIP_TECHNOLOGY)(Tech | other.Tech), ::std::max(Level, other.Level) };
+		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const {
+			return{ MaxLife*level, CurrentLife*level, Attack*level, Coins*level };
 		}
 	};
 
@@ -88,9 +58,9 @@ namespace klib
 		SLifePoints			CurrentLife;
 		SAttackPoints		Attack;
 		int32_t				Coins;
-		SCharacterEffect	Effect;
-		SCharacterStatus	Status;
-		SCharacterGrade		Tech;
+		SEntityEffect		Effect;
+		SEntityStatus		Status;
+		SEntityGrade		Tech;
 
 		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
 			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Effect, Status, Tech }; 
@@ -225,9 +195,12 @@ namespace klib
 		void				EquipWeapon			(size_t slotIndex);
 		void				EquipArmor			(size_t slotIndex);
 		void				EquipProfession		(size_t slotIndex);
+		bool				DidLoseTurn() {
+			return 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN);
+		};
 
 		constexpr SCharacter() = default;
-		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SCharacterEffect characterEffect, SCharacterStatus characterStatus ) 
+		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
 			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, characterEffect, characterStatus, {}})
 			,CombatBonus		(SCombatBonus	())

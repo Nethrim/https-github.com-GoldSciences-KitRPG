@@ -1,5 +1,5 @@
 #include <cstdint>
-
+#include <algorithm>
 #include <string>
 
 #ifndef	__COMBATSTATUS_H__2386498236498213469817263421__
@@ -59,25 +59,25 @@ namespace klib
 	,	PASSIVE_EFFECT_SHIELD_REPAIR	= 0x04
 	};
 
-#define MAX_EQUIP_TECHNOLOGY_COUNT 13
-	enum EQUIP_TECHNOLOGY : uint16_t
-	{	EQUIP_TECHNOLOGY_UNKNOWN	= 0x0000
-	,	EQUIP_TECHNOLOGY_BASIC		= 0x0001
-	,	EQUIP_TECHNOLOGY_MECHANIC	= 0x0002
-	,	EQUIP_TECHNOLOGY_DIGITAL	= 0x0004
-	,	EQUIP_TECHNOLOGY_GENETIC	= 0x0008
-	//,	EQUIP_TECHNOLOGY_CHEMICAL	= 0x0000
-	//,	EQUIP_TECHNOLOGY_BALLISTIC	= 0x0000
-	//,	EQUIP_TECHNOLOGY_LAUNCHER	= 0x0000
-	//,	EQUIP_TECHNOLOGY_SOUND		= 0x0000
-	//,	EQUIP_TECHNOLOGY_MICROWAVE	= 0x0000
-	//,	EQUIP_TECHNOLOGY_RADIACTIVE	= 0x0000
-	//,	EQUIP_TECHNOLOGY_RAY		= 0x0000
-	//,	EQUIP_TECHNOLOGY_SATELLITE	= 0x0000
-	,	EQUIP_TECHNOLOGY_MAGIC		= 0x0010
+#define MAX_ENTITY_TECHNOLOGY_COUNT 13
+	enum ENTITY_TECHNOLOGY : uint16_t
+	{	ENTITY_TECHNOLOGY_UNKNOWN	= 0x0000
+	,	ENTITY_TECHNOLOGY_BASIC		= 0x0001
+	,	ENTITY_TECHNOLOGY_MECHANIC	= 0x0002
+	,	ENTITY_TECHNOLOGY_DIGITAL	= 0x0004
+	,	ENTITY_TECHNOLOGY_GENETIC	= 0x0008
+	//,	ENTITY_TECHNOLOGY_CHEMICAL	= 0x0000
+	//,	ENTITY_TECHNOLOGY_BALLISTIC	= 0x0000
+	//,	ENTITY_TECHNOLOGY_LAUNCHER	= 0x0000
+	//,	ENTITY_TECHNOLOGY_SOUND		= 0x0000
+	//,	ENTITY_TECHNOLOGY_MICROWAVE	= 0x0000
+	//,	ENTITY_TECHNOLOGY_RADIACTIVE	= 0x0000
+	//,	ENTITY_TECHNOLOGY_RAY		= 0x0000
+	//,	ENTITY_TECHNOLOGY_SATELLITE	= 0x0000
+	,	ENTITY_TECHNOLOGY_MAGIC		= 0x0010
 	};
 
-#define MAX_EQUIP_TECHNOLOGY_COUNT 13
+#define MAX_ENTITY_TECHNOLOGY_COUNT 13
 	enum EQUIP_MATERIAL : uint16_t
 	{	EQUIP_MATERIAL_UNKNOWN
 	,	EQUIP_MATERIAL_WOOD
@@ -87,12 +87,12 @@ namespace klib
 	,	EQUIP_MATERIAL_POWER
 	};
 
-#define GRADE_COUNT 13
-	enum GRADE
-	{	GRADE_ILLUSION	= 0x00
-	,	GRADE_LIGHT		= 0x01
-	,	GRADE_MEDIUM	= 0x02
-	,	GRADE_HEAVY		= 0x03
+#define ENTITY_GRADE_COUNT 13
+	enum ENTITY_GRADE
+	{	ENTITY_GRADE_ILLUSION	= 0x00
+	,	ENTITY_GRADE_LIGHT		= 0x01
+	,	ENTITY_GRADE_MEDIUM	= 0x02
+	,	ENTITY_GRADE_HEAVY		= 0x03
 	};
 
 	enum ATTACK_TYPE : uint16_t
@@ -112,10 +112,41 @@ namespace klib
 	std::string getStringFromBit(ATTACK_EFFECT		bitStatus);
 	std::string getStringFromBit(DEFEND_EFFECT		bitStatus);
 	std::string getStringFromBit(PASSIVE_EFFECT		bitStatus);
-	std::string getStringFromBit(EQUIP_TECHNOLOGY	bitStatus);
-	std::string getStringFromBit(GRADE				bitStatus);
+	std::string getStringFromBit(ENTITY_TECHNOLOGY	bitStatus);
+	std::string getStringFromBit(ENTITY_GRADE				bitStatus);
 	std::string getStringFromBit(ATTACK_TYPE		bitStatus);
 	std::string getStringFromBit(EQUIP_MATERIAL		bitStatus);
+
+	struct SEntityEffect
+	{
+		ATTACK_EFFECT		Attack;
+		DEFEND_EFFECT		Defend;
+		PASSIVE_EFFECT		Passive;
+
+		inline constexpr SEntityEffect operator | (const SEntityEffect& other) const {
+			return{ (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
+		};
+	};
+
+	struct SEntityStatus
+	{
+		COMBAT_STATUS		Inflict;
+		COMBAT_STATUS		Immunity;
+
+		inline constexpr SEntityStatus operator | (const SEntityStatus& other) const {
+			return{ (COMBAT_STATUS)(Inflict | other.Inflict), (COMBAT_STATUS)(Immunity | other.Immunity) };
+		};
+	};
+
+	struct SEntityGrade
+	{
+		ENTITY_TECHNOLOGY	Tech;
+		ENTITY_GRADE		Level;
+
+		inline constexpr SEntityGrade operator | (const SEntityGrade& other) const {
+			return{ (ENTITY_TECHNOLOGY)(Tech | other.Tech), ::std::max(Level, other.Level) };
+		}
+	};
 
 #pragma pack(pop)
 }

@@ -63,22 +63,22 @@ std::string klib::getStringFromBit(PASSIVE_EFFECT bitStatus)
 	};
 }
 
-std::string klib::getStringFromBit(EQUIP_TECHNOLOGY bitStatus)
+std::string klib::getStringFromBit(ENTITY_TECHNOLOGY bitStatus)
 {	
 	switch(bitStatus) {
-	case EQUIP_TECHNOLOGY_UNKNOWN		:	return "Undefined equipment technology"	;
-	case EQUIP_TECHNOLOGY_BASIC			:	return "Basic"							;
-	case EQUIP_TECHNOLOGY_MECHANIC		:	return "Mechanic"						;
-	//case EQUIP_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
-	//case EQUIP_TECHNOLOGY_BALLISTIC		:	return "Ballistic"						;
-	//case EQUIP_TECHNOLOGY_LAUNCHER		:	return "Launcher"						;
-	case EQUIP_TECHNOLOGY_DIGITAL		:	return "Digital"						;
-	case EQUIP_TECHNOLOGY_GENETIC		:	return "Genetic"						;
-	//case EQUIP_TECHNOLOGY_SOUND			:	return "Sound"							;
-	//case EQUIP_TECHNOLOGY_MICROWAVE		:	return "Microwave"						;
-	//case EQUIP_TECHNOLOGY_RADIACTIVE	:	return "Radiactive"						;
-	//case EQUIP_TECHNOLOGY_RAY			:	return "Ray"							;
-	//case EQUIP_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
+	case ENTITY_TECHNOLOGY_UNKNOWN		:	return "Undefined equipment technology"	;
+	case ENTITY_TECHNOLOGY_BASIC			:	return "Basic"							;
+	case ENTITY_TECHNOLOGY_MECHANIC		:	return "Mechanic"						;
+	//case ENTITY_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
+	//case ENTITY_TECHNOLOGY_BALLISTIC		:	return "Ballistic"						;
+	//case ENTITY_TECHNOLOGY_LAUNCHER		:	return "Launcher"						;
+	case ENTITY_TECHNOLOGY_DIGITAL		:	return "Digital"						;
+	case ENTITY_TECHNOLOGY_GENETIC		:	return "Genetic"						;
+	//case ENTITY_TECHNOLOGY_SOUND			:	return "Sound"							;
+	//case ENTITY_TECHNOLOGY_MICROWAVE		:	return "Microwave"						;
+	//case ENTITY_TECHNOLOGY_RADIACTIVE	:	return "Radiactive"						;
+	//case ENTITY_TECHNOLOGY_RAY			:	return "Ray"							;
+	//case ENTITY_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
 	default:						
 		return "Unknown equipment technology"	;	
 	};
@@ -98,13 +98,13 @@ std::string klib::getStringFromBit(EQUIP_MATERIAL		bitStatus)
 	};
 }
 
-std::string klib::getStringFromBit(GRADE				bitStatus)
+std::string klib::getStringFromBit(ENTITY_GRADE				bitStatus)
 {	
 	switch(bitStatus) {
-	case GRADE_ILLUSION		:	return "Illusion"	;
-	case GRADE_LIGHT		:	return "Light	"	;
-	case GRADE_MEDIUM		:	return "Medium	"	;
-	case GRADE_HEAVY		:	return "Heavy	"	;
+	case ENTITY_GRADE_ILLUSION		:	return "Illusion"	;
+	case ENTITY_GRADE_LIGHT		:	return "Light	"	;
+	case ENTITY_GRADE_MEDIUM		:	return "Medium	"	;
+	case ENTITY_GRADE_HEAVY		:	return "Heavy	"	;
 	default:						
 		return "Unknown grade"	;	
 	};

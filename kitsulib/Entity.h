@@ -1,4 +1,5 @@
 #include "Misc.h"
+#include "EntityPoints.h"
 
 #ifndef __ENTITY_H__38924092634721346098170219783096__
 #define __ENTITY_H__38924092634721346098170219783096__
@@ -84,14 +85,7 @@ namespace klib
 			}
 		};
 
-		//inline bool						RemoveElement(size_t index) { 
-		//	if(index >= Count)
-		//		return false;
-		//	Slots[index]	= Slots[--Count];
-		//	return true; 
-		//};
-
-		inline uint32_t					RemoveSingleEntity(size_t index) { 
+		inline uint32_t					DecreaseEntity(size_t index) { 
 			if( --Slots[index].Count )
 				return Slots[index].Count;
 
@@ -107,30 +101,26 @@ namespace klib
 		};
 	};
 
-	struct SItem : public SEntity {
-		using SEntity::SEntity;
+	struct SItem		: public SEntity	{ using SEntity::SEntity; };
+	struct SWeapon		: public SEntity	{ using SEntity::SEntity; };
+	struct SArmor		: public SEntity	{ using SEntity::SEntity; };
+	struct SProfession	: public SEntity	{ using SEntity::SEntity; };
+	struct SVehicle		: public SEntity	{ using SEntity::SEntity; };
+	struct SStageProp	: public SEntity	{ using SEntity::SEntity; };
+
+	template<typename _EntityType>
+	class CEntity : public SEntity {
+		SEntityPoints	Points;
+		SEntityFlags	Flags;
+		std::string		Name;
 	};
 
-	struct SWeapon : public SEntity {
-		using SEntity::SEntity;
-	};
-
-	struct SArmor : public SEntity {
-		using SEntity::SEntity;
-	};
-
-	struct SProfession : public SEntity {
-		using SEntity::SEntity;
-	};
-
-	struct SVehicle : public SEntity {
-		using SEntity::SEntity;
-	};
-
-	struct SStageProp : public SEntity {
-		using SEntity::SEntity;
-	};
-
+	typedef class CEntity<SArmor		>	CEntityArmor		;
+	typedef class CEntity<SProfession	>	CEntityProfession	;
+	typedef class CEntity<SWeapon		>	CEntityWeapon		;
+	typedef class CEntity<SVehicle		>	CEntityVehicle		;
+	typedef class CEntity<SStageProp	>	CEntityStageProp	;
+	typedef class CEntity<SItem			>	CEntityItem			;
 };
 
 #pragma pack(pop)

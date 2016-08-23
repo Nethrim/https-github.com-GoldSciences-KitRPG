@@ -42,7 +42,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 			std::string itemDropName = klib::getItemName(itemDrop.Entity);
 			if(winner.Inventory.AddElement(itemDrop.Entity)) {
 				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDropName.c_str());
-				loser.Inventory.RemoveSingleEntity(i);
+				loser.Inventory.DecreaseEntity(i);
 			}
 			else {
 				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDropName.c_str(), loser.Name.c_str());
@@ -312,7 +312,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
 
-		if(0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN))
+		if(adventurer.DidLoseTurn())
 		{
 			printf("%s is stunned/asleep and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
@@ -325,7 +325,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 			break;
 
 		// Execute enemy attack turn
-		if(0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN))
+		if(currentEnemy.DidLoseTurn())
 		{
 			printf("%s is stunned/asleep and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;

@@ -273,7 +273,7 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 
 	bool bIsBlind = 0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND);
 
-	if(0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech.Tech & EQUIP_TECHNOLOGY_DIGITAL)) {
+	if(0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech.Tech & ENTITY_TECHNOLOGY_DIGITAL)) {
 		printf("This weapon was disabled by an electromagnetic pulse.\n");
 		return false;
 	}
@@ -439,7 +439,7 @@ bool klib::executeItem(int32_t indexInventory, CCharacter& user, CCharacter& tar
 	}
 
 	if(bUsedItem)
-		user.Inventory.RemoveSingleEntity(indexInventory);
+		user.Inventory.DecreaseEntity(indexInventory);
 
 	return bUsedItem;
 }
