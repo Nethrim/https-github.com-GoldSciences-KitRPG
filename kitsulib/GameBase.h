@@ -156,12 +156,19 @@ namespace klib
 			return 0;
 		};
 		void				NextTurn() {
-			for(uint32_t i=0; i<Count; ++i)
-				if(TurnsLeft[i] && 0 == --TurnsLeft[i])
+			for(uint32_t i=0; i<Count; ++i) {
+				if(0 < TurnsLeft[i] && 0 == --TurnsLeft[i])
 				{
 					Status		[i]	=	Status		[--Count];
 					TurnsLeft	[i]	=	TurnsLeft	[Count];
 				}
+				else if(0 > TurnsLeft[i] && 0 == ++TurnsLeft[i])
+				{
+					Status		[i]	=	Status		[--Count];
+					TurnsLeft	[i]	=	TurnsLeft	[Count];
+				}
+			}
+
 		};
 	};
 

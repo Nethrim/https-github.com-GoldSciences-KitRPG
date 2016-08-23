@@ -271,9 +271,9 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 	const std::string	attackerWeaponName	= getWeaponName(attacker.CurrentWeapon);
 	SCharacterPoints	attackerPoints		= calculateFinalPoints(attacker);
 
-	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND) > 0;
+	bool bIsBlind = 0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND);
 
-	if(attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech.Tech & EQUIP_TECHNOLOGY_DIGITAL)) {
+	if(0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech.Tech & EQUIP_TECHNOLOGY_DIGITAL)) {
 		printf("This weapon was disabled by an electromagnetic pulse.\n");
 		return false;
 	}
@@ -282,17 +282,17 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 	if(bIsBlind)
 		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit >>= 1);
 
-	if(target.CombatStatus.GetStatusTurns(COMBAT_STATUS_STUN)) {
+	if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_STUN)) {
 		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
-		finalChance	+= attackerPoints.Attack.Hit;
-	}
-	else if(target.CombatStatus.GetStatusTurns(COMBAT_STATUS_SLEEP)) {
-		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
-		finalChance	+= attackerPoints.Attack.Hit;
-	}
-	else if(target.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND)) {
-		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
 		finalChance	+= attackerPoints.Attack.Hit/2;
+	}
+	else if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_SLEEP)) {
+		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
+		finalChance	+= attackerPoints.Attack.Hit/3;
+	}
+	else if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND)) {
+		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
+		finalChance	+= attackerPoints.Attack.Hit/4;
 	}
 
 	if ((rand() % 100) < finalChance ) {
