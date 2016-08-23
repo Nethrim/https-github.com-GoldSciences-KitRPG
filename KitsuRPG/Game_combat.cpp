@@ -214,7 +214,8 @@ void printBonuses(const klib::CCharacter& character)
 	if( character.CombatBonus.TurnsLeft.Effect.Passive	> 0 ) printf("%s has additional flags for the next %u turn(s): Passive Effect  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Effect.Passive	, character.CombatBonus.Points.Effect.Passive	);
 	if( character.CombatBonus.TurnsLeft.Status.Immunity	> 0 ) printf("%s has additional flags for the next %u turn(s): Status Immunity (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Status.Immunity	, character.CombatBonus.Points.Status.Immunity	);
 	if( character.CombatBonus.TurnsLeft.Status.Inflict	> 0 ) printf("%s has additional flags for the next %u turn(s): Status Inflict  (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Status.Inflict	, character.CombatBonus.Points.Status.Inflict	);
-	if( character.CombatBonus.TurnsLeft.Tech			> 0 ) printf("%s has additional flags for the next %u turn(s): Technology      (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Tech			, character.CombatBonus.Points.Tech				);
+	if( character.CombatBonus.TurnsLeft.Tech.Tech		> 0 ) printf("%s has additional flags for the next %u turn(s): Technology      (0x%.04X).\n"	, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Tech.Tech		, character.CombatBonus.Points.Tech.Tech		);
+	if( character.CombatBonus.TurnsLeft.Tech.Level		> 0 ) printf("%s has additional level for the next %u turn(s): Level           (%.05i).\n"		, character.Name.c_str(),	character.CombatBonus.TurnsLeft.Tech.Level		, character.CombatBonus.Points.Tech.Level		);
 }
 
 void printCharacterShortInfo(klib::CCharacter& character)
@@ -311,7 +312,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
 
-		if(adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP))
+		if(0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN))
 		{
 			printf("%s is stunned/asleep and loses his turn!\n", adventurer.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
@@ -324,9 +325,9 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 			break;
 
 		// Execute enemy attack turn
-		if(currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || adventurer.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP))
+		if(0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < currentEnemy.CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN))
 		{
-			printf("%s is stunned/asleep  and loses his turn!\n", currentEnemy.Name.c_str());
+			printf("%s is stunned/asleep and loses his turn!\n", currentEnemy.Name.c_str());
 			turnOutcome = TURN_OUTCOME_CANCEL;
 			klib::applyTurnStatusAndBonusesAndSkipTurn(currentEnemy);
 		}

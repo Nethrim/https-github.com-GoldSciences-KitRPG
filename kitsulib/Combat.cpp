@@ -273,7 +273,7 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 
 	bool bIsBlind = attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND) > 0;
 
-	if(attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech & EQUIP_TECHNOLOGY_DIGITAL)) {
+	if(attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Tech.Tech & EQUIP_TECHNOLOGY_DIGITAL)) {
 		printf("This weapon was disabled by an electromagnetic pulse.\n");
 		return false;
 	}

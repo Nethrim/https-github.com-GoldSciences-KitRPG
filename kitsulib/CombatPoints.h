@@ -62,15 +62,17 @@ namespace klib
 
 	struct SCombatPoints
 	{
-		int32_t	Hit		;
-		int32_t	Damage	;
+		int32_t		Hit			;
+		int32_t		Damage		;
+		int32_t		Speed		;
+		int32_t		Absorption	;
 
 		inline constexpr SCombatPoints	operator +	(const SCombatPoints& other)			const	{ 
-			return {Hit+other.Hit, Damage+other.Damage}; 
+			return {Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption}; 
 		}
 
 		inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other)	const	{ 
-			return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; 
+			return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; 
 		}
 
 		SCombatPoints&					operator +=	(const SCombatPoints& other)					{ 

@@ -86,6 +86,13 @@ namespace klib
 	,	EQUIP_MATERIAL_POWER
 	};
 
+#define GRADE_COUNT 13
+	enum GRADE
+	{	GRADE_ILLUSION	= 0x00
+	,	GRADE_LIGHT		= 0x01
+	,	GRADE_MEDIUM	= 0x02
+	,	GRADE_HEAVY		= 0x03
+	};
 
 	std::string getStringFromBit(COMBAT_STATUS		bitStatus);
 	std::string getStringFromBit(ATTACK_EFFECT		bitStatus);

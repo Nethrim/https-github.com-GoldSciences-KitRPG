@@ -52,9 +52,9 @@ namespace klib
 
 	struct SCharacterEffect
 	{
-		ATTACK_EFFECT	Attack;
-		DEFEND_EFFECT	Defend;
-		PASSIVE_EFFECT	Passive;
+		ATTACK_EFFECT		Attack;
+		DEFEND_EFFECT		Defend;
+		PASSIVE_EFFECT		Passive;
 
 		inline constexpr SCharacterEffect operator | (const SCharacterEffect& other) const {
 			return { (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
@@ -63,12 +63,22 @@ namespace klib
 	
 	struct SCharacterStatus
 	{
-		COMBAT_STATUS	Inflict;
-		COMBAT_STATUS	Immunity;
+		COMBAT_STATUS		Inflict;
+		COMBAT_STATUS		Immunity;
 
 		inline constexpr SCharacterStatus operator | (const SCharacterStatus& other) const {
 			return { (COMBAT_STATUS)(Inflict | other.Inflict), (COMBAT_STATUS)(Immunity | other.Immunity) };
 		};
+	};
+
+	struct SCharacterGrade
+	{
+		EQUIP_TECHNOLOGY	Tech;
+		GRADE				Level;
+
+		inline constexpr SCharacterGrade operator | (const SCharacterGrade& other) const {
+			return { (EQUIP_TECHNOLOGY)(Tech | other.Tech), ::std::max(Level, other.Level) };
+		}
 	};
 
 	struct SCharacterPoints
@@ -79,13 +89,13 @@ namespace klib
 		int32_t				Coins;
 		SCharacterEffect	Effect;
 		SCharacterStatus	Status;
-		EQUIP_TECHNOLOGY	Tech;
+		SCharacterGrade		Tech;
 
 		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
 			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Effect, Status, Tech }; 
 		}
 		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, Effect | other.Effect, Status | other.Status, (EQUIP_TECHNOLOGY)(Tech | other.Tech) }; 
+			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
 		}
 		void PrintStatusAndEffect() const
 		{
@@ -141,7 +151,7 @@ namespace klib
 		int					GetStatusTurns(COMBAT_STATUS status)
 		{
 			for(uint32_t i=0; i<Count; ++i)
-				if(Status[i] == status)
+				if(Status[i] & status)
 					return TurnsLeft[i];
 			return 0;
 		};
@@ -256,7 +266,7 @@ namespace klib
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, COMBAT_STATUS inflictStatus, COMBAT_STATUS immunities) 
 			:Type				(characterType)
-			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities})
+			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, {attackEffect, defendEffect, passiveEffect}, {inflictStatus, immunities}, {}})
 			,CombatBonus		({})
 			,CombatStatus		({})
 			,Inventory			({})
