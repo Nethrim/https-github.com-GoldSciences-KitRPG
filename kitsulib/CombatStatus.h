@@ -61,7 +61,7 @@ namespace klib
 
 #define MAX_EQUIP_TECHNOLOGY_COUNT 13
 	enum EQUIP_TECHNOLOGY : uint16_t
-	{	EQUIP_TECHNOLOGY_NONE		= 0x0000
+	{	EQUIP_TECHNOLOGY_UNKNOWN	= 0x0000
 	,	EQUIP_TECHNOLOGY_BASIC		= 0x0001
 	,	EQUIP_TECHNOLOGY_MECHANIC	= 0x0002
 	,	EQUIP_TECHNOLOGY_DIGITAL	= 0x0004
@@ -79,7 +79,8 @@ namespace klib
 
 #define MAX_EQUIP_TECHNOLOGY_COUNT 13
 	enum EQUIP_MATERIAL : uint16_t
-	{	EQUIP_MATERIAL_WOOD
+	{	EQUIP_MATERIAL_UNKNOWN
+	,	EQUIP_MATERIAL_WOOD
 	,	EQUIP_MATERIAL_METAL
 	,	EQUIP_MATERIAL_BIO
 	,	EQUIP_MATERIAL_CLOTH
@@ -94,11 +95,27 @@ namespace klib
 	,	GRADE_HEAVY		= 0x03
 	};
 
+	enum ATTACK_TYPE : uint16_t
+	{	ATTACK_TYPE_NONE			= 0x000
+	,	ATTACK_TYPE_MELEE			= 0x001
+	,	ATTACK_TYPE_RANGED			= 0x002
+	,	ATTACK_TYPE_MAGIC			= 0x004
+	,	ATTACK_TYPE_PSYCHIC			= 0x008
+	,	ATTACK_TYPE_SATELLITE		= 0x010
+	,	ATTACK_TYPE_ANTI_PERSONNEL	= 0x020
+	,	ATTACK_TYPE_ANTI_TANK		= 0x040
+	,	ATTACK_TYPE_ANTI_AIR		= 0x080
+	,	ATTACK_TYPE_ANTI_SHIP		= 0x100
+	};
+
 	std::string getStringFromBit(COMBAT_STATUS		bitStatus);
 	std::string getStringFromBit(ATTACK_EFFECT		bitStatus);
 	std::string getStringFromBit(DEFEND_EFFECT		bitStatus);
 	std::string getStringFromBit(PASSIVE_EFFECT		bitStatus);
 	std::string getStringFromBit(EQUIP_TECHNOLOGY	bitStatus);
+	std::string getStringFromBit(GRADE				bitStatus);
+	std::string getStringFromBit(ATTACK_TYPE		bitStatus);
+	std::string getStringFromBit(EQUIP_MATERIAL		bitStatus);
 
 #pragma pack(pop)
 }

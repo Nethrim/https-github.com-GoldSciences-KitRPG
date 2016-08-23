@@ -16,6 +16,7 @@ namespace klib
 
 	typedef CWeapon CWeaponModifier;
 
+//	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
 static const CWeaponModifier modifiersWeapon[] = 
 //		MaxHP MaxMana HP Mana	Hit Attack Shield Coins
 {	{{{0,0,0},{0,0,0},{0,0},0,{},{}								,{EQUIP_TECHNOLOGY_BASIC												}},	"%s"					}
@@ -53,10 +54,10 @@ static const CWeaponModifier modifiersWeapon[] =
 
 #define DEATH_SCYTHE_STATUS_INFLICT ((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
 
+//	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
 static const CWeapon definitionsWeapon[] = 
 // 6th grade	No weapon: five points of hit chance.
-//		MaxHP MaxMana HP Mana	Hit Attack Shield Coins
-{	{{{0,0,0},{0,0,0},{5,0},0,{},{COMBAT_STATUS_NONE			},	{EQUIP_TECHNOLOGY_BASIC	}	},	"Glove"						}
+{	{{{0,0,0},{0,0,0},{5,0},0,{},{COMBAT_STATUS_NONE		},	{EQUIP_TECHNOLOGY_BASIC	}	},	"Glove"						}
 // 5th grade five points
 ,	{{{3},{},{0,2},0,{},{COMBAT_STATUS_STUN					},	{EQUIP_TECHNOLOGY_BASIC	}	},	"Club"						}
 ,	{{{},{},{4,1},0,{},{COMBAT_STATUS_BLIND					},	{EQUIP_TECHNOLOGY_BASIC	}	},	"Knuckle"					}

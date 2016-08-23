@@ -19,22 +19,22 @@ int main(void)
 	_CrtSetDbgFlag(tmp);
 #endif
 	klib::CCharacter characters[] = 
-	{	{	klib::CHARACTER_TYPE_ENEMY,		1,		1,		1,		1	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_NONE		,	"Unknown"	}
-	,	{	klib::CHARACTER_TYPE_PLAYER,	4,		50,		1,		100	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		,	"Anonymous"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		1,		50,		1,		1	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLIND		,	"Bug"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		2,		50,		1,		10	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BURN		,	"Wolf"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		3,		50,		2,		20	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BURN		,	"Raider"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		4,		45,		3,		30	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		,	"Soldier"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		5,		45,		4,		40	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLEEDING	,	"Knight"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		6,		50,		6,		60	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_POISON	,	"T-Rex"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		7,		55,		7,		75	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_POISON	,	"Dragon"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		8,		55,		8,		85	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_NONE		,	"Behemot"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		9,		60,		9,		90	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_NONE		,	"Jean Grey"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		10,		60,		10,		100	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_NONE		,	"Cthulhu"	}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		11,		60,		13,		150	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		,	"Thor"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		12,		70,		11,		150	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLIND		,	"Zeus"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		13,		60,		11,		150	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLEEDING	,	"Anhur"		}
-	,	{	klib::CHARACTER_TYPE_ENEMY,		14,		70,		15,		250	,	klib::ATTACK_EFFECT_NONE,	klib::DEFEND_EFFECT_NONE	,	klib::PASSIVE_EFFECT_NONE	,	DEATH_STATUS_INFLICT		,	DEATH_STATUS_IMMUNITY		,	"Death"		}
+	{	{	klib::CHARACTER_TYPE_ENEMY,		1,		1,		1,		1	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_NONE		},	"Unknown"	}
+	,	{	klib::CHARACTER_TYPE_PLAYER,	4,		50,		1,		100	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		},	"Anonymous"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		1,		50,		1,		1	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLIND		},	"Bug"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		2,		50,		1,		10	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BURN		},	"Wolf"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		3,		50,		2,		20	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BURN		},	"Raider"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		4,		45,		3,		30	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		},	"Soldier"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		5,		45,		4,		40	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLEEDING	},	"Knight"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		6,		50,		6,		60	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_POISON		},	"T-Rex"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		7,		55,		7,		75	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_POISON		},	"Dragon"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		8,		55,		8,		85	,	{}	,	{}																	,	"Behemot"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		9,		60,		9,		90	,	{}	,	{}																	,	"Jean Grey"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		10,		60,		10,		100	,	{}	,	{}																	,	"Cthulhu"	}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		11,		60,		13,		150	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_STUN		},	"Thor"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		12,		70,		11,		150	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLIND		},	"Zeus"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		13,		60,		11,		150	,	{}	,	{klib::COMBAT_STATUS_NONE		,	klib::COMBAT_STATUS_BLEEDING	},	"Anhur"		}
+	,	{	klib::CHARACTER_TYPE_ENEMY,		14,		70,		15,		250	,	{}	,	{DEATH_STATUS_INFLICT			,	DEATH_STATUS_IMMUNITY			},	"Death"		}
 	};
 	while(true)
 	{

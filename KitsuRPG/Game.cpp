@@ -12,10 +12,10 @@
 void displayInventory(const klib::SCharacterInventory& inventory)
 {
 	printf("\n-- Your inventory --\n");
-	if(inventory.ItemCount) {
+	if(inventory.Count) {
 		printf("You look at the remaining supplies in your backpack...\n");
-		for (unsigned int i = 0; i < inventory.ItemCount; i++)
-			printf("%u: x%.2u %s.\n", i + 1, inventory.Slots[i].ItemCount, klib::getItemName(inventory.Slots[i].Item).c_str());
+		for (unsigned int i = 0; i < inventory.Count; i++)
+			printf("%u: x%.2u %s.\n", i + 1, inventory.Slots[i].Count, klib::getItemName(inventory.Slots[i].Entity).c_str());
 	}
 	printf("\n");
 }
@@ -42,7 +42,7 @@ void equipWeapon	(klib::CCharacter& adventurer)
 	int32_t							menuItemCount=0; 
 
 	for(int32_t i=0, count = adventurer.Weapons.Count; i<count; ++i) { 
-		sprintf_s(menuItemText, "%s level %u", klib::getWeaponName(adventurer.Weapons.Slots[i]).c_str(), adventurer.Weapons.Slots[i].Level);
+		sprintf_s(menuItemText, "%s level %u", klib::getWeaponName(adventurer.Weapons.Slots[i].Entity).c_str(), adventurer.Weapons.Slots[i].Entity.Level);
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
@@ -66,7 +66,7 @@ void equipArmor		(klib::CCharacter& adventurer)
 	int32_t							menuItemCount=0; 
 
 	for(int32_t i=0, count = adventurer.Armors.Count; i<count; ++i)	{ 
-		sprintf_s(menuItemText, "%s level %u", klib::getArmorName(adventurer.Armors.Slots[i]).c_str(), adventurer.Armors.Slots[i].Level);
+		sprintf_s(menuItemText, "%s level %u", klib::getArmorName(adventurer.Armors.Slots[i].Entity).c_str(), adventurer.Armors.Slots[i].Entity.Level);
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
@@ -92,7 +92,7 @@ void equipProfession	(klib::CCharacter& adventurer)
 	int32_t							menuItemCount=0; 
 
 	for(int32_t i=0, count = adventurer.Professions.Count; i<count; ++i)	{ 
-		sprintf_s(menuItemText, "%s level %u", klib::getProfessionName(adventurer.Professions.Slots[i]).c_str(), adventurer.Professions.Slots[i].Level);
+		sprintf_s(menuItemText, "%s level %u", klib::getProfessionName(adventurer.Professions.Slots[i].Entity).c_str(), adventurer.Professions.Slots[i].Entity.Level);
 		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
 	}	
 
@@ -228,7 +228,7 @@ void bar(klib::CCharacter& adventurer)
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy %s! Choose something else...\n", itemName.c_str());
-			else if(klib::addItem(adventurer.Inventory, selectedItem))	// addItem() returns false if the inventory is full.
+			else if(adventurer.Inventory.AddElement(selectedItem))	// addItem() returns false if the inventory is full.
 			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemName.c_str());
 				adventurer.Points.Coins		-= itemPrice;

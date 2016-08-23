@@ -66,7 +66,7 @@ std::string klib::getStringFromBit(PASSIVE_EFFECT bitStatus)
 std::string klib::getStringFromBit(EQUIP_TECHNOLOGY bitStatus)
 {	
 	switch(bitStatus) {
-	case EQUIP_TECHNOLOGY_NONE			:	return "Undefined equipment technology"	;
+	case EQUIP_TECHNOLOGY_UNKNOWN		:	return "Undefined equipment technology"	;
 	case EQUIP_TECHNOLOGY_BASIC			:	return "Basic"							;
 	case EQUIP_TECHNOLOGY_MECHANIC		:	return "Mechanic"						;
 	//case EQUIP_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
@@ -81,5 +81,49 @@ std::string klib::getStringFromBit(EQUIP_TECHNOLOGY bitStatus)
 	//case EQUIP_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
 	default:						
 		return "Unknown equipment technology"	;	
+	};
+}
+
+std::string klib::getStringFromBit(EQUIP_MATERIAL		bitStatus)
+{	
+	switch(bitStatus) {
+	case EQUIP_MATERIAL_UNKNOWN	:return "Unknown material"	;
+	case EQUIP_MATERIAL_WOOD	:return "Wood"	;
+	case EQUIP_MATERIAL_METAL	:return "Metal"	;
+	case EQUIP_MATERIAL_BIO		:return "Bio"	;
+	case EQUIP_MATERIAL_CLOTH	:return "Cloth"	;
+	case EQUIP_MATERIAL_POWER	:return "Power"	;
+	default:						
+		return "Unknown equipment material"	;	
+	};
+}
+
+std::string klib::getStringFromBit(GRADE				bitStatus)
+{	
+	switch(bitStatus) {
+	case GRADE_ILLUSION		:	return "Illusion"	;
+	case GRADE_LIGHT		:	return "Light	"	;
+	case GRADE_MEDIUM		:	return "Medium	"	;
+	case GRADE_HEAVY		:	return "Heavy	"	;
+	default:						
+		return "Unknown grade"	;	
+	};
+}
+
+std::string klib::getStringFromBit(ATTACK_TYPE			bitStatus)
+{	
+	switch(bitStatus) {
+	case ATTACK_TYPE_NONE			: return "No attack type"	;
+	case ATTACK_TYPE_MELEE			: return "Melee"			;
+	case ATTACK_TYPE_RANGED			: return "Ranged"			;
+	case ATTACK_TYPE_MAGIC			: return "Magic"			;
+	case ATTACK_TYPE_PSYCHIC		: return "Psychic"			;
+	case ATTACK_TYPE_SATELLITE		: return "Satellite"		;
+	case ATTACK_TYPE_ANTI_PERSONNEL	: return "Antipersonnel"	;
+	case ATTACK_TYPE_ANTI_TANK		: return "Anti-tank"		;
+	case ATTACK_TYPE_ANTI_AIR		: return "Anti-air"			;
+	case ATTACK_TYPE_ANTI_SHIP		: return "Anti-ship"		;
+	default:						
+		return "Unknown attack type"	;	
 	};
 }

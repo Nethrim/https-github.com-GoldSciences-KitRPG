@@ -1,6 +1,7 @@
 #include "Inventory.h"
 #include "CombatPoints.h"
 #include "CombatStatus.h"
+#include "Entity.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -42,7 +43,7 @@ namespace klib
 	{
 		SLifePointsMultiplier	MaxLife;
 		SLifePointsMultiplier	CurrentLife;
-		SCombatPointsMultiplier	Attack;
+		SAttackPointsMultiplier	Attack;
 		double					Coins;
 
 		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const	{ 
@@ -85,7 +86,7 @@ namespace klib
 	{
 		SLifePoints			MaxLife;
 		SLifePoints			CurrentLife;
-		SCombatPoints		Attack;
+		SAttackPoints		Attack;
 		int32_t				Coins;
 		SCharacterEffect	Effect;
 		SCharacterStatus	Status;
@@ -172,59 +173,6 @@ namespace klib
 		};
 	};
 
-	struct SEquip
-	{
-		int16_t Index		= 0;
-		int16_t Modifier	= 0;
-		int16_t Level		= 1;
-		inline constexpr SEquip() = default;
-		inline constexpr SEquip(int16_t index, int16_t modifier, int16_t level=1)
-			: Index		(index		)
-			, Modifier	(modifier	)
-			, Level		(level		)
-		{};
-	};
-
-	struct SWeapon : public SEquip {
-		using SEquip::SEquip;
-	};
-
-	struct SArmor : public SEquip {
-		using SEquip::SEquip;
-	};
-
-	struct SProfession : public SEquip {
-		using SEquip::SEquip;
-	};
-
-	template<typename _T, size_t _Size>
-	struct SEquipContainer
-	{
-		uint32_t	Count			= 0;
-		_T			Slots[_Size]	= {};
-
-		inline constexpr int32_t	GetMaxSize() const { return _Size; };
-
-		inline bool					AddElement(const _T& element) { 
-			if(Count >= _Size)
-				return false;
-			Slots[Count++]	= element;
-			return true; 
-		};
-		inline bool					RemoveElement(size_t index) { 
-			if(index >= Count)
-				return false;
-			Slots[index]	= Slots[--Count];
-			return true; 
-		};
-		inline int32_t				FindElement(const _T& element) { 
-			for(uint32_t i=0, count=std::max((uint32_t)_Size, Count); i<count; i++)
-				if(Slots[i] == element)
-					return i;
-			return -1;
-		};
-	};
-
 	enum CHARACTER_TYPE : int32_t
 	{	CHARACTER_TYPE_UNKNOWN
 	,	CHARACTER_TYPE_NPC
@@ -234,15 +182,29 @@ namespace klib
 	,	CHARACTER_TYPE_ADMIN
 	};
 
+
+	struct SCharacterResearchGroup
+	{
+		SEntityContainer<int16_t, 256>	Definitions;
+		SEntityContainer<int16_t, 256>	Modifiers;
+	};
+
+	struct SCharacterResearch
+	{
+		SCharacterResearchGroup			Weapon		= {};
+		SCharacterResearchGroup			Armor		= {};
+		SCharacterResearchGroup			Profession	= {};
+	};
+
 	// POD to store all the character data that is not a string or object.
 	struct SCharacter
 	{
 		CHARACTER_TYPE		Type				= CHARACTER_TYPE_UNKNOWN;
 		SCharacterPoints	Points				= { {10, 0, 0}, {10, 0,	0}, {50, 1}, 10};	// These are the base character points.
-		SCombatBonus		CombatBonus			= {};
-		SCombatStatus		CombatStatus		= {};
-		SCharacterInventory	Inventory			= {};
-		SCharacterScore		Score				= {};	
+		SCombatBonus		CombatBonus			= SCombatBonus	();
+		SCombatStatus		CombatStatus		= SCombatStatus	();
+		SCharacterInventory	Inventory			= SCharacterInventory();
+		SCharacterScore		Score				= SCharacterScore();	
 		SWeapon				CurrentWeapon		= {0,0,1};	// Index, ModifierIndex, Level
 		SArmor				CurrentArmor		= {0,0,1};	// Index, ModifierIndex, Level
 		SProfession			CurrentProfession	= {0,0,1};	// Index, ModifierIndex, Level
@@ -251,16 +213,11 @@ namespace klib
 		SArmor				MaxArmor			= {0,0,1};	// Index, ModifierIndex, Level
 		SProfession			MaxProfession		= {0,0,1};	// Index, ModifierIndex, Level
 
-		SEquipContainer<SWeapon		, 256>	Weapons		= {};
-		SEquipContainer<SArmor		, 256>	Armors		= {};
-		SEquipContainer<SProfession	, 256>	Professions	= {};
+		SEntityContainer<SWeapon		, 256>	Weapons		= {};
+		SEntityContainer<SArmor			, 256>	Armors		= {};
+		SEntityContainer<SProfession	, 256>	Professions	= {};
 
-		SEquipContainer<int16_t, 256>	ResearchedDefinitionsWeapon		= {};
-		SEquipContainer<int16_t, 256>	ResearchedDefinitionsArmor		= {};
-		SEquipContainer<int16_t, 256>	ResearchedDefinitionsProfession	= {};
-		SEquipContainer<int16_t, 256>	ResearchedModifiersWeapon		= {};
-		SEquipContainer<int16_t, 256>	ResearchedModifiersArmor		= {};
-		SEquipContainer<int16_t, 256>	ResearchedModifiersProfession	= {};
+		SCharacterResearch						Researched;
 
 		void				UnloadWeapon		()	{	Weapons.AddElement(CurrentWeapon);	};
 		void				UnloadArmor			()	{	Armors.AddElement(CurrentArmor);	};
@@ -269,15 +226,14 @@ namespace klib
 		void				EquipArmor			(size_t slotIndex);
 		void				EquipProfession		(size_t slotIndex);
 
-
 		constexpr SCharacter() = default;
-		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, COMBAT_STATUS inflictStatus, COMBAT_STATUS immunities) 
+		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SCharacterEffect characterEffect, SCharacterStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, {attackEffect, defendEffect, passiveEffect}, {inflictStatus, immunities}, {}})
-			,CombatBonus		({})
-			,CombatStatus		({})
-			,Inventory			({})
-			,Score				({})
+			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, characterEffect, characterStatus, {}})
+			,CombatBonus		(SCombatBonus	())
+			,CombatStatus		(SCombatStatus	())
+			,Inventory			(SCharacterInventory())
+			,Score				(SCharacterScore())
 			,CurrentWeapon		({0,0,1})
 			,CurrentArmor		({0,0,1})
 			,CurrentProfession	({0,0,1})

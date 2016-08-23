@@ -19,6 +19,7 @@ namespace klib
 
 	typedef CArmor CArmorModifier;
 
+//	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
 static const CArmorModifier modifiersArmor[] = 
 {	{ {{},{}		,{},0,{},{}																				,	{EQUIP_TECHNOLOGY_BASIC		}},	"%s"					}
 ,	{ {{},{2,1}		,{},0,{},{}																				,	{EQUIP_TECHNOLOGY_BASIC		}},	"%s of Regeneration"	}
@@ -33,7 +34,7 @@ static const CArmorModifier modifiersArmor[] =
 ,	{ {{},{1}		,{},0,{ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_SHIELD_REPAIR}, {}, {(EQUIP_TECHNOLOGY)(EQUIP_TECHNOLOGY_DIGITAL|EQUIP_TECHNOLOGY_GENETIC)		}},	"Regenerative %s"		}
 };
 
-
+//	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
 static const CArmor definitionsArmor[] = 	
 {	{ 	{{}		,	{}		,{2,0,0,0},0,	{},{}											,	{EQUIP_TECHNOLOGY_BASIC, GRADE_LIGHT	}},	"Underwear"				}
 ,	{ 	{{0,0,1},	{}		,{0,0,0,1},0,	{},{}											,	{EQUIP_TECHNOLOGY_BASIC, GRADE_LIGHT	}},	"Robe"					}

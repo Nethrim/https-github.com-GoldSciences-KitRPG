@@ -42,7 +42,7 @@ void main()
 	bool bPlayAgain = true;
 	while(bPlayAgain)
 	{
-		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, klib::ATTACK_EFFECT_NONE, klib::DEFEND_EFFECT_NONE, klib::PASSIVE_EFFECT_NONE, klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN, Name);
+		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
 
 		adventurer.	CurrentWeapon		.Index		= rand()%2;//(int16_t)(rand() % size(klib::definitionsWeapon		));//rand()%4;
 		adventurer.	CurrentArmor		.Index		= rand()%2;//12;//(int16_t)(rand() % size(klib::definitionsArmor		));//rand()%4;

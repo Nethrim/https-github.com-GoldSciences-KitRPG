@@ -171,6 +171,7 @@
     <ClInclude Include="CombatPoints.h" />
     <ClInclude Include="CombatStatus.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="GameBase.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />

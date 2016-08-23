@@ -16,15 +16,32 @@ namespace klib
 		inline constexpr SLifePointsMultiplier	operator *	(const int32_t level)	const	{ 
 			return { Health*level, Mana*level, Shield*level }; 
 		}
+
+		void Print() const
+		{
+			printf("Health.: %f.\n",	Health	);
+			printf("Mana---: %f.\n",	Mana	);
+			printf("Shield.: %f.\n",	Shield	);
+		}
 	};
 
-	struct SCombatPointsMultiplier
+	struct SAttackPointsMultiplier
 	{
-		double	Hit		;
-		double	Damage	;
+		double	Hit			;
+		double	Damage		;
+		double	Speed		;
+		double	Absorption	;
 
-		inline constexpr SCombatPointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { Hit*level, Damage*level }; 
+		inline constexpr SAttackPointsMultiplier	operator *	(const int32_t level)	const	{ 
+			return { Hit*level, Damage*level, Speed*level, Absorption*level }; 
+		}
+
+		void Print() const
+		{
+			printf("Hit........: %f.\n",	Hit			);
+			printf("Damage-----: %f.\n",	Damage		);
+			printf("Speed......: %f.\n",	Speed		);
+			printf("Absorption-: %f.\n",	Absorption	);
 		}
 	};
 
@@ -54,35 +71,37 @@ namespace klib
 
 		void Print() const
 		{
-			printf("HP     : %i.\n",	Health	);
-			printf("Mana   : %i.\n",	Mana	);
-			printf("Shield : %i.\n",	Shield	);
+			printf("Health.: %i.\n",	Health	);
+			printf("Mana---: %i.\n",	Mana	);
+			printf("Shield.: %i.\n",	Shield	);
 		}
 	};
 
-	struct SCombatPoints
+	struct SAttackPoints
 	{
 		int32_t		Hit			;
 		int32_t		Damage		;
 		int32_t		Speed		;
 		int32_t		Absorption	;
 
-		inline constexpr SCombatPoints	operator +	(const SCombatPoints& other)			const	{ 
+		inline constexpr SAttackPoints	operator +	(const SAttackPoints& other)			const	{ 
 			return {Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption}; 
 		}
 
-		inline constexpr SCombatPoints	operator *	(const SCombatPointsMultiplier& other)	const	{ 
+		inline constexpr SAttackPoints	operator *	(const SAttackPointsMultiplier& other)	const	{ 
 			return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; 
 		}
 
-		SCombatPoints&					operator +=	(const SCombatPoints& other)					{ 
+		SAttackPoints&					operator +=	(const SAttackPoints& other)					{ 
 			Hit += other.Hit; Damage += other.Damage; return *this; 
 		}
 
 		void Print() const
 		{
-			printf("Hit    : %i.\n",	Hit		);
-			printf("Damage : %i.\n",	Damage	);
+			printf("Hit........: %i.\n",	Hit		);
+			printf("Damage-----: %i.\n",	Damage	);
+			printf("Speed......: %i.\n",	Damage	);
+			printf("Absorption-: %%%i.\n",	Damage	);
 		}
 	};
 

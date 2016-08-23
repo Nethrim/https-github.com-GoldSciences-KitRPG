@@ -13,8 +13,8 @@ namespace klib
 		std::string			Name			= "Unnamed";
 
 		CCharacter() = default;
-		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, ATTACK_EFFECT attackEffect, DEFEND_EFFECT defendEffect, PASSIVE_EFFECT passiveEffect, COMBAT_STATUS inflictStatus, COMBAT_STATUS immunities, const std::string& name)
-			:SCharacter	(characterType, maxHP, hitChance, attack, coins, attackEffect, defendEffect, passiveEffect, inflictStatus, immunities)
+		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SCharacterEffect characterEffect, SCharacterStatus characterStatus, const std::string& name)
+			:SCharacter	(characterType, maxHP, hitChance, attack, coins, characterEffect, characterStatus)
 			,Name		(name)
 			{};
 

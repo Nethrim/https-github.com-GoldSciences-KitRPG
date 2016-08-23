@@ -35,19 +35,19 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	printf("\n%s dropped %u coins!!\n", loser.Name.c_str(), drop);
 	winner.Points.Coins += drop;
 	loser.Points.Coins	-= drop;
-	for(uint32_t i=0; i<loser.Inventory.ItemCount; i++) 
+	for(uint32_t i=0; i<loser.Inventory.Count; i++) 
 		if( 0 == (rand()%2) )
 		{
-			const klib::SInventorySlot& itemDrop = loser.Inventory.Slots[i];
-			std::string itemDropName = klib::getItemName(itemDrop.Item);
-			if(klib::addItem(winner.Inventory, itemDrop.Item)) {
+			const klib::SEntitySlot<klib::SItem>& itemDrop = loser.Inventory.Slots[i];
+			std::string itemDropName = klib::getItemName(itemDrop.Entity);
+			if(winner.Inventory.AddElement(itemDrop.Entity)) {
 				printf("\n%s dropped %s!!\n", loser.Name.c_str(), itemDropName.c_str());
+				loser.Inventory.RemoveSingleEntity(i);
 			}
 			else {
 				printf("%s can't pick up %s by %s because the inventory is full!\n", winner.Name.c_str(), itemDropName.c_str(), loser.Name.c_str());
 			}
 
-			klib::removeItem(loser.Inventory, i, loser.Name);
 		}
 
 	std::string loserWeaponName = klib::getWeaponName(loser.CurrentWeapon);
@@ -267,7 +267,7 @@ TURN_OUTCOME playerTurn(klib::CCharacter& adventurer, klib::CCharacter& currentE
 TURN_ACTION resolveAI(klib::CCharacter& enemy, klib::CCharacter& adventurer)
 {
 	TURN_ACTION action = TURN_ACTION_ATTACK;
-	if(enemy.Inventory.ItemCount)
+	if(enemy.Inventory.Count)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
 	else if(enemy.Points.CurrentLife.Health <= (enemy.Points.MaxLife.Health/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
@@ -345,7 +345,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	bool bUsedItem = false;
 	int32_t indexInventory = ~0U;
 	static const size_t inventorySize = size(user.Inventory.Slots);
-	if(0 == user.Inventory.ItemCount)
+	if(0 == user.Inventory.Count)
 	{
 		printf("%s has no items in the inventory.\n", user.Name.c_str());
 		return false;
@@ -353,23 +353,23 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 
 	klib::SMenuItem<int32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
 	char itemOption[128] = {};
-	for(uint32_t i=0; i<user.Inventory.ItemCount; ++i)
+	for(uint32_t i=0; i<user.Inventory.Count; ++i)
 	{
-		std::string itemName = klib::getItemName(user.Inventory.Slots[i].Item);
-		sprintf_s(itemOption, "- x%.2u %s", user.Inventory.Slots[i].ItemCount, itemName.c_str());
+		std::string itemName = klib::getItemName(user.Inventory.Slots[i].Entity);
+		sprintf_s(itemOption, "- x%.2u %s", user.Inventory.Slots[i].Count, itemName.c_str());
 		itemOptions[i].ReturnValue	= i;
  		itemOptions[i].Text			= itemOption;
 	}
-	itemOptions[user.Inventory.ItemCount].ReturnValue	= user.Inventory.ItemCount;
-	itemOptions[user.Inventory.ItemCount].Text			= "Back to combat options";
+	itemOptions[user.Inventory.Count].ReturnValue	= user.Inventory.Count;
+	itemOptions[user.Inventory.Count].Text			= "Back to combat options";
 
 	if(user.Type == klib::CHARACTER_TYPE_PLAYER) 
 	{
-		indexInventory = displayMenu(user.Inventory.ItemCount+1, "Select an item to use", itemOptions);
+		indexInventory = displayMenu(user.Inventory.Count+1, "Select an item to use", itemOptions);
 
-		if(indexInventory == user.Inventory.ItemCount) // exit option
+		if(indexInventory == user.Inventory.Count) // exit option
 			bUsedItem = false;
-		else if (user.Inventory.Slots[indexInventory].ItemCount <= 0)
+		else if (user.Inventory.Slots[indexInventory].Count <= 0)
 			printf("You don't have anymore of that. Use something else...\n"); 
 		else {
 			// if we reached here it means that the input was valid so we select the description and exit the loop
@@ -378,8 +378,8 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	}
 	else // not a player so execute choice by AI
 	{
-		indexInventory = (int32_t)(rand() % user.Inventory.ItemCount);	// this should be improved.
-		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
+		indexInventory = (int32_t)(rand() % user.Inventory.Count);	// this should be improved.
+		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Entity.Index];
 		
 		// Only use potions if we have less than 80% HP
 		if	 ( klib::ITEM_TYPE_POTION		!= itemDescription.Type
@@ -392,7 +392,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	if(bUsedItem)
 	{
 		const klib::SCharacterPoints finalPoints = calculateFinalPoints(user);
-		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Item.Index];
+		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Entity.Index];
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
 		 && klib::PROPERTY_TYPE_HEALTH == itemDescription.Property 
 		 && user.Points.CurrentLife.Health == finalPoints.MaxLife.Health)
