@@ -3,6 +3,7 @@
 #include "Weapon.h"
 #include "Profession.h"
 #include "Item.h"
+#include "Vehicle.h"
 
 using namespace klib;
 
@@ -13,17 +14,18 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 // Returns final passthrough damage (not blocked by shield) to use by vampire and reflect effects.
 SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName)
 {
-	if(0 >= target.Points.Points.LifeCurrent.Health)	// This character is already dead
+	if(0 >= target.Points.LifeCurrent.Health)	// This character is already dead
 		return {};
 
 	const std::string	targetArmorName		= getArmorName	(target.CurrentArmor);
-	SCharacterPoints	targetFinalPoints	= calculateFinalPoints(target);
-	const int32_t		targetArmorShield	= targetFinalPoints.Points.LifeMax.Shield;
+	SEntityPoints		targetFinalPoints	= calculateFinalPoints(target);
+	SEntityFlags		targetFinalFlags	= calculateFinalFlags(target);
+	const int32_t		targetArmorShield	= targetFinalPoints.LifeMax.Shield;
 	
 	// Impenetrable armors always have 60% extra absorption rate.
-	if(targetFinalPoints.Flags.Effect.Defend & DEFEND_EFFECT_IMPENETRABLE)
+	if(targetFinalFlags.Effect.Defend & DEFEND_EFFECT_IMPENETRABLE)
 	{
-		if(target.Points.Points.LifeCurrent.Shield) {
+		if(target.Points.LifeCurrent.Shield) {
 			absorptionRate += 60;
 			printf("%s damage absorption rate for %s is raised to %%%u because of the impenetrable property.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
 		}
@@ -32,8 +34,8 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 	{	
 		// If the armor is not impenetrable, the absorption rate is affected by the shield damage.
 		printf("%s damage absorption rate for %s is %%%u.\n", targetArmorName.c_str(), sourceName.c_str(), absorptionRate);
-		if(target.Points.Points.LifeCurrent.Shield) 
-			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.Points.LifeCurrent.Shield/(double)std::max(targetArmorShield, 1))), 1) : 0;
+		if(target.Points.LifeCurrent.Shield) 
+			absorptionRate = absorptionRate ? std::max((int32_t)(absorptionRate*(target.Points.LifeCurrent.Shield/(double)std::max(targetArmorShield, 1))), 1) : 0;
 		else
 			absorptionRate = 0;
 
@@ -50,7 +52,7 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 	if( totalDamage < damageDealt )
 	{
 		int errorDamage = damageDealt-totalDamage;
-		if(0 == absorptionRate || 0 == target.Points.Points.LifeCurrent.Shield)
+		if(0 == absorptionRate || 0 == target.Points.LifeCurrent.Shield)
 		{
 			printf("%u damage error will be applied to the health.\n", errorDamage);
 			passthroughDamage += errorDamage;
@@ -66,21 +68,21 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 
 	if(shieldedDamage)
 	{
-		int remainingShield = target.Points.Points.LifeCurrent.Shield-shieldedDamage;
-		if(target.Points.Points.LifeCurrent.Shield)
+		int remainingShield = target.Points.LifeCurrent.Shield-shieldedDamage;
+		if(target.Points.LifeCurrent.Shield)
 		{
-			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.Points.LifeCurrent.Shield, shieldedDamage), sourceName.c_str());
-			target.Points.Points.LifeCurrent.Shield = std::max(0, remainingShield);
+			printf("%s's shield absorbs %u damage from %s.\n", target.Name.c_str(), std::min(target.Points.LifeCurrent.Shield, shieldedDamage), sourceName.c_str());
+			target.Points.LifeCurrent.Shield = std::max(0, remainingShield);
 			if(remainingShield < 0)
 				printf("%s's shield ran out allowing some damage from %s to pass through.\n", target.Name.c_str(), sourceName.c_str());
 			else
-				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.Points.LifeCurrent.Shield);
+				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.LifeCurrent.Shield);
 		}
 		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
 		{
 			finalPassthroughDamage	= remainingShield*-1;
 			printf("%s's wasn't protected against %u shieldable damage from %s.\n", target.Name.c_str(), finalPassthroughDamage, sourceName.c_str());
-			target.Points.Points.LifeCurrent.Health += remainingShield;
+			target.Points.LifeCurrent.Health += remainingShield;
 		}
 	}
 
@@ -88,7 +90,7 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 		printf("%s receives %u passthrough damage from %s.\n", target.Name.c_str(), passthroughDamage, sourceName.c_str());
 	finalPassthroughDamage	+= passthroughDamage;
 
-	target.Points.Points.LifeCurrent.Health -= passthroughDamage;
+	target.Points.LifeCurrent.Health -= passthroughDamage;
 
 	return { finalPassthroughDamage, damageDealt-finalPassthroughDamage };
 }
@@ -96,15 +98,15 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 
 COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t absorbChance, int32_t turnCount, const std::string& sourceName)
 {
-	if(COMBAT_STATUS_NONE == weaponStatus || 0 >= target.Points.Points.LifeCurrent.Health)
+	if(COMBAT_STATUS_NONE == weaponStatus || 0 >= target.Points.LifeCurrent.Health)
 		return COMBAT_STATUS_NONE;
 
 	const std::string	targetArmorName			= getArmorName(target.CurrentArmor);
 
 	COMBAT_STATUS appliedStatus = COMBAT_STATUS_NONE;
 
-	SCharacterPoints targetFinalPoints = calculateFinalPoints(target);
-	if((targetFinalPoints.Flags.Effect.Defend & DEFEND_EFFECT_IMPENETRABLE) && target.Points.Points.LifeCurrent.Shield)
+	SEntityFlags targetFinalFlags = calculateFinalFlags(target);
+	if((targetFinalFlags.Effect.Defend & DEFEND_EFFECT_IMPENETRABLE) && target.Points.LifeCurrent.Shield)
 	{
 		absorbChance = absorbChance ? std::max(60, absorbChance*2) : 60;
 		printf("%s absorb chance of status by %s is modified to %%%u because of the impenetrable property of %s.\n", target.Name.c_str(), sourceName.c_str(), absorbChance, targetArmorName.c_str());
@@ -118,7 +120,7 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 		std::string text = getStringFromBit(bitStatus);
 
-		if(bitStatus & targetFinalPoints.Flags.Status.Immunity)
+		if(bitStatus & targetFinalFlags.Status.Immunity)
 		{
 			printf("%s is immune to %s!\n", target.Name.c_str(), text.c_str());
 			continue;
@@ -140,19 +142,19 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t turnCount, const std::string& sourceName)
 {
-	if(COMBAT_STATUS_NONE == weaponStatus || 0 >= target.Points.Points.LifeCurrent.Health)
+	if(COMBAT_STATUS_NONE == weaponStatus || 0 >= target.Points.LifeCurrent.Health)
 		return COMBAT_STATUS_NONE;
 
 	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.CurrentArmor);
 	const std::string	targetArmorName			= getArmorName(target.CurrentArmor);
-	SCharacterPoints	targetFinalPoints		= calculateFinalPoints(target);
-	const int32_t		targetArmorShield		= targetFinalPoints.Points.LifeMax.Shield;
+	SEntityPoints		targetFinalPoints		= calculateFinalPoints(target);
+	const int32_t		targetArmorShield		= targetFinalPoints.LifeMax.Shield;
 
 	COMBAT_STATUS appliedStatus = COMBAT_STATUS_NONE;
 	
 	int32_t absorbChance;
 
-	double absorptionRatio = std::max(0.0, (target.Points.Points.LifeCurrent.Shield/(double)targetArmorShield))/2.0;
+	double absorptionRatio = std::max(0.0, (target.Points.LifeCurrent.Shield/(double)targetArmorShield))/2.0;
 	absorbChance = 50+(int32_t)(absorptionRatio*targetArmorAbsorption);
 	absorbChance = std::min(absorbChance, 100);
 
@@ -162,12 +164,14 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 int32_t klib::applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) 
 {
-	SCharacterPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
+	SEntityPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
+	SEntityFlags targetFinalFlags = calculateFinalFlags(targetReflecting);
+
 		if( 0 == damageDealt 
-		||	0 == (targetFinalPoints.Flags.Effect.Defend & DEFEND_EFFECT_REFLECT) 
-		||	0 >= targetReflecting.Points.Points.LifeCurrent.Shield 
-		||	0 >= attacker.Points.Points.LifeCurrent.Health
-		||	0 >= targetReflecting.Points.Points.LifeCurrent.Health
+		||	0 == (targetFinalFlags.Effect.Defend & DEFEND_EFFECT_REFLECT) 
+		||	0 >= targetReflecting.Points.LifeCurrent.Shield 
+		||	0 >= attacker.Points.LifeCurrent.Health
+		||	0 >= targetReflecting.Points.LifeCurrent.Health
 		)
 		return 0;
 
@@ -181,11 +185,12 @@ int32_t klib::applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecti
 
 	SLifePoints finalDamage	= applyShieldableDamage(attacker, damageDealt, targetArmorName);
 	// If the attacker was killed by the reflect we need to avoid reflecting from her armor.
-	if(finalDamage.Shield && 0 < attacker.Points.Points.LifeCurrent.Health)
+	if(finalDamage.Shield && 0 < attacker.Points.LifeCurrent.Health)
 	{
-		SCharacterPoints	attackerFinalPoints = calculateFinalPoints(attacker);
-		DEFEND_EFFECT		attackerArmorEffect = attackerFinalPoints.Flags.Effect.Defend;
-		if((attackerArmorEffect & DEFEND_EFFECT_REFLECT) && attacker.Points.Points.LifeCurrent.Shield)
+		SEntityFlags		attackerFinalFlags = calculateFinalFlags(attacker);
+
+		DEFEND_EFFECT		attackerArmorEffect = attackerFinalFlags.Effect.Defend;
+		if((attackerArmorEffect & DEFEND_EFFECT_REFLECT) && attacker.Points.LifeCurrent.Shield)
 		{
 			const std::string	attackerArmorName		= getArmorName	(attacker.CurrentArmor);
 			printf("%s causes a recursive reflection with %s dealing %u damage.\n", attackerArmorName.c_str(), targetArmorName.c_str(), damageDealt);
@@ -240,26 +245,27 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 
 void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName) 
 {
-	if(calculateFinalPoints(targetReflecting).Flags.Effect.Defend & DEFEND_EFFECT_BLIND)
+	if(calculateFinalFlags(targetReflecting).Effect.Defend & DEFEND_EFFECT_BLIND)
 		applyAttackStatus(targetReflecting, COMBAT_STATUS_BLIND, 1, getArmorName(targetReflecting.CurrentArmor));
 
 	if( 0 == damageDealt )
 		return;
 
-	SCharacterPoints	attackerPoints	= calculateFinalPoints(attacker);
-	SLifePoints			finalDamage 	= applySuccessfulHit(attacker, targetReflecting, damageDealt, absorptionRate, attackerPoints.Flags.Status.Inflict != COMBAT_STATUS_NONE, attackerPoints.Flags.Status.Inflict, 1, sourceName);
+	SEntityPoints		attackerPoints	= calculateFinalPoints(attacker);
+	SEntityFlags		attackerFlags	= calculateFinalFlags(attacker);
+	SLifePoints			finalDamage 	= applySuccessfulHit(attacker, targetReflecting, damageDealt, absorptionRate, attackerFlags.Status.Inflict != COMBAT_STATUS_NONE, attackerFlags.Status.Inflict, 1, sourceName);
 
 	// Apply combat bonuses from weapon for successful hits.
-	const SCharacterPoints attackerWeaponPoints = getWeaponPoints(attacker.CurrentWeapon);
-	applyCombatBonus(attacker, attackerWeaponPoints.Points, sourceName);
+	const SEntityPoints attackerWeaponPoints = getWeaponPoints(attacker.CurrentWeapon);
+	applyCombatBonus(attacker, attackerWeaponPoints, sourceName);
 	attackerPoints			= calculateFinalPoints(attacker);
 	printf("\n");
 	// Apply weapon effects for successful hits.
-	ATTACK_EFFECT		attackerWeaponEffect	= attackerPoints.Flags.Effect.Attack;
-	applyWeaponSteal(ATTACK_EFFECT_LEECH_HEALTH	, attackerWeaponEffect, finalDamage.Health	, attackerPoints.Points.LifeMax.Health	, attacker.Points.Points.LifeCurrent.Health	, attacker.Name	, targetReflecting.Name	, sourceName, "Health", "drains", "loses" );
-	applyWeaponSteal(ATTACK_EFFECT_LEECH_MANA	, attackerWeaponEffect, finalDamage.Mana	, attackerPoints.Points.LifeMax.Mana	, attacker.Points.Points.LifeCurrent.Mana	, attacker.Name	, targetReflecting.Name	, sourceName, "Mana", "drains", "loses" );
-	applyWeaponSteal(ATTACK_EFFECT_LEECH_SHIELD	, attackerWeaponEffect, finalDamage.Shield	, attackerPoints.Points.LifeMax.Shield	, attacker.Points.Points.LifeCurrent.Shield	, attacker.Name	, targetReflecting.Name	, sourceName, "Shield", "steals", "gives" );
-	applyWeaponSteal(ATTACK_EFFECT_STEAL		, attackerWeaponEffect, finalDamage.Health	, 0x7FFFFFFF							, attacker.Points.Points.Coins				, attacker.Name	, targetReflecting.Name	, sourceName, "Coins", "steals", "drops" );
+	ATTACK_EFFECT		attackerWeaponEffect	= attackerFlags.Effect.Attack;
+	applyWeaponSteal(ATTACK_EFFECT_LEECH_HEALTH	, attackerWeaponEffect, finalDamage.Health	, attackerPoints.LifeMax.Health	, attacker.Points.LifeCurrent.Health	, attacker.Name	, targetReflecting.Name	, sourceName, "Health", "drains", "loses" );
+	applyWeaponSteal(ATTACK_EFFECT_LEECH_MANA	, attackerWeaponEffect, finalDamage.Mana	, attackerPoints.LifeMax.Mana	, attacker.Points.LifeCurrent.Mana		, attacker.Name	, targetReflecting.Name	, sourceName, "Mana", "drains", "loses" );
+	applyWeaponSteal(ATTACK_EFFECT_LEECH_SHIELD	, attackerWeaponEffect, finalDamage.Shield	, attackerPoints.LifeMax.Shield	, attacker.Points.LifeCurrent.Shield	, attacker.Name	, targetReflecting.Name	, sourceName, "Shield", "steals", "gives" );
+	applyWeaponSteal(ATTACK_EFFECT_STEAL		, attackerWeaponEffect, finalDamage.Health	, 0x7FFFFFFF					, attacker.Points.Coins					, attacker.Name	, targetReflecting.Name	, sourceName, "Coins", "steals", "drops" );
 }
 
 // This function returns the damage dealt to the target
@@ -269,34 +275,34 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 	int32_t damageDealt = 0;
 
 	const std::string	attackerWeaponName	= getWeaponName(attacker.CurrentWeapon);
-	SCharacterPoints	attackerPoints		= calculateFinalPoints(attacker);
+	SEntityPoints	attackerPoints		= calculateFinalPoints(attacker);
 
 	bool bIsBlind = 0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND);
 
-	if(0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponPoints(attacker.CurrentWeapon).Flags.Tech.Tech & ENTITY_TECHNOLOGY_DIGITAL)) {
+	if(0 < attacker.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLACKOUT) && (getWeaponFlags(attacker.CurrentWeapon).Tech.Tech & ENTITY_TECHNOLOGY_DIGITAL)) {
 		printf("This weapon was disabled by an electromagnetic pulse.\n");
 		return false;
 	}
 
-	int finalChance = attackerPoints.Points.Attack.Hit;
+	int finalChance = attackerPoints.Attack.Hit;
 	if(bIsBlind)
-		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Points.Attack.Hit >>= 1);
+		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit >>= 1);
 
 	if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_STUN)) {
-		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Points.Attack.Hit);
-		finalChance	+= attackerPoints.Points.Attack.Hit/2;
+		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
+		finalChance	+= attackerPoints.Attack.Hit/2;
 	}
 	else if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_SLEEP)) {
-		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Points.Attack.Hit);
-		finalChance	+= attackerPoints.Points.Attack.Hit/3;
+		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
+		finalChance	+= attackerPoints.Attack.Hit/3;
 	}
 	else if(0 < target.CombatStatus.GetStatusTurns(COMBAT_STATUS_BLIND)) {
-		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Points.Attack.Hit/2);
-		finalChance	+= attackerPoints.Points.Attack.Hit/4;
+		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
+		finalChance	+= attackerPoints.Attack.Hit/4;
 	}
 
 	if ((rand() % 100) < finalChance ) {
-		damageDealt = attackerPoints.Points.Attack.Damage+(rand()%((attackerPoints.Points.Attack.Damage)/10+1));
+		damageDealt = attackerPoints.Attack.Damage+(rand()%((attackerPoints.Attack.Damage)/10+1));
 		printf("%s hits %s for: %u.\n", attacker.Name.c_str(), target.Name.c_str(), damageDealt);
 		applySuccessfulWeaponHit(attacker, target, damageDealt, attackerWeaponName);
 	}
@@ -331,25 +337,25 @@ void applyTurnBonus(int32_t& characterCurrentPoint, const int32_t characterMaxPo
 
 void klib::applyCombatBonus(CCharacter& character, const SEntityPoints& combatBonus, const std::string& sourceName)
 {
-	if(0 >= character.Points.Points.LifeCurrent.Health)	// This character is already dead
+	if(0 >= character.Points.LifeCurrent.Health)	// This character is already dead
 		return;
 
-	SCharacterPoints characterPoints = calculateFinalPoints(character);
+	SEntityPoints characterPoints = calculateFinalPoints(character);
 
-	int finalHPAdded = std::min(combatBonus.LifeCurrent.Health, characterPoints.Points.LifeMax.Health-character.Points.Points.LifeCurrent.Health);
-	applyTurnBonus(character.Points.Points.LifeCurrent.Health, characterPoints.Points.LifeMax.Health, finalHPAdded, character.Name, "Health", sourceName);
+	int finalHPAdded = std::min(combatBonus.LifeCurrent.Health, characterPoints.LifeMax.Health-character.Points.LifeCurrent.Health);
+	applyTurnBonus(character.Points.LifeCurrent.Health, characterPoints.LifeMax.Health, finalHPAdded, character.Name, "Health", sourceName);
 	
-	finalHPAdded = std::min(combatBonus.LifeCurrent.Mana, characterPoints.Points.LifeMax.Mana-character.Points.Points.LifeCurrent.Mana);
-	applyTurnBonus(character.Points.Points.LifeCurrent.Mana, characterPoints.Points.LifeMax.Mana, finalHPAdded, character.Name, "Mana", sourceName);
+	finalHPAdded = std::min(combatBonus.LifeCurrent.Mana, characterPoints.LifeMax.Mana-character.Points.LifeCurrent.Mana);
+	applyTurnBonus(character.Points.LifeCurrent.Mana, characterPoints.LifeMax.Mana, finalHPAdded, character.Name, "Mana", sourceName);
 	
-	finalHPAdded = std::min(combatBonus.LifeCurrent.Shield, characterPoints.Points.LifeMax.Shield-character.Points.Points.LifeCurrent.Shield);
-	applyTurnBonus(character.Points.Points.LifeCurrent.Shield, characterPoints.Points.LifeMax.Shield, finalHPAdded, character.Name, "Shield", sourceName);
+	finalHPAdded = std::min(combatBonus.LifeCurrent.Shield, characterPoints.LifeMax.Shield-character.Points.LifeCurrent.Shield);
+	applyTurnBonus(character.Points.LifeCurrent.Shield, characterPoints.LifeMax.Shield, finalHPAdded, character.Name, "Shield", sourceName);
 
 	if(combatBonus.Coins > 0)
 		printf("%s gains %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins, sourceName.c_str());
-	else if(combatBonus.Coins < 0 && character.Points.Points.Coins)
+	else if(combatBonus.Coins < 0 && character.Points.Coins)
 		printf("%s loses %u Coins from %s.\n", character.Name.c_str(), combatBonus.Coins*-1, sourceName.c_str());
-	character.Points.Points.Coins	+= combatBonus.Coins;
+	character.Points.Coins	+= combatBonus.Coins;
 };
 
 void applyRegenBonus(PASSIVE_EFFECT testEffectBit, PASSIVE_EFFECT characterActiveEffects, int32_t maxPoints, int32_t& characterCurrentPoints, const std::string& pointName, const std::string& armorName)
@@ -365,30 +371,29 @@ void applyRegenBonus(PASSIVE_EFFECT testEffectBit, PASSIVE_EFFECT characterActiv
 
 void applyPassive(CCharacter& character, PASSIVE_EFFECT equipmentEffects, const std::string& sourceName)
 {
-	SCharacterPoints	armorFinalPoints		= klib::getArmorPoints(character.CurrentArmor);
-	SCharacterPoints	characterFinalPoints	= calculateFinalPoints(character);
+	SEntityPoints	characterFinalPoints	= calculateFinalPoints(character);
 
-	applyRegenBonus(PASSIVE_EFFECT_LIFE_REGEN		,	equipmentEffects,	characterFinalPoints.Points.LifeMax.Health	,	character.Points.Points.LifeCurrent.Health	, "Health"	, sourceName);
-	applyRegenBonus(PASSIVE_EFFECT_MANA_REGEN		,	equipmentEffects,	characterFinalPoints.Points.LifeMax.Mana	,	character.Points.Points.LifeCurrent.Mana	, "Mana"	, sourceName);
-	applyRegenBonus(PASSIVE_EFFECT_SHIELD_REPAIR	,	equipmentEffects,	characterFinalPoints.Points.LifeMax.Shield	,	character.Points.Points.LifeCurrent.Shield	, "Shield"	, sourceName);
+	applyRegenBonus(PASSIVE_EFFECT_LIFE_REGEN		,	equipmentEffects,	characterFinalPoints.LifeMax.Health	,	character.Points.LifeCurrent.Health	, "Health"	, sourceName);
+	applyRegenBonus(PASSIVE_EFFECT_MANA_REGEN		,	equipmentEffects,	characterFinalPoints.LifeMax.Mana	,	character.Points.LifeCurrent.Mana	, "Mana"	, sourceName);
+	applyRegenBonus(PASSIVE_EFFECT_SHIELD_REPAIR	,	equipmentEffects,	characterFinalPoints.LifeMax.Shield	,	character.Points.LifeCurrent.Shield	, "Shield"	, sourceName);
 };
 
 void klib::applyTurnStatus(CCharacter& character)
 {
-	if(0 >= character.Points.Points.LifeCurrent.Health)	// This character is already dead
+	if(0 >= character.Points.LifeCurrent.Health)	// This character is already dead
 		return;
 
 	int amount=0;
-	const SCharacterPoints finalPoints = calculateFinalPoints(character);
+	const SEntityPoints finalPoints = calculateFinalPoints(character);
 	for(uint32_t i=0; i<character.CombatStatus.Count; ++i)
 	{
 		switch(character.CombatStatus.Status[i])
 		{
-		case COMBAT_STATUS_BLEEDING	:	amount = std::max(1, finalPoints.Points.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
-		case COMBAT_STATUS_POISON	:	amount = std::max(1, finalPoints.Points.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
-		case COMBAT_STATUS_BURN		:	amount = std::max(1, finalPoints.Points.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "burning");	break;
-		case COMBAT_STATUS_FREEZING	:	amount = std::max(1, finalPoints.Points.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "freezing");	break;
-		case COMBAT_STATUS_SHOCK	:	amount = std::max(1, finalPoints.Points.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "shocked");	break;
+		case COMBAT_STATUS_BLEEDING	:	amount = std::max(1, finalPoints.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "bleeding");	break;
+		case COMBAT_STATUS_POISON	:	amount = std::max(1, finalPoints.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, 0, "poisoning");	break;
+		case COMBAT_STATUS_BURN		:	amount = std::max(1, finalPoints.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "burning");	break;
+		case COMBAT_STATUS_FREEZING	:	amount = std::max(1, finalPoints.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "freezing");	break;
+		case COMBAT_STATUS_SHOCK	:	amount = std::max(1, finalPoints.LifeMax.Health/20); if( amount > 0 ) character.Score.DamageTaken += amount; applyShieldableDamage(character, amount, getArmorAbsorption(character.CurrentArmor), "shocked");	break;
 		//case COMBAT_STATUS_STUN	:		break;
 		//case COMBAT_STATUS_BLIND	:	break;
 		}
@@ -397,7 +402,7 @@ void klib::applyTurnStatus(CCharacter& character)
 
 void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 {
-	if(0 >= character.Points.Points.LifeCurrent.Health)	// This character is already dead
+	if(0 >= character.Points.LifeCurrent.Health)	// This character is already dead
 		return;
 
 	printf("\n");
@@ -405,11 +410,13 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 	
 	applyCombatBonus	(character, character.CombatBonus.Points, "Turn Combat Bonus");
 	applyCombatBonus	(character, getProfessionPoints	(character.CurrentProfession	), getProfessionName(character.CurrentProfession).c_str());
-	applyCombatBonus	(character, getArmorPoints		(character.CurrentArmor			).Points, getArmorName		(character.CurrentArmor));
+	applyCombatBonus	(character, getArmorPoints		(character.CurrentArmor			), getArmorName		(character.CurrentArmor));
+	applyCombatBonus	(character, getVehiclePoints	(character.CurrentVehicle		), getVehicleName	(character.CurrentVehicle));
 
-	applyPassive		(character, getArmorPoints		(character.CurrentArmor			).Flags.Effect.Passive	, getArmorName		(character.CurrentArmor			));
-	applyPassive		(character, getProfessionFlags	(character.CurrentProfession	).Effect.Passive		, getProfessionName	(character.CurrentProfession	));
-	applyPassive		(character, getWeaponPoints		(character.CurrentWeapon		).Flags.Effect.Passive	, getWeaponName		(character.CurrentWeapon		));
+	applyPassive		(character, getArmorFlags		(character.CurrentArmor			).Effect.Passive	, getArmorName		(character.CurrentArmor			));
+	applyPassive		(character, getProfessionFlags	(character.CurrentProfession	).Effect.Passive	, getProfessionName	(character.CurrentProfession	));
+	applyPassive		(character, getWeaponFlags		(character.CurrentWeapon		).Effect.Passive	, getWeaponName		(character.CurrentWeapon		));
+	applyPassive		(character, getVehicleFlags		(character.CurrentVehicle		).Effect.Passive	, getVehicleName	(character.CurrentVehicle		));
 
 	character.CombatBonus	.NextTurn();
 	character.CombatStatus	.NextTurn();

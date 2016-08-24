@@ -8,86 +8,80 @@
 
 namespace klib
 {
-	struct CWeapon
-	{
-		SCharacterPoints	Points;
-		std::string			Name;
-	};
-
-	typedef CWeapon CWeaponModifier;
+	typedef CEntityWeapon CWeaponModifier;
 
 //	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
 static const CWeaponModifier modifiersWeapon[] = 
 //		MaxHP MaxMana HP Mana	Hit Attack Shield Coins
-{	{{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s"					}
-,	{{{{1,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Resistance"		}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,1},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of the Thief"		}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{	COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Fire"			}	
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{	COMBAT_STATUS_POISON	}	,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Poison"			}
-,	{{{{0,0,0},{1,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Acolyte"			}
-//	{						   }
-,	{{{{2,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Vitality"		}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,2},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of the Rogue"		}
-,	{{{{0,0,0},{0,0,0},{0,1,0,0} ,0},	{	{},{	COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Lava"			}	
-,	{{{{0,0,0},{0,0,0},{0,1,0,0} ,0},	{	{},{	COMBAT_STATUS_POISON	}	,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of Venom"			}
-,	{{{{0,0,0},{2,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}}},	"%s of the Priest"		}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{ATTACK_EFFECT_STEAL	},{}		,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}}},	"Bonny and Clyde's %s"	}
-//	{						   }
-,	{{{{3,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Soldier's %s"			}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,3},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Assassin's %s"			}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_STUN		}	,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)		}}},	"Sonic %s"				}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BLEEDING	}	,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)		}}},	"Gauss %s"				}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_DIGITAL														}}},	"Laser %s"				}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_POISON		}	,{ENTITY_TECHNOLOGY_BASIC													}}},	"Acid %s"				}
-,	{{{{0,0,0},{3,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Saint's %s"			}
-//	{						   }
-,	{{{{4,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Executioner's %s"		}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,4},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Stalker's %s"			}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BURN}			, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)									}}},	"Plasma %s"				}
-,	{{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{(COMBAT_STATUS)(COMBAT_STATUS_BURN|COMBAT_STATUS_POISON)}, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)	}}},	"Radiactive %s"			}
-,	{{{{0,0,0},{4,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Angel's %s"			}
-,	{{{{0,0,0},{0,4,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}}},	"Wizard's %s"			}
-,	{{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{	ATTACK_EFFECT_LEECH_HEALTH	},{COMBAT_STATUS_BLEEDING}, {ENTITY_TECHNOLOGY_BASIC							}}},	"Vampire's %s"			}
-//	{						   }
-,	{{{{0,0,0},{0,0,0},{4,3,},0},	{	{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)								}}},	"Satellite Orbital %s"	}
+{	{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s"					}
+,	{{{1,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Resistance"		}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,1},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of the Thief"		}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{	COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Fire"			}	
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{	COMBAT_STATUS_POISON	}	,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Poison"			}
+,	{{{0,0,0},{1,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Acolyte"			}
+//							   }
+,	{{{2,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Vitality"		}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,2},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of the Rogue"		}
+,	{{{0,0,0},{0,0,0},{0,1,0,0} ,0},	{	{},{	COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Lava"			}	
+,	{{{0,0,0},{0,0,0},{0,1,0,0} ,0},	{	{},{	COMBAT_STATUS_POISON	}	,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of Venom"			}
+,	{{{0,0,0},{2,0,0},{0,0,0,0} ,0},	{	{},{}								,{ENTITY_TECHNOLOGY_BASIC													}},	"%s of the Priest"		}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{ATTACK_EFFECT_STEAL	},{}		,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}},	"Bonny and Clyde's %s"	}
+//							   }
+,	{{{3,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Soldier's %s"			}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,3},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Assassin's %s"			}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_STUN		}	,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)		}},	"Sonic %s"				}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BLEEDING	}	,{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)		}},	"Gauss %s"				}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BURN		}	,{ENTITY_TECHNOLOGY_DIGITAL														}},	"Laser %s"				}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_POISON		}	,{ENTITY_TECHNOLOGY_BASIC													}},	"Acid %s"				}
+,	{{{0,0,0},{3,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Saint's %s"			}
+//							   }
+,	{{{4,0,0},{0,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Executioner's %s"		}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,4},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Stalker's %s"			}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{COMBAT_STATUS_BURN}			, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)									}},	"Plasma %s"				}
+,	{{{0,0,0},{0,0,0},{0,3,0,0} ,0},	{	{},{(COMBAT_STATUS)(COMBAT_STATUS_BURN|COMBAT_STATUS_POISON)}, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)	}},	"Radiactive %s"			}
+,	{{{0,0,0},{4,0,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Angel's %s"			}
+,	{{{0,0,0},{0,4,0},{0,0,0,0} ,0},	{	{},{}	, {ENTITY_TECHNOLOGY_BASIC																				}},	"Wizard's %s"			}
+,	{{{0,0,0},{0,0,0},{0,0,0,0} ,0},	{	{	ATTACK_EFFECT_LEECH_HEALTH	},{COMBAT_STATUS_BLEEDING}, {ENTITY_TECHNOLOGY_BASIC							}},	"Vampire's %s"			}
+//							   }
+,	{{{0,0,0},{0,0,0},{4,3,},0},	{	{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)									}},	"Satellite Orbital %s"	}
 };
 
 #define DEATH_SCYTHE_STATUS_INFLICT ((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
 
 //	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.
-static const CWeapon definitionsWeapon[] = 
+static const CEntityWeapon definitionsWeapon[] = 
 // 6th grade	No weapon: five points of hit chance.
-{	{{{{0,0,0},{0,0,0},		{5,0,0,0},0	},{	{},{COMBAT_STATUS_NONE			},	{ENTITY_TECHNOLOGY_BASIC																											}}},	"Glove"						}
+{	{{{0,0,0},{0,0,0},		{5,0,0,0},0	},{	{},{COMBAT_STATUS_NONE			},	{ENTITY_TECHNOLOGY_BASIC																											}},	"Glove"						}
 // 5th grade five points		}
-,	{{{{3,0},{},			{0,2,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN		},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Club"						}
-,	{{{{},{},				{4,1,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLIND		},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Knuckle"					}
-,	{{{{},{},				{4,1,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Dagger"					}
-,	{{{{1,0},{},			{1,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Spiked Club"				}
-,	{{{{},{},				{2,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Knife"						}
-,	{{{{},{},				{3,2,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Claw"						}
+,	{{{3,0},{},				{0,2,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN		},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Club"						}
+,	{{{},{},				{4,1,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLIND		},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Knuckle"					}
+,	{{{},{},				{4,1,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Dagger"					}
+,	{{{1,0},{},				{1,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Spiked Club"				}
+,	{{{},{},				{2,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Knife"						}
+,	{{{},{},				{3,2,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Claw"						}
 // 4th grade six						},		 ATTACK_EFFECT_NONE
-,	{{{{2,0},{0,0,0},			{1,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN		},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Mace"						}
-,	{{{{},{},				{2,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Machete"					}
-,	{{{{1,0,0},{0,0,0},		{1,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Sword"						}
-,	{{{{2,0,0},{0,0,0},		{0,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Axe"						}
-,	{{{{1,0,0},{0,0,0},		{-1,6,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Spear"						}
-,	{{{{-1,0,0},{0,0,0},	{0,7,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}}},	"Bow"						}
+,	{{{2,0},{0,0,0},			{1,3,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN		},	{ENTITY_TECHNOLOGY_BASIC																					}},	"Mace"						}
+,	{{{},{},				{2,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Machete"					}
+,	{{{1,0,0},{0,0,0},		{1,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Sword"						}
+,	{{{2,0,0},{0,0,0},		{0,4,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Axe"						}
+,	{{{1,0,0},{0,0,0},		{-1,6,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Spear"						}
+,	{{{-1,0,0},{0,0,0},		{0,7,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY_BASIC																						}},	"Bow"						}
 // 3rd grade seven				},				 ATTACK_EFFECT_NONE
-,	{{{{},{},				{2,5,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}}},	"Crossbow"					}
-,	{{{{},{},				{1,6,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}}},	"Pistol"					}
-,	{{{{1,0},{},			{1,5,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}}},	"Rifle"						}
-,	{{{{2,0},{},			{-2,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}}},	"Shotgun"					}
-,	{{{{1,0},{},			{0,5,0,0},1		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}}},	"Machinegun"				}
-,	{{{{-2,0},{},			{2,7,0,0},0		},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_BLIND|COMBAT_STATUS_BLEEDING)	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}}},	"Sniper Rifle"				}
-,	{{{{2,0},{},			{0,6,0,0},-1	},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_STUN|COMBAT_STATUS_BURN)		},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}}},	"Rocket Launcher"			}
-,	{{{{0,-30,0},{},		{6,6,0,0},-2	},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_STUN|COMBAT_STATUS_BURN)		},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)	}}},	"Guided Rocket Launcher"	}
+,	{{{},{},				{2,5,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}},	"Crossbow"					}
+,	{{{},{},				{1,6,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}},	"Pistol"					}
+,	{{{1,0},{},				{1,5,0,0},0		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}},	"Rifle"						}
+,	{{{2,0},{},				{-2,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}},	"Shotgun"					}
+,	{{{1,0},{},				{0,5,0,0},1		},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)																	}},	"Machinegun"				}
+,	{{{-2,0},{},			{2,7,0,0},0		},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_BLIND|COMBAT_STATUS_BLEEDING)	},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}},	"Sniper Rifle"				}
+,	{{{2,0},{},				{0,6,0,0},-1	},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_STUN|COMBAT_STATUS_BURN)		},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_MECHANIC)								}},	"Rocket Launcher"			}
+,	{{{0,-30,0},{},			{6,6,0,0},-2	},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_STUN|COMBAT_STATUS_BURN)		},	{ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL|ENTITY_TECHNOLOGY_MECHANIC)	}},	"Guided Rocket Launcher"	}
 // 2nd grade eight				},				 ATTACK_EFFECT_NONE
-,	{{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN			},	{ENTITY_TECHNOLOGY_BASIC																					}}},	"Thor's Mace"	}
-,	{{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLIND			},	{ENTITY_TECHNOLOGY_BASIC																					}}},	"Zeus' Staff"	}
-,	{{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING		},	{ENTITY_TECHNOLOGY_BASIC																					}}},	"Anhur's Spear"	}
-,	{{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{DEATH_SCYTHE_STATUS_INFLICT	},	{ENTITY_TECHNOLOGY_BASIC																					}}},	"Death Scythe"	}
+,	{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_STUN			},	{ENTITY_TECHNOLOGY_BASIC																					}},	"Thor's Mace"	}
+,	{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLIND			},	{ENTITY_TECHNOLOGY_BASIC																					}},	"Zeus' Staff"	}
+,	{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{COMBAT_STATUS_BLEEDING		},	{ENTITY_TECHNOLOGY_BASIC																					}},	"Anhur's Spear"	}
+,	{{{1,0},{1,0},			{-1,7,0,0},0	},{	{ATTACK_EFFECT_NONE},{DEATH_SCYTHE_STATUS_INFLICT	},	{ENTITY_TECHNOLOGY_BASIC																					}},	"Death Scythe"	}
 // 1st grade ten				},				 ATTACK_EFFECT_NONE
-,	{{{{1,0,0},{0,0,0},		{1,8,0,0},0		},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_BURN|COMBAT_STATUS_POISON)},{ENTITY_TECHNOLOGY_DIGITAL															}}},	"BFG-9000"	}
+,	{{{1,0,0},{0,0,0},		{1,8,0,0},0		},{	{ATTACK_EFFECT_NONE},{(COMBAT_STATUS)(COMBAT_STATUS_BURN|COMBAT_STATUS_POISON)},{ENTITY_TECHNOLOGY_DIGITAL															}},	"BFG-9000"	}
 };
 
 	static std::string getWeaponName(const SWeapon& weapon)
@@ -97,7 +91,7 @@ static const CWeapon definitionsWeapon[] =
 		return formattedName;
 	}
 
-	static SCharacterPoints getWeaponPoints(const SWeapon& weapon) {
+	static SEntityPoints getWeaponPoints(const SWeapon& weapon) {
 		SEntityPointsMultiplier	multipliers;
 
 		multipliers.LifeMax		= {.1, .1, .1};
@@ -108,6 +102,10 @@ static const CWeapon definitionsWeapon[] =
 		multipliers				= multipliers*weapon.Level;
 
 		return (definitionsWeapon[weapon.Index].Points + modifiersWeapon[weapon.Modifier].Points)*multipliers;
+	}
+
+	static SEntityFlags getWeaponFlags(const SWeapon& weapon) {
+		return definitionsWeapon[weapon.Index].Flags | modifiersWeapon[weapon.Modifier].Flags;
 	}
 }
 

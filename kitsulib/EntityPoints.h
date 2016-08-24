@@ -12,9 +12,10 @@ namespace klib
 		SLifePointsMultiplier		LifeCurrent	;
 		SAttackPointsMultiplier		Attack		;
 		double						Coins		;
+		double						Price		;
 
 		inline constexpr SEntityPointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { LifeMax*level, LifeCurrent*level, Attack*level, Coins*level }; 
+			return { LifeMax*level, LifeCurrent*level, Attack*level, Coins*level, Price*level }; 
 		}
 
 		void Print() const
@@ -25,7 +26,8 @@ namespace klib
 			LifeCurrent.Print();
 			printf("- Attack Points:\n");
 			Attack.Print();
-			printf("- Coins                     : %i.\n", (int32_t)Coins);
+			printf("- Coins.....: %f.\n", Coins);
+			printf("- Price.....: %f.\n", Price);
 		}
 	};
 
@@ -35,6 +37,7 @@ namespace klib
 		SLifePoints		LifeCurrent	;
 		SAttackPoints	Attack		;
 		int32_t			Coins		;
+		int32_t			Price		;
 	
 		void Print() const
 		{
@@ -45,18 +48,20 @@ namespace klib
 			printf("- Attack Points:\n");
 			Attack.Print();
 			printf("- Coins.....: %i.\n", (int32_t)Coins);
+			printf("- Price.....: %i.\n", (int32_t)Price);
 		}
 
 		inline constexpr SEntityPoints	operator +	(const SEntityPoints& other)				const	{ 
-			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins };
+			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, Price+other.Price };
 		}
 
 		inline constexpr SEntityPoints		operator *	(const SEntityPointsMultiplier& other)	const	{ 
-			return { LifeMax			*	other.LifeMax		, 
-					 LifeCurrent		*	other.LifeCurrent	, 
-					 Attack				*	other.Attack		,
-					 (int32_t)(Coins	*	other.Coins			)
-			}; 
+			return	{ LifeMax			*	other.LifeMax		
+					, LifeCurrent		*	other.LifeCurrent	
+					, Attack			*	other.Attack	
+					, (int32_t)(Coins	*	other.Coins)	
+					, (int32_t)(Price	*	other.Price)
+					};
 		}
 	};
 

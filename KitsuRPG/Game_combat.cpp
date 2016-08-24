@@ -28,14 +28,14 @@ bool escape(const std::string& escaperName, klib::SCharacterScore& escaperScore)
 void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 {
 	printf("%s is dead!\n", loser.Name.c_str());
-	int drop = rand() % (std::max(1,loser.Points.Points.Coins>>2));
+	int drop = rand() % (std::max(1,loser.Points.Coins>>2));
 
 	if(loser.Type == klib::CHARACTER_TYPE_ENEMY)
-		drop = loser.Points.Points.Coins-drop;
+		drop = loser.Points.Coins-drop;
 
 	printf("\n%s dropped %u coins!!\n", loser.Name.c_str(), drop);
-	winner.Points.Points.Coins += drop;
-	loser.Points.Points.Coins	-= drop;
+	winner.Points.Coins += drop;
+	loser.Points.Coins	-= drop;
 	for(uint32_t i=0; i<loser.Inventory.Count; i++) 
 		if( 0 == (rand()%2) )
 		{
@@ -136,8 +136,8 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 	//winner.Points.LifeMax.Health += winner.Points.Attack;
 	winner.CurrentProfession.Level++;
-	winner.CurrentArmor.Level++;
-	winner.CurrentWeapon.Level++;
+	winner.CurrentArmor		.Level++;
+	winner.CurrentWeapon	.Level++;
 
 	winner.Score.BattlesWon++;
 	winner.Score.EnemiesKilled++;
@@ -150,9 +150,9 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 void determineOutcome(klib::CCharacter& adventurer, klib::CCharacter& enemy, int32_t enemyType)
 {
 		// Determine the outcome of the battle and give rewards if applicable.
-	if (adventurer.Points.Points.LifeCurrent.Health <= 0) 
+	if (adventurer.Points.LifeCurrent.Health <= 0) 
 		assignDrops(enemy, adventurer);
-	if (enemy.Points.Points.LifeCurrent.Health <= 0)
+	if (enemy.Points.LifeCurrent.Health <= 0)
 		assignDrops(adventurer, enemy);
 }
 
@@ -202,7 +202,7 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
-	if(outcome == TURN_OUTCOME_CANCEL && target.Points.Points.LifeCurrent.Health > 0 && attacker.Points.Points.LifeCurrent.Health > 0)
+	if(outcome == TURN_OUTCOME_CANCEL && target.Points.LifeCurrent.Health > 0 && attacker.Points.LifeCurrent.Health > 0)
 		klib::applyTurnStatusAndBonusesAndSkipTurn(attacker);
 
 	return outcome;
@@ -242,7 +242,7 @@ void printBonuses(const klib::CCharacter& character)
 
 void printCharacterShortInfo(klib::CCharacter& character)
 {
-	klib::SCharacterPoints characterPoints = calculateFinalPoints(character);
+	klib::SEntityPoints characterPoints = calculateFinalPoints(character);
 	printf("\n----------------------- %s is a %s level %u.\nWeapon: %s level %u.\nArmor: %s level %u.\n",  
 		character.Name.c_str(), 
 		klib::getProfessionName	(character.CurrentProfession)	.c_str(),	character.CurrentProfession.Level,	
@@ -250,10 +250,10 @@ void printCharacterShortInfo(klib::CCharacter& character)
 		klib::getArmorName		(character.CurrentArmor )		.c_str(),	character.CurrentArmor.Level);
 		
 	printf("-------------- Max points:\n");
-	characterPoints.Points.LifeMax.Print();
+	characterPoints.LifeMax.Print();
 	printf("-------------- Current points:\n");
-	character.Points.Points.LifeCurrent.Print();
-	characterPoints.Points.Attack.Print();
+	character.Points.LifeCurrent.Print();
+	characterPoints.Attack.Print();
 }
 
 TURN_OUTCOME playerTurn(klib::CCharacter& adventurer, klib::CCharacter& currentEnemy)
@@ -268,8 +268,8 @@ TURN_OUTCOME playerTurn(klib::CCharacter& adventurer, klib::CCharacter& currentE
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
 
-	klib::SCharacterPoints playerPoints = calculateFinalPoints(adventurer);
-	klib::SCharacterPoints enemyPoints = calculateFinalPoints(currentEnemy);
+	klib::SEntityPoints playerPoints = calculateFinalPoints(adventurer);
+	klib::SEntityPoints enemyPoints = calculateFinalPoints(currentEnemy);
 	while (turnOutcome == TURN_OUTCOME_CONTINUE)	// this while() process the input for this turn until the user enters a valid choice and then exits to the outer loop for executing the attack turn.
 	{
 		printCharacterShortInfo(adventurer);
@@ -291,7 +291,7 @@ TURN_ACTION resolveAI(klib::CCharacter& enemy, klib::CCharacter& adventurer)
 	TURN_ACTION action = TURN_ACTION_ATTACK;
 	if(enemy.Inventory.Count)
 		action = (rand()%2) ? action : TURN_ACTION_INVENTORY;
-	else if(enemy.Points.Points.LifeCurrent.Health <= (enemy.Points.Points.LifeMax.Health/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
+	else if(enemy.Points.LifeCurrent.Health <= (enemy.Points.LifeMax.Health/9) && 0 == (rand()%7))	// chance of escape attempt if health is less than 11%.
 		action = TURN_ACTION_RUN;
 
 	return action;
@@ -317,7 +317,7 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 //5736	// gasty.bellino@gmail.com
 void combat(klib::CCharacter& adventurer, int32_t enemyType)
 {
-	if(adventurer.Points.Points.LifeCurrent.Health <= 1)
+	if(adventurer.Points.LifeCurrent.Health <= 1)
 	{
 		printf("You don't have enough health to engage in combat. Please go rest and come back later.\n");
 		return;
@@ -329,7 +329,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 	adventurer.CombatStatus.Count	= 0;	// We need to clear the combat status before starting the combat.
 
 	TURN_OUTCOME turnOutcome = TURN_OUTCOME_CONTINUE;
-	while(combatContinues(turnOutcome, adventurer.Points.Points.LifeCurrent.Health, currentEnemy.Points.Points.LifeCurrent.Health))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
+	while(combatContinues(turnOutcome, adventurer.Points.LifeCurrent.Health, currentEnemy.Points.LifeCurrent.Health))	// This while() executes the attack turns, requesting for user input at the beginning of each turn.
 	{	
 		adventurer.Score.TurnsPlayed++;
 		currentEnemy.Score.TurnsPlayed++;
@@ -343,7 +343,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 		else
 			turnOutcome = playerTurn(adventurer, currentEnemy);
 
-		if(!combatContinues(turnOutcome, adventurer.Points.Points.LifeCurrent.Health, currentEnemy.Points.Points.LifeCurrent.Health))
+		if(!combatContinues(turnOutcome, adventurer.Points.LifeCurrent.Health, currentEnemy.Points.LifeCurrent.Health))
 			break;
 
 		// Execute enemy attack turn
@@ -406,18 +406,18 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 		// Only use potions if we have less than 80% HP
 		if	 ( klib::ITEM_TYPE_POTION		!= itemDescription.Type
 			|| klib::PROPERTY_TYPE_HEALTH != itemDescription.Property
-			|| user.Points.Points.LifeCurrent.Health < ((user.Points.Points.LifeMax.Health+user.CombatBonus.Points.LifeMax.Health)*.7f)
+			|| user.Points.LifeCurrent.Health < ((user.Points.LifeMax.Health+user.CombatBonus.Points.LifeMax.Health)*.7f)
 			)
 			bUsedItem = true;
 	}
 
 	if(bUsedItem)
 	{
-		const klib::SCharacterPoints finalPoints = calculateFinalPoints(user);
+		const klib::SEntityPoints finalPoints = calculateFinalPoints(user);
 		const klib::CItem& itemDescription = klib::itemDescriptions[user.Inventory.Slots[indexInventory].Entity.Index];
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
 		 && klib::PROPERTY_TYPE_HEALTH == itemDescription.Property 
-		 && user.Points.Points.LifeCurrent.Health == finalPoints.Points.LifeMax.Health)
+		 && user.Points.LifeCurrent.Health == finalPoints.LifeMax.Health)
 		{
 			bUsedItem = false;
 			printf("Your HP is full!");

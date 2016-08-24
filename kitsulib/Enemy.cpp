@@ -46,6 +46,6 @@ void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t 
 	currentEnemy.MaxProfession		.Level		= currentEnemy.CurrentProfession	.Level;
 	currentEnemy.MaxVehicle			.Level		= currentEnemy.CurrentVehicle		.Level;
 
-	SCharacterPoints finalEnemyPoints	= calculateFinalPoints(currentEnemy);
-	currentEnemy.Points.Points.LifeCurrent		= finalEnemyPoints.Points.LifeMax;
+	SEntityPoints finalEnemyPoints		= calculateFinalPoints(currentEnemy);
+	currentEnemy.Points.LifeCurrent		= finalEnemyPoints.LifeMax;
 }

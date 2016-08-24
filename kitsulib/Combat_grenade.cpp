@@ -44,15 +44,19 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	int	lotteryRange	= 60+(10*itemGrade);	// calculate hit chance from item grade
 	int	lotteryResult	= rand()%100;
 
-	SCharacterPoints 
+	SEntityPoints 
 		finalPointsThrower	= calculateFinalPoints(thrower), 
 		finalPointsTarget	= calculateFinalPoints(target);
 
-	int itemEffectValue				= int(finalPointsTarget .Points.LifeMax.Health*(0.2f*itemGrade));
-	int itemEffectValueSelf			= int(finalPointsThrower.Points.LifeMax.Health*(0.2f*itemGrade)) >> 1;
+	SEntityFlags 
+		finalFlagsThrower	= calculateFinalFlags(thrower), 
+		finalFlagsTarget	= calculateFinalFlags(target);
 
-	int itemEffectValueReduced		= int(finalPointsTarget .Points.LifeMax.Health*(0.1f*itemGrade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.Points.LifeMax.Health*(0.1f*itemGrade)) >> 1;
+	int itemEffectValue				= int(finalPointsTarget .LifeMax.Health*(0.2f*itemGrade));
+	int itemEffectValueSelf			= int(finalPointsThrower.LifeMax.Health*(0.2f*itemGrade)) >> 1;
+
+	int itemEffectValueReduced		= int(finalPointsTarget .LifeMax.Health*(0.1f*itemGrade));
+	int itemEffectValueReducedSelf	= int(finalPointsThrower.LifeMax.Health*(0.1f*itemGrade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
@@ -60,8 +64,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	bool bAddStatus = false;
 
 	int32_t targetArmorAbsorption = getArmorAbsorption(target.CurrentArmor), finalPassthroughDamage = 0, reflectedDamage = 0;
-	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.Flags.Effect.Defend;
-	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget	.Flags.Effect.Defend;
+	DEFEND_EFFECT attackerArmorEffect	= finalFlagsThrower.Effect.Defend;
+	DEFEND_EFFECT targetArmorEffect		= finalFlagsTarget.Effect.Defend;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	COMBAT_STATUS		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
@@ -79,7 +83,6 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 			applyAttackStatus(target, grenadeStatus, itemGrade ? 1+itemGrade : 0, itemDescription.Name);
 		else
 			printf("%s throws the grenade too far away.\n", thrower.Name.c_str());
-
 		break;
 
 	case PROPERTY_TYPE_PIERCING:

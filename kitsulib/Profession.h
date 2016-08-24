@@ -9,12 +9,6 @@
 namespace klib
 {
 
-	//struct CProfession
-	//{
-	//	SCharacterPoints	Points;
-	//	std::string			Name;
-	//};
-
 	typedef CEntityProfession CProfessionModifier;
 
 //	{HP, Mana, Shield}, {HP, Mana, Shield}, {Hit, Damage, Speed, Absorption}, dropCoins, {Attack, Defend, Passive}, {Status Inflict, Status Immunity}, Name.

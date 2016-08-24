@@ -39,26 +39,6 @@ namespace klib
 		uint64_t GrenadesUsed		= 0;
 	};
 
-	struct SCharacterPoints
-	{
-		SEntityPoints		Points;
-		SEntityFlags		Flags;
-
-		inline constexpr SCharacterPoints	operator *	(const SEntityPointsMultiplier& other)	const	{ 
-			return { Points*other, Flags }; 
-		}
-
-		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { Points+other.Points, Flags|other.Flags };//Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
-		}
-
-		void Print() const
-		{
-			Points.Print();
-			Flags.Print();
-		};
-	};
-
 	typedef SEntityPoints SEntityPointsSturns;
 	struct SCombatBonus
 	{
@@ -151,7 +131,8 @@ namespace klib
 	struct SCharacter
 	{
 		CHARACTER_TYPE				Type				= CHARACTER_TYPE_UNKNOWN;
-		SCharacterPoints			Points				= { {{10,0,0}, {10,0,0}, {50,1,1,1}, 10} };	// These are the base character points.
+		SEntityPoints				Points				= {};	// These are the base character points.
+		SEntityFlags				Flags				= {};	// These are the base character points.
 
 		SCombatBonus				CombatBonus			= SCombatBonus			();
 		SCombatStatus				CombatStatus		= SCombatStatus			();
@@ -192,7 +173,8 @@ namespace klib
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{{maxHP}, {maxHP}, {hitChance, attack}, coins}, {characterEffect, characterStatus}})
+			,Points				({{maxHP	}, {maxHP}, {hitChance, attack}, coins})
+			,Flags				({characterEffect, characterStatus})
 			,CombatBonus		(SCombatBonus	())
 			,CombatStatus		(SCombatStatus	())
 			,Score				(SCharacterScore())
@@ -212,12 +194,6 @@ namespace klib
 		int32_t						Save(FILE* fp)	const;
 		int32_t						Load(FILE* fp);
 	};
-
-	static SCharacterPoints applyMultipliers(const SCharacterPoints& definitionPoints, const SCharacterPoints& modifierPoints, const SEntityPointsMultiplier& multipliers ) {
-		SCharacterPoints finalPoints = {};
-		finalPoints				= (definitionPoints + modifierPoints)*multipliers;
-		return finalPoints;
-	}
 
 #pragma pack(pop)
 

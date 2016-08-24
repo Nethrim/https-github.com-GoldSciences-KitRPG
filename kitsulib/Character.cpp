@@ -14,27 +14,36 @@ using namespace klib;
 
 void klib::rest(CCharacter& character)
 {
-	SCharacterPoints finalPoints	= calculateFinalPoints(character);
-	character.Points.Points.LifeCurrent	= finalPoints.Points.LifeMax	;
+	SEntityPoints finalPoints	= calculateFinalPoints(character);
+	character.Points.LifeCurrent	= finalPoints.LifeMax	;
 	printf("\nYou decide to get some rest.\n");
-	character.Points.Points.LifeCurrent.Print();
+	character.Points.LifeCurrent.Print();
 }
 
-SCharacterPoints klib::calculateFinalPoints(const CCharacter& character)
+SEntityPoints klib::calculateFinalPoints(const CCharacter& character)
 {
-	SCharacterPoints result = {};
-	const SCharacterPoints 		weaponPoints		= klib::getWeaponPoints		(character.CurrentWeapon);
-	const SCharacterPoints 		armorPoints			= klib::getArmorPoints		(character.CurrentArmor);
-	const SEntityPoints 		professionPoints	= klib::getProfessionPoints	(character.CurrentProfession);
-	const SEntityFlags 			professionFlags		= klib::getProfessionFlags	(character.CurrentProfession);
-	const SCharacterPoints 		vehiclePoints		= klib::getVehiclePoints	(character.CurrentVehicle);
+	SEntityPoints result = {};
+	const SEntityPoints	weaponPoints		= klib::getWeaponPoints		(character.CurrentWeapon);
+	const SEntityPoints	armorPoints			= klib::getArmorPoints		(character.CurrentArmor);
+	const SEntityPoints	professionPoints	= klib::getProfessionPoints	(character.CurrentProfession);
+	const SEntityPoints	vehiclePoints		= klib::getVehiclePoints	(character.CurrentVehicle);
 
-	result.Points.LifeMax		= character.CombatBonus.Points.LifeMax		+ weaponPoints.Points.LifeMax		+ armorPoints.Points.LifeMax		+ vehiclePoints.Points.LifeMax		+ professionPoints.LifeMax		+	character.Points.Points.LifeMax;
-	result.Points.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Points.Attack		+ armorPoints.Points.Attack			+ vehiclePoints.Points.Attack		+ professionPoints.Attack		+	character.Points.Points.Attack;
-	result.Points.LifeCurrent	= character.CombatBonus.Points.LifeCurrent	+ weaponPoints.Points.LifeCurrent	+ armorPoints.Points.LifeCurrent	+ vehiclePoints.Points.LifeCurrent	+ professionPoints.LifeCurrent;
-	result.Points.Coins			= character.CombatBonus.Points.Coins		+ weaponPoints.Points.Coins			+ armorPoints.Points.Coins			+ vehiclePoints.Points.Coins		+ professionPoints.Coins;
+	result.LifeMax		= character.CombatBonus.Points.LifeMax		+ weaponPoints.LifeMax		+ armorPoints.LifeMax		+ vehiclePoints.LifeMax		+ professionPoints.LifeMax		+	character.Points.LifeMax;
+	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ vehiclePoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
+	result.LifeCurrent	= character.CombatBonus.Points.LifeCurrent	+ weaponPoints.LifeCurrent	+ armorPoints.LifeCurrent	+ vehiclePoints.LifeCurrent	+ professionPoints.LifeCurrent;
+	result.Coins		= character.CombatBonus.Points.Coins		+ weaponPoints.Coins		+ armorPoints.Coins			+ vehiclePoints.Coins		+ professionPoints.Coins;
 
-	result.Flags				= character.CombatBonus.Flags | weaponPoints.Flags | armorPoints.Flags | vehiclePoints.Flags | professionFlags | character.Points.Flags;
+	return result;
+};
+
+SEntityFlags klib::calculateFinalFlags(const CCharacter& character)
+{
+	SEntityFlags result = {};
+	const SEntityFlags	weaponFlags			= klib::getWeaponFlags		(character.CurrentWeapon);
+	const SEntityFlags	armorFlags			= klib::getArmorFlags		(character.CurrentArmor);
+	const SEntityFlags	professionFlags		= klib::getProfessionFlags	(character.CurrentProfession);
+	const SEntityFlags	vehicleFlags		= klib::getVehicleFlags		(character.CurrentVehicle);
+	result	= character.CombatBonus.Flags | weaponFlags | armorFlags | vehicleFlags | professionFlags | character.Flags;
 
 	return result;
 };

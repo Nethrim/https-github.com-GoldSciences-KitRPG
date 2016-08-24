@@ -53,13 +53,6 @@ namespace klib
 		std::string		Name;
 	};
 
-	struct CItemModifier
-	{
-		SCharacterPoints	Points;
-		int32_t				Price;
-		std::string			Name;
-	};
-
 	struct CItemGrade
 	{
 		std::string		Name;
@@ -73,24 +66,24 @@ static const CItemGrade itemGrades[] =
 //,	{	"%s (Huge)"		}
 };
 
-static const CItemModifier itemModifiers[] = 
-{	{{{{},{},{},0},{}},	0	,	"%s"					}
-,	{{{{},{},{},0},{}},	0	,	"%s	of Healing"			}
-,	{{{{},{},{},0},{}},	5	,	"%s	of Mana"			}
-,	{{{{},{},{},0},{}},	10	,	"%s	of Shield"			}
-,	{{{{},{},{},0},{}},	10	,	"%s	of Rejuvenation"	}
-,	{{{{},{},{},0},{}},	5	,	"%s	of Focus"			}
-,	{{{{},{},{},0},{}},	10	,	"Strength %s"			}
-,	{{{{},{},{},0},{}},	0	,	"Smoke %s"				}
-,	{{{{},{},{},0},{}},	0	,	"Sleep %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Stun %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Blast %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Fire %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Needle %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Poison %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Cold %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Freeze %s"				}
-,	{{{{},{},{},0},{}},	5	,	"Shock %s"				}
+static const CEntityItem	itemModifiers[] = 
+{	{	{{},{},{},0,0	},{},	"%s"					}
+,	{	{{},{},{},0,0	},{},	"%s	of Healing"			}
+,	{	{{},{},{},0,5	},{},	"%s	of Mana"			}
+,	{	{{},{},{},0,10	},{},	"%s	of Shield"			}
+,	{	{{},{},{},0,10	},{},	"%s	of Rejuvenation"	}
+,	{	{{},{},{},0,5	},{},	"%s	of Focus"			}
+,	{	{{},{},{},0,10	},{},	"Strength %s"			}
+,	{	{{},{},{},0,0	},{},	"Smoke %s"				}
+,	{	{{},{},{},0,0	},{},	"Sleep %s"				}
+,	{	{{},{},{},0,5	},{},	"Stun %s"				}
+,	{	{{},{},{},0,5	},{},	"Blast %s"				}
+,	{	{{},{},{},0,5	},{},	"Fire %s"				}
+,	{	{{},{},{},0,5	},{},	"Needle %s"				}
+,	{	{{},{},{},0,5	},{},	"Poison %s"				}
+,	{	{{},{},{},0,5	},{},	"Cold %s"				}
+,	{	{{},{},{},0,5	},{},	"Freeze %s"				}
+,	{	{{},{},{},0,5	},{},	"Shock %s"				}
 };
 
 static const CItemV2 itemDefinitions[] = 

@@ -98,7 +98,7 @@ void equipProfession	(klib::CCharacter& adventurer)
 void equipVehicle	(klib::CCharacter& adventurer) 
 { 
 	if( 0 == adventurer.Vehicles.Count )	{ 
-		printf("You don't have any other masteries yet!\n"); 
+		printf("You don't have any other vehicles yet!\n"); 
 		return; 
 	}
 
@@ -113,7 +113,7 @@ void equipVehicle	(klib::CCharacter& adventurer)
 
 	printf("You're currently assigned as a %s level %u.\n", klib::getVehicleName(adventurer.CurrentVehicle).c_str(), adventurer.CurrentVehicle.Level);
 	menuItems[menuItemCount++] = {256, "Back to tavern"};
-	int32_t selectedValue = klib::displayMenu("Select your mastery of choice", menuItems, menuItemCount);	
+	int32_t selectedValue = klib::displayMenu("Select your vehicle of choice", menuItems, menuItemCount);	
 	if(selectedValue == 256) 
 		return; 
 
@@ -288,7 +288,7 @@ void bar(klib::CCharacter& adventurer)
 	char menuTitle[128] = {};
 	while (true)	// break the loop to leave the shop
 	{
-		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Points.Coins);
+		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Coins);
 		const klib::SItem selectedItem = displayMenu(menuTitle, itemOptions);
 		if( selectedItem.Index == klib::getFinalItemCount() ) {
 			printf("You leave the bar.\n");
@@ -300,12 +300,12 @@ void bar(klib::CCharacter& adventurer)
 			const std::string itemName = klib::getItemName(selectedItem);
 
 			// Check first for conditions that prevent from acquiring the item
-			if(adventurer.Points.Points.Coins < itemPrice)
+			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy %s! Choose something else...\n", itemName.c_str());
 			else if(adventurer.Inventory.AddElement(selectedItem))	// addItem() returns false if the inventory is full.
 			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemName.c_str());
-				adventurer.Points.Points.Coins		-= itemPrice;
+				adventurer.Points.Coins		-= itemPrice;
 				adventurer.Score.MoneySpent			+= itemPrice;
 			}
 			else
@@ -317,31 +317,37 @@ void bar(klib::CCharacter& adventurer)
 
 void displayEquip(const klib::CCharacter& adventurer) 
 {
-	const klib::SCharacterPoints& basePoints		= adventurer.Points;
-	const klib::SCharacterPoints finalPoints		= klib::calculateFinalPoints(adventurer);
-	const klib::SCharacterPoints weaponPoints		= klib::getWeaponPoints(adventurer.CurrentWeapon);
-	const klib::SCharacterPoints armorPoints		= klib::getArmorPoints(adventurer.CurrentArmor);
-	const klib::SEntityPoints professionPoints		= klib::getProfessionPoints(adventurer.CurrentProfession);
-	const klib::SEntityFlags professionFlags		= klib::getProfessionFlags(adventurer.CurrentProfession);
-	const klib::SCharacterPoints vehiclePoints		= klib::getVehiclePoints(adventurer.CurrentVehicle);
+	const klib::SEntityPoints&	basePoints		= adventurer.Points;
+	const klib::SEntityPoints	finalPoints		= klib::calculateFinalPoints(adventurer);
+	const klib::SEntityFlags	finalFlags		= klib::calculateFinalFlags(adventurer);
+	
+	const klib::SEntityPoints weaponPoints		= klib::getWeaponPoints(adventurer.CurrentWeapon);
+	const klib::SEntityPoints armorPoints		= klib::getArmorPoints(adventurer.CurrentArmor);
+	const klib::SEntityPoints professionPoints	= klib::getProfessionPoints(adventurer.CurrentProfession);
+	const klib::SEntityPoints vehiclePoints		= klib::getVehiclePoints(adventurer.CurrentVehicle);
+	
+	const klib::SEntityFlags weaponFlags		= klib::getWeaponFlags(adventurer.CurrentWeapon);
+	const klib::SEntityFlags armorFlags			= klib::getArmorFlags(adventurer.CurrentArmor);
+	const klib::SEntityFlags professionFlags	= klib::getProfessionFlags(adventurer.CurrentProfession);
+	const klib::SEntityFlags vehicleFlags		= klib::getVehicleFlags(adventurer.CurrentVehicle);
 
 	printf("\n-- %s final points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
-	finalPoints.Points.LifeMax.Print();
+	finalPoints.LifeMax.Print();
 	printf("- Current Life:\n");
-	basePoints.Points.LifeCurrent.Print();
+	basePoints.LifeCurrent.Print();
 	printf("- Attack:\n");
-	finalPoints.Points.Attack.Print();
-	printf("- Coins: %i.\n", basePoints.Points.Coins);
-	printf("- Bonus Coins per turn: %i.\n", finalPoints.Points.Coins);
-	finalPoints.Flags.Print();
+	finalPoints.Attack.Print();
+	printf("- Coins: %i.\n", basePoints.Coins);
+	printf("- Bonus Coins per turn: %i.\n", finalPoints.Coins);
+	finalFlags.Print();
 
 	printf("\n-- %s base character points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
-	basePoints.Points.LifeMax.Print();
+	basePoints.LifeMax.Print();
 	printf("- Attack:\n");
-	basePoints.Points.Attack.Print();
-	finalPoints.Flags.Print();
+	basePoints.Attack.Print();
+	finalFlags.Print();
 
 	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), klib::getProfessionName(adventurer.CurrentProfession).c_str(), adventurer.CurrentProfession.Level);
 	professionPoints.Print();
@@ -349,12 +355,15 @@ void displayEquip(const klib::CCharacter& adventurer)
 
 	printf("\n-- %s is wearing %s level %u:\n", adventurer.Name.c_str(), klib::getArmorName(adventurer.CurrentArmor).c_str(), adventurer.CurrentArmor.Level);
 	armorPoints.Print();
+	armorFlags.Print();
 
 	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), klib::getWeaponName(adventurer.CurrentWeapon).c_str(), adventurer.CurrentWeapon.Level);
 	weaponPoints.Print();
+	weaponFlags.Print();
 
 	printf("\n-- %s is on a %s level %u:\n", adventurer.Name.c_str(), klib::getVehicleName(adventurer.CurrentVehicle).c_str(), adventurer.CurrentVehicle.Level);
 	vehiclePoints.Print();
+	vehicleFlags.Print();
 }
 
 void displayScore(const klib::SCharacterScore& score) 

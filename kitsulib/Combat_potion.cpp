@@ -14,7 +14,7 @@ bool potionRestore(const CCharacter& potionDrinker, const int32_t potionGrade, c
 	itemEffectValue *= potionGrade;
 	itemEffectValue = std::min(itemEffectValue, maxPoints-currentPoints);
 	currentPoints += itemEffectValue;
-	SCharacterPoints finalPoints	= calculateFinalPoints(potionDrinker);
+	SEntityPoints finalPoints	= calculateFinalPoints(potionDrinker);
 	printf("The potion restores %u %s to %s! %s now has %u %s.\n", 
 		itemEffectValue, pointName.c_str(), potionDrinker.Name.c_str(), potionDrinker.Name.c_str(), currentPoints, pointName.c_str());
 	return true;
@@ -30,9 +30,9 @@ bool potionAttackBonus(const CCharacter& potionDrinker, const int32_t potionGrad
 		turnsLeft = 1;
 	turnsLeft	+= potionGrade;
 
-	SCharacterPoints finalPoints	= calculateFinalPoints(potionDrinker);
+	SEntityPoints finalPoints	= calculateFinalPoints(potionDrinker);
 	printf("The potion gives %s %u %s points for %u turns. %s now has %u %s points for the next %u turns.\n", 
-		potionDrinker.Name.c_str(), itemEffectValue, pointName.c_str(), potionGrade, potionDrinker.Name.c_str(), finalPoints.Points.Attack.Damage, pointName.c_str(), turnsLeft-1);
+		potionDrinker.Name.c_str(), itemEffectValue, pointName.c_str(), potionGrade, potionDrinker.Name.c_str(), finalPoints.Attack.Damage, pointName.c_str(), turnsLeft-1);
 
 	return true;
 }
@@ -48,9 +48,9 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 
 	bool bUsedItem = false;
 
-	SLifePoints& currentPoints	= potionDrinker.Points.Points.LifeCurrent;
+	SLifePoints& currentPoints	= potionDrinker.Points.LifeCurrent;
 	SCombatBonus& drinkerBonus	= potionDrinker.CombatBonus;
-	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).Points.LifeMax;
+	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).LifeMax;
 
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Health					, currentPoints.Health							, "Health"	);
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA		)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Mana						, currentPoints.Mana							, "Mana"	);

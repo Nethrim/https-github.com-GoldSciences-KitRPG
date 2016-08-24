@@ -22,7 +22,8 @@ namespace klib
 		int		Load(FILE* fp);
 	};
 
-	SCharacterPoints calculateFinalPoints(const CCharacter& character);
+	SEntityPoints	calculateFinalPoints	(const CCharacter& character);
+	SEntityFlags	calculateFinalFlags		(const CCharacter& character);
 
 	bool addStatus(SCombatStatus& characterStatus, COMBAT_STATUS statusType, int32_t turnCount);
 	void rest(CCharacter& adventurerPoints);	// Take a nap and recover HP up to MaxHP.

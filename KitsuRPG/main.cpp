@@ -78,8 +78,8 @@ void main()
 		for(int32_t i=1; i<3; ++i)
 			adventurer.Inventory.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
 
-		klib::SCharacterPoints finalPoints		= klib::calculateFinalPoints(adventurer);
-		adventurer.Points.Points.LifeCurrent	= finalPoints.Points.LifeMax;
+		klib::SEntityPoints finalPoints		= klib::calculateFinalPoints(adventurer);
+		adventurer.Points.LifeCurrent	= finalPoints.LifeMax;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.
