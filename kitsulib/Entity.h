@@ -27,9 +27,9 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Index......: %i.\n",	Index		);
-			printf("Modifier---: %i.\n",	Modifier	);
-			printf("Level......: %i.\n",	Level		);
+			printf("Index ......: %i.\n",	Index		);
+			printf("Modifier ---: %i.\n",	Modifier	);
+			printf("Level ......: %i.\n",	Level		);
 		}
 	};
 
@@ -42,7 +42,7 @@ namespace klib
 		inline SEntitySlot& operator =(const SEntitySlot& other){ Count = other.Count; Entity = other.Entity; return *this; };
 	};
 
-#define MAX_INVENTORY_SLOTS 256
+#define MAX_INVENTORY_SLOTS 512
 	template<typename _EntityType, size_t _Size>
 	struct SEntityContainer
 	{
@@ -107,6 +107,13 @@ namespace klib
 	struct SProfession	: public SEntity	{ using SEntity::SEntity; };
 	struct SVehicle		: public SEntity	{ using SEntity::SEntity; };
 	struct SStageProp	: public SEntity	{ using SEntity::SEntity; };
+
+	typedef SEntityContainer<SItem			, MAX_INVENTORY_SLOTS>	SInventoryItems;
+	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;
+	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmors;
+	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
+	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicles;
+	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
 
 	template<typename _EntityType>
 	class CEntity : public SEntity {

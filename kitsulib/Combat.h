@@ -10,7 +10,7 @@ namespace klib
 	COMBAT_STATUS		applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t absorbChance, int32_t turnCount, const std::string& sourceName);
 	COMBAT_STATUS		applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t turnCount, const std::string& sourceName);
 	int32_t				applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName);
-	void				applyCombatBonus(CCharacter& character, const SCharacterPoints& combatBonus, const std::string& sourceName);
+	void				applyCombatBonus(CCharacter& character, const SEntityPoints& combatBonus, const std::string& sourceName);
 	SLifePoints			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, int32_t absorptionRate, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
 	SLifePoints			applySuccessfulHit(CCharacter& thrower, CCharacter& target, int32_t damage, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName);
 	void				applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);

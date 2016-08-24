@@ -5,6 +5,7 @@
 #include "Weapon.h"
 #include "Profession.h"
 #include "Enemy.h"
+#include "Item.h"
 
 #include "Menu.h"
 
@@ -64,9 +65,13 @@ void main()
 		adventurer.MaxArmor			.Level		= adventurer.CurrentArmor		.Level;
 		adventurer.MaxProfession	.Level		= adventurer.CurrentProfession	.Level;
 
+		adventurer.Inventory.AddElement({1, 1, 1});
+		for(int32_t i=1; i<3; ++i)
+			adventurer.Inventory.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
+
 
 		klib::SCharacterPoints finalPoints	= klib::calculateFinalPoints(adventurer);
-		adventurer.Points.LifeCurrent		= finalPoints.LifeMax;
+		adventurer.Points.Points.LifeCurrent		= finalPoints.Points.LifeMax;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.

@@ -174,7 +174,6 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityPoints.h" />
     <ClInclude Include="GameBase.h" />
-    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Profession.h" />
@@ -185,7 +184,6 @@
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="CombatStatus.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Combat_grenade.cpp" />
     <ClCompile Include="Combat_potion.cpp" />
   </ItemGroup>

@@ -18,9 +18,9 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Health.: %f.\n",	Health	);
-			printf("Mana---: %f.\n",	Mana	);
-			printf("Shield.: %f.\n",	Shield	);
+			printf("Health .....: %f.\n",	Health	);
+			printf("Mana -------: %f.\n",	Mana	);
+			printf("Shield .....: %f.\n",	Shield	);
 		}
 	};
 
@@ -37,10 +37,10 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Hit........: %f.\n",	Hit			);
-			printf("Damage-----: %f.\n",	Damage		);
-			printf("Speed......: %f.\n",	Speed		);
-			printf("Absorption-: %f.\n",	Absorption	);
+			printf("Hit ........: %f.\n",	Hit			);
+			printf("Damage -----: %f.\n",	Damage		);
+			printf("Speed ......: %f.\n",	Speed		);
+			printf("Absorption -: %f.\n",	Absorption	);
 		}
 	};
 
@@ -70,9 +70,9 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Health.: %i.\n",	Health	);
-			printf("Mana---: %i.\n",	Mana	);
-			printf("Shield.: %i.\n",	Shield	);
+			printf("Health .....: %i.\n",	Health	);
+			printf("Mana -------: %i.\n",	Mana	);
+			printf("Shield .....: %i.\n",	Shield	);
 		}
 	};
 
@@ -97,10 +97,10 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Hit........: %i.\n",	Hit		);
-			printf("Damage-----: %i.\n",	Damage	);
-			printf("Speed......: %i.\n",	Damage	);
-			printf("Absorption-: %%%i.\n",	Damage	);
+			printf("Hit ........: %i.\n",	Hit		);
+			printf("Damage -----: %i.\n",	Damage	);
+			printf("Speed ......: %i.\n",	Damage	);
+			printf("Absorption -: %%%i.\n",	Damage	);
 		}
 	};
 

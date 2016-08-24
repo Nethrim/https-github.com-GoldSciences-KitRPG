@@ -91,7 +91,7 @@ namespace klib
 	enum ENTITY_GRADE
 	{	ENTITY_GRADE_ILLUSION	= 0x00
 	,	ENTITY_GRADE_LIGHT		= 0x01
-	,	ENTITY_GRADE_MEDIUM	= 0x02
+	,	ENTITY_GRADE_MEDIUM		= 0x02
 	,	ENTITY_GRADE_HEAVY		= 0x03
 	};
 
@@ -119,9 +119,9 @@ namespace klib
 
 	struct SEntityEffect
 	{
-		ATTACK_EFFECT		Attack;
-		DEFEND_EFFECT		Defend;
-		PASSIVE_EFFECT		Passive;
+		ATTACK_EFFECT	Attack;
+		DEFEND_EFFECT	Defend;
+		PASSIVE_EFFECT	Passive;
 
 		inline constexpr SEntityEffect operator | (const SEntityEffect& other) const {
 			return{ (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
@@ -129,9 +129,9 @@ namespace klib
 
 		void Print() const
 		{
-			printf("- Flags for Attack Effect   : 0x%.08x.\n"	, (int32_t)	Attack	);
-			printf("- Flags for Defend Effect   : 0x%.08x.\n"	, (int32_t)	Defend	);
-			printf("- Flags for Passive Effect  : 0x%.08x.\n"	, (int32_t)	Passive	);
+			printf("- Flags for Attack Effect ...: 0x%.08x.\n"	, (int32_t)	Attack	);
+			printf("- Flags for Defend Effect ---: 0x%.08x.\n"	, (int32_t)	Defend	);
+			printf("- Flags for Passive Effect ..: 0x%.08x.\n"	, (int32_t)	Passive	);
 		}
 	};
 
@@ -146,9 +146,9 @@ namespace klib
 
 		void Print() const
 		{
-			printf("- Flags for Status Inflict  : 0x%.08x.\n"	, (int32_t)	Inflict		);
-			printf("- Flags for Status Immunity : 0x%.08x.\n"	, (int32_t)	Immunity	);
-		}
+			printf("- Flags for Status Inflict ..: 0x%.08x.\n"	, (int32_t)	Inflict		);
+			printf("- Flags for Status Immunity -: 0x%.08x.\n"	, (int32_t)	Immunity	);
+		}										
 	};
 
 	struct SEntityGrade
@@ -162,9 +162,35 @@ namespace klib
 
 		void Print() const
 		{
-			printf("- Flags for Tech            : 0x%.08x.\n"	, (int32_t)	Tech	);
-			printf("- Grade                     : 0x%.08x.\n"	, (int32_t)	Grade	);
+			printf("- Flags for Tech ............: 0x%.08x.\n"	, (int32_t)	Tech	);
+			printf("- Grade ---------------------: 0x%.08x.\n"	, (int32_t)	Grade	);
 		}
+	};
+
+	struct SEntityEffectTurns
+	{
+		int32_t			Attack;
+		int32_t			Defend;
+		int32_t			Passive;
+	};
+
+	struct SEntityStatusTurns
+	{
+		int32_t			Inflict;
+		int32_t			Immunity;
+	};
+
+	struct SEntityTechTurns
+	{
+		int32_t			Tech;
+		int32_t			Grade;
+	};
+
+	struct SEntityFlagsTurns
+	{
+		SEntityEffectTurns	Effect;
+		SEntityStatusTurns	Status;
+		SEntityTechTurns	Tech;
 	};
 
 #pragma pack(pop)

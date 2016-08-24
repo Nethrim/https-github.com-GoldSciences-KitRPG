@@ -1,4 +1,3 @@
-#include "Inventory.h"
 #include "CombatPoints.h"
 #include "CombatStatus.h"
 #include "Entity.h"
@@ -40,67 +39,56 @@ namespace klib
 		uint64_t GrenadesUsed		= 0;
 	};
 
-	struct SCharacterPointsMultipliers
-	{
-		SLifePointsMultiplier	LifeMax;
-		SLifePointsMultiplier	LifeCurrent;
-		SAttackPointsMultiplier	Attack;
-		double					Coins;
-
-		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const {
-			return{ LifeMax*level, LifeCurrent*level, Attack*level, Coins*level };
-		}
-	};
-
 	struct SCharacterPoints
 	{
-		SLifePoints			LifeMax;
-		SLifePoints			LifeCurrent;
-		SAttackPoints		Attack;
-		int32_t				Coins;
+		SEntityPoints		Points;
 		SEntityFlags		Flags;
 
-		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
-			return { LifeMax*other.LifeMax, LifeCurrent*other.LifeCurrent, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Flags }; 
+		inline constexpr SCharacterPoints	operator *	(const SEntityPointsMultiplier& other)	const	{ 
+			return { Points*other, Flags }; 
 		}
 
 		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, Flags|other.Flags };//Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
+			return { Points+other.Points, Flags|other.Flags };//Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
 		}
 
 		void Print() const
 		{
-			printf("- Max Life:\n");
-			LifeMax.Print();
-			printf("- Current Life:\n");
-			LifeCurrent.Print();
-			printf("- Attack Points:\n");
-			Attack.Print();
-			printf("- Coins                     : %i.\n"		, (int32_t)		Coins				);
+			Points.Print();
 			Flags.Print();
 		};
 	};
 
-
-	typedef SCharacterPoints SBonusTurns;
-
+	typedef SEntityPoints SEntityPointsSturns;
 	struct SCombatBonus
 	{
-		SCharacterPoints	Points		= { {}, {}, {}, 0, {} };	// these are points that are calculated during combat depending on equipment or item consumption.
-		SBonusTurns			TurnsLeft	= { {}, {}, {}, 0, {} };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+		SEntityPoints		Points				= { };	// these are points that are calculated during combat depending on equipment or item consumption.
+		SEntityPointsSturns	TurnsLeftPoints		= { };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+		SEntityFlags		Flags				= { };	// these are points that are calculated during combat depending on equipment or item consumption.
+		SEntityFlagsTurns	TurnsLeftFlags		= { };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 		void				NextTurn() {
-			if( 0 < TurnsLeft.LifeMax.Health		)	{	if( 0 == --TurnsLeft.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} else if( 0 > TurnsLeft.LifeMax.Health		)	{	if( 0 == ++TurnsLeft.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} 
-			if( 0 < TurnsLeft.LifeMax.Mana			)	{	if( 0 == --TurnsLeft.LifeMax.Mana		)	Points.LifeMax.Mana			= 0;	} else if( 0 > TurnsLeft.LifeMax.Mana		)	{	if( 0 == ++TurnsLeft.LifeMax.Mana		)	Points.LifeMax.Mana			= 0;	} 
-			if( 0 < TurnsLeft.LifeMax.Shield		)	{	if( 0 == --TurnsLeft.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} else if( 0 > TurnsLeft.LifeMax.Shield		)	{	if( 0 == ++TurnsLeft.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} 
+			if( 0 < TurnsLeftPoints.LifeMax.Health		)	{	if( 0 == --TurnsLeftPoints.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} else if( 0 > TurnsLeftPoints.LifeMax.Health		)	{	if( 0 == ++TurnsLeftPoints.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} 
+			if( 0 < TurnsLeftPoints.LifeMax.Mana		)	{	if( 0 == --TurnsLeftPoints.LifeMax.Mana			)	Points.LifeMax.Mana			= 0;	} else if( 0 > TurnsLeftPoints.LifeMax.Mana			)	{	if( 0 == ++TurnsLeftPoints.LifeMax.Mana			)	Points.LifeMax.Mana			= 0;	} 
+			if( 0 < TurnsLeftPoints.LifeMax.Shield		)	{	if( 0 == --TurnsLeftPoints.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} else if( 0 > TurnsLeftPoints.LifeMax.Shield		)	{	if( 0 == ++TurnsLeftPoints.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} 
+//	
+			if( 0 < TurnsLeftPoints.LifeCurrent.Health	)	{	if( 0 == --TurnsLeftPoints.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} else if( 0 > TurnsLeftPoints.LifeCurrent.Health	)	{	if( 0 == ++TurnsLeftPoints.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} 
+			if( 0 < TurnsLeftPoints.LifeCurrent.Mana	)	{	if( 0 == --TurnsLeftPoints.LifeCurrent.Mana		)	Points.LifeCurrent.Mana		= 0;	} else if( 0 > TurnsLeftPoints.LifeCurrent.Mana		)	{	if( 0 == ++TurnsLeftPoints.LifeCurrent.Mana		)	Points.LifeCurrent.Mana		= 0;	} 
+			if( 0 < TurnsLeftPoints.LifeCurrent.Shield	)	{	if( 0 == --TurnsLeftPoints.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} else if( 0 > TurnsLeftPoints.LifeCurrent.Shield	)	{	if( 0 == ++TurnsLeftPoints.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} 
+//	
+			if( 0 < TurnsLeftPoints.Attack.Damage		)	{	if( 0 == --TurnsLeftPoints.Attack.Damage		)	Points.Attack.Damage		= 0;	} else if( 0 > TurnsLeftPoints.Attack.Damage		)	{	if( 0 == ++TurnsLeftPoints.Attack.Damage		)	Points.Attack.Damage		= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.Hit			)	{	if( 0 == --TurnsLeftPoints.Attack.Hit			)	Points.Attack.Hit			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Hit			)	{	if( 0 == ++TurnsLeftPoints.Attack.Hit			)	Points.Attack.Hit			= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.Speed		)	{	if( 0 == --TurnsLeftPoints.Attack.Speed			)	Points.Attack.Speed			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Speed			)	{	if( 0 == ++TurnsLeftPoints.Attack.Speed			)	Points.Attack.Speed			= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.Absorption	)	{	if( 0 == --TurnsLeftPoints.Attack.Absorption	)	Points.Attack.Absorption	= 0;	} else if( 0 > TurnsLeftPoints.Attack.Absorption	)	{	if( 0 == ++TurnsLeftPoints.Attack.Absorption	)	Points.Attack.Absorption	= 0;	} 
+			if( 0 < TurnsLeftPoints.Coins				)	{	if( 0 == --TurnsLeftPoints.Coins				)	Points.Coins				= 0;	} else if( 0 > TurnsLeftPoints.Coins				)	{	if( 0 == ++TurnsLeftPoints.Coins				)	Points.Coins				= 0;	} 
 //
-			if( 0 < TurnsLeft.LifeCurrent.Health	)	{	if( 0 == --TurnsLeft.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Health	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} 
-			if( 0 < TurnsLeft.LifeCurrent.Mana		)	{	if( 0 == --TurnsLeft.LifeCurrent.Mana	)	Points.LifeCurrent.Mana		= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Mana	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Mana	)	Points.LifeCurrent.Mana		= 0;	} 
-			if( 0 < TurnsLeft.LifeCurrent.Shield	)	{	if( 0 == --TurnsLeft.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Shield	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} 
-//
-			if( 0 < TurnsLeft.Attack.Damage			)	{	if( 0 == --TurnsLeft.Attack.Damage		)	Points.Attack.Damage		= 0;	} else if( 0 > TurnsLeft.Attack.Damage		)	{	if( 0 == ++TurnsLeft.Attack.Damage		)	Points.Attack.Damage		= 0;	} 
-			if( 0 < TurnsLeft.Attack.Hit			)	{	if( 0 == --TurnsLeft.Attack.Hit			)	Points.Attack.Hit			= 0;	} else if( 0 > TurnsLeft.Attack.Hit			)	{	if( 0 == ++TurnsLeft.Attack.Hit			)	Points.Attack.Hit			= 0;	} 
-			if( 0 < TurnsLeft.Coins					)	{	if( 0 == --TurnsLeft.Coins				)	Points.Coins				= 0;	} else if( 0 > TurnsLeft.Coins				)	{	if( 0 == ++TurnsLeft.Coins				)	Points.Coins				= 0;	} 
+			if( 0 < TurnsLeftFlags.Effect	.Attack		)	{	if( 0 == --TurnsLeftFlags.Effect	.Attack		)	Flags.Effect	.Attack		= ATTACK_EFFECT_NONE		;} else if( 0 > TurnsLeftFlags.Effect	.Attack		)	{	if( 0 == ++TurnsLeftFlags.Effect	.Attack		)	Flags.Effect	.Attack		= ATTACK_EFFECT_NONE		;	} 
+			if( 0 < TurnsLeftFlags.Effect	.Defend		)	{	if( 0 == --TurnsLeftFlags.Effect	.Defend		)	Flags.Effect	.Defend		= DEFEND_EFFECT_NONE		;} else if( 0 > TurnsLeftFlags.Effect	.Defend		)	{	if( 0 == ++TurnsLeftFlags.Effect	.Defend		)	Flags.Effect	.Defend		= DEFEND_EFFECT_NONE		;	} 
+			if( 0 < TurnsLeftFlags.Effect	.Passive	)	{	if( 0 == --TurnsLeftFlags.Effect	.Passive	)	Flags.Effect	.Passive	= PASSIVE_EFFECT_NONE		;} else if( 0 > TurnsLeftFlags.Effect	.Passive	)	{	if( 0 == ++TurnsLeftFlags.Effect	.Passive	)	Flags.Effect	.Passive	= PASSIVE_EFFECT_NONE		;	} 
+			if( 0 < TurnsLeftFlags.Status	.Inflict	)	{	if( 0 == --TurnsLeftFlags.Status	.Inflict	)	Flags.Status	.Inflict	= COMBAT_STATUS_NONE		;} else if( 0 > TurnsLeftFlags.Status	.Inflict	)	{	if( 0 == ++TurnsLeftFlags.Status	.Inflict	)	Flags.Status	.Inflict	= COMBAT_STATUS_NONE		;	} 
+			if( 0 < TurnsLeftFlags.Status	.Immunity	)	{	if( 0 == --TurnsLeftFlags.Status	.Immunity	)	Flags.Status	.Immunity	= COMBAT_STATUS_NONE		;} else if( 0 > TurnsLeftFlags.Status	.Immunity	)	{	if( 0 == ++TurnsLeftFlags.Status	.Immunity	)	Flags.Status	.Immunity	= COMBAT_STATUS_NONE		;	} 
+			if( 0 < TurnsLeftFlags.Tech		.Tech		)	{	if( 0 == --TurnsLeftFlags.Tech		.Tech		)	Flags.Tech		.Tech		= ENTITY_TECHNOLOGY_UNKNOWN	;} else if( 0 > TurnsLeftFlags.Tech		.Tech		)	{	if( 0 == ++TurnsLeftFlags.Tech		.Tech		)	Flags.Tech		.Tech		= ENTITY_TECHNOLOGY_UNKNOWN	;	} 
+			if( 0 < TurnsLeftFlags.Tech		.Grade		)	{	if( 0 == --TurnsLeftFlags.Tech		.Grade		)	Flags.Tech		.Grade		= ENTITY_GRADE_ILLUSION		;} else if( 0 > TurnsLeftFlags.Tech		.Grade		)	{	if( 0 == ++TurnsLeftFlags.Tech		.Grade		)	Flags.Tech		.Grade		= ENTITY_GRADE_ILLUSION		;	} 
 		};
 	};
 
@@ -153,51 +141,55 @@ namespace klib
 
 	struct SCharacterResearch
 	{
-		SCharacterResearchGroup			Weapon		= {};
-		SCharacterResearchGroup			Armor		= {};
-		SCharacterResearchGroup			Profession	= {};
+		SCharacterResearchGroup		Weapon		= {};
+		SCharacterResearchGroup		Armor		= {};
+		SCharacterResearchGroup		Profession	= {};
 	};
 
 	// POD to store all the character data that is not a string or object.
 	struct SCharacter
 	{
-		CHARACTER_TYPE		Type				= CHARACTER_TYPE_UNKNOWN;
-		SCharacterPoints	Points				= { {10, 0, 0}, {10, 0,	0}, {50, 1}, 10};	// These are the base character points.
-		SCombatBonus		CombatBonus			= SCombatBonus	();
-		SCombatStatus		CombatStatus		= SCombatStatus	();
-		SCharacterInventory	Inventory			= SCharacterInventory();
-		SCharacterScore		Score				= SCharacterScore();	
-		SWeapon				CurrentWeapon		= {0,0,1};	// Index, ModifierIndex, Level
-		SArmor				CurrentArmor		= {0,0,1};	// Index, ModifierIndex, Level
-		SProfession			CurrentProfession	= {0,0,1};	// Index, ModifierIndex, Level
+		CHARACTER_TYPE				Type				= CHARACTER_TYPE_UNKNOWN;
+		SCharacterPoints			Points				= { {{10,0,0}, {10,0,0}, {50,1,1,1}, 10} };	// These are the base character points.
 
-		SWeapon				MaxWeapon			= {0,0,1};	// Index, ModifierIndex, Level
-		SArmor				MaxArmor			= {0,0,1};	// Index, ModifierIndex, Level
-		SProfession			MaxProfession		= {0,0,1};	// Index, ModifierIndex, Level
+		SCombatBonus				CombatBonus			= SCombatBonus			();
+		SCombatStatus				CombatStatus		= SCombatStatus			();
+		SCharacterScore				Score				= SCharacterScore		();	
 
-		SEntityContainer<SWeapon		, 256>	Weapons		= {};
-		SEntityContainer<SArmor			, 256>	Armors		= {};
-		SEntityContainer<SProfession	, 256>	Professions	= {};
+		SWeapon						CurrentWeapon		= {0,0,1};	// Index, ModifierIndex, Level
+		SArmor						CurrentArmor		= {0,0,1};	// Index, ModifierIndex, Level
+		SProfession					CurrentProfession	= {0,0,1};	// Index, ModifierIndex, Level
 
-		SCharacterResearch						Researched;
+		SWeapon						MaxWeapon			= {0,0,1};	// Index, ModifierIndex, Level
+		SArmor						MaxArmor			= {0,0,1};	// Index, ModifierIndex, Level
+		SProfession					MaxProfession		= {0,0,1};	// Index, ModifierIndex, Level
 
-		void				UnloadWeapon		()	{	Weapons.AddElement(CurrentWeapon);	};
-		void				UnloadArmor			()	{	Armors.AddElement(CurrentArmor);	};
-		void				UnloadProfession	()	{	Professions.AddElement(CurrentProfession);	};
-		void				EquipWeapon			(size_t slotIndex);
-		void				EquipArmor			(size_t slotIndex);
-		void				EquipProfession		(size_t slotIndex);
-		bool				DidLoseTurn() {
-			return 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_STUN) || 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_SLEEP) || 0 < CombatStatus.GetStatusTurns(klib::COMBAT_STATUS_FROZEN);
+		SInventoryItems				Inventory		= {};
+		SInventoryWeapons			Weapons			= {};
+		SInventoryArmors			Armors			= {};
+		SInventoryProfessions		Professions		= {};
+		SInventoryVehicles			Vehicles		= {};
+
+		SCharacterResearch			Researched;
+
+		void						UnloadWeapon		()	{	Weapons.AddElement(CurrentWeapon);	};
+		void						UnloadArmor			()	{	Armors.AddElement(CurrentArmor);	};
+		void						UnloadProfession	()	{	Professions.AddElement(CurrentProfession);	};
+		void						EquipWeapon			(size_t slotIndex);
+		void						EquipArmor			(size_t slotIndex);
+		void						EquipProfession		(size_t slotIndex);
+		bool						DidLoseTurn() {
+			return 0 < CombatStatus.GetStatusTurns(COMBAT_STATUS_STUN	) 
+				|| 0 < CombatStatus.GetStatusTurns(COMBAT_STATUS_SLEEP	) 
+				|| 0 < CombatStatus.GetStatusTurns(COMBAT_STATUS_FROZEN	);
 		};
 
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{maxHP}, {maxHP}, {hitChance, attack}, coins, {characterEffect, characterStatus}})
+			,Points				({{{maxHP}, {maxHP}, {hitChance, attack}, coins}, {characterEffect, characterStatus}})
 			,CombatBonus		(SCombatBonus	())
 			,CombatStatus		(SCombatStatus	())
-			,Inventory			(SCharacterInventory())
 			,Score				(SCharacterScore())
 			,CurrentWeapon		({0,0,1})
 			,CurrentArmor		({0,0,1})
@@ -205,16 +197,18 @@ namespace klib
 			,MaxWeapon			({0,0,1})
 			,MaxArmor			({0,0,1})
 			,MaxProfession		({0,0,1})
+			,Inventory			({})
 			,Weapons			({})
 			,Armors				({})
 			,Professions		({})
+			,Vehicles			({})
 		{};
 
-		int32_t		Save(FILE* fp)	const;
-		int32_t		Load(FILE* fp);
+		int32_t						Save(FILE* fp)	const;
+		int32_t						Load(FILE* fp);
 	};
 
-	static SCharacterPoints applyMultipliers(const SCharacterPoints& definitionPoints, const SCharacterPoints& modifierPoints, const SCharacterPointsMultipliers& multipliers ) {
+	static SCharacterPoints applyMultipliers(const SCharacterPoints& definitionPoints, const SCharacterPoints& modifierPoints, const SEntityPointsMultiplier& multipliers ) {
 		SCharacterPoints finalPoints = {};
 		finalPoints				= (definitionPoints + modifierPoints)*multipliers;
 		return finalPoints;

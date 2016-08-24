@@ -48,11 +48,11 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		finalPointsThrower	= calculateFinalPoints(thrower), 
 		finalPointsTarget	= calculateFinalPoints(target);
 
-	int itemEffectValue				= int(finalPointsTarget .LifeMax.Health*(0.2f*itemGrade));
-	int itemEffectValueSelf			= int(finalPointsThrower.LifeMax.Health*(0.2f*itemGrade)) >> 1;
+	int itemEffectValue				= int(finalPointsTarget .Points.LifeMax.Health*(0.2f*itemGrade));
+	int itemEffectValueSelf			= int(finalPointsThrower.Points.LifeMax.Health*(0.2f*itemGrade)) >> 1;
 
-	int itemEffectValueReduced		= int(finalPointsTarget .LifeMax.Health*(0.1f*itemGrade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.LifeMax.Health*(0.1f*itemGrade)) >> 1;
+	int itemEffectValueReduced		= int(finalPointsTarget .Points.LifeMax.Health*(0.1f*itemGrade));
+	int itemEffectValueReducedSelf	= int(finalPointsThrower.Points.LifeMax.Health*(0.1f*itemGrade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
