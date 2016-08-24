@@ -48,9 +48,9 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 
 	bool bUsedItem = false;
 
-	SLifePoints& currentPoints	= potionDrinker.Points.CurrentLife;
+	SLifePoints& currentPoints	= potionDrinker.Points.LifeCurrent;
 	SCombatBonus& drinkerBonus	= potionDrinker.CombatBonus;
-	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).MaxLife;
+	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).LifeMax;
 
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Health					, currentPoints.Health					, "Health"	);
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA		)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Mana						, currentPoints.Mana					, "Mana"	);

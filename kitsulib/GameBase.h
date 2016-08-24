@@ -42,51 +42,42 @@ namespace klib
 
 	struct SCharacterPointsMultipliers
 	{
-		SLifePointsMultiplier	MaxLife;
-		SLifePointsMultiplier	CurrentLife;
+		SLifePointsMultiplier	LifeMax;
+		SLifePointsMultiplier	LifeCurrent;
 		SAttackPointsMultiplier	Attack;
 		double					Coins;
 
 		inline constexpr SCharacterPointsMultipliers	operator *	(const int32_t level)	const {
-			return{ MaxLife*level, CurrentLife*level, Attack*level, Coins*level };
+			return{ LifeMax*level, LifeCurrent*level, Attack*level, Coins*level };
 		}
 	};
 
 	struct SCharacterPoints
 	{
-		SLifePoints			MaxLife;
-		SLifePoints			CurrentLife;
+		SLifePoints			LifeMax;
+		SLifePoints			LifeCurrent;
 		SAttackPoints		Attack;
 		int32_t				Coins;
-		SEntityEffect		Effect;
-		SEntityStatus		Status;
-		SEntityGrade		Tech;
+		SEntityFlags		Flags;
 
 		inline constexpr SCharacterPoints	operator *	(const SCharacterPointsMultipliers& other)	const	{ 
-			return { MaxLife*other.MaxLife, CurrentLife*other.CurrentLife, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Effect, Status, Tech }; 
+			return { LifeMax*other.LifeMax, LifeCurrent*other.LifeCurrent, Attack*other.Attack, (int32_t)(Coins*std::max(1.000001, other.Coins)), Flags }; 
 		}
+
 		inline constexpr SCharacterPoints	operator +	(const SCharacterPoints& other)				const	{ 
-			return { MaxLife+other.MaxLife, CurrentLife+other.CurrentLife, Attack+other.Attack, Coins+other.Coins, Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
-		}
-		void PrintStatusAndEffect() const
-		{
-			printf("- Flags for Attack Effect   : 0x%.04x.\n"	, (int32_t)	Effect.Attack		);
-			printf("- Flags for Defend Effect   : 0x%.04x.\n"	, (int32_t)	Effect.Defend		);
-			printf("- Flags for Passive Effect  : 0x%.04x.\n"	, (int32_t)	Effect.Passive	);
-			printf("- Flags for Status Inflict  : 0x%.04x.\n"	, (int32_t)	Status.Inflict	);
-			printf("- Flags for Status Immunity : 0x%.04x.\n"	, (int32_t)	Status.Immunity	);
+			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, Flags|other.Flags };//Effect | other.Effect, Status | other.Status, Tech | other.Tech }; 
 		}
 
 		void Print() const
 		{
 			printf("- Max Life:\n");
-			MaxLife.Print();
+			LifeMax.Print();
 			printf("- Current Life:\n");
-			CurrentLife.Print();
+			LifeCurrent.Print();
 			printf("- Attack Points:\n");
 			Attack.Print();
 			printf("- Coins                     : %i.\n"		, (int32_t)		Coins				);
-			PrintStatusAndEffect();
+			Flags.Print();
 		};
 	};
 
@@ -95,21 +86,21 @@ namespace klib
 
 	struct SCombatBonus
 	{
-		SCharacterPoints	Points		= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, COMBAT_STATUS_NONE, COMBAT_STATUS_NONE };	// these are points that are calculated during combat depending on equipment or item consumption.
-		SBonusTurns			TurnsLeft	= { {0, 0, 0}, {0, 0, 0}, {0, 0}, 0, ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, PASSIVE_EFFECT_NONE, COMBAT_STATUS_NONE, COMBAT_STATUS_NONE };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
+		SCharacterPoints	Points		= { {}, {}, {}, 0, {} };	// these are points that are calculated during combat depending on equipment or item consumption.
+		SBonusTurns			TurnsLeft	= { {}, {}, {}, 0, {} };	// these are the amount of turns for which each bonus is valid. On each turn it should decrease by one and clear the bonus to zero when this counter reaches zero.
 
 		void				NextTurn() {
-			if( 0 >= --TurnsLeft.MaxLife.Health			)	TurnsLeft.MaxLife.Health		=	Points.MaxLife.Health		= 0;
-			if( 0 >= --TurnsLeft.MaxLife.Mana		)	TurnsLeft.MaxLife.Mana		=	Points.MaxLife.Mana		= 0;
-			if( 0 >= --TurnsLeft.MaxLife.Shield		)	TurnsLeft.MaxLife.Shield	=	Points.MaxLife.Shield	= 0;
-
-			if( 0 >= --TurnsLeft.CurrentLife.Health		)	TurnsLeft.CurrentLife.Health		=	Points.CurrentLife.Health		= 0;
-			if( 0 >= --TurnsLeft.CurrentLife.Mana	)	TurnsLeft.CurrentLife.Mana		=	Points.CurrentLife.Mana		= 0;
-			if( 0 >= --TurnsLeft.CurrentLife.Shield	)	TurnsLeft.CurrentLife.Shield	=	Points.CurrentLife.Shield	= 0;
-
-			if( 0 >= --TurnsLeft.Attack.Damage		)	TurnsLeft.Attack.Damage		=	Points.Attack.Damage	= 0;
-			if( 0 >= --TurnsLeft.Attack.Hit			)	TurnsLeft.Attack.Hit		=	Points.Attack.Hit		= 0;
-			if( 0 >= --TurnsLeft.Coins				)	TurnsLeft.Coins				=	Points.Coins			= 0;
+			if( 0 < TurnsLeft.LifeMax.Health		)	{	if( 0 == --TurnsLeft.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} else if( 0 > TurnsLeft.LifeMax.Health		)	{	if( 0 == ++TurnsLeft.LifeMax.Health		)	Points.LifeMax.Health		= 0;	} 
+			if( 0 < TurnsLeft.LifeMax.Mana			)	{	if( 0 == --TurnsLeft.LifeMax.Mana		)	Points.LifeMax.Mana			= 0;	} else if( 0 > TurnsLeft.LifeMax.Mana		)	{	if( 0 == ++TurnsLeft.LifeMax.Mana		)	Points.LifeMax.Mana			= 0;	} 
+			if( 0 < TurnsLeft.LifeMax.Shield		)	{	if( 0 == --TurnsLeft.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} else if( 0 > TurnsLeft.LifeMax.Shield		)	{	if( 0 == ++TurnsLeft.LifeMax.Shield		)	Points.LifeMax.Shield		= 0;	} 
+//
+			if( 0 < TurnsLeft.LifeCurrent.Health	)	{	if( 0 == --TurnsLeft.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Health	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Health	)	Points.LifeCurrent.Health	= 0;	} 
+			if( 0 < TurnsLeft.LifeCurrent.Mana		)	{	if( 0 == --TurnsLeft.LifeCurrent.Mana	)	Points.LifeCurrent.Mana		= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Mana	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Mana	)	Points.LifeCurrent.Mana		= 0;	} 
+			if( 0 < TurnsLeft.LifeCurrent.Shield	)	{	if( 0 == --TurnsLeft.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} else if( 0 > TurnsLeft.LifeCurrent.Shield	)	{	if( 0 == ++TurnsLeft.LifeCurrent.Shield	)	Points.LifeCurrent.Shield	= 0;	} 
+//
+			if( 0 < TurnsLeft.Attack.Damage			)	{	if( 0 == --TurnsLeft.Attack.Damage		)	Points.Attack.Damage		= 0;	} else if( 0 > TurnsLeft.Attack.Damage		)	{	if( 0 == ++TurnsLeft.Attack.Damage		)	Points.Attack.Damage		= 0;	} 
+			if( 0 < TurnsLeft.Attack.Hit			)	{	if( 0 == --TurnsLeft.Attack.Hit			)	Points.Attack.Hit			= 0;	} else if( 0 > TurnsLeft.Attack.Hit			)	{	if( 0 == ++TurnsLeft.Attack.Hit			)	Points.Attack.Hit			= 0;	} 
+			if( 0 < TurnsLeft.Coins					)	{	if( 0 == --TurnsLeft.Coins				)	Points.Coins				= 0;	} else if( 0 > TurnsLeft.Coins				)	{	if( 0 == ++TurnsLeft.Coins				)	Points.Coins				= 0;	} 
 		};
 	};
 
@@ -119,12 +110,13 @@ namespace klib
 		uint32_t			Count	= 0;
 		COMBAT_STATUS		Status		[MAX_COMBAT_STATUS]	= {};
 		int8_t				TurnsLeft	[MAX_COMBAT_STATUS]	= {};
-		int					GetStatusTurns(COMBAT_STATUS status)
+		int32_t				GetStatusTurns(const COMBAT_STATUS status)
 		{
+			int32_t turns=0;
 			for(uint32_t i=0; i<Count; ++i)
-				if(Status[i] & status)
-					return TurnsLeft[i];
-			return 0;
+				if(status == (Status[i] & status))
+					turns += TurnsLeft[i];
+			return turns;
 		};
 		void				NextTurn() {
 			for(uint32_t i=0; i<Count; ++i) {
@@ -202,7 +194,7 @@ namespace klib
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{maxHP, 0, 0}, {maxHP, 0, 0}, {hitChance, attack}, coins, characterEffect, characterStatus, {}})
+			,Points				({{maxHP}, {maxHP}, {hitChance, attack}, coins, {characterEffect, characterStatus}})
 			,CombatBonus		(SCombatBonus	())
 			,CombatStatus		(SCombatStatus	())
 			,Inventory			(SCharacterInventory())

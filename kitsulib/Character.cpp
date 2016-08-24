@@ -14,9 +14,9 @@ using namespace klib;
 void klib::rest(CCharacter& character)
 {
 	SCharacterPoints finalPoints	= calculateFinalPoints(character);
-	character.Points.CurrentLife	= finalPoints.MaxLife	;
+	character.Points.LifeCurrent	= finalPoints.LifeMax	;
 	printf("\nYou decide to get some rest.\n");
-	character.Points.CurrentLife.Print();
+	character.Points.LifeCurrent.Print();
 }
 
 SCharacterPoints klib::calculateFinalPoints(const CCharacter& character)
@@ -26,16 +26,12 @@ SCharacterPoints klib::calculateFinalPoints(const CCharacter& character)
 	const SCharacterPoints 		armorPoints			= klib::getArmorPoints		(character.CurrentArmor);
 	const SCharacterPoints 		professionPoints	= klib::getProfessionPoints	(character.CurrentProfession);
 
-	result.MaxLife		= character.CombatBonus.Points.MaxLife		+ weaponPoints.MaxLife		+ armorPoints.MaxLife		+ professionPoints.MaxLife		+	character.Points.MaxLife;
+	result.LifeMax		= character.CombatBonus.Points.LifeMax		+ weaponPoints.LifeMax		+ armorPoints.LifeMax		+ professionPoints.LifeMax		+	character.Points.LifeMax;
 	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
-	result.CurrentLife	= character.CombatBonus.Points.CurrentLife	+ weaponPoints.CurrentLife	+ armorPoints.CurrentLife	+ professionPoints.CurrentLife;
+	result.LifeCurrent	= character.CombatBonus.Points.LifeCurrent	+ weaponPoints.LifeCurrent	+ armorPoints.LifeCurrent	+ professionPoints.LifeCurrent;
 	result.Coins		= character.CombatBonus.Points.Coins		+ weaponPoints.Coins		+ armorPoints.Coins			+ professionPoints.Coins;
 
-	result.Effect.Attack	= (ATTACK_EFFECT	)( character.CombatBonus.Points.Effect.Attack		| weaponPoints.Effect.Attack		| armorPoints.Effect.Attack	| professionPoints.Effect.Attack		|	character.Points.Effect.Attack	);
-	result.Effect.Defend	= (DEFEND_EFFECT	)( character.CombatBonus.Points.Effect.Defend		| weaponPoints.Effect.Defend		| armorPoints.Effect.Defend	| professionPoints.Effect.Defend		|	character.Points.Effect.Defend	);
-	result.Effect.Passive	= (PASSIVE_EFFECT	)( character.CombatBonus.Points.Effect.Passive	| weaponPoints.Effect.Passive		| armorPoints.Effect.Passive	| professionPoints.Effect.Passive		|	character.Points.Effect.Passive	);
-	result.Status.Inflict	= (COMBAT_STATUS	)( character.CombatBonus.Points.Status.Inflict	| weaponPoints.Status.Inflict		| armorPoints.Status.Inflict	| professionPoints.Status.Inflict		|	character.Points.Status.Inflict	);
-	result.Status.Immunity	= (COMBAT_STATUS	)( character.CombatBonus.Points.Status.Immunity	| weaponPoints.Status.Immunity	| armorPoints.Status.Immunity	| professionPoints.Status.Immunity	|	character.Points.Status.Immunity	);
+	result.Flags		= character.CombatBonus.Points.Flags | weaponPoints.Flags	| armorPoints.Flags	| professionPoints.Flags | character.Points.Flags;
 
 	return result;
 };

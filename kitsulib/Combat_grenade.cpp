@@ -48,11 +48,11 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		finalPointsThrower	= calculateFinalPoints(thrower), 
 		finalPointsTarget	= calculateFinalPoints(target);
 
-	int itemEffectValue				= int(finalPointsTarget .MaxLife.Health*(0.2f*itemGrade));
-	int itemEffectValueSelf			= int(finalPointsThrower.MaxLife.Health*(0.2f*itemGrade)) >> 1;
+	int itemEffectValue				= int(finalPointsTarget .LifeMax.Health*(0.2f*itemGrade));
+	int itemEffectValueSelf			= int(finalPointsThrower.LifeMax.Health*(0.2f*itemGrade)) >> 1;
 
-	int itemEffectValueReduced		= int(finalPointsTarget .MaxLife.Health*(0.1f*itemGrade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.MaxLife.Health*(0.1f*itemGrade)) >> 1;
+	int itemEffectValueReduced		= int(finalPointsTarget .LifeMax.Health*(0.1f*itemGrade));
+	int itemEffectValueReducedSelf	= int(finalPointsThrower.LifeMax.Health*(0.1f*itemGrade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
@@ -60,8 +60,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	bool bAddStatus = false;
 
 	int32_t targetArmorAbsorption = getArmorAbsorption(target.CurrentArmor), finalPassthroughDamage = 0, reflectedDamage = 0;
-	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.Effect.Defend;
-	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget.Effect.Defend;
+	DEFEND_EFFECT attackerArmorEffect	= finalPointsThrower.Flags.Effect.Defend;
+	DEFEND_EFFECT targetArmorEffect		= finalPointsTarget	.Flags.Effect.Defend;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	COMBAT_STATUS		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);

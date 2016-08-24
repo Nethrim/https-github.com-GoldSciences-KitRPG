@@ -251,21 +251,21 @@ void displayEquip(const klib::CCharacter& adventurer)
 
 	printf("\n-- %s final points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
-	finalPoints.MaxLife.Print();
+	finalPoints.LifeMax.Print();
 	printf("- Current Life:\n");
-	basePoints.CurrentLife.Print();
+	basePoints.LifeCurrent.Print();
 	printf("- Attack:\n");
 	finalPoints.Attack.Print();
 	printf("- Coins: %i.\n", basePoints.Coins);
 	printf("- Bonus Coins per turn: %i.\n", finalPoints.Coins);
-	finalPoints.PrintStatusAndEffect();
+	finalPoints.Flags.Print();
 
 	printf("\n-- %s base character points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
-	basePoints.MaxLife.Print();
+	basePoints.LifeMax.Print();
 	printf("- Attack:\n");
 	basePoints.Attack.Print();
-	basePoints.PrintStatusAndEffect();
+	finalPoints.Flags.Print();
 
 	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), klib::getProfessionName(adventurer.CurrentProfession).c_str(), adventurer.CurrentProfession.Level);
 	professionPoints.Print();

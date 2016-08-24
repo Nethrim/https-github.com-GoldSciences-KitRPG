@@ -113,7 +113,7 @@ namespace klib
 	std::string getStringFromBit(DEFEND_EFFECT		bitStatus);
 	std::string getStringFromBit(PASSIVE_EFFECT		bitStatus);
 	std::string getStringFromBit(ENTITY_TECHNOLOGY	bitStatus);
-	std::string getStringFromBit(ENTITY_GRADE				bitStatus);
+	std::string getStringFromBit(ENTITY_GRADE		bitStatus);
 	std::string getStringFromBit(ATTACK_TYPE		bitStatus);
 	std::string getStringFromBit(EQUIP_MATERIAL		bitStatus);
 
@@ -126,6 +126,13 @@ namespace klib
 		inline constexpr SEntityEffect operator | (const SEntityEffect& other) const {
 			return{ (ATTACK_EFFECT)(Attack | other.Attack), (DEFEND_EFFECT)(Defend | other.Defend), (PASSIVE_EFFECT)(Passive | other.Passive) };
 		};
+
+		void Print() const
+		{
+			printf("- Flags for Attack Effect   : 0x%.08x.\n"	, (int32_t)	Attack	);
+			printf("- Flags for Defend Effect   : 0x%.08x.\n"	, (int32_t)	Defend	);
+			printf("- Flags for Passive Effect  : 0x%.08x.\n"	, (int32_t)	Passive	);
+		}
 	};
 
 	struct SEntityStatus
@@ -136,15 +143,27 @@ namespace klib
 		inline constexpr SEntityStatus operator | (const SEntityStatus& other) const {
 			return{ (COMBAT_STATUS)(Inflict | other.Inflict), (COMBAT_STATUS)(Immunity | other.Immunity) };
 		};
+
+		void Print() const
+		{
+			printf("- Flags for Status Inflict  : 0x%.08x.\n"	, (int32_t)	Inflict		);
+			printf("- Flags for Status Immunity : 0x%.08x.\n"	, (int32_t)	Immunity	);
+		}
 	};
 
 	struct SEntityGrade
 	{
 		ENTITY_TECHNOLOGY	Tech;
-		ENTITY_GRADE		Level;
+		ENTITY_GRADE		Grade;
 
 		inline constexpr SEntityGrade operator | (const SEntityGrade& other) const {
-			return{ (ENTITY_TECHNOLOGY)(Tech | other.Tech), ::std::max(Level, other.Level) };
+			return{ (ENTITY_TECHNOLOGY)(Tech | other.Tech), ::std::max(Grade, other.Grade) };
+		}
+
+		void Print() const
+		{
+			printf("- Flags for Tech            : 0x%.08x.\n"	, (int32_t)	Tech	);
+			printf("- Grade                     : 0x%.08x.\n"	, (int32_t)	Grade	);
 		}
 	};
 

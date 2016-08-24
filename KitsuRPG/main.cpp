@@ -66,7 +66,7 @@ void main()
 
 
 		klib::SCharacterPoints finalPoints	= klib::calculateFinalPoints(adventurer);
-		adventurer.Points.CurrentLife		= finalPoints.MaxLife;
+		adventurer.Points.LifeCurrent		= finalPoints.LifeMax;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.
