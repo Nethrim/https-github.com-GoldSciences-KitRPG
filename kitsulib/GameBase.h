@@ -144,6 +144,7 @@ namespace klib
 		SCharacterResearchGroup		Weapon		= {};
 		SCharacterResearchGroup		Armor		= {};
 		SCharacterResearchGroup		Profession	= {};
+		SCharacterResearchGroup		Vehicle		= {};
 	};
 
 	// POD to store all the character data that is not a string or object.
@@ -159,25 +160,29 @@ namespace klib
 		SWeapon						CurrentWeapon		= {0,0,1};	// Index, ModifierIndex, Level
 		SArmor						CurrentArmor		= {0,0,1};	// Index, ModifierIndex, Level
 		SProfession					CurrentProfession	= {0,0,1};	// Index, ModifierIndex, Level
+		SVehicle					CurrentVehicle		= {0,0,1};	// Index, ModifierIndex, Level
 
 		SWeapon						MaxWeapon			= {0,0,1};	// Index, ModifierIndex, Level
 		SArmor						MaxArmor			= {0,0,1};	// Index, ModifierIndex, Level
 		SProfession					MaxProfession		= {0,0,1};	// Index, ModifierIndex, Level
+		SVehicle					MaxVehicle			= {0,0,1};	// Index, ModifierIndex, Level
 
-		SInventoryItems				Inventory		= {};
-		SInventoryWeapons			Weapons			= {};
-		SInventoryArmors			Armors			= {};
-		SInventoryProfessions		Professions		= {};
-		SInventoryVehicles			Vehicles		= {};
+		SInventoryItems				Inventory			= {};
+		SInventoryWeapons			Weapons				= {};
+		SInventoryArmors			Armors				= {};
+		SInventoryProfessions		Professions			= {};
+		SInventoryVehicles			Vehicles			= {};
 
 		SCharacterResearch			Researched;
 
-		void						UnloadWeapon		()	{	Weapons.AddElement(CurrentWeapon);	};
-		void						UnloadArmor			()	{	Armors.AddElement(CurrentArmor);	};
-		void						UnloadProfession	()	{	Professions.AddElement(CurrentProfession);	};
+		void						UnloadWeapon		()	{	Weapons		.AddElement(CurrentWeapon		);	CurrentWeapon		= {0,0,1};	};
+		void						UnloadArmor			()	{	Armors		.AddElement(CurrentArmor		);	CurrentArmor		= {0,0,1};	};
+		void						UnloadProfession	()	{	Professions	.AddElement(CurrentProfession	);	CurrentProfession	= {0,0,1};	};
+		void						UnloadVehicle		()	{	Vehicles	.AddElement(CurrentVehicle		);	CurrentVehicle		= {0,0,1};	};
 		void						EquipWeapon			(size_t slotIndex);
 		void						EquipArmor			(size_t slotIndex);
 		void						EquipProfession		(size_t slotIndex);
+		void						EquipVehicle		(size_t slotIndex);
 		bool						DidLoseTurn() {
 			return 0 < CombatStatus.GetStatusTurns(COMBAT_STATUS_STUN	) 
 				|| 0 < CombatStatus.GetStatusTurns(COMBAT_STATUS_SLEEP	) 

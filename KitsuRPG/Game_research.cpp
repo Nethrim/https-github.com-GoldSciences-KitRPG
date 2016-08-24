@@ -1,7 +1,10 @@
 #include "Game.h"
+
 #include "Weapon.h"
 #include "Armor.h"
 #include "Profession.h"
+#include "Vehicle.h"
+
 #include "Menu.h"
 
 //#define DISABLE_RESEARCH_REQUIREMENTS
@@ -155,9 +158,12 @@ void research
 };
 
 
-void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.Researched.Weapon		.Definitions	, klib::definitionsWeapon		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"	, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
-void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.Researched.Armor		.Definitions	, klib::definitionsArmor		, adventurer.MaxArmor		, false	, true, "%s Design"		, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
-void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.Researched.Profession	.Definitions	, klib::definitionsProfession	, adventurer.MaxProfession	, false	, false, "%s Mastery"	, "profession technique"	, "profession"	, "learn"	, "learning"	, "learned"		); }
-void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.Researched.Weapon		.Modifiers		, klib::modifiersWeapon			, adventurer.MaxWeapon		, true	, false, "Science"		, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
-void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.Researched.Armor		.Modifiers		, klib::modifiersArmor			, adventurer.MaxArmor		, true	, false, "Technology"	, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
-void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.Researched.Profession	.Modifiers		, klib::modifiersProfession		, adventurer.MaxProfession	, true	, true, "Rank"			, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
+void  researchWeaponDefinition		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.Researched.Weapon		.Definitions	, klib::definitionsWeapon		, adventurer.MaxWeapon		, false	, true, "%s Blueprint"		, "weapon sample"			, "blueprint"	, "research", "researching"	, "researched"	); }
+void  researchArmorDefinition		(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.Researched.Armor		.Definitions	, klib::definitionsArmor		, adventurer.MaxArmor		, false	, true, "%s Design"			, "armor sample"			, "design"		, "research", "researching"	, "researched"	); }
+void  researchProfessionDefinition	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.Researched.Profession	.Definitions	, klib::definitionsProfession	, adventurer.MaxProfession	, false	, false, "%s Mastery"		, "profession technique"	, "profession"	, "learn"	, "learning"	, "learned"		); }
+void  researchWeaponModifier		(klib::CCharacter& adventurer) { research(adventurer.Weapons		, adventurer.Researched.Weapon		.Modifiers		, klib::modifiersWeapon			, adventurer.MaxWeapon		, true	, false, "Science"			, "science project"			, "project"		, "study"	, "studying"	, "mastered"	); }
+void  researchArmorModifier			(klib::CCharacter& adventurer) { research(adventurer.Armors			, adventurer.Researched.Armor		.Modifiers		, klib::modifiersArmor			, adventurer.MaxArmor		, true	, false, "Technology"		, "technology development"	, "design"		, "develop"	, "developing"	, "developed"	); }
+void  researchProfessionModifier	(klib::CCharacter& adventurer) { research(adventurer.Professions	, adventurer.Researched.Profession	.Modifiers		, klib::modifiersProfession		, adventurer.MaxProfession	, true	, true, "Rank"				, "rank achievement"		, "achievement"	, "achieve"	, "achieving"	, "achieved"	); }
+
+void  researchVehicleDefinition		(klib::CCharacter& adventurer) { research(adventurer.Vehicles		, adventurer.Researched.Vehicle	.Definitions		, klib::definitionsVehicle		, adventurer.MaxVehicle		, false	, false, "%s Development"	, "vehicle"		, "vehicle"		, "develop"		, "developing"	, "developed"		); }
+void  researchVehicleModifier		(klib::CCharacter& adventurer) { research(adventurer.Vehicles		, adventurer.Researched.Vehicle	.Modifiers			, klib::modifiersVehicle		, adventurer.MaxVehicle		, true	, true, "Mechanics"			, "mechanics"	, "mechanics"	, "engineer"	, "engineering"	, "engineered"		); }

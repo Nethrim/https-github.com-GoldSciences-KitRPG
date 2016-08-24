@@ -28,7 +28,7 @@ std::string klib::getStringFromBit(COMBAT_STATUS bitStatus)
 std::string klib::getStringFromBit(ATTACK_EFFECT bitStatus)
 {
 	switch(bitStatus) {
-	case ATTACK_EFFECT_NONE				:	return "No defend effect"	;
+	case ATTACK_EFFECT_NONE				:	return "No attack effect"	;
 	case ATTACK_EFFECT_LEECH_HEALTH		:	return "Health Drain"		;
 	case ATTACK_EFFECT_LEECH_MANA		:	return "Mana Drain"			;
 	case ATTACK_EFFECT_LEECH_SHIELD		:	return "Shield Steal"		;
@@ -67,18 +67,18 @@ std::string klib::getStringFromBit(ENTITY_TECHNOLOGY bitStatus)
 {	
 	switch(bitStatus) {
 	case ENTITY_TECHNOLOGY_UNKNOWN		:	return "Undefined equipment technology"	;
-	case ENTITY_TECHNOLOGY_BASIC			:	return "Basic"							;
+	case ENTITY_TECHNOLOGY_BASIC		:	return "Basic"							;
 	case ENTITY_TECHNOLOGY_MECHANIC		:	return "Mechanic"						;
-	//case ENTITY_TECHNOLOGY_CHEMICAL		:	return "Chemical"						;
-	//case ENTITY_TECHNOLOGY_BALLISTIC		:	return "Ballistic"						;
-	//case ENTITY_TECHNOLOGY_LAUNCHER		:	return "Launcher"						;
+	//case ENTITY_TECHNOLOGY_CHEMICAL	:	return "Chemical"						;
+	//case ENTITY_TECHNOLOGY_BALLISTIC	:	return "Ballistic"						;
+	//case ENTITY_TECHNOLOGY_LAUNCHER	:	return "Launcher"						;
 	case ENTITY_TECHNOLOGY_DIGITAL		:	return "Digital"						;
 	case ENTITY_TECHNOLOGY_GENETIC		:	return "Genetic"						;
-	//case ENTITY_TECHNOLOGY_SOUND			:	return "Sound"							;
-	//case ENTITY_TECHNOLOGY_MICROWAVE		:	return "Microwave"						;
+	//case ENTITY_TECHNOLOGY_SOUND		:	return "Sound"							;
+	//case ENTITY_TECHNOLOGY_MICROWAVE	:	return "Microwave"						;
 	//case ENTITY_TECHNOLOGY_RADIACTIVE	:	return "Radiactive"						;
-	//case ENTITY_TECHNOLOGY_RAY			:	return "Ray"							;
-	//case ENTITY_TECHNOLOGY_SATELLITE		:	return "Satellite"						;
+	//case ENTITY_TECHNOLOGY_RAY		:	return "Ray"							;
+	//case ENTITY_TECHNOLOGY_SATELLITE	:	return "Satellite"						;
 	default:						
 		return "Unknown equipment technology"	;	
 	};
@@ -100,11 +100,18 @@ std::string klib::getStringFromBit(EQUIP_MATERIAL		bitStatus)
 
 std::string klib::getStringFromBit(ENTITY_GRADE				bitStatus)
 {	
+	static std::string stringTable[] =
+	{	"Illusion"	
+	,	"Light"	
+	,	"Medium"	
+	,	"Heavy"	
+	};
+
 	switch(bitStatus) {
-	case ENTITY_GRADE_ILLUSION		:	return "Illusion"	;
-	case ENTITY_GRADE_LIGHT		:	return "Light	"	;
-	case ENTITY_GRADE_MEDIUM		:	return "Medium	"	;
-	case ENTITY_GRADE_HEAVY		:	return "Heavy	"	;
+	case ENTITY_GRADE_ILLUSION	:	return stringTable[0];
+	case ENTITY_GRADE_LIGHT		:	return stringTable[1];
+	case ENTITY_GRADE_MEDIUM	:	return stringTable[2];
+	case ENTITY_GRADE_HEAVY		:	return stringTable[3];
 	default:						
 		return "Unknown grade"	;	
 	};
@@ -112,17 +119,29 @@ std::string klib::getStringFromBit(ENTITY_GRADE				bitStatus)
 
 std::string klib::getStringFromBit(ATTACK_TYPE			bitStatus)
 {	
+	static std::string stringTable[] =
+	{	"No attack"
+	,	"Melee"				
+	,	"Ranged"				
+	,	"Magic"				
+	,	"Psychic"				
+	,	"Satellite"			
+	,	"Antipersonnel"		
+	,	"Anti-tank"			
+	,	"Anti-air"				
+	,	"Anti-ship"		
+	};
 	switch(bitStatus) {
-	case ATTACK_TYPE_NONE			: return "No attack type"	;
-	case ATTACK_TYPE_MELEE			: return "Melee"			;
-	case ATTACK_TYPE_RANGED			: return "Ranged"			;
-	case ATTACK_TYPE_MAGIC			: return "Magic"			;
-	case ATTACK_TYPE_PSYCHIC		: return "Psychic"			;
-	case ATTACK_TYPE_SATELLITE		: return "Satellite"		;
-	case ATTACK_TYPE_ANTI_PERSONNEL	: return "Antipersonnel"	;
-	case ATTACK_TYPE_ANTI_TANK		: return "Anti-tank"		;
-	case ATTACK_TYPE_ANTI_AIR		: return "Anti-air"			;
-	case ATTACK_TYPE_ANTI_SHIP		: return "Anti-ship"		;
+	case ATTACK_TYPE_NONE			: return stringTable[0];
+	case ATTACK_TYPE_MELEE			: return stringTable[1];
+	case ATTACK_TYPE_RANGED			: return stringTable[2];
+	case ATTACK_TYPE_MAGIC			: return stringTable[3];
+	case ATTACK_TYPE_PSYCHIC		: return stringTable[4];
+	case ATTACK_TYPE_SATELLITE		: return stringTable[5];
+	case ATTACK_TYPE_ANTIPERSONNEL	: return stringTable[6];
+	case ATTACK_TYPE_ANTITANK		: return stringTable[7];
+	case ATTACK_TYPE_ANTIAIR		: return stringTable[8];
+	case ATTACK_TYPE_ANTISHIP		: return stringTable[9];
 	default:						
 		return "Unknown attack type"	;	
 	};

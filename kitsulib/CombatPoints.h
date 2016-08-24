@@ -97,10 +97,10 @@ namespace klib
 
 		void Print() const
 		{
-			printf("Hit ........: %i.\n",	Hit		);
-			printf("Damage -----: %i.\n",	Damage	);
-			printf("Speed ......: %i.\n",	Damage	);
-			printf("Absorption -: %%%i.\n",	Damage	);
+			printf("Hit ........: %i.\n",	Hit			);
+			printf("Damage -----: %i.\n",	Damage		);
+			printf("Speed ......: %i.\n",	Speed		);
+			printf("Absorption -: %%%i.\n",	Absorption	);
 		}
 	};
 

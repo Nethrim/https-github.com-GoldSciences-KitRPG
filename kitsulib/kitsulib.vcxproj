@@ -177,6 +177,7 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Profession.h" />
+    <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>

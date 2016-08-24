@@ -5,6 +5,7 @@
 #include "Item.h"
 #include "Enemy.h"
 #include "Armor.h"
+#include "Vehicle.h"
 
 #include "Menu.h"
 
@@ -91,6 +92,27 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	}
 	else
 		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.Name.c_str());
+
+	std::string loserVehicleName = klib::getVehicleName(loser.CurrentVehicle);
+	if( 0 == (rand()%2) )
+	{
+		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserVehicleName.c_str(), loser.CurrentVehicle.Level, loser.Name.c_str());
+		klib::SVehicle oldWinnerVehicle	= winner.CurrentVehicle;
+		winner.Vehicles.AddElement(loser.CurrentVehicle);
+
+		klib::SVehicle loserNewVehicle = 
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Index		)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Modifier	)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Level		)	))
+		};
+
+		if(loserNewVehicle.Index || loserNewVehicle.Modifier || loserNewVehicle.Level > 1)
+			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getVehicleName(loserNewVehicle).c_str(), loserNewVehicle.Level);
+		loser.Vehicles.AddElement(loserNewVehicle);
+		loser.CurrentVehicle = {0,0,1};
+	}
+	else
+		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserVehicleName.c_str(), loser.Name.c_str());
 
 
 	std::string loserProfessionName = klib::getProfessionName(loser.CurrentProfession);

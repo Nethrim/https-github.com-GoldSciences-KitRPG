@@ -404,12 +404,12 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 	applyTurnStatus		(character);
 	
 	applyCombatBonus	(character, character.CombatBonus.Points, "Turn Combat Bonus");
-	applyCombatBonus	(character, getProfessionPoints	(character.CurrentProfession	).Points, getProfessionName(character.CurrentProfession).c_str());
+	applyCombatBonus	(character, getProfessionPoints	(character.CurrentProfession	), getProfessionName(character.CurrentProfession).c_str());
 	applyCombatBonus	(character, getArmorPoints		(character.CurrentArmor			).Points, getArmorName		(character.CurrentArmor));
 
-	applyPassive		(character, getArmorPoints		(character.CurrentArmor			).Flags.Effect.Passive, getArmorName		(character.CurrentArmor			));
-	applyPassive		(character, getProfessionPoints	(character.CurrentProfession	).Flags.Effect.Passive, getProfessionName	(character.CurrentProfession	));
-	applyPassive		(character, getWeaponPoints		(character.CurrentWeapon		).Flags.Effect.Passive, getWeaponName		(character.CurrentWeapon		));
+	applyPassive		(character, getArmorPoints		(character.CurrentArmor			).Flags.Effect.Passive	, getArmorName		(character.CurrentArmor			));
+	applyPassive		(character, getProfessionFlags	(character.CurrentProfession	).Effect.Passive		, getProfessionName	(character.CurrentProfession	));
+	applyPassive		(character, getWeaponPoints		(character.CurrentWeapon		).Flags.Effect.Passive	, getWeaponName		(character.CurrentWeapon		));
 
 	character.CombatBonus	.NextTurn();
 	character.CombatStatus	.NextTurn();

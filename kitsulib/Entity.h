@@ -93,7 +93,7 @@ namespace klib
 			return 0; 
 		};
 
-	inline int32_t						FindElement(const _EntityType& element) { 
+		inline int32_t					FindElement(const _EntityType& element) { 
 			for(uint32_t i=0, count=std::max((uint32_t)_Size, Count); i<count; i++)
 				if(Slots[i].Entity == element)
 					return i;
@@ -116,18 +116,26 @@ namespace klib
 	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
 
 	template<typename _EntityType>
-	class CEntity : public SEntity {
-		SEntityPoints	Points;
-		SEntityFlags	Flags;
-		std::string		Name;
+	struct SEntityRecord {
+		SEntityRecord(SEntityPoints	points	
+					 ,SEntityFlags	flags	
+					 ,const std::string&	name	
+					)
+			:Points(points)
+			,Flags (flags )
+			,Name  (name  )
+		{}
+		SEntityPoints	Points	;
+		SEntityFlags	Flags	;
+		std::string		Name	;
 	};
 
-	typedef class CEntity<SArmor		>	CEntityArmor		;
-	typedef class CEntity<SProfession	>	CEntityProfession	;
-	typedef class CEntity<SWeapon		>	CEntityWeapon		;
-	typedef class CEntity<SVehicle		>	CEntityVehicle		;
-	typedef class CEntity<SStageProp	>	CEntityStageProp	;
-	typedef class CEntity<SItem			>	CEntityItem			;
+	typedef struct SEntityRecord<SArmor			>	CEntityArmor		;
+	typedef struct SEntityRecord<SProfession	>	CEntityProfession	;
+	typedef struct SEntityRecord<SWeapon		>	CEntityWeapon		;
+	typedef struct SEntityRecord<SVehicle		>	CEntityVehicle		;
+	typedef struct SEntityRecord<SStageProp		>	CEntityStageProp	;
+	typedef struct SEntityRecord<SItem			>	CEntityItem			;
 };
 
 #pragma pack(pop)

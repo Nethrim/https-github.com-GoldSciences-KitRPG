@@ -5,6 +5,7 @@
 #include "Profession.h"
 #include "Armor.h"
 #include "Weapon.h"
+#include "Vehicle.h"
 
 #include "Menu.h"
 
@@ -19,15 +20,6 @@ void displayInventory(const klib::SInventoryItems& inventory)
 	printf("\n");
 }
 
-void researchWeaponDefinition		(klib::CCharacter& adventurer);
-void researchWeaponModifier			(klib::CCharacter& adventurer);
-void researchWeaponLevel			(klib::CCharacter& adventurer);
-void researchArmorDefinition		(klib::CCharacter& adventurer);
-void researchArmorModifier			(klib::CCharacter& adventurer);
-void researchArmorLevel				(klib::CCharacter& adventurer);
-void researchProfessionDefinition	(klib::CCharacter& adventurer);
-void researchProfessionModifier		(klib::CCharacter& adventurer);
-void researchProfessionLevel		(klib::CCharacter& adventurer);
 
 void equipWeapon	(klib::CCharacter& adventurer) 
 { 
@@ -78,7 +70,6 @@ void equipArmor		(klib::CCharacter& adventurer)
 	adventurer.EquipArmor(selectedValue);
 };
 
-
 void equipProfession	(klib::CCharacter& adventurer) 
 { 
 	if( 0 == adventurer.Professions.Count )	{ 
@@ -104,6 +95,108 @@ void equipProfession	(klib::CCharacter& adventurer)
 	adventurer.EquipProfession(selectedValue);
 };
 
+void equipVehicle	(klib::CCharacter& adventurer) 
+{ 
+	if( 0 == adventurer.Vehicles.Count )	{ 
+		printf("You don't have any other masteries yet!\n"); 
+		return; 
+	}
+
+	static char						menuItemText[256] = {};	
+	static klib::SMenuItem<int16_t>	menuItems	[256] = {}; 
+	int32_t							menuItemCount=0; 
+
+	for(int32_t i=0, count = adventurer.Vehicles.Count; i<count; ++i)	{ 
+		sprintf_s(menuItemText, "x%.02i: %s level %u", adventurer.Weapons.Slots[i].Count, klib::getVehicleName(adventurer.Vehicles.Slots[i].Entity).c_str(), adventurer.Vehicles.Slots[i].Entity.Level);
+		menuItems[menuItemCount++] = {(int16_t)i, menuItemText}; 
+	}	
+
+	printf("You're currently assigned as a %s level %u.\n", klib::getVehicleName(adventurer.CurrentVehicle).c_str(), adventurer.CurrentVehicle.Level);
+	menuItems[menuItemCount++] = {256, "Back to tavern"};
+	int32_t selectedValue = klib::displayMenu("Select your mastery of choice", menuItems, menuItemCount);	
+	if(selectedValue == 256) 
+		return; 
+
+	adventurer.EquipVehicle(selectedValue);
+};
+
+void researchWeaponDefinition		(klib::CCharacter& adventurer);
+void researchWeaponModifier			(klib::CCharacter& adventurer);
+void researchWeaponLevel			(klib::CCharacter& adventurer);
+void researchArmorDefinition		(klib::CCharacter& adventurer);
+void researchArmorModifier			(klib::CCharacter& adventurer);
+void researchArmorLevel				(klib::CCharacter& adventurer);
+void researchProfessionDefinition	(klib::CCharacter& adventurer);
+void researchProfessionModifier		(klib::CCharacter& adventurer);
+void researchProfessionLevel		(klib::CCharacter& adventurer);
+void researchVehicleDefinition		(klib::CCharacter& adventurer);
+void researchVehicleModifier		(klib::CCharacter& adventurer);
+void researchVehicleLevel			(klib::CCharacter& adventurer);
+
+void labs(klib::CCharacter& adventurer)
+{
+	// This is the main loop of the game and queries for user input until the exit option is selected.
+	static const klib::SMenuItem<int> tavernOptions[] =
+	{ { 0, "Research new weapons"		}
+	, { 1, "Research new sciences"		}
+	, { 2, "Research new armors"		}
+	, { 3, "Research new technologies"	}
+	, { 4, "Learn new professions"		}
+	, { 5, "Train for new ranks"		}
+	, { 6, "Research new vehicles"		}
+	, { 7, "Research new advancements"	}
+	, { 8, "Back to main menu"			}
+	};
+
+	while (true)  // Wait for exit request
+	{
+		int tavernChoice = klib::displayMenu("You take a look at your collected samples..", tavernOptions);
+
+			 if( 0 == tavernChoice )	{	researchWeaponDefinition		(adventurer);	}	// go to the research menu
+		else if( 1 == tavernChoice )	{	researchWeaponModifier			(adventurer);	}	// go to the research menu
+		else if( 2 == tavernChoice )	{	researchArmorDefinition			(adventurer);	}	// go to the research menu
+		else if( 3 == tavernChoice )	{	researchArmorModifier			(adventurer);	}	// go to the research menu
+		else if( 4 == tavernChoice )	{	researchProfessionDefinition	(adventurer);	}	// go to the research menu
+		else if( 5 == tavernChoice )	{	researchProfessionModifier		(adventurer);	}	// go to the research menu
+		else if( 6 == tavernChoice )	{	researchVehicleDefinition		(adventurer);	}	// go to the research menu
+		else if( 7 == tavernChoice )	{	researchVehicleModifier			(adventurer);	}	// go to the research menu
+		else if( 8 == tavernChoice )	{	break;											}	// Exit the labs menu.
+		else {	
+			printf("Option not supported yet.\n");
+		}	// Exit the main loop, which effectively closes the game.
+	}
+}
+
+
+void arsenal(klib::CCharacter& adventurer)
+{
+	// This is the main loop of the game and queries for user input until the exit option is selected.
+	static const klib::SMenuItem<int> tavernOptions[] =
+	{ {  1, "Show inventory"			}
+	, {  2, "Show equipment"			}
+	, {  3, "Equip weapon"				}
+	, {  4, "Equip armor"				}
+	, {  5, "Study for next task"		}
+	, {  6, "Get into vehicle"			}
+	, {  7, "Back to main menu"					}
+	};
+
+	while (true)  // Wait for exit request
+	{
+		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
+
+			 if( 1 == tavernChoice )	{	displayInventory				(adventurer.Inventory);	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 2 == tavernChoice )	{	displayEquip					(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 3 == tavernChoice )	{	equipWeapon						(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	equipArmor						(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 5 == tavernChoice )	{	equipProfession					(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 6 == tavernChoice )	{	equipVehicle					(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 7 == tavernChoice )	{	break;							}	// Exit the main loop, which effectively closes the game.
+		else {	
+			printf("Option not supported yet.\n");
+		}	// Exit the main loop, which effectively closes the game.
+	}
+}
 
 void tavern(klib::CCharacter& adventurer)
 {
@@ -111,42 +204,24 @@ void tavern(klib::CCharacter& adventurer)
 	static const klib::SMenuItem<int> tavernOptions[] =
 	{ {  1, "Rest"						}
 	, {  2, "Look for a mercenary job"	}
-	, {  3, "Go for a drink"			}
-	, {  4, "Show inventory"			}
-	, {  5, "Show equipment"			}
-	, {  6, "Equip weapon"				}
-	, {  7, "Equip armor"				}
-	, {  8, "Study for next task"		}
-	, {  9, "Research new weapons"		}
-	, { 10, "Research new sciences"		}
-	, { 11, "Research new armors"		}
-	, { 12, "Research new technologies"	}
-	, { 13, "Learn new professions"		}
-	, { 14, "Train for new ranks"		}
-	, { 15, "Display score"				}
-	, { 16, "Exit game"					}
+	, {  3, "Review arsenal"			}
+	, {  4, "Visit research labs"		}
+	, {  5, "Go for a drink"			}
+	, {  6, "Display score"				}
+	, {  7, "Exit game"					}
 	};
 
-	while (true)  // If the last action didn't go well we cancel the loop and exit the game.
+	while (true)  // Wait for exit request
 	{
 		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
 
-			 if(  1	== tavernChoice )	{	rest							(adventurer);	}	// Rest and ask again for the action.
-		else if(  2	== tavernChoice )	{	mercenaryJob					(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
-		else if(  3	== tavernChoice )	{	bar								(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
-		else if(  4	== tavernChoice )	{	displayInventory				(adventurer.Inventory);	}	// Display the inventory and coins and ask again for action once it's done.
-		else if(  5	== tavernChoice )	{	displayEquip					(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if(  6	== tavernChoice )	{	equipWeapon						(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if(  7	== tavernChoice )	{	equipArmor						(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if(  8	== tavernChoice )	{	equipProfession					(adventurer);	}	// Display score and player points and ask again for action once it's done.
-		else if(  9	== tavernChoice )	{	researchWeaponDefinition		(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 10	== tavernChoice )	{	researchWeaponModifier			(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 11	== tavernChoice )	{	researchArmorDefinition			(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 12	== tavernChoice )	{	researchArmorModifier			(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 13	== tavernChoice )	{	researchProfessionDefinition	(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 14	== tavernChoice )	{	researchProfessionModifier		(adventurer);	}	// Go to the shop and ask again for action once it's done.
-		else if( 15 == tavernChoice )	{	displayScore					(adventurer.Score);	}	// Display score and player points and ask again for action once it's done.
-		else if( 16 == tavernChoice )	{	break;						}	// Exit the main loop, which effectively closes the game.
+			 if( 1	== tavernChoice )	{	rest							(adventurer);	}	// Rest and ask again for the action.
+		else if( 2	== tavernChoice )	{	mercenaryJob					(adventurer);	}	// Go for a mercenary job and ask again for action once it's done
+		else if( 3 == tavernChoice )	{	arsenal							(adventurer);	}	// Display score and player points and ask again for action once it's done.
+		else if( 4 == tavernChoice )	{	labs							(adventurer);	}	// Go to the shop and ask again for action once it's done.
+		else if( 5	== tavernChoice )	{	bar								(adventurer);	}	// Display the inventory and coins and ask again for action once it's done.
+		else if( 6 == tavernChoice )	{	displayScore					(adventurer.Score);	}	// Display score and player points and ask again for action once it's done.
+		else if( 7 == tavernChoice )	{	break;							}	// Exit the main loop, which effectively closes the game.
 		else {	
 			printf("Option not supported yet.\n");
 		}	// Exit the main loop, which effectively closes the game.
@@ -242,11 +317,13 @@ void bar(klib::CCharacter& adventurer)
 
 void displayEquip(const klib::CCharacter& adventurer) 
 {
-	const klib::SCharacterPoints& basePoints = adventurer.Points;
+	const klib::SCharacterPoints& basePoints		= adventurer.Points;
 	const klib::SCharacterPoints finalPoints		= klib::calculateFinalPoints(adventurer);
 	const klib::SCharacterPoints weaponPoints		= klib::getWeaponPoints(adventurer.CurrentWeapon);
 	const klib::SCharacterPoints armorPoints		= klib::getArmorPoints(adventurer.CurrentArmor);
-	const klib::SCharacterPoints professionPoints	= klib::getProfessionPoints(adventurer.CurrentProfession);
+	const klib::SEntityPoints professionPoints		= klib::getProfessionPoints(adventurer.CurrentProfession);
+	const klib::SEntityFlags professionFlags		= klib::getProfessionFlags(adventurer.CurrentProfession);
+	const klib::SCharacterPoints vehiclePoints		= klib::getVehiclePoints(adventurer.CurrentVehicle);
 
 	printf("\n-- %s final points:\n", adventurer.Name.c_str());
 	printf("- Max Life:\n");
@@ -268,12 +345,16 @@ void displayEquip(const klib::CCharacter& adventurer)
 
 	printf("\n-- %s is a %s level %u:\n", adventurer.Name.c_str(), klib::getProfessionName(adventurer.CurrentProfession).c_str(), adventurer.CurrentProfession.Level);
 	professionPoints.Print();
+	professionFlags.Print();
 
 	printf("\n-- %s is wearing %s level %u:\n", adventurer.Name.c_str(), klib::getArmorName(adventurer.CurrentArmor).c_str(), adventurer.CurrentArmor.Level);
 	armorPoints.Print();
 
 	printf("\n-- %s is carrying %s level %u:\n", adventurer.Name.c_str(), klib::getWeaponName(adventurer.CurrentWeapon).c_str(), adventurer.CurrentWeapon.Level);
 	weaponPoints.Print();
+
+	printf("\n-- %s is on a %s level %u:\n", adventurer.Name.c_str(), klib::getVehicleName(adventurer.CurrentVehicle).c_str(), adventurer.CurrentVehicle.Level);
+	vehiclePoints.Print();
 }
 
 void displayScore(const klib::SCharacterScore& score) 

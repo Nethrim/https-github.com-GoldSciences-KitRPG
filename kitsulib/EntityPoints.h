@@ -44,7 +44,7 @@ namespace klib
 			LifeCurrent.Print();
 			printf("- Attack Points:\n");
 			Attack.Print();
-			printf("- Coins                     : %i.\n", (int32_t)Coins);
+			printf("- Coins.....: %i.\n", (int32_t)Coins);
 		}
 
 		inline constexpr SEntityPoints	operator +	(const SEntityPoints& other)				const	{ 

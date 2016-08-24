@@ -6,6 +6,7 @@
 #include "Profession.h"
 #include "Enemy.h"
 #include "Item.h"
+#include "Vehicle.h"
 
 #include "Menu.h"
 
@@ -45,33 +46,40 @@ void main()
 	{
 		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
 
-		adventurer.	CurrentWeapon		.Index		= rand()%2;//(int16_t)(rand() % size(klib::definitionsWeapon		));//rand()%4;
-		adventurer.	CurrentArmor		.Index		= rand()%2;//12;//(int16_t)(rand() % size(klib::definitionsArmor		));//rand()%4;
-		adventurer.	CurrentProfession	.Index		= (int16_t)(rand() % size(klib::definitionsProfession	));
-		adventurer.	CurrentWeapon		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersWeapon		));//rand()%4;
-		adventurer.	CurrentArmor		.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersArmor		));//rand()%4;
-		adventurer.	CurrentProfession	.Modifier	= rand()%2;//(int16_t)(rand() % size(klib::modifiersProfession	));	
-		adventurer.	CurrentWeapon		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
-		adventurer.	CurrentArmor		.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
-		adventurer.	CurrentProfession	.Level		= 1+(rand()%2);//+(int16_t)(rand()%size(enemyDefinitions));
+		adventurer.	CurrentWeapon		.Index		= 0;
+		adventurer.	CurrentArmor		.Index		= 0;
+		adventurer.	CurrentProfession	.Index		= 0;//(int16_t)(rand() % size(klib::definitionsProfession	));
+		adventurer.	CurrentVehicle		.Index		= (int16_t)(rand() % size(klib::definitionsVehicle	));
+		adventurer.	CurrentWeapon		.Modifier	= 0;
+		adventurer.	CurrentArmor		.Modifier	= 0;
+		adventurer.	CurrentProfession	.Modifier	= 0;
+		adventurer.	CurrentVehicle		.Modifier	= 0;
+		adventurer.	CurrentWeapon		.Level		= 1;
+		adventurer.	CurrentArmor		.Level		= 1;
+		adventurer.	CurrentProfession	.Level		= 1;
+		adventurer.	CurrentVehicle		.Level		= 1;
 
-		adventurer.MaxWeapon		.Index		= adventurer.CurrentWeapon		.Index;		
-		adventurer.MaxArmor			.Index		= adventurer.CurrentArmor		.Index;		
-		adventurer.MaxProfession	.Index		= adventurer.CurrentProfession	.Index;		
-		adventurer.MaxWeapon		.Modifier	= adventurer.CurrentWeapon		.Modifier;
-		adventurer.MaxArmor			.Modifier	= adventurer.CurrentArmor		.Modifier;
-		adventurer.MaxProfession	.Modifier	= adventurer.CurrentProfession	.Modifier;
-		adventurer.MaxWeapon		.Level		= adventurer.CurrentWeapon		.Level;
-		adventurer.MaxArmor			.Level		= adventurer.CurrentArmor		.Level;
-		adventurer.MaxProfession	.Level		= adventurer.CurrentProfession	.Level;
+		adventurer.MaxWeapon			.Index		= adventurer.CurrentWeapon		.Index;		
+		adventurer.MaxArmor				.Index		= adventurer.CurrentArmor		.Index;		
+		adventurer.MaxProfession		.Index		= adventurer.CurrentProfession	.Index;		
+		adventurer.MaxWeapon			.Modifier	= adventurer.CurrentWeapon		.Modifier;
+		adventurer.MaxArmor				.Modifier	= adventurer.CurrentArmor		.Modifier;
+		adventurer.MaxProfession		.Modifier	= adventurer.CurrentProfession	.Modifier;
+		adventurer.MaxWeapon			.Level		= adventurer.CurrentWeapon		.Level;
+		adventurer.MaxArmor				.Level		= adventurer.CurrentArmor		.Level;
+		adventurer.MaxProfession		.Level		= adventurer.CurrentProfession	.Level;
 
-		adventurer.Inventory.AddElement({1, 1, 1});
+		adventurer.Weapons				.AddElement({1,1,1});
+		adventurer.Armors				.AddElement({1,1,1});
+		adventurer.Professions			.AddElement({adventurer.CurrentProfession.Index,1,1});
+		adventurer.Vehicles				.AddElement({1,1,1});
+
+		adventurer.Inventory			.AddElement({1,1,1});
 		for(int32_t i=1; i<3; ++i)
 			adventurer.Inventory.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
 
-
-		klib::SCharacterPoints finalPoints	= klib::calculateFinalPoints(adventurer);
-		adventurer.Points.Points.LifeCurrent		= finalPoints.Points.LifeMax;
+		klib::SCharacterPoints finalPoints		= klib::calculateFinalPoints(adventurer);
+		adventurer.Points.Points.LifeCurrent	= finalPoints.Points.LifeMax;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.
