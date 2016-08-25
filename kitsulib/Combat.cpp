@@ -20,8 +20,8 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 		return {};
 
 	const std::string	targetArmorName		= getArmorName	(target.CurrentEquip.Armor);
-	SEntityPoints		targetFinalPoints	= calculateFinalPoints(target);
-	SEntityFlags		targetFinalFlags	= calculateFinalFlags(target);
+	const SEntityPoints		targetFinalPoints	= calculateFinalPoints(target);
+	const SEntityFlags		targetFinalFlags	= calculateFinalFlags(target);
 	const int32_t		targetArmorShield	= targetFinalPoints.LifeMax.Shield;
 	
 	// Impenetrable armors always have 60% extra absorption rate.
@@ -155,7 +155,7 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.CurrentEquip.Armor);
 	const std::string	targetArmorName			= getArmorName(target.CurrentEquip.Armor);
-	SEntityPoints		targetFinalPoints		= calculateFinalPoints(target);
+	const SEntityPoints		targetFinalPoints		= calculateFinalPoints(target);
 	const int32_t		targetArmorShield		= targetFinalPoints.LifeMax.Shield;
 
 	COMBAT_STATUS appliedStatus = COMBAT_STATUS_NONE;
@@ -172,8 +172,8 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 int32_t klib::applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, const std::string& sourceName) 
 {
-	SEntityPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
-	SEntityFlags targetFinalFlags = calculateFinalFlags(targetReflecting);
+	const SEntityPoints targetFinalPoints = calculateFinalPoints(targetReflecting);
+	const SEntityFlags targetFinalFlags = calculateFinalFlags(targetReflecting);
 
 		if( 0 == damageDealt 
 		||	0 == (targetFinalFlags.Effect.Defend & DEFEND_EFFECT_REFLECT) 
@@ -251,6 +251,24 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	applySuccessfulWeaponHit(attacker, targetReflecting, damageDealt, getArmorAbsorption(targetReflecting.CurrentEquip.Armor), sourceName);
 }
 
+void klib::applyWeaponLeechEffects(CCharacter& attacker, CCharacter& targetReflecting, const SLifePoints& finalDamage, const std::string& sourceName) 
+{
+	SEntityPoints			attackerPoints			= calculateFinalPoints(attacker);
+	SEntityFlags			attackerFlags			= calculateFinalFlags(attacker);
+	ATTACK_EFFECT			attackerWeaponEffect	= attackerFlags.Effect.Attack;
+	applyWeaponLeech(ATTACK_EFFECT_LEECH_HEALTH	, attackerFlags.Effect.Attack, finalDamage.Health	, attackerPoints.LifeMax.Health	, attacker.Points.LifeCurrent.Health	, attacker.Name	, targetReflecting.Name	, sourceName, "Health", "drains", "loses" );
+	attackerPoints			= calculateFinalPoints(attacker);
+	attackerFlags			= calculateFinalFlags(attacker);
+	applyWeaponLeech(ATTACK_EFFECT_LEECH_MANA	, attackerFlags.Effect.Attack, finalDamage.Mana		, attackerPoints.LifeMax.Mana	, attacker.Points.LifeCurrent.Mana		, attacker.Name	, targetReflecting.Name	, sourceName, "Mana", "drains", "loses" );
+	attackerPoints			= calculateFinalPoints(attacker);
+	attackerFlags			= calculateFinalFlags(attacker);
+	applyWeaponLeech(ATTACK_EFFECT_LEECH_SHIELD	, attackerFlags.Effect.Attack, finalDamage.Shield	, attackerPoints.LifeMax.Shield	, attacker.Points.LifeCurrent.Shield	, attacker.Name	, targetReflecting.Name	, sourceName, "Shield", "steals", "gives" );
+	attackerPoints			= calculateFinalPoints(attacker);
+	attackerFlags			= calculateFinalFlags(attacker);
+	applyWeaponLeech(ATTACK_EFFECT_STEAL		, attackerFlags.Effect.Attack, finalDamage.Health+finalDamage.Shield+finalDamage.Mana	
+		, 0x7FFFFFFF, attacker.Points.Coins, attacker.Name	, targetReflecting.Name	, sourceName, "Coins", "steals", "drops" );
+}
+
 void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetReflecting, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName) 
 {
 	if(calculateFinalFlags(targetReflecting).Effect.Defend & DEFEND_EFFECT_BLIND)
@@ -267,13 +285,11 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	const SEntityPoints attackerWeaponPoints = getWeaponPoints(attacker.CurrentEquip.Weapon);
 	applyCombatBonus(attacker, attackerWeaponPoints, sourceName);
 	attackerPoints			= calculateFinalPoints(attacker);
+	attackerFlags			= calculateFinalFlags(attacker);
 	printf("\n");
+
 	// Apply weapon effects for successful hits.
-	ATTACK_EFFECT		attackerWeaponEffect	= attackerFlags.Effect.Attack;
-	applyWeaponLeech(ATTACK_EFFECT_LEECH_HEALTH	, attackerWeaponEffect, finalDamage.Health	, attackerPoints.LifeMax.Health	, attacker.Points.LifeCurrent.Health	, attacker.Name	, targetReflecting.Name	, sourceName, "Health", "drains", "loses" );
-	applyWeaponLeech(ATTACK_EFFECT_LEECH_MANA	, attackerWeaponEffect, finalDamage.Mana	, attackerPoints.LifeMax.Mana	, attacker.Points.LifeCurrent.Mana		, attacker.Name	, targetReflecting.Name	, sourceName, "Mana", "drains", "loses" );
-	applyWeaponLeech(ATTACK_EFFECT_LEECH_SHIELD	, attackerWeaponEffect, finalDamage.Shield	, attackerPoints.LifeMax.Shield	, attacker.Points.LifeCurrent.Shield	, attacker.Name	, targetReflecting.Name	, sourceName, "Shield", "steals", "gives" );
-	applyWeaponLeech(ATTACK_EFFECT_STEAL		, attackerWeaponEffect, finalDamage.Health	, 0x7FFFFFFF					, attacker.Points.Coins					, attacker.Name	, targetReflecting.Name	, sourceName, "Coins", "steals", "drops" );
+	applyWeaponLeechEffects(attacker, targetReflecting, finalDamage, sourceName);
 }
 
 // This function returns the damage dealt to the target

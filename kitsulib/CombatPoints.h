@@ -166,7 +166,7 @@ namespace klib
 		void Print() const
 		{
 			printf("Hit ........: %i.\n",	Hit			);
-			printf("Damage ......: %i.\n",	Damage		);
+			printf("Damage .....: %i.\n",	Damage		);
 			printf("Absorption -: %%%i.\n",	Absorption	);
 			printf("- Speed Points:.\n");
 			Speed.Print();

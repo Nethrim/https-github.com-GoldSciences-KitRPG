@@ -11,6 +11,9 @@ namespace klib
 
 #define TECHNOLOGY_DIGITAL_MECHANIC		((klib::ENTITY_TECHNOLOGY)(klib::ENTITY_TECHNOLOGY_DIGITAL|klib::ENTITY_TECHNOLOGY_MECHANIC))
 #define RADIACTIVE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON))
+#define POLISHED_STATUS_INFLICT			((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLIND|klib::COMBAT_STATUS_BLEEDING))
+#define VAMPIRE_STATUS_INFLICT			((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_SLEEP|klib::COMBAT_STATUS_BLEEDING))
+#define VAMPIRE_FLAGS					{klib::ATTACK_EFFECT_LEECH_HEALTH},{VAMPIRE_STATUS_INFLICT}, {klib::ENTITY_TECHNOLOGY_BASIC}
 
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordWeapon modifiersWeapon[] = 
@@ -18,7 +21,7 @@ static const CRecordWeapon modifiersWeapon[] =
 {	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"%s"					}
 ,	{{{1,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"%s of Resistance"		}
 ,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},1,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"%s of the Thief"		}
-,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{	COMBAT_STATUS_BLIND		}	, {ENTITY_TECHNOLOGY_BASIC						}},	"Polished %s"			}
+,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{	POLISHED_STATUS_INFLICT	}	, {ENTITY_TECHNOLOGY_BASIC						}},	"Polished %s"			}
 ,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY_BASIC						}},	"%s of Fire"			}	
 ,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{	COMBAT_STATUS_POISON	}	, {ENTITY_TECHNOLOGY_BASIC						}},	"%s of Poison"			}
 ,	{{{0,0},{1,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"%s of Acolyte"			}
@@ -44,9 +47,9 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{0,0},{0,0}		,{0,3,{0,0,0},0,{0,0,0}},0,0}	,{{},{RADIACTIVE_STATUS_INFLICT}	, {ENTITY_TECHNOLOGY_DIGITAL					}},	"Radiactive %s"			}
 ,	{{{0,0},{4,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"Angel's %s"			}
 ,	{{{0,0},{0,4}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC						}},	"Wizard's %s"			}
-,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{ATTACK_EFFECT_LEECH_HEALTH},{COMBAT_STATUS_BLEEDING}, {ENTITY_TECHNOLOGY_BASIC	}},	"Vampire's %s"			}
+,	{{{0,0},{0,0}		,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{VAMPIRE_FLAGS																		},	"Vampire's %s"			}
 //
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,0},	{	{},{	COMBAT_STATUS_BURN	}	, {ENTITY_TECHNOLOGY(ENTITY_TECHNOLOGY_DIGITAL)	}},	"Satellite Orbital %s"	}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,0},	{	{},{	COMBAT_STATUS_BURN	}	, {ENTITY_TECHNOLOGY_DIGITAL					}},	"Satellite Orbital %s"	}
 };
 
 #define DEATH_SCYTHE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
@@ -67,9 +70,10 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{},{}				,{2,3, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Knife"						}
 ,	{{{},{}				,{3,2, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Claw"						}
 // 4th grade six	
-,	{{{},{}				,{3,2, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Staff"						}
+,	{{{},{}				,{3,2, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLIND				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Wand"						}
 ,	{{{2,0},{0,0,0}		,{1,3, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_STUN				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Mace"						}
 ,	{{{},{}				,{2,4, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Machete"					}
+,	{{{},{}				,{3,2, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLIND				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Staff"						}
 ,	{{{1,0,0},{0,0,0}	,{1,4, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Sword"						}
 ,	{{{2,0,0},{0,0,0}	,{0,4, {0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Axe"						}
 ,	{{{1,0,0},{0,0,0}	,{-1,6,{0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Spear"						}
@@ -89,7 +93,7 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{1,0},{1,0}		,{-1,7,{0,0,0},0,{0,0,0}},0,0	},{	{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Anhur's Spear"				}
 ,	{{{1,0},{1,0}		,{-1,7,{0,0,0},0,{0,0,0}},0,0	},{	{},{DEATH_SCYTHE_STATUS_INFLICT		},	{ENTITY_TECHNOLOGY_BASIC		}},	"Death Scythe"				}
 // 1st grade ten		,
-,	{{{1,0,0},{0,0,0}	,{1,8,{0,0,0},0,{0,0,0}},0,0	},{	{},{BFG9000_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_DIGITAL		}},	"BFG-9000"					}
+,	{{{1,0,0},{0,0,0}	,{1,8, {0,0,0},0,{0,0,0}},0,0	},{	{},{BFG9000_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_DIGITAL		}},	"BFG-9000"					}
 };
 
 	static std::string getWeaponName(const SWeapon& weapon) {

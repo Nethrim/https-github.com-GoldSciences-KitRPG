@@ -7,8 +7,13 @@
 void tavern				(klib::CCharacter& adventurer);				// Main loop of the game. From there the player can choose to go shopping, fighting or take a nap to recover life points.
 void mercenaryJob		(klib::CCharacter& adventurer);				// Displays the combat difficulty menu from where the player can start combat or go back to the tavern.
 void bar				(klib::CCharacter& adventurer);				// Displays the available items for buying along with the player money.
+void displayArmor		(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
+void displayWeapon		(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
+void displayVehicle		(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
+void displayProfession	(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
 void displayEquip		(const klib::CCharacter& adventurer);			// Displays the player's character points and statistics.
 void displayScore		(const klib::SCharacterScore&	adventurer);	// Displays the player's character points and statistics.
+void displayInventory	(const klib::SInventoryItems& inventory, const std::string& characterName);
 
 void combat(klib::CCharacter& adventurer, int32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 

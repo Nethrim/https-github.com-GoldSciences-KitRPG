@@ -29,9 +29,9 @@ namespace klib
 		SEntityPointsMultiplier getMultipliers() const 
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
+				{ {.1,	.1, .1}
+				, {.1,	.1, .1}
+				, {.25, .125, {.125, .1, .1}, .1, {.125, .1, .1} }
 				, 0.125
 				, 1.125
 				};
@@ -45,9 +45,9 @@ namespace klib
 		static SEntityPointsMultiplier getMultipliers()
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
+				{ {.125, .1, .25}
+				, {.1, .1, .11}
+				, {.1, .1, {.1, .1, .125}, .1, {.1, .1, .125} }
 				, 0.125
 				, 1.125
 				};
@@ -61,9 +61,9 @@ namespace klib
 		SEntityPointsMultiplier getMultipliers() const 
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
+				{ {.25, .125, .125}
+				, {.125, .11, .11}
+				, {.11, .11, {.11, .11, .11}, .11, {.11, .11, .11} }
 				, 0.125
 				, 1.125
 				};
@@ -78,8 +78,8 @@ namespace klib
 		{
 			static const SEntityPointsMultiplier multipliers = 
 				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
+				, {.1, .1, .125}
+				, {.1, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
 				, 0.125
 				, 1.125
 				};
@@ -93,9 +93,9 @@ namespace klib
 		SEntityPointsMultiplier getMultipliers() const 
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
+				{ {.5, .5, .5}
+				, {.5, .5, .5}
+				, {.5, .5, {.5, .5, .5}, .5, {.5, .5, .5} }
 				, 0.125
 				, 1.125
 				};

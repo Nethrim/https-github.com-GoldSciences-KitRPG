@@ -52,11 +52,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		finalFlagsThrower	= calculateFinalFlags(thrower), 
 		finalFlagsTarget	= calculateFinalFlags(target);
 
-	int itemEffectValue				= int(finalPointsTarget .LifeMax.Health*(0.2f*itemGrade));
-	int itemEffectValueSelf			= int(finalPointsThrower.LifeMax.Health*(0.2f*itemGrade)) >> 1;
-
-	int itemEffectValueReduced		= int(finalPointsTarget .LifeMax.Health*(0.1f*itemGrade));
-	int itemEffectValueReducedSelf	= int(finalPointsThrower.LifeMax.Health*(0.1f*itemGrade)) >> 1;
+	int32_t itemEffectValue				= int32_t(finalPointsTarget .LifeMax.Health*(0.2f*itemGrade));
+	int32_t itemEffectValueSelf			= int32_t(finalPointsThrower.LifeMax.Health*(0.2f*itemGrade)) >> 1;
 
 	ATTACK_TARGET hitTarget = ATTACK_TARGET_MISS;
 
@@ -90,8 +87,8 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	case PROPERTY_TYPE_FIRE:
 	case PROPERTY_TYPE_POISON:
 	case PROPERTY_TYPE_SHOCK:
-		itemEffectValueSelf = itemEffectValueReducedSelf;
-		itemEffectValue		= itemEffectValueReduced;
+		itemEffectValue		>>= 1;
+		itemEffectValueSelf >>= 1;
 		bAddStatus			= true;
 
 	case PROPERTY_TYPE_BLAST:
@@ -106,14 +103,14 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		else if( lotteryResult == (lotteryRange-1) )
 		{
 			applySuccessfulHit(thrower, target,		itemEffectValue		>> 1, bAddStatus, grenadeStatus, itemGrade, getItemName(itemGrenade));
-			applySuccessfulHit(thrower, thrower,	itemEffectValueSelf	>> 1, bAddStatus, grenadeStatus, itemGrade, getItemName(itemGrenade));
+			applySuccessfulHit(thrower, thrower,	itemEffectValueSelf	>> 1, bAddStatus, grenadeStatus, (itemGrade > 0) ? itemGrade-1 : 0, getItemName(itemGrenade));
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
-			printf("%s doesn't throw the grenade far enough so %s receives %u damage but also %s receives %u damage.\n", thrower.Name.c_str(), target.Name.c_str(), itemEffectValue, thrower.Name.c_str(), itemEffectValueSelf);
+			printf("%s doesn't throw the grenade far enough so %s receives %u damage but also %s receives %u damage.\n", thrower.Name.c_str(), target.Name.c_str(), itemEffectValue >> 1, thrower.Name.c_str(), itemEffectValueSelf >> 1);
 		}
 		else if( lotteryResult < lotteryRange )
 		{
-			applySuccessfulHit(thrower, target, itemEffectValue >> 1, bAddStatus, grenadeStatus, 1+itemGrade, getItemName(itemGrenade));
+			applySuccessfulHit(thrower, target, itemEffectValue, bAddStatus, grenadeStatus, 1+itemGrade, getItemName(itemGrenade));
 			hitTarget = ATTACK_TARGET_OTHER;
 			printf("The grenade hits the target doing %u damage.\n", itemEffectValue);
 		}

@@ -12,7 +12,7 @@ using namespace klib;
 
 void klib::rest(SCharacter& character)
 {
-	SEntityPoints finalPoints	= calculateFinalPoints(character);
+	const SEntityPoints finalPoints	= calculateFinalPoints(character);
 	character.Points.LifeCurrent	= finalPoints.LifeMax	;
 	printf("\nYou decide to get some rest.\n");
 	character.Points.LifeCurrent.Print();
