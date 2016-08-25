@@ -5,6 +5,7 @@
 
 namespace klib
 {
+#pragma pack(push, 1)
 	SLifePoints			applyShieldableDamage(CCharacter& target, int32_t damageDealt, int32_t absorptionRate, const std::string& sourceName);
 	SLifePoints			applyShieldableDamage(CCharacter& target, int32_t damageDealt, const std::string& sourceName);
 	COMBAT_STATUS		applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponStatus, int32_t absorbChance, int32_t turnCount, const std::string& sourceName);
@@ -23,6 +24,7 @@ namespace klib
 	bool				useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target);
 	bool				usePotion(const SItem& itemPotion, CCharacter& potionDrinker);
 	bool				executeItem(int32_t indexInventory, CCharacter& user, CCharacter& target);
+#pragma pack(pop)
 }
 
 

@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <algorithm>
 #include <string>
 
 #ifndef	__COMBATSTATUS_H__2386498236498213469817263421__
@@ -159,7 +158,7 @@ namespace klib
 		ENTITY_GRADE		Grade;
 
 		inline constexpr SEntityGrade operator | (const SEntityGrade& other) const {
-			return{ (ENTITY_TECHNOLOGY)(Tech | other.Tech), ::std::max(Grade, other.Grade) };
+			return{ (ENTITY_TECHNOLOGY)(Tech | other.Tech), (Grade > other.Grade) ? Grade : other.Grade};
 		}
 
 		void Print() const

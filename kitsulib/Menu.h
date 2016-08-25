@@ -1,12 +1,11 @@
 #include "Misc.h"
 
-#include <algorithm>
-
 #ifndef __MENU_H__926349827164392740982169862598423__
 #define __MENU_H__926349827164392740982169862598423__
 
 namespace klib
 {
+#pragma pack(push, 1)
 
 	template <typename _ReturnType>
 	class SMenuItem
@@ -46,8 +45,10 @@ namespace klib
 
 	template <size_t _Size, typename _ReturnType>
 	_ReturnType displayMenu(const std::string& title, const SMenuItem<_ReturnType>(&menuItems)[_Size], int32_t maxItems = ~0U) {
-		return displayMenu(std::min((int32_t)_Size, maxItems), title, menuItems);
+		return displayMenu((_Size > maxItems) ? maxItems : _Size, title, menuItems);
 	}
+
+#pragma pack(pop)
 };
 
 #endif // __MENU_H__926349827164392740982169862598423__

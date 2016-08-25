@@ -167,14 +167,19 @@
   <ItemGroup>
     <ClInclude Include="Armor.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="CharacterPoints.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="CombatPoints.h" />
     <ClInclude Include="CombatStatus.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityHelper.h" />
+    <ClInclude Include="EntityImpl.h" />
     <ClInclude Include="EntityPoints.h" />
+    <ClInclude Include="EntityResearch.h" />
     <ClInclude Include="GameBase.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Profession.h" />
     <ClInclude Include="Vehicle.h" />

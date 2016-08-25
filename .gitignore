@@ -243,3 +243,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Lines_2016_8_24_17_56.txt
+/LineCounter.py

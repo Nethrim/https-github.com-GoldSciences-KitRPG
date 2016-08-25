@@ -7,45 +7,44 @@
 #include "Profession.h"
 #include "Vehicle.h"
 
-#include <algorithm>
-
 void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType)
 {
-	currentEnemy.Inventory.AddElement({1, 1, 1});
+	currentEnemy.Inventory.Items.AddElement({1, 1, 1});
 	for(int32_t i=1; i<enemyType; ++i)
-		currentEnemy.Inventory.AddElement({ 1+int16_t(rand()%(size(itemDescriptions)-1)), int16_t(1+rand()%size(itemModifiers)), int16_t(rand()%size(itemGrades)) });
+		currentEnemy.Inventory.Items.AddElement({ 1+int16_t(rand()%(size(itemDescriptions)-1)), int16_t(1+rand()%size(itemModifiers)), int16_t(rand()%size(itemGrades)) });
 
-	currentEnemy.CurrentWeapon		.Index		= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	definitionsWeapon		)-2));	
-	currentEnemy.CurrentArmor		.Index		= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	definitionsArmor		)-2));	
-	currentEnemy.CurrentProfession	.Index		= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
-	currentEnemy.CurrentVehicle		.Index		=  1+rand()%(1+std::min(enemyType*2, (int16_t)size(	definitionsArmor		)-2));
+	int16_t twoEnemyType = enemyType*2;
+	currentEnemy.CurrentEquip.Weapon		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsWeapon	)-2) ? twoEnemyType : (int16_t)size(	definitionsWeapon	)-2));	
+	currentEnemy.CurrentEquip.Armor			.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsArmor	)-2) ? twoEnemyType : (int16_t)size(	definitionsArmor	)-2));	
+	currentEnemy.CurrentEquip.Vehicle		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle	)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle	)-2));
+	currentEnemy.CurrentEquip.Profession	.Index		= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
 	//											  
-	currentEnemy.CurrentWeapon		.Modifier	= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	modifiersWeapon			)-2));	
-	currentEnemy.CurrentArmor		.Modifier	= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	modifiersArmor			)-2));	
-	currentEnemy.CurrentProfession	.Modifier	= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	modifiersProfession		)-2));	
-	currentEnemy.CurrentVehicle		.Modifier	= 1+rand()%(1+std::min(enemyType*2, (int16_t)size(	modifiersVehicle		)-2));	
+	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon		)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon		)-2));	
+	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor		)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor		)-2));	
+	currentEnemy.CurrentEquip.Vehicle		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersVehicle	)-2) ? twoEnemyType : (int16_t)size(	modifiersVehicle	)-2));	
+	currentEnemy.CurrentEquip.Profession	.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersProfession	)-2) ? twoEnemyType : (int16_t)size(	modifiersProfession	)-2));	
 //
-	currentEnemy.CurrentWeapon		.Level		= std::max(0, adventurer.CurrentWeapon		.Level-1);
-	currentEnemy.CurrentArmor		.Level		= std::max(0, adventurer.CurrentArmor		.Level-1);
-	currentEnemy.CurrentProfession	.Level		= std::max(0, adventurer.CurrentProfession	.Level-1);
-	currentEnemy.CurrentVehicle		.Level		= std::max(0, adventurer.CurrentVehicle		.Level-1);
+	currentEnemy.CurrentEquip.Weapon		.Level		= (0 > (adventurer.CurrentEquip.Weapon		.Level-1)) ? 0 : adventurer.CurrentEquip.Weapon		.Level-1;
+	currentEnemy.CurrentEquip.Armor			.Level		= (0 > (adventurer.CurrentEquip.Armor		.Level-1)) ? 0 : adventurer.CurrentEquip.Armor		.Level-1;
+	currentEnemy.CurrentEquip.Profession	.Level		= (0 > (adventurer.CurrentEquip.Profession	.Level-1)) ? 0 : adventurer.CurrentEquip.Profession	.Level-1;
+	currentEnemy.CurrentEquip.Vehicle		.Level		= (0 > (adventurer.CurrentEquip.Vehicle		.Level-1)) ? 0 : adventurer.CurrentEquip.Vehicle	.Level-1;
 
 	//
-	currentEnemy.MaxWeapon			.Index		= currentEnemy.CurrentWeapon		.Index;
-	currentEnemy.MaxArmor			.Index		= currentEnemy.CurrentArmor			.Index;
-	currentEnemy.MaxProfession		.Index		= currentEnemy.CurrentProfession	.Index;
-	currentEnemy.MaxVehicle			.Index		= currentEnemy.CurrentVehicle		.Index;
+	currentEnemy.MaxEquip.Weapon			.Index		= currentEnemy.CurrentEquip.Weapon		.Index;
+	currentEnemy.MaxEquip.Armor				.Index		= currentEnemy.CurrentEquip.Armor		.Index;
+	currentEnemy.MaxEquip.Profession		.Index		= currentEnemy.CurrentEquip.Profession	.Index;
+	currentEnemy.MaxEquip.Vehicle			.Index		= currentEnemy.CurrentEquip.Vehicle		.Index;
 
-	currentEnemy.MaxWeapon			.Modifier	= currentEnemy.CurrentWeapon		.Modifier;
-	currentEnemy.MaxArmor			.Modifier	= currentEnemy.CurrentArmor			.Modifier;
-	currentEnemy.MaxProfession		.Modifier	= currentEnemy.CurrentProfession	.Modifier;
-	currentEnemy.MaxVehicle			.Modifier	= currentEnemy.CurrentVehicle		.Modifier;
+	currentEnemy.MaxEquip.Weapon			.Modifier	= currentEnemy.CurrentEquip.Weapon		.Modifier;
+	currentEnemy.MaxEquip.Armor				.Modifier	= currentEnemy.CurrentEquip.Armor		.Modifier;
+	currentEnemy.MaxEquip.Profession		.Modifier	= currentEnemy.CurrentEquip.Profession	.Modifier;
+	currentEnemy.MaxEquip.Vehicle			.Modifier	= currentEnemy.CurrentEquip.Vehicle		.Modifier;
 
-	currentEnemy.MaxWeapon			.Level		= currentEnemy.CurrentWeapon		.Level;
-	currentEnemy.MaxArmor			.Level		= currentEnemy.CurrentArmor			.Level;
-	currentEnemy.MaxProfession		.Level		= currentEnemy.CurrentProfession	.Level;
-	currentEnemy.MaxVehicle			.Level		= currentEnemy.CurrentVehicle		.Level;
+	currentEnemy.MaxEquip.Weapon			.Level		= currentEnemy.CurrentEquip.Weapon		.Level;
+	currentEnemy.MaxEquip.Armor				.Level		= currentEnemy.CurrentEquip.Armor		.Level;
+	currentEnemy.MaxEquip.Profession		.Level		= currentEnemy.CurrentEquip.Profession	.Level;
+	currentEnemy.MaxEquip.Vehicle			.Level		= currentEnemy.CurrentEquip.Vehicle		.Level;
 
-	SEntityPoints finalEnemyPoints		= calculateFinalPoints(currentEnemy);
-	currentEnemy.Points.LifeCurrent		= finalEnemyPoints.LifeMax;
+	SEntityPoints finalEnemyPoints			= calculateFinalPoints(currentEnemy);
+	currentEnemy.Points.LifeCurrent			= finalEnemyPoints.LifeMax;
 }

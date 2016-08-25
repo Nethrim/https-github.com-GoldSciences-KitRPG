@@ -8,6 +8,8 @@
 
 namespace klib
 {
+#pragma pack(push, 1)
+
 	enum ITEM_TYPE : uint16_t
 	{	ITEM_TYPE_UNKNOWN	= 0x00
 	,	ITEM_TYPE_POTION	= 0x01
@@ -16,26 +18,31 @@ namespace klib
 	};
 
 	enum PROPERTY_TYPE : uint32_t
-	{	PROPERTY_TYPE_NONE		= 0x00000
-		// good properties
-	,	PROPERTY_TYPE_HEALTH	= 0x00001
-	,	PROPERTY_TYPE_MANA		= 0x00002
-	,	PROPERTY_TYPE_SHIELD	= 0x00004
-	,	PROPERTY_TYPE_STRENGTH	= 0x00008
-	,	PROPERTY_TYPE_HIT		= 0x00010
-		// bad properties
-	,	PROPERTY_TYPE_BLAST		= 0x00020
-	,	PROPERTY_TYPE_PIERCING	= 0x00040
-	,	PROPERTY_TYPE_FRAG		= 0x00080
-	,	PROPERTY_TYPE_STUN		= 0x00100
-	,	PROPERTY_TYPE_SMOKE		= 0x00200
-	,	PROPERTY_TYPE_FIRE		= 0x00400
-	,	PROPERTY_TYPE_POISON	= 0x00800
-	,	PROPERTY_TYPE_COLD		= 0x01000
-	,	PROPERTY_TYPE_FREEZE	= 0x02000
-	,	PROPERTY_TYPE_SHOCK		= 0x04000
-	,	PROPERTY_TYPE_EMP		= 0x08000
-	,	PROPERTY_TYPE_SLEEP		= 0x10000
+	{	PROPERTY_TYPE_NONE				= 0x000000
+	,	PROPERTY_TYPE_HEALTH			= 0x000001
+	,	PROPERTY_TYPE_MANA				= 0x000002
+	,	PROPERTY_TYPE_SHIELD			= 0x000004
+	,	PROPERTY_TYPE_DAMAGE			= 0x000008
+	,	PROPERTY_TYPE_HIT				= 0x000010
+	,	PROPERTY_TYPE_ATTACK_SPEED		= 0x000020
+	,	PROPERTY_TYPE_MOVEMENT_SPEED	= 0x000040
+	,	PROPERTY_TYPE_REFLEXES			= 0x000080
+	,	PROPERTY_TYPE_ABSORPTION		= 0x000100
+	,	PROPERTY_TYPE_HEALTH_DAMAGE		= 0x000200
+	,	PROPERTY_TYPE_MANA_DAMAGE		= 0x000400
+	,	PROPERTY_TYPE_SHIELD_DAMAGE		= 0x000800
+	,	PROPERTY_TYPE_BLAST				= 0x001000
+	,	PROPERTY_TYPE_PIERCING			= 0x002000
+	,	PROPERTY_TYPE_FRAG				= 0x004000
+	,	PROPERTY_TYPE_STUN				= 0x008000
+	,	PROPERTY_TYPE_SMOKE				= 0x010000
+	,	PROPERTY_TYPE_FIRE				= 0x020000
+	,	PROPERTY_TYPE_POISON			= 0x040000
+	,	PROPERTY_TYPE_COLD				= 0x080000
+	,	PROPERTY_TYPE_FREEZE			= 0x100000
+	,	PROPERTY_TYPE_SHOCK				= 0x200000
+	,	PROPERTY_TYPE_EMP				= 0x400000
+	,	PROPERTY_TYPE_SLEEP				= 0x800000
 	};
 
 	struct CItem 
@@ -66,12 +73,12 @@ static const CItemGrade itemGrades[] =
 //,	{	"%s (Huge)"		}
 };
 
-static const CEntityItem	itemModifiers[] = 
+static const CRecordItem	itemModifiers[] = 
 {	{	{{},{},{},0,0	},{},	"%s"					}
 ,	{	{{},{},{},0,0	},{},	"%s	of Healing"			}
 ,	{	{{},{},{},0,5	},{},	"%s	of Mana"			}
-,	{	{{},{},{},0,10	},{},	"%s	of Shield"			}
-,	{	{{},{},{},0,10	},{},	"%s	of Rejuvenation"	}
+,	{	{{},{},{},0,5	},{},	"%s	of Shield"			}
+,	{	{{},{},{},0,15	},{},	"%s	of Rejuvenation"	}
 ,	{	{{},{},{},0,5	},{},	"%s	of Focus"			}
 ,	{	{{},{},{},0,10	},{},	"Strength %s"			}
 ,	{	{{},{},{},0,0	},{},	"Smoke %s"				}
@@ -103,7 +110,14 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_SHIELD										,	10	,	"Potion of Shield"				}
 ,	{ITEM_TYPE_POTION	,	(PROPERTY_TYPE)(PROPERTY_TYPE_MANA|PROPERTY_TYPE_HEALTH)	,	10	,	"Potion of Rejuvenation"		}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HIT											,	10	,	"Potion of Focus"				}
-,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_STRENGTH										,	10	,	"Potion of Strength"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_DAMAGE										,	10	,	"Potion of Strength"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_ATTACK_SPEED									,	10	,	"Potion of Speed"				}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_MOVEMENT_SPEED								,	10	,	"Potion of Sprint"				}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_REFLEXES										,	10	,	"Potion of Reflexes"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_ABSORPTION									,	10	,	"Potion of Shielding"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH_DAMAGE									,	10	,	"Epidemic Potion"				}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_MANA_DAMAGE									,	10	,	"Potion of Damnation"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_SHIELD_DAMAGE									,	10	,	"Potion of Corrossion"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SMOKE											,	10	,	"Smoke Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SLEEP											,	10	,	"Sleep Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_STUN											,	10	,	"Stun Grenade"					}
@@ -133,6 +147,8 @@ static const CItem itemDescriptions[] =
 	{
 		return itemDescriptions[item.Index].Price*item.Level;
 	}
+
+#pragma pack(pop)
 } // namespace
 
 #endif // __ITEM_H__98214809271346928734293846__

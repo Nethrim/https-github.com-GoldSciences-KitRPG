@@ -1,11 +1,13 @@
 #include <cstdint>
-#include <algorithm>
+#include <cstdio>
 
 #ifndef __COMBATPOINTS_H__928374092873409238650160213__
 #define __COMBATPOINTS_H__928374092873409238650160213__
 
 namespace klib
 {
+#pragma pack(push, 1)
+
 	struct SLifePointsMultiplier
 	{
 		double	Health	;
@@ -13,7 +15,11 @@ namespace klib
 		double	Shield	;
 
 		inline constexpr SLifePointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { Health*level, Mana*level, Shield*level }; 
+			return 
+				{ Health	*level 
+				, Mana		*level 
+				, Shield	*level 
+			}; 
 		}
 
 		void Print() const
@@ -21,26 +27,6 @@ namespace klib
 			printf("Health .....: %f.\n",	Health	);
 			printf("Mana -------: %f.\n",	Mana	);
 			printf("Shield .....: %f.\n",	Shield	);
-		}
-	};
-
-	struct SAttackPointsMultiplier
-	{
-		double	Hit			;
-		double	Damage		;
-		double	Speed		;
-		double	Absorption	;
-
-		inline constexpr SAttackPointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { Hit*level, Damage*level, Speed*level, Absorption*level }; 
-		}
-
-		void Print() const
-		{
-			printf("Hit ........: %f.\n",	Hit			);
-			printf("Damage -----: %f.\n",	Damage		);
-			printf("Speed ......: %f.\n",	Speed		);
-			printf("Absorption -: %f.\n",	Absorption	);
 		}
 	};
 
@@ -55,10 +41,10 @@ namespace klib
 		}
 
 		inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other)	const	{ 
-			return { (int32_t)(	Health	*	std::max(	1.000001, other.Health	)), 
-					 (int32_t)(	Mana	*	std::max(	1.000001, other.Mana	)), 
-					 (int32_t)(	Shield	*	std::max(	1.000001, other.Shield	)) 
-			}; 
+			return	{ Health	? ((1 < (Health	*	other.Health	)) ?	(int32_t)(Health	*	other.Health	): 1) : 0
+					, Mana		? ((1 < (Mana	*	other.Mana		)) ?	(int32_t)(Mana		*	other.Mana		): 1) : 0
+					, Shield	? ((1 < (Shield	*	other.Shield	)) ?	(int32_t)(Shield	*	other.Shield	): 1) : 0
+				}; 
 		}
 
 		SLifePoints&					operator +=	(const SLifePoints& other)						{ 
@@ -76,44 +62,120 @@ namespace klib
 		}
 	};
 
+	struct SSpeedPointsMultiplier
+	{
+		double			Attack;
+		double			Movement;
+		double			Reflexes;
+
+		constexpr SSpeedPointsMultiplier	operator *	(const int32_t level)	const	{ 
+			return { Attack*level, Movement*level, Reflexes*level }; 
+		}
+
+		void Print() const
+		{
+			printf("Attack .....: %f.\n",	Attack		);
+			printf("Movement ---: %f.\n",	Movement	);
+			printf("Reflexes ...: %f.\n",	Reflexes	);
+		}
+	};
+
+	struct SSpeedPoints
+	{
+		int32_t			Attack	;
+		int32_t			Movement;
+		int32_t			Reflexes;
+
+		constexpr SSpeedPoints	operator +	(const SSpeedPoints& other)			const	{ 
+			return { Attack+other.Attack, Movement+other.Movement, Reflexes+other.Reflexes }; 
+		}
+
+		constexpr SSpeedPoints	operator *	(const SSpeedPointsMultiplier& other)	const	{ 
+			return	{ Attack	? ((1 < (Attack		*	other.Attack	)) ?	(int32_t)(Attack	*	other.Attack	): 1) : 0
+					, Movement	? ((1 < (Movement	*	other.Movement	)) ?	(int32_t)(Movement	*	other.Movement	): 1) : 0
+					, Reflexes	? ((1 < (Reflexes	*	other.Reflexes	)) ?	(int32_t)(Reflexes	*	other.Reflexes	): 1) : 0
+				}; 
+		}
+
+		SSpeedPoints&					operator +=	(const SSpeedPoints& other)					{ 
+			Attack += other.Attack; Movement += other.Movement; Reflexes += other.Reflexes; return *this; 
+		}
+
+		void Print() const
+		{
+			printf("Attack .....: %i.\n",	Attack	);
+			printf("Movement ---: %i.\n",	Movement);
+			printf("Reflexes ...: %i.\n",	Reflexes);
+		}
+	};
+
+	struct SAttackPointsMultiplier
+	{
+		double					Hit			;
+		double					Damage		;
+		SSpeedPointsMultiplier	Speed		;
+		double					Absorption	;
+		SLifePointsMultiplier	ExtraDamage	;
+
+		constexpr SAttackPointsMultiplier	operator *	(const int32_t level)	const	{ 
+			return { Hit*level, Damage*level, Speed*level, Absorption*level, ExtraDamage*level }; 
+		}
+
+		void Print() const
+		{
+			printf("Hit ........: %f.\n",	Hit			);
+			printf("Damage -----: %f.\n",	Damage		);
+			printf("Absorption -: %f.\n",	Absorption	);
+			printf("- Speed Points:.\n");
+			Speed.Print();
+			printf("- Extra Point Damage:\n");
+			ExtraDamage.Print();
+		}
+	};
+
 	struct SAttackPoints
 	{
-		int32_t		Hit			;
-		int32_t		Damage		;
-		int32_t		Speed		;
-		int32_t		Absorption	;
+		int32_t			Hit			;
+		int32_t			Damage		;
+		SSpeedPoints	Speed		;
+		int32_t			Absorption	;
+		SLifePoints		ExtraDamage	;
 
-		inline constexpr SAttackPoints	operator +	(const SAttackPoints& other)			const	{ 
-			return {Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption}; 
+		constexpr SAttackPoints	operator +	(const SAttackPoints& other)			const	{ 
+			return { Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption, ExtraDamage+other.ExtraDamage };
 		}
 
-		inline constexpr SAttackPoints	operator *	(const SAttackPointsMultiplier& other)	const	{ 
-			return { (int32_t)(Hit*std::max(1.000001, other.Hit)), (int32_t)(Damage*std::max(1.0001, other.Damage)), (int32_t)(Damage*std::max(1.0001, other.Damage))}; 
+		constexpr SAttackPoints	operator *	(const SAttackPointsMultiplier& other)	const	{ 
+			return	{ Hit			? ((1 < (Hit		*	other.Hit			)) ?	(int32_t)(Hit			*	other.Hit			): 1) : 0
+					, Damage		? ((1 < (Damage		*	other.Damage		)) ?	(int32_t)(Damage		*	other.Damage		): 1) : 0
+					, Speed*other.Speed
+					, Absorption	? ((1 < (Absorption	*	other.Absorption	)) ?	(int32_t)(Absorption	*	other.Absorption	): 1) : 0
+					, ExtraDamage*other.ExtraDamage
+				}; 
 		}
 
-		SAttackPoints&					operator +=	(const SAttackPoints& other)					{ 
-			Hit += other.Hit; Damage += other.Damage; return *this; 
+		SAttackPoints&					operator +=	(const SAttackPoints& other) { 
+			Hit			+= other.Hit; 
+			Damage		+= other.Damage; 
+			Speed		+= other.Speed; 
+			Absorption	+= other.Absorption; 
+			ExtraDamage += other.ExtraDamage; 
+			return *this; 
 		}
 
 		void Print() const
 		{
 			printf("Hit ........: %i.\n",	Hit			);
-			printf("Damage -----: %i.\n",	Damage		);
-			printf("Speed ......: %i.\n",	Speed		);
+			printf("Damage ......: %i.\n",	Damage		);
 			printf("Absorption -: %%%i.\n",	Absorption	);
+			printf("- Speed Points:.\n");
+			Speed.Print();
+			printf("- Extra Point Damage:\n");
+			ExtraDamage.Print();
 		}
 	};
 
-	//struct SCombatPoints 
-	//{
-	//	SLifePoints		LifeMax;
-	//	SLifePoints		LifeCurrent;
-	//	SLifePoints		LifeTurn;
-	//	SAttackPoints	Attack;
-	//};
-
-
-
+#pragma pack(pop)
 } //namespace
 
 #endif // __COMBATPOINTS_H__928374092873409238650160213__

@@ -63,13 +63,13 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 	printf("%s throws %s to %s.\n", thrower.Name.c_str(), getItemName(itemGrenade).c_str(), target.Name.c_str());
 	bool bAddStatus = false;
 
-	int32_t targetArmorAbsorption = getArmorAbsorption(target.CurrentArmor), finalPassthroughDamage = 0, reflectedDamage = 0;
+	int32_t targetArmorAbsorption = getArmorAbsorption(target.CurrentEquip.Armor), finalPassthroughDamage = 0, reflectedDamage = 0;
 	DEFEND_EFFECT attackerArmorEffect	= finalFlagsThrower.Effect.Defend;
 	DEFEND_EFFECT targetArmorEffect		= finalFlagsTarget.Effect.Defend;
 
 	PROPERTY_TYPE	grenadeProperty = itemDescription.Property;
 	COMBAT_STATUS		grenadeStatus = getGrenadeStatusFromProperty(grenadeProperty);
-	const std::string targetArmorName = getArmorName(target.CurrentArmor);
+	const std::string targetArmorName = getArmorName(target.CurrentEquip.Armor);
 	switch(grenadeProperty)
 	{
 	case PROPERTY_TYPE_SMOKE:
@@ -106,7 +106,7 @@ bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter&
 		else if( lotteryResult == (lotteryRange-1) )
 		{
 			applySuccessfulHit(thrower, target,		itemEffectValue		>> 1, bAddStatus, grenadeStatus, itemGrade, getItemName(itemGrenade));
-			applySuccessfulHit(thrower, thrower,	itemEffectValueSelf	>> 1, bAddStatus, grenadeStatus, std::max(itemGrade-1, 0), getItemName(itemGrenade));
+			applySuccessfulHit(thrower, thrower,	itemEffectValueSelf	>> 1, bAddStatus, grenadeStatus, itemGrade, getItemName(itemGrenade));
 
 			hitTarget = (ATTACK_TARGET)(ATTACK_TARGET_SELF | ATTACK_TARGET_OTHER);
 			printf("%s doesn't throw the grenade far enough so %s receives %u damage but also %s receives %u damage.\n", thrower.Name.c_str(), target.Name.c_str(), itemEffectValue, thrower.Name.c_str(), itemEffectValueSelf);

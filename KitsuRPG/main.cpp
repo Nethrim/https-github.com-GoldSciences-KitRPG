@@ -46,40 +46,47 @@ void main()
 	{
 		adventurer							= klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
 
-		adventurer.	CurrentWeapon		.Index		= 0;
-		adventurer.	CurrentArmor		.Index		= 0;
-		adventurer.	CurrentProfession	.Index		= 0;//(int16_t)(rand() % size(klib::definitionsProfession	));
-		adventurer.	CurrentVehicle		.Index		= (int16_t)(rand() % size(klib::definitionsVehicle	));
-		adventurer.	CurrentWeapon		.Modifier	= 0;
-		adventurer.	CurrentArmor		.Modifier	= 0;
-		adventurer.	CurrentProfession	.Modifier	= 0;
-		adventurer.	CurrentVehicle		.Modifier	= 0;
-		adventurer.	CurrentWeapon		.Level		= 1;
-		adventurer.	CurrentArmor		.Level		= 1;
-		adventurer.	CurrentProfession	.Level		= 1;
-		adventurer.	CurrentVehicle		.Level		= 1;
+		adventurer.CurrentEquip.Weapon		.Index		= 0;
+		adventurer.CurrentEquip.Armor		.Index		= 0;
+		adventurer.CurrentEquip.Profession	.Index		= 0;
+		adventurer.CurrentEquip.Vehicle		.Index		= 0;
 
-		adventurer.MaxWeapon			.Index		= adventurer.CurrentWeapon		.Index;		
-		adventurer.MaxArmor				.Index		= adventurer.CurrentArmor		.Index;		
-		adventurer.MaxProfession		.Index		= adventurer.CurrentProfession	.Index;		
-		adventurer.MaxWeapon			.Modifier	= adventurer.CurrentWeapon		.Modifier;
-		adventurer.MaxArmor				.Modifier	= adventurer.CurrentArmor		.Modifier;
-		adventurer.MaxProfession		.Modifier	= adventurer.CurrentProfession	.Modifier;
-		adventurer.MaxWeapon			.Level		= adventurer.CurrentWeapon		.Level;
-		adventurer.MaxArmor				.Level		= adventurer.CurrentArmor		.Level;
-		adventurer.MaxProfession		.Level		= adventurer.CurrentProfession	.Level;
+		adventurer.CurrentEquip.Weapon		.Modifier	= 0;
+		adventurer.CurrentEquip.Armor		.Modifier	= 0;
+		adventurer.CurrentEquip.Profession	.Modifier	= 0;
+		adventurer.CurrentEquip.Vehicle		.Modifier	= 0;
 
-		adventurer.Weapons				.AddElement({1,1,1});
-		adventurer.Armors				.AddElement({1,1,1});
-		adventurer.Professions			.AddElement({adventurer.CurrentProfession.Index,1,1});
-		adventurer.Vehicles				.AddElement({1,1,1});
+		adventurer.CurrentEquip.Weapon		.Level		= 1;
+		adventurer.CurrentEquip.Armor		.Level		= 1;
+		adventurer.CurrentEquip.Profession	.Level		= 1;
+		adventurer.CurrentEquip.Vehicle		.Level		= 1;
 
-		adventurer.Inventory			.AddElement({1,1,1});
+		adventurer.MaxEquip.Weapon			.Index		= adventurer.CurrentEquip.Weapon		.Index;		
+		adventurer.MaxEquip.Armor			.Index		= adventurer.CurrentEquip.Armor			.Index;		
+		adventurer.MaxEquip.Profession		.Index		= adventurer.CurrentEquip.Profession	.Index;		
+		adventurer.MaxEquip.Vehicle			.Index		= adventurer.CurrentEquip.Vehicle		.Index;
+
+		adventurer.MaxEquip.Weapon			.Modifier	= adventurer.CurrentEquip.Weapon		.Modifier;
+		adventurer.MaxEquip.Armor			.Modifier	= adventurer.CurrentEquip.Armor			.Modifier;
+		adventurer.MaxEquip.Profession		.Modifier	= adventurer.CurrentEquip.Profession	.Modifier;
+		adventurer.MaxEquip.Vehicle			.Modifier	= adventurer.CurrentEquip.Vehicle		.Modifier;
+
+		adventurer.MaxEquip.Weapon			.Level		= adventurer.CurrentEquip.Weapon		.Level;
+		adventurer.MaxEquip.Armor			.Level		= adventurer.CurrentEquip.Armor			.Level;
+		adventurer.MaxEquip.Profession		.Level		= adventurer.CurrentEquip.Profession	.Level;
+		adventurer.MaxEquip.Vehicle			.Level		= adventurer.CurrentEquip.Vehicle		.Level;
+
+		adventurer.Inventory.Weapons		.AddElement({1,1,1});
+		adventurer.Inventory.Armors			.AddElement({1,1,1});
+		adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,1});
+		adventurer.Inventory.Vehicles		.AddElement({1,1,1});
+
+		adventurer.Inventory.Items			.AddElement({1,1,1});
 		for(int32_t i=1; i<3; ++i)
-			adventurer.Inventory.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
+			adventurer.Inventory.Items.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
 
 		klib::SEntityPoints finalPoints		= klib::calculateFinalPoints(adventurer);
-		adventurer.Points.LifeCurrent	= finalPoints.LifeMax;
+		adventurer.Points.LifeCurrent		= finalPoints.LifeMax;
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.

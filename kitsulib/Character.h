@@ -7,6 +7,8 @@
 
 namespace klib
 {
+#pragma pack(push, 1)
+
 	class CCharacter : public SCharacter
 	{
 	public:
@@ -22,11 +24,7 @@ namespace klib
 		int		Load(FILE* fp);
 	};
 
-	SEntityPoints	calculateFinalPoints	(const CCharacter& character);
-	SEntityFlags	calculateFinalFlags		(const CCharacter& character);
-
-	bool addStatus(SCombatStatus& characterStatus, COMBAT_STATUS statusType, int32_t turnCount);
-	void rest(CCharacter& adventurerPoints);	// Take a nap and recover HP up to MaxHP.
+#pragma pack(pop)
 } // namespace
 
 #endif // __CHARACTER_H__928346902734698713649875239841__

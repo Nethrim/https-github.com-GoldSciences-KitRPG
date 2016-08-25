@@ -8,11 +8,9 @@
 
 #include "Misc.h"
 
-#include <algorithm>
-
 using namespace klib;
 
-void klib::rest(CCharacter& character)
+void klib::rest(SCharacter& character)
 {
 	SEntityPoints finalPoints	= calculateFinalPoints(character);
 	character.Points.LifeCurrent	= finalPoints.LifeMax	;
@@ -20,30 +18,31 @@ void klib::rest(CCharacter& character)
 	character.Points.LifeCurrent.Print();
 }
 
-SEntityPoints klib::calculateFinalPoints(const CCharacter& character)
+SEntityPoints klib::calculateFinalPoints(const SCharacter& character)
 {
 	SEntityPoints result = {};
-	const SEntityPoints	weaponPoints		= klib::getWeaponPoints		(character.CurrentWeapon);
-	const SEntityPoints	armorPoints			= klib::getArmorPoints		(character.CurrentArmor);
-	const SEntityPoints	professionPoints	= klib::getProfessionPoints	(character.CurrentProfession);
-	const SEntityPoints	vehiclePoints		= klib::getVehiclePoints	(character.CurrentVehicle);
+	const SEntityPoints	weaponPoints		= klib::getWeaponPoints		(character.CurrentEquip.Weapon);
+	const SEntityPoints	armorPoints			= klib::getArmorPoints		(character.CurrentEquip.Armor);
+	const SEntityPoints	professionPoints	= klib::getProfessionPoints	(character.CurrentEquip.Profession);
+	const SEntityPoints	vehiclePoints		= klib::getVehiclePoints	(character.CurrentEquip.Vehicle);
 
-	result.LifeMax		= character.CombatBonus.Points.LifeMax		+ weaponPoints.LifeMax		+ armorPoints.LifeMax		+ vehiclePoints.LifeMax		+ professionPoints.LifeMax		+	character.Points.LifeMax;
-	result.Attack		= character.CombatBonus.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ vehiclePoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
-	result.LifeCurrent	= character.CombatBonus.Points.LifeCurrent	+ weaponPoints.LifeCurrent	+ armorPoints.LifeCurrent	+ vehiclePoints.LifeCurrent	+ professionPoints.LifeCurrent;
-	result.Coins		= character.CombatBonus.Points.Coins		+ weaponPoints.Coins		+ armorPoints.Coins			+ vehiclePoints.Coins		+ professionPoints.Coins;
+	result.LifeMax		= character.ActiveBonus.Points.Points.LifeMax		+ weaponPoints.LifeMax		+ armorPoints.LifeMax		+ vehiclePoints.LifeMax		+ professionPoints.LifeMax		+	character.Points.LifeMax;
+	result.Attack		= character.ActiveBonus.Points.Points.Attack		+ weaponPoints.Attack		+ armorPoints.Attack		+ vehiclePoints.Attack		+ professionPoints.Attack		+	character.Points.Attack;
+	result.LifeCurrent	= character.ActiveBonus.Points.Points.LifeCurrent	+ weaponPoints.LifeCurrent	+ armorPoints.LifeCurrent	+ vehiclePoints.LifeCurrent	+ professionPoints.LifeCurrent;
+	result.Coins		= character.ActiveBonus.Points.Points.Coins			+ weaponPoints.Coins		+ armorPoints.Coins			+ vehiclePoints.Coins		+ professionPoints.Coins;
+	result.Price		= character.ActiveBonus.Points.Points.Price			+ weaponPoints.Price		+ armorPoints.Price			+ vehiclePoints.Price		+ professionPoints.Price;
 
 	return result;
 };
 
-SEntityFlags klib::calculateFinalFlags(const CCharacter& character)
+SEntityFlags klib::calculateFinalFlags(const SCharacter& character)
 {
 	SEntityFlags result = {};
-	const SEntityFlags	weaponFlags			= klib::getWeaponFlags		(character.CurrentWeapon);
-	const SEntityFlags	armorFlags			= klib::getArmorFlags		(character.CurrentArmor);
-	const SEntityFlags	professionFlags		= klib::getProfessionFlags	(character.CurrentProfession);
-	const SEntityFlags	vehicleFlags		= klib::getVehicleFlags		(character.CurrentVehicle);
-	result	= character.CombatBonus.Flags | weaponFlags | armorFlags | vehicleFlags | professionFlags | character.Flags;
+	const SEntityFlags	weaponFlags			= klib::getWeaponFlags		(character.CurrentEquip.Weapon);
+	const SEntityFlags	armorFlags			= klib::getArmorFlags		(character.CurrentEquip.Armor);
+	const SEntityFlags	professionFlags		= klib::getProfessionFlags	(character.CurrentEquip.Profession);
+	const SEntityFlags	vehicleFlags		= klib::getVehicleFlags		(character.CurrentEquip.Vehicle);
+	result	= character.ActiveBonus.Points.Flags | weaponFlags | armorFlags | vehicleFlags | professionFlags | character.Flags;
 
 	return result;
 };
@@ -82,11 +81,77 @@ bool klib::addStatus(SCombatStatus& characterStatus, COMBAT_STATUS statusType, i
 	return true;
 }
 
-void SCharacter::EquipWeapon		(size_t slotIndex)	{	if(slotIndex < Weapons		.Count)	{	bool bCancel = false; if( -1 == Researched.Weapon		.Definitions.FindElement(	Weapons		.Slots[slotIndex].Entity.Index))	{ bCancel = true; printf("You can't access to %s weapons until you have researched them!\n"		, definitionsWeapon		[Weapons		.Slots[slotIndex].Entity.Index].Name.c_str()); } if( -1 == Researched.Weapon		.Modifiers.FindElement(Weapons		.Slots[slotIndex].Entity.Modifier))	{ bCancel = true; static char itemText[128] = {}; sprintf_s(itemText, modifiersWeapon		[Weapons		.Slots[slotIndex].Entity.Modifier].Name.c_str(), "Science"		); printf("You can't access to %s weapons until you have researched them!\n"		, itemText); }	if(bCancel) return; printf("You store %s level %u in your arsenal.\n"												, klib::getWeaponName		(CurrentWeapon		).c_str(), CurrentWeapon		.Level); UnloadWeapon		();	CurrentWeapon		= Weapons		.Slots[slotIndex].Entity;	Weapons		.DecreaseEntity(slotIndex);	printf("You equip %s level %u.\n"									, klib::getWeaponName		(CurrentWeapon		).c_str(), CurrentWeapon		.Level	); };	};
-void SCharacter::EquipArmor			(size_t slotIndex)	{	if(slotIndex < Armors		.Count)	{	bool bCancel = false; if( -1 == Researched.Armor		.Definitions.FindElement(	Armors		.Slots[slotIndex].Entity.Index))	{ bCancel = true; printf("You can't access to %s armors until you have researched them!\n"		, definitionsArmor		[Armors			.Slots[slotIndex].Entity.Index].Name.c_str()); } if( -1 == Researched.Armor			.Modifiers.FindElement(Armors		.Slots[slotIndex].Entity.Modifier))	{ bCancel = true; static char itemText[128] = {}; sprintf_s(itemText, modifiersArmor		[Armors			.Slots[slotIndex].Entity.Modifier].Name.c_str(), "Technology"	); printf("You can't access to %s armors until you have researched them!\n"			, itemText); }	if(bCancel) return; printf("You leave %s level %u in your wardrobe.\n"												, klib::getArmorName		(CurrentArmor		).c_str(), CurrentArmor			.Level); UnloadArmor		();	CurrentArmor		= Armors		.Slots[slotIndex].Entity;	Armors		.DecreaseEntity(slotIndex);	printf("You equip %s level %u.\n"									, klib::getArmorName		(CurrentArmor		).c_str(), CurrentArmor			.Level	); };	};
-void SCharacter::EquipProfession	(size_t slotIndex)	{	if(slotIndex < Professions	.Count)	{	bool bCancel = false; if( -1 == Researched.Profession	.Definitions.FindElement(	Professions	.Slots[slotIndex].Entity.Index))	{ bCancel = true; printf("You can't access to %s professions until you have researched them!\n"	, definitionsProfession	[Professions	.Slots[slotIndex].Entity.Index].Name.c_str()); } if( -1 == Researched.Profession	.Modifiers.FindElement(Professions	.Slots[slotIndex].Entity.Modifier))	{ bCancel = true; static char itemText[128] = {}; sprintf_s(itemText, modifiersProfession	[Professions	.Slots[slotIndex].Entity.Modifier].Name.c_str(), "Rank"			); printf("You can't access to %s professions until you have researched them!\n"	, itemText); }	if(bCancel) return; printf("You take a long vacation and forget the details about the %s level %u profession.\n"	, klib::getProfessionName	(CurrentProfession	).c_str(), CurrentProfession	.Level); UnloadProfession	();	CurrentProfession	= Professions	.Slots[slotIndex].Entity;	Professions	.DecreaseEntity(slotIndex);	printf("You get up to date with your profession as %s level %u.\n"	, klib::getProfessionName	(CurrentProfession	).c_str(), CurrentProfession	.Level	); };	};
-void SCharacter::EquipVehicle		(size_t slotIndex)	{	if(slotIndex < Vehicles		.Count)	{	bool bCancel = false; if( -1 == Researched.Vehicle		.Definitions.FindElement(	Vehicles	.Slots[slotIndex].Entity.Index))	{ bCancel = true; printf("You can't access to %s vehicles until you have researched them!\n"	, definitionsVehicle	[Vehicles		.Slots[slotIndex].Entity.Index].Name.c_str()); } if( -1 == Researched.Vehicle		.Modifiers.FindElement(Vehicles		.Slots[slotIndex].Entity.Modifier))	{ bCancel = true; static char itemText[128] = {}; sprintf_s(itemText, modifiersVehicle		[Vehicles		.Slots[slotIndex].Entity.Modifier].Name.c_str(), "Mechanics"	); printf("You can't access to %s vehicles until you have researched them!\n"		, itemText); }	if(bCancel) return; printf("You get out of your %s level %u.\n"														, klib::getVehicleName		(CurrentVehicle		).c_str(), CurrentVehicle		.Level); UnloadVehicle		();	CurrentVehicle		= Vehicles		.Slots[slotIndex].Entity;	Vehicles	.DecreaseEntity(slotIndex);	printf("You get into your recently painted %s level %u.\n"			, klib::getVehicleName		(CurrentVehicle		).c_str(), CurrentVehicle		.Level	); };	};
 
+void SCharacter::EquipWeapon		(size_t slotIndex)	{	
+	
+	equipEntityIfResearched
+		( slotIndex
+		, Inventory.Weapons
+		, Researched.Weapon
+		, definitionsWeapon
+		, modifiersWeapon
+		, CurrentEquip.Weapon
+		, "You can't access to %s weapons until you have researched them!\n"	
+		, "You can't access to %s weapons until you have researched them!\n"	
+		, "You store %s level %u in your arsenal.\n"
+		, "You equip %s level %u.\n"
+		, "Science"
+		);
+
+}
+
+void SCharacter::EquipArmor		(size_t slotIndex)	{	
+	
+	equipEntityIfResearched
+		( slotIndex
+		, Inventory.Armors
+		, Researched.Armor
+		, definitionsArmor
+		, modifiersArmor
+		, CurrentEquip.Armor
+		, "You can't access to %s armors until you have researched them!\n"		
+		, "You can't access to %s armors until you have researched them!\n"		
+		, "You leave %s level %u in your wardrobe.\n"		
+		, "You equip %s level %u.\n"
+		, "Technology"
+		);
+
+}
+
+void SCharacter::EquipProfession		(size_t slotIndex)	{	
+	
+	equipEntityIfResearched
+		( slotIndex
+		, Inventory.Professions
+		, Researched.Profession
+		, definitionsProfession
+		, modifiersProfession
+		, CurrentEquip.Profession
+		, "You can't access to %s professions until you have researched them!\n"	
+		, "You can't access to %s professions until you have researched them!\n"	
+		, "You take a long vacation and forget the details about the %s level %u profession.\n"
+		, "You get up to date with your profession as %s level %u.\n"
+		, "Rank"
+		);
+
+}
+
+void SCharacter::EquipVehicle		(size_t slotIndex)	{	
+	
+	equipEntityIfResearched
+		( slotIndex
+		, Inventory.Vehicles
+		, Researched.Vehicle
+		, definitionsVehicle
+		, modifiersVehicle
+		, CurrentEquip.Vehicle
+		, "You can't access to %s vehicles until you have researched them!\n"
+		, "You can't access to %s vehicles until you have researched them!\n"
+		, "You get out of your %s level %u.\n"
+		, "You get into your recently painted %s level %u.\n"
+		, "Mechanics"
+		);
+}
 
 int	SCharacter::Save(FILE* fp)	const
 {	
@@ -94,7 +159,7 @@ int	SCharacter::Save(FILE* fp)	const
 		printf("Cannot save to file!"	); 
 		return -1; 
 	}	
-	if( 1 != fwrite	(this, sizeof(SCharacter), 1, fp) )				
+	if( 1 != fwrite	(this, 1, sizeof(SCharacter), fp) )				
 	{ 
 		printf( "Cannot save to file!"	); 
 		return -1; 
@@ -109,7 +174,7 @@ int	SCharacter::Load(FILE* fp)	{
 	} 
 		
 	SCharacter loadedCharacter; 
-	if( 1 != fread	(&loadedCharacter, sizeof(SCharacter), 1, fp) ) { 
+	if( 1 != fread	(&loadedCharacter, 1, sizeof(SCharacter), fp) ) { 
 		printf( "Cannot load from file!"	); 
 		return -1; 
 	}; 
@@ -144,9 +209,9 @@ int	CCharacter::Load(FILE* fp)	{
 		printf("Failed to load character data!");
 		return -1;
 	}
-	char name[128] = {0,};
+	char name[128] = {};
 	if(nameLen)
-		if( 1 != fread(name, 1, std::min(nameLen, (uint8_t)127), fp) )
+		if( 1 != fread(name, 1, (nameLen < 127) ? nameLen : 127, fp) )
 		{
 			printf("Failed to load character name!");
 			return -1;

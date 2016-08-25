@@ -4,10 +4,10 @@
 #ifndef __ENTITY_H__38924092634721346098170219783096__
 #define __ENTITY_H__38924092634721346098170219783096__
 
-#pragma pack(push, 1)
-
 namespace klib
 {
+#pragma pack(push, 1)
+
 	struct SEntity
 	{
 		int16_t Index		= 0;
@@ -42,7 +42,6 @@ namespace klib
 		inline SEntitySlot& operator =(const SEntitySlot& other){ Count = other.Count; Entity = other.Entity; return *this; };
 	};
 
-#define MAX_INVENTORY_SLOTS 512
 	template<typename _EntityType, size_t _Size>
 	struct SEntityContainer
 	{
@@ -54,10 +53,10 @@ namespace klib
 		inline constexpr				SEntityContainer(const SEntityContainer& other) = default;
 
 		template<size_t _Size>
-		inline constexpr				SEntityContainer(size_t itemCount, const _EntityType (&entitySlots)[_Size])
+		inline constexpr				SEntityContainer(size_t slotCount, const _EntityType (&entitySlots)[_Size])
 			:Count(0)
 		{
-			for(size_t slotCount = std::min(_Size, itemCount); Count<slotCount; Count++) {
+			for(size_t slotCount = (_Size < slotCount) ? _Size : slotCount; Count<slotCount; Count++) {
 				Slots[Count] = entitySlots[Count];
 			}
 		};
@@ -66,7 +65,7 @@ namespace klib
 
 		inline bool						AddElement(const _EntityType& element) { 
 			// look in the inventory for the name so we just increment the counter instead of adding the item
-			for(uint32_t i=0, count = std::min(Count, (uint32_t)_Size); i<count; i++) {
+			for(uint32_t i=0, count = (_Size < Count) ? _Size : Count; i<count; i++) {
 				if(element == Slots[i].Entity) {
 					Slots[i].Count++;
 					return true;
@@ -93,30 +92,22 @@ namespace klib
 			return 0; 
 		};
 
-		inline int32_t					FindElement(const _EntityType& element) { 
-			for(uint32_t i=0, count=std::max((uint32_t)_Size, Count); i<count; i++)
+		inline int32_t					FindElement(const _EntityType& element) const { 
+			for(uint32_t i=0, count=(_Size < Count) ? _Size : Count; i<count; i++)
 				if(Slots[i].Entity == element)
 					return i;
 			return -1;
 		};
 	};
 
-	struct SItem		: public SEntity	{ using SEntity::SEntity; };
-	struct SWeapon		: public SEntity	{ using SEntity::SEntity; };
-	struct SArmor		: public SEntity	{ using SEntity::SEntity; };
-	struct SProfession	: public SEntity	{ using SEntity::SEntity; };
-	struct SVehicle		: public SEntity	{ using SEntity::SEntity; };
-	struct SStageProp	: public SEntity	{ using SEntity::SEntity; };
-
-	typedef SEntityContainer<SItem			, MAX_INVENTORY_SLOTS>	SInventoryItems;
-	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;
-	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmors;
-	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
-	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicles;
-	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
 
 	template<typename _EntityType>
-	struct SEntityRecord {
+	struct SEntityRecord 
+	{
+		SEntityPoints	Points	;
+		SEntityFlags	Flags	;
+		std::string		Name	;
+
 		SEntityRecord(SEntityPoints	points	
 					 ,SEntityFlags	flags	
 					 ,const std::string&	name	
@@ -125,19 +116,9 @@ namespace klib
 			,Flags (flags )
 			,Name  (name  )
 		{}
-		SEntityPoints	Points	;
-		SEntityFlags	Flags	;
-		std::string		Name	;
 	};
 
-	typedef struct SEntityRecord<SArmor			>	CEntityArmor		;
-	typedef struct SEntityRecord<SProfession	>	CEntityProfession	;
-	typedef struct SEntityRecord<SWeapon		>	CEntityWeapon		;
-	typedef struct SEntityRecord<SVehicle		>	CEntityVehicle		;
-	typedef struct SEntityRecord<SStageProp		>	CEntityStageProp	;
-	typedef struct SEntityRecord<SItem			>	CEntityItem			;
-};
-
 #pragma pack(pop)
+};
 
 #endif //__ENTITY_H__38924092634721346098170219783096__

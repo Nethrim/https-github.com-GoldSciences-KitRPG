@@ -6,6 +6,8 @@
 
 namespace klib
 {
+#pragma pack(push, 1)
+
 	struct SEntityPointsMultiplier 
 	{
 		SLifePointsMultiplier		LifeMax		;
@@ -103,6 +105,8 @@ namespace klib
 			Flags.Print();
 		}
 	};
+
+#pragma pack(pop)
 } // klib
 
 #endif // __ENTITYPOINTS_H__9238409723640921876409234__

@@ -10,9 +10,13 @@ bool potionRestore(const CCharacter& potionDrinker, const int32_t potionGrade, c
 		printf("Your %s is full!\n", pointName.c_str());
 		return false;
 	}
-	int32_t itemEffectValue = (int32_t)(maxPoints*.2+1)+(rand()%std::max(1, maxPoints/10));
+	int32_t lifeFractionBase	= (maxPoints>>3)+1;
+	int32_t lifeFractionExtra	= (maxPoints>>4);
+
+	int32_t itemEffectValue = lifeFractionBase+(rand()%(lifeFractionExtra+1));
 	itemEffectValue *= potionGrade;
-	itemEffectValue = std::min(itemEffectValue, maxPoints-currentPoints);
+	int32_t actualPointsRequiredToMax = maxPoints-currentPoints;
+	itemEffectValue = (itemEffectValue < actualPointsRequiredToMax) ? itemEffectValue : actualPointsRequiredToMax;
 	currentPoints += itemEffectValue;
 	SEntityPoints finalPoints	= calculateFinalPoints(potionDrinker);
 	printf("The potion restores %u %s to %s! %s now has %u %s.\n", 
@@ -22,8 +26,10 @@ bool potionRestore(const CCharacter& potionDrinker, const int32_t potionGrade, c
 
 bool potionAttackBonus(const CCharacter& potionDrinker, const int32_t potionGrade, int32_t& currentPoints, int32_t& turnsLeft, const std::string& pointName)
 {
-	int32_t itemEffectValue = 5*potionGrade;
-	itemEffectValue += rand() % std::max(2, itemEffectValue>>2);
+	int32_t pointsGainedBase	= 5*potionGrade;
+	int32_t pointsGainedExtra	= pointsGainedBase>>2;
+
+	int32_t itemEffectValue = pointsGainedBase + rand() % (pointsGainedExtra+1);
 
 	currentPoints		+= itemEffectValue;
 	if(0 == turnsLeft)
@@ -49,14 +55,21 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 	bool bUsedItem = false;
 
 	SLifePoints& currentPoints	= potionDrinker.Points.LifeCurrent;
-	SCombatBonus& drinkerBonus	= potionDrinker.CombatBonus;
+	SCombatBonus& drinkerBonus	= potionDrinker.ActiveBonus.Points;
 	const SLifePoints maxPoints	= calculateFinalPoints(potionDrinker).LifeMax;
 
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Health					, currentPoints.Health							, "Health"	);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA		)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Mana						, currentPoints.Mana							, "Mana"	);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD	)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Shield					, currentPoints.Shield							, "Shield"	);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_STRENGTH	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Damage	, drinkerBonus.TurnsLeftPoints.Attack.Damage	, "Damage"	);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_HIT		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Hit		, drinkerBonus.TurnsLeftPoints.Attack.Hit		, "Hit"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH			)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Health								, currentPoints.Health										, "Health"			);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA				)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Mana									, currentPoints.Mana										, "Mana"			);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD			)	bUsedItem = bUsedItem || potionRestore		(potionDrinker, itemPotion.Level,	maxPoints.Shield								, currentPoints.Shield										, "Shield"			);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HIT				)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Hit					, drinkerBonus.TurnsLeftPoints.Attack.Hit					, "Hit"				);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_DAMAGE			)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Damage				, drinkerBonus.TurnsLeftPoints.Attack.Damage				, "Damage"			);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_ATTACK_SPEED		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Speed.Attack			, drinkerBonus.TurnsLeftPoints.Attack.Speed.Attack			, "Attack Speed"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_MOVEMENT_SPEED	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Speed.Movement		, drinkerBonus.TurnsLeftPoints.Attack.Speed.Movement		, "Movement Speed"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_REFLEXES			)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Speed.Reflexes		, drinkerBonus.TurnsLeftPoints.Attack.Speed.Reflexes		, "Reflexes"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_ABSORPTION		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Absorption			, drinkerBonus.TurnsLeftPoints.Attack.Absorption			, "Absorption"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Health	, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Health	, "Health Damage"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA_DAMAGE		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Mana		, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Mana		, "Mana Damage"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Shield	, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Shield	, "Shield Damage"	);
 
 	if(bUsedItem)
 		potionDrinker.Score.PotionsUsed++;

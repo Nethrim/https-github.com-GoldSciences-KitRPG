@@ -8,6 +8,7 @@
 
 namespace klib
 {
+#pragma pack(push, 1)
 	static const CCharacter enemyDefinitions[] =	
 	{	{CHARACTER_TYPE_ENEMY,	1,		1,		1,	1	,	{}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_NONE												},	"Unknown"	}
 	,	{CHARACTER_TYPE_ENEMY,	1,		50,		1,	1	,	{}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_BLIND												},	"Bug"		}	
@@ -27,5 +28,6 @@ namespace klib
 	};
 
 	void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType);
+#pragma pack(pop)
 }	// namespace
 #endif // __ENEMY_H__923409234902364897234__

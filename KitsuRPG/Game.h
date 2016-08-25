@@ -12,6 +12,4 @@ void displayScore		(const klib::SCharacterScore&	adventurer);	// Displays the pl
 
 void combat(klib::CCharacter& adventurer, int32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 
-
-
 #endif // __GAME_H__99823740927349023649827346982734__
