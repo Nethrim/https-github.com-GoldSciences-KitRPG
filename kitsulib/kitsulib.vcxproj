@@ -166,7 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Armor.h" />
-    <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterPoints.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="CombatPoints.h" />
@@ -177,7 +176,7 @@
     <ClInclude Include="EntityImpl.h" />
     <ClInclude Include="EntityPoints.h" />
     <ClInclude Include="EntityResearch.h" />
-    <ClInclude Include="GameBase.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Misc.h" />

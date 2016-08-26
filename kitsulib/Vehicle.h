@@ -1,4 +1,5 @@
-#include "GameBase.h"
+#include "EntityImpl.h"
+
 #include <string>
 
 #ifndef __VEHICLES_H__91236982714698236423423__

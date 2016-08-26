@@ -119,6 +119,7 @@ namespace klib
 	typedef struct SEntityRecord<SStageProp		>	CRecordStageProp	;
 	typedef struct SEntityRecord<SItem			>	CRecordItem			;
 
+
 #pragma pack(pop)
 } // namespace
 

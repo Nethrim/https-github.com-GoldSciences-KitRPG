@@ -169,6 +169,7 @@ enum TURN_ACTION
 ,	TURN_ACTION_SKILL
 ,	TURN_ACTION_SENSE
 ,	TURN_ACTION_RUN
+,	TURN_ACTION_CANCEL
 };
 
 enum TURN_OUTCOME
@@ -230,12 +231,16 @@ TURN_OUTCOME characterTurn(TURN_ACTION combatOption, klib::CCharacter& attacker,
 			outcome = TURN_OUTCOME_CONTINUE;
 	}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
 	else if(TURN_ACTION_SENSE == combatOption) { 
-		senseMenu(target);
+		senseMenu(target);	// sense applies to target only. You can't "sense yourself".
 		outcome = TURN_OUTCOME_CONTINUE;
-	}	// useItems requires to receive the current enemy as a parameter in order to modify its health if we use a grenade and hit.
+	}	// 
 	else if(TURN_ACTION_RUN == combatOption) {
 		if( escape(attacker.Name, attacker.Score) )
 			outcome = TURN_OUTCOME_ESCAPE; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
+	}
+	else if(TURN_ACTION_CANCEL == combatOption) {
+		printf("%s couldn't figure out what to do and skipped the turn.\n", attacker.Name.c_str());
+		outcome = TURN_OUTCOME_CANCEL; // Escape: if we succeed we just exit this combat() function, otherwise cancel this loop and execute the enemy turn.
 	}
 
 	if(outcome == TURN_OUTCOME_CANCEL && target.Points.LifeCurrent.Health > 0 && attacker.Points.LifeCurrent.Health > 0)
@@ -306,6 +311,7 @@ TURN_OUTCOME playerTurn(klib::CCharacter& adventurer, klib::CCharacter& currentE
 	, { TURN_ACTION_INVENTORY	, "Inventory"	}
 	, { TURN_ACTION_SKILL		, "Skills"		}
 	, { TURN_ACTION_SENSE		, "Sense"		}
+	, { TURN_ACTION_CANCEL		, "Cancel turn"	}
 	, { TURN_ACTION_RUN			, "Run"			}
 	};
 
@@ -401,18 +407,9 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 	determineOutcome(adventurer, currentEnemy, enemyType);
 }
 
-
-// This function returns true if an item was used or false if the menu was exited without doing anything.
-bool useItems(klib::CCharacter& user, klib::CCharacter& target)
+int32_t selectItemsPlayer(klib::CCharacter& user, klib::CCharacter& target)
 {
-	bool bUsedItem = false;
-	int32_t indexInventory = ~0U;
-	static const size_t inventorySize = size(user.Inventory.Items.Slots);
-	if(0 == user.Inventory.Items.Count)
-	{
-		printf("%s has no items in the inventory.\n", user.Name.c_str());
-		return false;
-	}
+	int32_t indexInventory = user.Inventory.Items.Count;	// this initial value exits the menu
 
 	klib::SMenuItem<int32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
 	char itemOption[128] = {};
@@ -425,44 +422,72 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	}
 	itemOptions[user.Inventory.Items.Count].ReturnValue	= user.Inventory.Items.Count;
 	itemOptions[user.Inventory.Items.Count].Text			= "Back to combat options";
+	indexInventory = displayMenu(user.Inventory.Items.Count+1, "Select an item to use", itemOptions);
+
+	if(indexInventory == user.Inventory.Items.Count)	// exit option
+		indexInventory = user.Inventory.Items.Count;	// Exit menu
+	else if (user.Inventory.Items.Slots[indexInventory].Count <= 0)
+		printf("You don't have anymore of that. Use something else...\n"); 
+	else {
+		// if we reached here it means that the input was valid so we select the description and exit the loop
+		const std::string userMessage = "You don't need to use %s!\n";
+		const std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
+		printf(userMessage.c_str(), itemName.c_str());
+		indexInventory = user.Inventory.Items.Count;
+	}
+	return indexInventory;
+}
+
+
+int32_t selectItemsAI(klib::CCharacter& user, klib::CCharacter& target)
+{
+	int32_t indexInventory = (int32_t)(rand() % user.Inventory.Items.Count);
+
+	const klib::SItem&			entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
+	const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Index];
+	const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
+	// Only use potions if we have less than 60% HP
+	if( klib::ITEM_TYPE_POTION == itemDescription.Type 
+		&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	> (userFinalPoints.LifeMax.Health	*.60))
+			||	(klib::PROPERTY_TYPE_SHIELD	== itemDescription.Property && user.Points.LifeCurrent.Shield	> (userFinalPoints.LifeMax.Shield	*.60))
+			||	(klib::PROPERTY_TYPE_MANA	== itemDescription.Property && user.Points.LifeCurrent.Mana		> (userFinalPoints.LifeMax.Mana		*.60))
+			)
+	)
+	{
+		const std::string userMessage = "The enemy changes his mind about consuming %s because it doens't seem to be necessary!\n\n";
+		const std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
+		printf(userMessage.c_str(), itemName.c_str());
+		indexInventory = user.Inventory.Items.Count;
+	}
+		
+	return indexInventory;
+}
+
+
+// This function returns true if an item was used or false if the menu was exited without doing anything.
+bool useItems(klib::CCharacter& user, klib::CCharacter& target)
+{
+	uint32_t indexInventory = ~0U;
+	static const size_t inventorySize = size(user.Inventory.Items.Slots);
+	if(0 == user.Inventory.Items.Count)
+	{
+		printf("%s has no items in the inventory.\n", user.Name.c_str());
+		return false;
+	}
+
 
 	std::string userMessage="%s";
+	bool bUsedItem = false;
 	if(user.Type == klib::CHARACTER_TYPE_PLAYER) 
 	{
-		indexInventory = displayMenu(user.Inventory.Items.Count+1, "Select an item to use", itemOptions);
-
-		if(indexInventory == user.Inventory.Items.Count) // exit option
-			bUsedItem = false;
-		else if (user.Inventory.Items.Slots[indexInventory].Count <= 0)
-			printf("You don't have anymore of that. Use something else...\n"); 
-		else {
-			// if we reached here it means that the input was valid so we select the description and exit the loop
+		indexInventory = selectItemsPlayer(user, target);
+		if(indexInventory < user.Inventory.Items.Count)
 			bUsedItem = true;
-			userMessage = "You don't need to use %s!\n";
-			std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
-			printf(userMessage.c_str(), itemName.c_str());
-		}
 	}
 	else // not a player so execute choice by AI
 	{
-		indexInventory = (int32_t)(rand() % user.Inventory.Items.Count);	// this should be improved.
-		const klib::SItem& entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
-		const klib::CItem& itemDescription = klib::itemDescriptions[entityItem.Index];
-		const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
-		// Only use potions if we have less than 60% HP
-		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
-			&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	> (userFinalPoints.LifeMax.Health	*.60))
-				||	(klib::PROPERTY_TYPE_SHIELD	== itemDescription.Property && user.Points.LifeCurrent.Shield	> (userFinalPoints.LifeMax.Shield	*.60))
-				||	(klib::PROPERTY_TYPE_MANA	== itemDescription.Property && user.Points.LifeCurrent.Mana		> (userFinalPoints.LifeMax.Mana		*.60))
-				)
-		)
-		{
-			bUsedItem = false;
-			userMessage = "The enemy changes his mind about consuming %s because it doens't seem to be necessary!\n\n";
-			std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
-			printf(userMessage.c_str(), itemName.c_str());
-		}
-		else
+		indexInventory = selectItemsAI(user, target);
+		if(indexInventory < user.Inventory.Items.Count)
 			bUsedItem = true;
 	}
 

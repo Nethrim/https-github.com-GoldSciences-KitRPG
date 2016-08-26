@@ -1,4 +1,4 @@
-#include "GameBase.h"
+#include "Character.h"
 #include "Misc.h"
 
 #include <string>

@@ -60,7 +60,7 @@ void equipEntityMenu
 	equipEntityIfResearched(selectedValue, characterInventory, completedResearch, tableDefinitions, tableModifiers, currentEntity, cantAccessDefinitionError, cantAccessModifierError, storeOldWeaponMessage, equipNewWeaponMessage, researchTypeString);
 };
 
-void equipWeapon	(klib::CCharacter& adventurer) 
+void equipWeaponMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
 		( adventurer.Inventory.Weapons
@@ -79,7 +79,7 @@ void equipWeapon	(klib::CCharacter& adventurer)
 		);
 };
 
-void equipArmor		(klib::CCharacter& adventurer) 
+void equipArmorMenu		(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
 		( adventurer.Inventory.Armors
@@ -98,7 +98,7 @@ void equipArmor		(klib::CCharacter& adventurer)
 		);
 };
 
-void equipProfession	(klib::CCharacter& adventurer) 
+void equipProfessionMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
 		( adventurer.Inventory.Professions
@@ -108,8 +108,8 @@ void equipProfession	(klib::CCharacter& adventurer)
 		, adventurer.CurrentEquip.Profession
 		, "You don't have any other professions yet!\n"
 		, "You're currently assigned as a %s level %u.\n"
-		, "Select your favorite employee for the next mission"
-		, "You can't access to %s employees until you have researched them!\n"	
+		, "Select your favorite agent for the next mission"
+		, "You can't access to %s agents until you have researched them!\n"	
 		, "You can't access to %s until you have researched it!\n"	
 		, "You give some free days to your %s level %u.\n"
 		, "You call your %s level %u for notifying about the next assignment.\n"
@@ -117,7 +117,7 @@ void equipProfession	(klib::CCharacter& adventurer)
 		);
 };
 
-void equipVehicle	(klib::CCharacter& adventurer) 
+void equipVehicleMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
 		( adventurer.Inventory.Vehicles
@@ -204,10 +204,10 @@ void arsenal(klib::CCharacter& adventurer)
 		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
 
 		// Interpret user input.
-			 if( 1 == tavernChoice )	{	equipProfession					(adventurer);											}	// 
-		else if( 2 == tavernChoice )	{	equipWeapon						(adventurer);											}	// 
-		else if( 3 == tavernChoice )	{	equipArmor						(adventurer);											}	// 
-		else if( 4 == tavernChoice )	{	equipVehicle					(adventurer);											}	// 
+			 if( 1 == tavernChoice )	{	equipProfessionMenu				(adventurer);											}	// 
+		else if( 2 == tavernChoice )	{	equipWeaponMenu					(adventurer);											}	// 
+		else if( 3 == tavernChoice )	{	equipArmorMenu					(adventurer);											}	// 
+		else if( 4 == tavernChoice )	{	equipVehicleMenu				(adventurer);											}	// 
 		else if( 5 == tavernChoice )	{	displayProfession				(adventurer);											}	// 
 		else if( 6 == tavernChoice )	{	displayWeapon					(adventurer);											}	// 
 		else if( 7 == tavernChoice )	{	displayArmor					(adventurer);											}	// 

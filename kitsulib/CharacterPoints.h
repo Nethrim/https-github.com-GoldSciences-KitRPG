@@ -52,10 +52,13 @@ namespace klib
 //	
 			if( 0 < TurnsLeftPoints.Attack.Hit					)	{	if( 0 == --TurnsLeftPoints.Attack.Hit					)	Points.Attack.Hit					= 0;	} else if( 0 > TurnsLeftPoints.Attack.Hit						)	{	if( 0 == ++TurnsLeftPoints.Attack.Hit					)	Points.Attack.Hit					= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.Damage				)	{	if( 0 == --TurnsLeftPoints.Attack.Damage				)	Points.Attack.Damage				= 0;	} else if( 0 > TurnsLeftPoints.Attack.Damage					)	{	if( 0 == ++TurnsLeftPoints.Attack.Damage				)	Points.Attack.Damage				= 0;	} 
+
 			if( 0 < TurnsLeftPoints.Attack.Speed.Attack			)	{	if( 0 == --TurnsLeftPoints.Attack.Speed.Attack			)	Points.Attack.Speed.Attack			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Speed.Attack				)	{	if( 0 == ++TurnsLeftPoints.Attack.Speed.Attack			)	Points.Attack.Speed.Attack			= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.Speed.Movement		)	{	if( 0 == --TurnsLeftPoints.Attack.Speed.Movement		)	Points.Attack.Speed.Movement		= 0;	} else if( 0 > TurnsLeftPoints.Attack.Speed.Movement			)	{	if( 0 == ++TurnsLeftPoints.Attack.Speed.Movement		)	Points.Attack.Speed.Movement		= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.Speed.Reflexes		)	{	if( 0 == --TurnsLeftPoints.Attack.Speed.Reflexes		)	Points.Attack.Speed.Reflexes		= 0;	} else if( 0 > TurnsLeftPoints.Attack.Speed.Reflexes			)	{	if( 0 == ++TurnsLeftPoints.Attack.Speed.Reflexes		)	Points.Attack.Speed.Reflexes		= 0;	} 
+
 			if( 0 < TurnsLeftPoints.Attack.Absorption			)	{	if( 0 == --TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Absorption				)	{	if( 0 == ++TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} 
+
 			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Health	)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Health	)	Points.Attack.ExtraDamage.Health	= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Health		)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Health	)	Points.Attack.ExtraDamage.Health	= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Mana		)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Mana		)	Points.Attack.ExtraDamage.Mana		= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Mana			)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Mana		)	Points.Attack.ExtraDamage.Mana		= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Shield	)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Shield	)	Points.Attack.ExtraDamage.Shield	= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Shield		)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Shield	)	Points.Attack.ExtraDamage.Shield	= 0;	} 
@@ -106,6 +109,8 @@ namespace klib
 
 	enum CHARACTER_TYPE : int32_t
 	{	CHARACTER_TYPE_UNKNOWN
+	,	CHARACTER_TYPE_PROP
+	,	CHARACTER_TYPE_EQUIP
 	,	CHARACTER_TYPE_NPC
 	,	CHARACTER_TYPE_PLAYER
 	,	CHARACTER_TYPE_ENEMY

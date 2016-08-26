@@ -1,4 +1,4 @@
-#include "GameBase.h"
+#include "EntityImpl.h"
 
 #include <cstring>
 #include <string>
@@ -26,8 +26,8 @@ static const CRecordArmor modifiersArmor[] =
 ,	{{{},{}				,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_FREEZING	}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Warm %s"				}
 ,	{{{},{}				,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_FROZEN		}	,{ENTITY_TECHNOLOGY_DIGITAL	}},	"Self-Heating %s"		}
 ,	{{{},{}				,{0,0,{0,0,0},1,{0,0,0}}	,0,0	},{{ATTACK_EFFECT_NONE, DEFEND_EFFECT_REFLECT},	{}		,{ENTITY_TECHNOLOGY_BASIC	}},	"Reflective %s"			}
-,	{{{},{}				,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},POLARIZED_EFFECTS,	POLARIZED_STATUS				,{ENTITY_TECHNOLOGY_BASIC	}},	"Polarized %s"			}
-,	{{{},{1}			,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},{MECH_ARMOR_EFFECTS, {}								,{REGENERATIVE_TECHNOLOGY	}},	"Regenerative %s"		}
+,	{{{},{}				,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},	POLARIZED_EFFECTS,	POLARIZED_STATUS				,{ENTITY_TECHNOLOGY_BASIC	}},	"Polarized %s"			}
+,	{{{},{1}			,{0,0,{0,0,0},0,{0,0,0}}	,0,0	},{	MECH_ARMOR_EFFECTS, {}								,{REGENERATIVE_TECHNOLOGY	}},	"Regenerative %s"		}
 };
 
 #define MECH_ARMOR_TECHNOLOGY		((klib::ENTITY_TECHNOLOGY)(klib::ENTITY_TECHNOLOGY_DIGITAL|klib::ENTITY_TECHNOLOGY_MECHANIC))

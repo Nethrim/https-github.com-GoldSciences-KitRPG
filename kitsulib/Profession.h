@@ -1,4 +1,4 @@
-#include "GameBase.h"
+#include "EntityImpl.h"
 
 #include <string>
 
@@ -10,33 +10,34 @@ namespace klib
 #pragma pack(push, 1)
 
 #define DRONE_EFFECTS			{klib::ATTACK_EFFECT_NONE,klib::DEFEND_EFFECT_NONE,klib::PASSIVE_EFFECT_SHIELD_REPAIR}
+#define MUTANT_EFFECTS DRONE_EFFECTS
 
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordProfession modifiersProfession[] = 
-{	{{{0,0,0},{0,0,0}	,{0,0,{},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Rookie %s"			}
-,	{{{1,0,0},{0,0,0}	,{0,0,{},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Squaddie %s"		}	// points: 1
-,	{{{1,0,0},{0,0,0}	,{1,0,{},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Corporal %s"		}	// points: 2
-,	{{{1,1,0},{0,0,0}	,{1,0,{},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Sergeant %s"		}	// points: 3
-,	{{{1,1,1},{0,0,0}	,{1,0,{},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Lieutenant %s"		}	// points: 4
-,	{{{1,1,1},{0,0,0}	,{1,0,{},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Captain %s"		}	// points: 5
-,	{{{1,1,1},{0,0,0}	,{1,1,{},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Major %s"			}	// points: 6
-,	{{{1,1,1},{0,1,0}	,{1,1,{},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Colonel %s"		}	// points: 7
-,	{{{1,1,1},{0,1,0}	,{2,1,{},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_POISON}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Zombie %s"			}	// points: 8
-,	{{{1,2,1},{0,1,0}	,{2,1,{},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_BLIND}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Undead %s"			}	// points: 9
-,	{{{2,2,1},{0,1,0}	,{2,1,{},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_STUN}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Possessed %s"		}	// points: 10
-,	{{{2,2,1},{0,1,0}	,{2,2,{},0,{0,0,0}},1,0}	,{DRONE_EFFECTS,{}									,{ENTITY_TECHNOLOGY_GENETIC	}}, "Mutant %s"			}	// points: 11
-,	{{{2,2,2},{0,1,0}	,{2,2,{},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Champion %s"		}	// points: 12
-,	{{{2,2,2},{1,1,0}	,{2,2,{},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Elite %s"			}	// points: 13
-,	{{{2,2,2},{1,1,0}	,{2,2,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "King %s"			}	// points: 14
-,	{{{3,2,2},{1,1,0}	,{2,2,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s CEO"			}	// points: 15
-,	{{{3,2,2},{1,1,1}	,{2,2,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Demon %s"			}	// points: 16
-,	{{{3,2,2},{1,1,1}	,{2,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s Mad Scientist"	}	// points: 17
-,	{{{3,2,2},{1,1,1}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_BLEEDING}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Robot %s"			}	// points: 18
-,	{{{3,2,2},{1,2,1}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Emperor %s"		}	// points: 19
-,	{{{3,2,2},{2,2,1}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Demigod %s"		}	// points: 20
-,	{{{3,2,2},{2,2,2}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Angel %s"			}	// points: 21
-,	{{{3,2,3},{2,2,2}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "%s God"			}	// points: 22
-//,	{{{3,2,2},{2,2,2}	,{3,3,{},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s God"			}	// points: 23
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Rookie %s"			}
+,	{{{1,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Squaddie %s"		}	// points: 1
+,	{{{1,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Corporal %s"		}	// points: 2
+,	{{{1,1,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Sergeant %s"		}	// points: 3
+,	{{{1,1,1},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Lieutenant %s"		}	// points: 4
+,	{{{1,1,1},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Captain %s"		}	// points: 5
+,	{{{1,1,1},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Major %s"			}	// points: 6
+,	{{{1,1,1},{0,1,0}	,{1,1,{0,0,0},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Colonel %s"		}	// points: 7
+,	{{{1,1,1},{0,1,0}	,{2,1,{0,0,0},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_POISON}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Zombie %s"			}	// points: 8
+,	{{{1,2,1},{0,1,0}	,{2,1,{0,0,0},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_BLIND}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Undead %s"			}	// points: 9
+,	{{{2,2,1},{0,1,0}	,{2,1,{0,0,0},0,{0,0,0}},1,0}	,{{},{COMBAT_STATUS_NONE,COMBAT_STATUS_STUN}		,{ENTITY_TECHNOLOGY_BASIC	}}, "Possessed %s"		}	// points: 10
+,	{{{2,2,1},{0,1,0}	,{2,2,{0,0,0},0,{0,0,0}},1,0}	,{MUTANT_EFFECTS ,{}								,{ENTITY_TECHNOLOGY_GENETIC	}}, "Mutant %s"			}	// points: 11
+,	{{{2,2,2},{0,1,0}	,{2,2,{0,0,0},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Champion %s"		}	// points: 12
+,	{{{2,2,2},{1,1,0}	,{2,2,{0,0,0},0,{0,0,0}},1,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Elite %s"			}	// points: 13
+,	{{{2,2,2},{1,1,0}	,{2,2,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "King %s"			}	// points: 14
+,	{{{3,2,2},{1,1,0}	,{2,2,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s CEO"			}	// points: 15
+,	{{{3,2,2},{1,1,1}	,{2,2,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Demon %s"			}	// points: 16
+,	{{{3,2,2},{1,1,1}	,{2,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s Mad Scientist"	}	// points: 17
+,	{{{3,2,2},{1,1,1}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "Emperor %s"		}	// points: 19
+,	{{{3,2,2},{1,1,2}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_BLEEDING}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Robot %s"			}	// points: 18
+,	{{{3,2,2},{1,2,2}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Demigod %s"		}	// points: 20
+,	{{{3,2,2},{2,2,2}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "Angel %s"			}	// points: 21
+,	{{{3,2,3},{2,2,2}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_MAGIC	}}, "%s God"			}	// points: 22
+//,	{{{3,2,2},{2,2,2}	,{3,3,{0,0,0},0,{0,0,0}},2,0}	,{{},{}												,{ENTITY_TECHNOLOGY_BASIC	}}, "%s God"			}	// points: 23
 };	
 	
 

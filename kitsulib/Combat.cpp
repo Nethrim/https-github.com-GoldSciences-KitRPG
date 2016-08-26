@@ -19,10 +19,10 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 	if(0 >= target.Points.LifeCurrent.Health)	// This character is already dead
 		return {};
 
-	const std::string	targetArmorName		= getArmorName	(target.CurrentEquip.Armor);
+	const std::string		targetArmorName		= getArmorName	(target.CurrentEquip.Armor);
 	const SEntityPoints		targetFinalPoints	= calculateFinalPoints(target);
 	const SEntityFlags		targetFinalFlags	= calculateFinalFlags(target);
-	const int32_t		targetArmorShield	= targetFinalPoints.LifeMax.Shield;
+	const int32_t			targetArmorShield	= targetFinalPoints.LifeMax.Shield;
 	
 	// Impenetrable armors always have 60% extra absorption rate.
 	if(targetFinalFlags.Effect.Defend & DEFEND_EFFECT_IMPENETRABLE)
@@ -56,16 +56,16 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 	int totalDamage			= shieldedDamage+passthroughDamage;
 	
 	printf("Shielded damage: %u. Passthrough damage: %u. Expected sum: %u. Actual sum: %u. Absorption ratio: %%%u.\n", shieldedDamage, passthroughDamage, damageDealt, totalDamage, absorptionRate);
-	if( totalDamage < damageDealt )
+	if( totalDamage < damageDealt )	// because of the lack of rounding when casting to integer, a difference of one may be found after calculating the health-shield proportion.
 	{
 		int errorDamage = damageDealt-totalDamage;
-		if(0 == absorptionRate || 0 == target.Points.LifeCurrent.Shield)
-		{
+		
+		// if we have no health or the absorption rate is disabled we apply that error to the health. Otherwise apply it to the shield
+		if(0 == absorptionRate || 0 == target.Points.LifeCurrent.Shield) {
 			printf("%u damage error will be applied to the health.\n", errorDamage);
 			passthroughDamage += errorDamage;
 		}
-		else
-		{
+		else {
 			printf("%u damage error will be applied to the shield.\n", errorDamage);
 			shieldedDamage += errorDamage;
 		}
@@ -73,6 +73,7 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 
 	int finalPassthroughDamage = 0;
 
+	// if damage has been inflicted to the shield, apply the damage and redirect the difference to the health if the damage to the shield was higher than what it could resist.
 	if(shieldedDamage)
 	{
 		int remainingShield = target.Points.LifeCurrent.Shield-shieldedDamage;
@@ -86,6 +87,7 @@ SLifePoints klib::applyShieldableDamage(CCharacter& target, int32_t damageDealt,
 			else
 				printf("%s's remaining shield is now %u.\n", target.Name.c_str(), target.Points.LifeCurrent.Shield);
 		}
+
 		if(remainingShield < 0)	// only apply damage to health if the shield didn't absorb all the damage.
 		{
 			finalPassthroughDamage	= remainingShield*-1;

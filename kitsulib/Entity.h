@@ -15,7 +15,6 @@ namespace klib
 		int16_t Level		= 1;
 
 		inline constexpr SEntity(const SEntity& other)	= default;
-		inline constexpr SEntity(const SEntity&& other):Index(other.Index), Modifier(other.Modifier), Level(other.Level){};
 		inline constexpr SEntity(int16_t index=0, int16_t modifier=0, int16_t level=1)
 			: Index		(index		)
 			, Modifier	(modifier	)
@@ -23,7 +22,7 @@ namespace klib
 		{};
 
 		inline SEntity& operator =(const SEntity& other){ Index = other.Index; Modifier = other.Modifier; Level = other.Level; return *this; };
-		inline bool operator	==(const SEntity& other) const { return Index == other.Index && Modifier == other.Modifier && Level == other.Level;  };
+		inline constexpr bool operator	==(const SEntity& other) const { return Index == other.Index && Modifier == other.Modifier && Level == other.Level;  };
 
 		void Print() const
 		{
@@ -53,7 +52,7 @@ namespace klib
 		inline constexpr				SEntityContainer(const SEntityContainer& other) = default;
 
 		template<size_t _Size>
-		inline constexpr				SEntityContainer(size_t slotCount, const _EntityType (&entitySlots)[_Size])
+		inline							SEntityContainer(size_t slotCount, const _EntityType (&entitySlots)[_Size])
 			:Count(0)
 		{
 			for(size_t slotCount = (_Size < slotCount) ? _Size : slotCount; Count<slotCount; Count++) {
