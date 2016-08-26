@@ -177,6 +177,7 @@
     <ClInclude Include="EntityPoints.h" />
     <ClInclude Include="EntityResearch.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Facilities.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Misc.h" />

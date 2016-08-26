@@ -25,7 +25,14 @@ namespace klib
 		SResearchGroup			Vehicle		= {};
 	};
 
-	typedef SEntityContainer<SItem*			, MAX_INVENTORY_SLOTS>	SCharacterItems			;
+	// We don't need to create complex classes from SItem
+	class CArmor;
+	class CWeapon;
+	class CProfession;
+	class CVehicle;
+	class CStageProp;
+
+	typedef SInventoryItems											SCharacterItems			;
 	typedef SEntityContainer<SWeapon*		, MAX_INVENTORY_SLOTS>	SCharacterWeapons		;
 	typedef SEntityContainer<SArmor*		, MAX_INVENTORY_SLOTS>	SCharacterArmors		;
 	typedef SEntityContainer<SProfession*	, MAX_INVENTORY_SLOTS>	SCharacterProfessions	;
@@ -34,7 +41,7 @@ namespace klib
 
 	struct SCharacterInventory
 	{
-		SInventoryItems			Items		= {};
+		SCharacterItems			Items		= {};
 		SInventoryWeapons		Weapons		= {};
 		SInventoryArmors		Armors		= {};
 		SInventoryProfessions	Professions	= {};

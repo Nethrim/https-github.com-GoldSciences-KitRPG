@@ -1,6 +1,5 @@
 #include "EntityImpl.h"
-
-#include <string>
+#include "EntityHelper.h"
 
 #ifndef __PROFESSION_H__986349827346982734__
 #define __PROFESSION_H__986349827346982734__

@@ -116,7 +116,6 @@ namespace klib
 		menuItems[menuItemCount++] = {maxItemCount, "Back to tavern"}; 
 	
 		sprintf_s(menuItemText, "%s", selectItemToResearch.c_str());
-
 		int32_t selectedValue = klib::displayMenu(menuItemText, menuItems, menuItemCount); 
 	
 		if(maxItemCount == selectedValue) { 
@@ -124,8 +123,7 @@ namespace klib
 			return; 
 		} 
 	
-		if(bIsModifier)
-		{
+		if(bIsModifier) {
 			sprintf_s(menuItemText, definitionsTable[selectedValue].Name.c_str(), itemFormat.c_str());
 			printf(startResearching.c_str(), menuItemText); 
 		}

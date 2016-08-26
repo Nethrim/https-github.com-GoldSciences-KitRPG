@@ -103,21 +103,39 @@ namespace klib
 		}
 	};
 
+	struct SFacility		: public SEntity	
+	{ 
+		using SEntity::SEntity; 
+		SEntityPointsMultiplier getMultipliers() const 
+		{
+			static const SEntityPointsMultiplier multipliers = 
+				{ {.5, .5, .5}
+				, {.5, .5, .5}
+				, {.5, .5, {.5, .5, .5}, .5, {.5, .5, .5} }
+				, 0.125
+				, 1.125
+				};
+			return multipliers;
+		}
+	};
+
 
 #define MAX_INVENTORY_SLOTS 512
 	typedef SEntityContainer<SItem			, MAX_INVENTORY_SLOTS>	SInventoryItems;
+	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
 	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;
 	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmors;
-	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
 	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicles;
 	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
+	typedef SEntityContainer<SFacility		, MAX_INVENTORY_SLOTS>	SInventoryFacilities;
 
-	typedef struct SEntityRecord<SArmor			>	CRecordArmor		;
+	typedef struct SEntityRecord<SItem			>	CRecordItem			;
 	typedef struct SEntityRecord<SProfession	>	CRecordProfession	;
 	typedef struct SEntityRecord<SWeapon		>	CRecordWeapon		;
+	typedef struct SEntityRecord<SArmor			>	CRecordArmor		;
 	typedef struct SEntityRecord<SVehicle		>	CRecordVehicle		;
 	typedef struct SEntityRecord<SStageProp		>	CRecordStageProp	;
-	typedef struct SEntityRecord<SItem			>	CRecordItem			;
+	typedef struct SEntityRecord<SFacility		>	CRecordFacility		;
 
 
 #pragma pack(pop)
