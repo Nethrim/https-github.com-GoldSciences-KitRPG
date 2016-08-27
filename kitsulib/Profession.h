@@ -77,7 +77,7 @@ static const CRecordProfession definitionsProfession[] =
 	}
 
 	static SEntityPoints getProfessionPoints(const SProfession& profession) {
-		return getEntityPoints(profession, definitionsProfession, modifiersProfession, profession.getMultipliers());
+		return getEntityPoints(profession, definitionsProfession, modifiersProfession);
 	}
 
 	static SEntityFlags getProfessionFlags(const SProfession& profession) {

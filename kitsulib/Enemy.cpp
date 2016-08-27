@@ -6,6 +6,8 @@
 #include "Armor.h"
 #include "Profession.h"
 #include "Vehicle.h"
+#include "Accessory.h"
+#include "Facility.h"
 
 void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType)
 {
@@ -14,15 +16,19 @@ void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t 
 		currentEnemy.Inventory.Items.AddElement({ 1+int16_t(rand()%(size(itemDescriptions)-1)), int16_t(1+rand()%size(itemModifiers)), int16_t(rand()%size(itemGrades)) });
 
 	int16_t twoEnemyType = enemyType*2;
-	currentEnemy.CurrentEquip.Weapon		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsWeapon	)-2) ? twoEnemyType : (int16_t)size(	definitionsWeapon	)-2));	
-	currentEnemy.CurrentEquip.Armor			.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsArmor	)-2) ? twoEnemyType : (int16_t)size(	definitionsArmor	)-2));	
-	currentEnemy.CurrentEquip.Vehicle		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle	)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle	)-2));
+	currentEnemy.CurrentEquip.Weapon		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsWeapon		)-2) ? twoEnemyType : (int16_t)size(	definitionsWeapon		)-2));	
+	currentEnemy.CurrentEquip.Armor			.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsArmor		)-2) ? twoEnemyType : (int16_t)size(	definitionsArmor		)-2));	
+	currentEnemy.CurrentEquip.Accessory		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsAccessory	)-2) ? twoEnemyType : (int16_t)size(	definitionsAccessory	)-2));	
+	currentEnemy.CurrentEquip.Vehicle		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle		)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle		)-2));
+	currentEnemy.CurrentEquip.Facility		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsFacilities	)-2) ? twoEnemyType : (int16_t)size(	definitionsFacilities	)-2));
 	currentEnemy.CurrentEquip.Profession	.Index		= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
 	//											  
-	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon		)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon		)-2));	
-	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor		)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor		)-2));	
-	currentEnemy.CurrentEquip.Vehicle		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersVehicle	)-2) ? twoEnemyType : (int16_t)size(	modifiersVehicle	)-2));	
-	currentEnemy.CurrentEquip.Profession	.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersProfession	)-2) ? twoEnemyType : (int16_t)size(	modifiersProfession	)-2));	
+	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon			)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon			)-2));	
+	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor			)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor			)-2));	
+	currentEnemy.CurrentEquip.Accessory		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersAccessory	)-2) ? twoEnemyType : (int16_t)size(	modifiersAccessory	)-2));	
+	currentEnemy.CurrentEquip.Vehicle		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersVehicle		)-2) ? twoEnemyType : (int16_t)size(	modifiersVehicle		)-2));	
+	currentEnemy.CurrentEquip.Facility		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersFacilities		)-2) ? twoEnemyType : (int16_t)size(	modifiersFacilities		)-2));	
+	currentEnemy.CurrentEquip.Profession	.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersProfession		)-2) ? twoEnemyType : (int16_t)size(	modifiersProfession		)-2));	
 //
 	currentEnemy.CurrentEquip.Weapon		.Level		= (0 > (adventurer.CurrentEquip.Weapon		.Level-1)) ? 0 : adventurer.CurrentEquip.Weapon		.Level-1;
 	currentEnemy.CurrentEquip.Armor			.Level		= (0 > (adventurer.CurrentEquip.Armor		.Level-1)) ? 0 : adventurer.CurrentEquip.Armor		.Level-1;

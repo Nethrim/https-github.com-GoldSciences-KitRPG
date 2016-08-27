@@ -40,6 +40,10 @@ namespace klib
 			return { Health+other.Health, Mana+other.Mana, Shield+other.Shield }; 
 		}
 
+		inline constexpr SLifePoints	operator -	(const SLifePoints& other)				const	{ 
+			return { Health-other.Health, Mana-other.Mana, Shield-other.Shield }; 
+		}
+
 		inline constexpr SLifePoints	operator *	(const SLifePointsMultiplier& other)	const	{ 
 			return	{ Health	? ((1 < (Health	*	other.Health	)) ?	(int32_t)(Health	*	other.Health	): 1) : 0
 					, Mana		? ((1 < (Mana	*	other.Mana		)) ?	(int32_t)(Mana		*	other.Mana		): 1) : 0
@@ -90,6 +94,10 @@ namespace klib
 			return { Attack+other.Attack, Movement+other.Movement, Reflexes+other.Reflexes }; 
 		}
 
+		constexpr SSpeedPoints	operator -	(const SSpeedPoints& other)			const	{ 
+			return { Attack-other.Attack, Movement-other.Movement, Reflexes-other.Reflexes }; 
+		}
+
 		constexpr SSpeedPoints	operator *	(const SSpeedPointsMultiplier& other)	const	{ 
 			return	{ Attack	? ((1 < (Attack		*	other.Attack	)) ?	(int32_t)(Attack	*	other.Attack	): 1) : 0
 					, Movement	? ((1 < (Movement	*	other.Movement	)) ?	(int32_t)(Movement	*	other.Movement	): 1) : 0
@@ -115,10 +123,10 @@ namespace klib
 		double					Damage		;
 		SSpeedPointsMultiplier	Speed		;
 		double					Absorption	;
-		SLifePointsMultiplier	ExtraDamage	;
+		SLifePointsMultiplier	DirectDamage	;
 
 		constexpr SAttackPointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { Hit*level, Damage*level, Speed*level, Absorption*level, ExtraDamage*level }; 
+			return { Hit*level, Damage*level, Speed*level, Absorption*level, DirectDamage*level }; 
 		}
 
 		void Print() const
@@ -129,20 +137,23 @@ namespace klib
 			printf("- Speed Points:.\n");
 			Speed.Print();
 			printf("- Extra Point Damage:\n");
-			ExtraDamage.Print();
+			DirectDamage.Print();
 		}
 	};
 
 	struct SAttackPoints
 	{
-		int32_t			Hit			;
-		int32_t			Damage		;
-		SSpeedPoints	Speed		;
-		int32_t			Absorption	;
-		SLifePoints		ExtraDamage	;
+		int32_t			Hit				;
+		int32_t			Damage			;
+		SSpeedPoints	Speed			;
+		int32_t			Absorption		;
+		SLifePoints		DirectDamage	;
 
 		constexpr SAttackPoints	operator +	(const SAttackPoints& other)			const	{ 
-			return { Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption, ExtraDamage+other.ExtraDamage };
+			return { Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption, DirectDamage+other.DirectDamage };
+		}
+		constexpr SAttackPoints	operator -	(const SAttackPoints& other)			const	{ 
+			return { Hit-other.Hit, Damage-other.Damage, Speed-other.Speed, Absorption-other.Absorption, DirectDamage-other.DirectDamage };
 		}
 
 		constexpr SAttackPoints	operator *	(const SAttackPointsMultiplier& other)	const	{ 
@@ -150,7 +161,7 @@ namespace klib
 					, Damage		? ((1 < (Damage		*	other.Damage		)) ?	(int32_t)(Damage		*	other.Damage		): 1) : 0
 					, Speed*other.Speed
 					, Absorption	? ((1 < (Absorption	*	other.Absorption	)) ?	(int32_t)(Absorption	*	other.Absorption	): 1) : 0
-					, ExtraDamage*other.ExtraDamage
+					, DirectDamage*other.DirectDamage
 				}; 
 		}
 
@@ -159,7 +170,7 @@ namespace klib
 			Damage		+= other.Damage; 
 			Speed		+= other.Speed; 
 			Absorption	+= other.Absorption; 
-			ExtraDamage += other.ExtraDamage; 
+			DirectDamage += other.DirectDamage; 
 			return *this; 
 		}
 
@@ -171,7 +182,7 @@ namespace klib
 			printf("- Speed Points:.\n");
 			Speed.Print();
 			printf("- Extra Point Damage:\n");
-			ExtraDamage.Print();
+			DirectDamage.Print();
 		}
 	};
 

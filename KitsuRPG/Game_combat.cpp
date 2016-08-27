@@ -1,11 +1,15 @@
 #include "Game.h"
 
-#include "Profession.h"
 #include "Weapon.h"
-#include "Item.h"
-#include "Enemy.h"
+#include "Accessory.h"
 #include "Armor.h"
+#include "Profession.h"
 #include "Vehicle.h"
+#include "Facility.h"
+
+#include "Item.h"
+
+#include "Enemy.h"
 
 #include "Menu.h"
 
@@ -74,6 +78,27 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	else
 		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.Name.c_str());
 
+	std::string loserAccessoryName = klib::getAccessoryName(loser.CurrentEquip.Accessory);
+	if( 0 == (rand()%2) )
+	{
+		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserAccessoryName.c_str(), loser.CurrentEquip.Accessory.Level, loser.Name.c_str());
+		klib::SAccessory oldWinnerAccessory	= winner.CurrentEquip.Accessory;
+		winner.Inventory.Accessories.AddElement(loser.CurrentEquip.Accessory);
+
+		klib::SAccessory loserNewAccessory = 
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Index		)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Modifier	)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Level		)	))
+		};
+
+		if(loserNewAccessory.Index || loserNewAccessory.Modifier || loserNewAccessory.Level > 1)
+			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getAccessoryName(loserNewAccessory).c_str(), loserNewAccessory.Level);
+		loser.Inventory.Accessories.AddElement(loserNewAccessory);
+		loser.CurrentEquip.Accessory = {0,0,1};
+	}
+	else
+		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserAccessoryName.c_str(), loser.Name.c_str());
+
 	std::string loserArmorName = klib::getArmorName(loser.CurrentEquip.Armor);
 	if( 0 == (rand()%2) )
 	{
@@ -115,6 +140,27 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	}
 	else
 		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserVehicleName.c_str(), loser.Name.c_str());
+
+	std::string loserFacilityName = klib::getFacilityName(loser.CurrentEquip.Facility);
+	if( 0 == (rand()%2) )
+	{
+		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserFacilityName.c_str(), loser.CurrentEquip.Facility.Level, loser.Name.c_str());
+		klib::SFacility oldWinnerFacility	= winner.CurrentEquip.Facility;
+		winner.Inventory.Facilities.AddElement(loser.CurrentEquip.Facility);
+
+		klib::SFacility loserNewFacility = 
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Index		)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Modifier	)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerFacility.Level		)	))
+		};
+
+		//if(loserNewFacility.Index || loserNewFacility.Modifier || loserNewFacility.Level > 1)
+		//	printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getFacilityName(loserNewFacility).c_str(), loserNewFacility.Level);
+		//loser.Inventory.Facilities.AddElement(loserNewFacility);
+		//loser.CurrentEquip.Facility = {0,0,1};
+	}
+	else
+		printf("%s doesn't get to recover %s from %s.\n", winner.Name.c_str(), loserFacilityName.c_str(), loser.Name.c_str());
 
 
 	std::string loserProfessionName = klib::getProfessionName(loser.CurrentEquip.Profession);
@@ -189,12 +235,14 @@ void senseMenu(klib::CCharacter& enemy)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
 	static const klib::SMenuItem<int> tavernOptions[] =
-	{ {  1,	"Inspect enemy agent"	}
-	, {  2,	"Inspect enemy weapon"	}
-	, {  3,	"Inspect enemy armor"	}
-	, {  4,	"Inspect enemy vehicle"	}
-	, {  5,	"Peek enemy inventory"	}
-	, {  6,	"Back to main menu"		}
+	{ {  1,	"Inspect enemy weapon"		}
+	, {  2,	"Inspect enemy accessory"	}
+	, {  3,	"Inspect enemy armor"		}
+	, {  4,	"Inspect enemy agent"		}
+	, {  5,	"Inspect enemy vehicle"		}
+	, {  6,	"Inspect enemy building"	}
+	, {  7,	"Peek enemy inventory"		}
+	, {  8,	"Back to main menu"			}
 	};
 
 	while (true)  // Wait for exit request
@@ -202,10 +250,12 @@ void senseMenu(klib::CCharacter& enemy)
 		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
 
 		// Interpret user input.
-			 if( 1 == tavernChoice )	{	displayProfession				(enemy);								}	// 
-		else if( 2 == tavernChoice )	{	displayWeapon					(enemy);								}	// 
+			 if( 1 == tavernChoice )	{	displayWeapon					(enemy);								}	// 
 		else if( 3 == tavernChoice )	{	displayArmor					(enemy);								}	// 
+		else if( 3 == tavernChoice )	{	displayAccessory				(enemy);								}	// 
+		else if( 2 == tavernChoice )	{	displayProfession				(enemy);								}	// 
 		else if( 4 == tavernChoice )	{	displayVehicle					(enemy);								}	// 
+		else if( 3 == tavernChoice )	{	displayFacility					(enemy);								}	// 
 		else if( 5 == tavernChoice )	{	displayInventory				(enemy.Inventory.Items, enemy.Name);	}	// 
 		else if( 6 == tavernChoice )	{	break;	}	// Exit the main loop, which effectively closes the game.
 		else {	
@@ -267,9 +317,9 @@ void printBonuses(const klib::CCharacter& character)
 	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.Speed.Movement		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Movement Speed.\n"			, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.Speed.Movement		,	character.ActiveBonus.Points.Points.Attack.Speed.Movement		);
 	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.Speed.Reflexes		> 0 ) printf("%s has an additional bonus for the next %u turns: %i Reflexes.\n"					, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.Speed.Reflexes		,	character.ActiveBonus.Points.Points.Attack.Speed.Reflexes		);
 	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.Absorption			> 0 ) printf("%s has an additional bonus for the next %u turns: %i Absorption.\n"				, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.Absorption			,	character.ActiveBonus.Points.Points.Attack.Absorption			);
-	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Health	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Health Damage.\n"			, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Health	,	character.ActiveBonus.Points.Points.Attack.ExtraDamage.Health	);
-	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Mana	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Mana Damage.\n"				, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Mana	,	character.ActiveBonus.Points.Points.Attack.ExtraDamage.Mana	);
-	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Shield	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Shield Damage.\n"			, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.ExtraDamage.Shield	,	character.ActiveBonus.Points.Points.Attack.ExtraDamage.Shield	);
+	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Health	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Health Damage.\n"			, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Health	,	character.ActiveBonus.Points.Points.Attack.DirectDamage.Health	);
+	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Mana	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Mana Damage.\n"				, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Mana	,	character.ActiveBonus.Points.Points.Attack.DirectDamage.Mana	);
+	if( character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Shield	> 0 ) printf("%s has an additional bonus for the next %u turns: %i Shield Damage.\n"			, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.Attack.DirectDamage.Shield	,	character.ActiveBonus.Points.Points.Attack.DirectDamage.Shield	);
 	if( character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Health				> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Health.\n"				, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Health				,	character.ActiveBonus.Points.Points.LifeMax.Health				);
 	if( character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Mana				> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Mana.\n"					, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Mana				,	character.ActiveBonus.Points.Points.LifeMax.Mana				);
 	if( character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Shield				> 0 ) printf("%s has an additional bonus for the next %u turns: %i Max Shield.\n"				, character.Name.c_str(),	character.ActiveBonus.Points.TurnsLeftPoints.LifeMax.Shield				,	character.ActiveBonus.Points.Points.LifeMax.Shield				);
@@ -364,13 +414,13 @@ bool combatContinues(TURN_OUTCOME turnOutcome, int adventurerHP, int enemyHP)
 //5736	// gasty.bellino@gmail.com
 void combat(klib::CCharacter& adventurer, int32_t enemyType)
 {
-	if(adventurer.Points.LifeCurrent.Health <= 1)
-	{
+	if(adventurer.Points.LifeCurrent.Health <= 1) {
 		printf("You don't have enough health to engage in combat. Please go rest and come back later.\n");
 		return;
 	}
 
-	klib::CCharacter currentEnemy = klib::enemyDefinitions[enemyType];	// Request the enemy data.
+	klib::CCharacter* pEnemy = new klib::CCharacter(klib::enemyDefinitions[enemyType]);
+	klib::CCharacter& currentEnemy = *pEnemy;	// Request the enemy data.
 	klib::setupEnemy(adventurer, currentEnemy, enemyType);
 
 	adventurer.ActiveBonus.Status.Count	= 0;	// We need to clear the combat status before starting the combat.
@@ -405,6 +455,9 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 	}
 
 	determineOutcome(adventurer, currentEnemy, enemyType);
+
+	if(pEnemy)
+		delete(pEnemy);
 }
 
 int32_t selectItemsPlayer(klib::CCharacter& user, klib::CCharacter& target)

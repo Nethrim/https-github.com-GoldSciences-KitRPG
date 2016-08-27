@@ -57,6 +57,10 @@ namespace klib
 			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, Price+other.Price };
 		}
 
+		inline constexpr SEntityPoints	operator -	(const SEntityPoints& other)				const	{ 
+			return { LifeMax-other.LifeMax, LifeCurrent-other.LifeCurrent, Attack-other.Attack, Coins-other.Coins, Price-other.Price };
+		}
+
 		inline constexpr SEntityPoints		operator *	(const SEntityPointsMultiplier& other)	const	{ 
 			return	{ LifeMax			*	other.LifeMax		
 					, LifeCurrent		*	other.LifeCurrent	

@@ -54,7 +54,7 @@ static const CRecordArmor definitionsArmor[] =
 	}
 
 	static SEntityPoints getArmorPoints(const SArmor& armor) {
-		return getEntityPoints(armor, definitionsArmor, modifiersArmor, armor.getMultipliers());
+		return getEntityPoints(armor, definitionsArmor, modifiersArmor);
 	}
 
 	static SEntityFlags getArmorFlags(const SArmor& armor) {

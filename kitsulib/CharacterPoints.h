@@ -59,9 +59,9 @@ namespace klib
 
 			if( 0 < TurnsLeftPoints.Attack.Absorption			)	{	if( 0 == --TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Absorption				)	{	if( 0 == ++TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} 
 
-			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Health	)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Health	)	Points.Attack.ExtraDamage.Health	= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Health		)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Health	)	Points.Attack.ExtraDamage.Health	= 0;	} 
-			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Mana		)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Mana		)	Points.Attack.ExtraDamage.Mana		= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Mana			)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Mana		)	Points.Attack.ExtraDamage.Mana		= 0;	} 
-			if( 0 < TurnsLeftPoints.Attack.ExtraDamage.Shield	)	{	if( 0 == --TurnsLeftPoints.Attack.ExtraDamage.Shield	)	Points.Attack.ExtraDamage.Shield	= 0;	} else if( 0 > TurnsLeftPoints.Attack.ExtraDamage.Shield		)	{	if( 0 == ++TurnsLeftPoints.Attack.ExtraDamage.Shield	)	Points.Attack.ExtraDamage.Shield	= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Health	)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Health	)	Points.Attack.DirectDamage.Health	= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Health		)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Health	)	Points.Attack.DirectDamage.Health	= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Mana		)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Mana			)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Shield	)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Shield	)	Points.Attack.DirectDamage.Shield	= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Shield		)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Shield	)	Points.Attack.DirectDamage.Shield	= 0;	} 
 			if( 0 < TurnsLeftPoints.Coins						)	{	if( 0 == --TurnsLeftPoints.Coins						)	Points.Coins						= 0;	} else if( 0 > TurnsLeftPoints.Coins							)	{	if( 0 == ++TurnsLeftPoints.Coins						)	Points.Coins						= 0;	} 
 //
 			if( 0 < TurnsLeftFlags.Effect	.Attack				)	{	if( 0 == --TurnsLeftFlags.Effect	.Attack				)	Flags.Effect	.Attack		= ATTACK_EFFECT_NONE		;} else if( 0 > TurnsLeftFlags.Effect	.Attack		)	{	if( 0 == ++TurnsLeftFlags.Effect	.Attack		)	Flags.Effect	.Attack		= ATTACK_EFFECT_NONE		;	} 
@@ -81,7 +81,7 @@ namespace klib
 		COMBAT_STATUS		Status		[MAX_COMBAT_STATUS]	= {};
 		int8_t				TurnsLeft	[MAX_COMBAT_STATUS]	= {};
 
-		int32_t				GetStatusTurns(const COMBAT_STATUS status){
+		int32_t				GetStatusTurns(const COMBAT_STATUS status) {
 			int32_t turns=0;
 			for(uint32_t i=0; i<Count; ++i)
 				if(status == (Status[i] & status))
@@ -90,14 +90,13 @@ namespace klib
 		};
 
 		void				NextTurn() {
-			for(uint32_t i=0; i<Count; ++i) {
-				if(0 < TurnsLeft[i] && 0 == --TurnsLeft[i])
-				{
+			for(uint32_t i=0; i<Count; ++i) 
+			{
+				if(0 < TurnsLeft[i] && 0 == --TurnsLeft[i]) {
 					Status		[i]	=	Status		[--Count];
 					TurnsLeft	[i]	=	TurnsLeft	[Count];
 				}
-				else if(0 > TurnsLeft[i] && 0 == ++TurnsLeft[i])
-				{
+				else if(0 > TurnsLeft[i] && 0 == ++TurnsLeft[i]) {
 					Status		[i]	=	Status		[--Count];
 					TurnsLeft	[i]	=	TurnsLeft	[Count];
 				}
@@ -111,6 +110,9 @@ namespace klib
 	{	CHARACTER_TYPE_UNKNOWN
 	,	CHARACTER_TYPE_PROP
 	,	CHARACTER_TYPE_EQUIP
+	,	CHARACTER_TYPE_ACCESSORY
+	,	CHARACTER_TYPE_FACILITY
+	,	CHARACTER_TYPE_VEHICLE
 	,	CHARACTER_TYPE_NPC
 	,	CHARACTER_TYPE_PLAYER
 	,	CHARACTER_TYPE_ENEMY

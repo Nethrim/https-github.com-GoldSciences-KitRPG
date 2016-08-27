@@ -4,6 +4,8 @@
 #include "Armor.h"
 #include "Profession.h"
 #include "Vehicle.h"
+#include "Accessory.h"
+#include "Facility.h"
 
 #include "Menu.h"
 
@@ -65,6 +67,33 @@ void  researchArmorModifier(klib::CCharacter& adventurer)
 	); 
 }
 
+void  researchAccessoryDefinition(klib::CCharacter& adventurer) 
+{ 
+	research
+	(adventurer.Inventory.Accessories, adventurer.Researched.Accessory.Definitions, klib::definitionsAccessory, adventurer.MaxEquip.Accessory, false	, true
+		, "%s Accessory"		
+		, "You've researched all the accessories available! (%u)\n"
+		, "You don't have any accessories available to research yet!\n"	
+		, "Select accessory to research"
+		, "You start researching %s.\n"
+		, "You got to win the beauty contest by showing your new %s!\n"
+	); 
+}
+
+void  researchAccessoryModifier(klib::CCharacter& adventurer) 
+{ 
+	research
+	(adventurer.Inventory.Accessories, adventurer.Researched.Accessory.Modifiers, klib::modifiersAccessory, adventurer.MaxEquip.Accessory, true	, true
+		, "Crafting"		
+		, "You've researched all the crafting techniques available! (%u)\n"
+		, "You don't have any crafting techniques to learn about yet!\n"	
+		, "Select technique to research"
+		, "You start practicing %s.\n"
+		, "You become known as the inventor of %s.\n"
+	); 
+}
+
+
 void  researchProfessionDefinition(klib::CCharacter& adventurer) 
 { 
 	research
@@ -114,5 +143,31 @@ void  researchVehicleModifier(klib::CCharacter& adventurer)
 		, "Select mechanics to engineer"
 		, "You start engineering %s.\n"
 		, "You have mounted an advanced combat vehicle production line for %s and you get a Nobel Peace Prize!\n"
+	); 
+}
+
+void  researchFacilityDefinition(klib::CCharacter& adventurer) 
+{ 
+	research
+	(adventurer.Inventory.Facilities, adventurer.Researched.Facility.Definitions, klib::definitionsFacilities, adventurer.MaxEquip.Facility, false	, true
+		, "%s Architecture"		
+		, "You've researched all the architectures available! (%u)\n"
+		, "You don't have any architectures available to research yet!\n"	
+		, "Select building to research"
+		, "You start research %s.\n"
+		, "Your new %s has been approved and your neighbors will have a new reason to enjoy the view!\n"
+	); 
+}
+
+void  researchFacilityModifier(klib::CCharacter& adventurer) 
+{ 
+	research
+	(adventurer.Inventory.Facilities, adventurer.Researched.Facility.Modifiers, klib::modifiersFacilities, adventurer.MaxEquip.Facility, true	, true
+		, "Construction"		
+		, "You've researched all the construction technology available! (%u)\n"
+		, "You don't have any construction technology to learn about yet!\n"	
+		, "Select technology to research"
+		, "You start experimenting %s.\n"
+		, "You reinvented %s and earned an army of followers!\n"
 	); 
 }

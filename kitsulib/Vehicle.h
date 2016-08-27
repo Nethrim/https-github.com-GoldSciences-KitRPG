@@ -20,8 +20,7 @@ static const CRecordVehicle modifiersVehicle[] =
 ,	{{{0,0,7},{0,0,1}	,{0,0,{0,0,0},7,{0,0,0}},1,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Armored %s"			}
 ,	{{{0,0,2},{0,0,0}	,{0,4,{0,5,2},2,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Nuclear %s"			}
 ,	{{{0,1,0},{0,1,0}	,{0,4,{0,7,0},1,{1,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Supersonic %s"			}
-,	{{{0,1,2},{0,1,1}	,{5,5,{5,8,4},0,{0,0,0}},1,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Space %s"				}
-,	{{{2,1,4},{2,2,2}	,{5,7,{0,9,0},4,{1,1,1}},2,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Interstellar %s"		}
+,	{{{2,1,4},{2,2,2}	,{5,7,{0,9,0},4,{1,1,1}},2,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Warp %s"				}
 };
 
 //	{SEntityPoints, SEntityFlags, Name}
@@ -48,6 +47,11 @@ static const CRecordVehicle definitionsVehicle[] =
 ,	{{{0,0,6},{0,0,0}	,{0,5,{0,1,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Submarine"				}
 ,	{{{0,0,2},{0,0,0}	,{0,2,{0,4,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Helicopter"			}
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Jet"					}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Scout Spaceship"		}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Cargo Spaceship"		}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Orbital Battleship"	}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Mothership"			}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Death Planet"			}
 };
 
 	static std::string getVehicleName(const SVehicle& vehicle) {
@@ -55,7 +59,7 @@ static const CRecordVehicle definitionsVehicle[] =
 	}
 
 	static SEntityPoints getVehiclePoints(const SVehicle& vehicle) {
-		return getEntityPoints(vehicle, definitionsVehicle, modifiersVehicle, vehicle.getMultipliers());
+		return getEntityPoints(vehicle, definitionsVehicle, modifiersVehicle);
 	}
 
 	static SEntityFlags getVehicleFlags(const SVehicle& vehicle) {

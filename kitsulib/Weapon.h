@@ -55,6 +55,7 @@ static const CRecordWeapon modifiersWeapon[] =
 
 #define DEATH_SCYTHE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
 #define ROCKET_LAUNCHER_STATUS_INFLICT	((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_STUN|klib::COMBAT_STATUS_BURN))
+#define TORPEDO_STATUS_INFLICT			((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_STUN|klib::COMBAT_STATUS_SLOW))
 #define SNIPER_RIFLE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLIND|klib::COMBAT_STATUS_BLEEDING))
 #define BFG9000_STATUS_INFLICT			((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON))
 
@@ -87,6 +88,7 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{1,0,0},{0,0,0}	,{0,5, {0,0,0},0,{0,0,0}},1,0	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Machinegun"				}
 ,	{{{-2,0,0},{0,0,0}	,{2,7, {0,0,0},0,{0,0,0}},0,0	},{{},{SNIPER_RIFLE_STATUS_INFLICT		},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Sniper Rifle"				}
 ,	{{{2,0,0},{0,0,0}	,{0,6, {0,0,0},0,{0,0,0}},-1,0	},{{},{ROCKET_LAUNCHER_STATUS_INFLICT	},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Rocket Launcher"			}
+,	{{{0,-3,0},{0,0,0}	,{6,6, {0,0,0},0,{0,0,0}},-2,0	},{{},{TORPEDO_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Torpedo Launcher"			}
 ,	{{{0,-3,0},{0,0,0}	,{6,6, {0,0,0},0,{0,0,0}},-2,0	},{{},{ROCKET_LAUNCHER_STATUS_INFLICT	},	{TECHNOLOGY_DIGITAL_MECHANIC	}},	"Guided Rocket Launcher"	}
 // 2nd grade eight		,
 ,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0,0	},{{},{COMBAT_STATUS_STUN				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Thor's Mace"				}
@@ -102,7 +104,7 @@ static const CRecordWeapon definitionsWeapon[] =
 	}
 
 	static SEntityPoints getWeaponPoints(const SWeapon& weapon) {
-			return getEntityPoints(weapon, definitionsWeapon, modifiersWeapon, weapon.getMultipliers());
+			return getEntityPoints(weapon, definitionsWeapon, modifiersWeapon);
 	}
 
 	static SEntityFlags getWeaponFlags(const SWeapon& weapon) {

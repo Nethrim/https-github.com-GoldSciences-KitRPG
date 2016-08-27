@@ -12,11 +12,11 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .1}
-				, {.1, .1, {.1, .1, .1}, .1, {.1, .1, .1} }
-				, 0.125
+			static const SEntityPointsMultiplier multipliers =						//	x1:	1.125 		
+				{ {.125, .125, .125}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+				, {.125, .125, .125}												//	x2:	 .1, , .1, } 		
+				, {.125, .125, {.125, .125, .125}, .125, {.125, .125, .125} }		//	x2:	.25, .25,
+				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
 				, 1.125
 				};
 			return multipliers;
@@ -28,11 +28,11 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.1,	.1, .1}
-				, {.1,	.1, .1}
-				, {.25, .125, {.125, .1, .1}, .1, {.125, .1, .1} }
-				, 0.125
+			static const SEntityPointsMultiplier multipliers =						//	x1:	1.125 		
+				{ {.125, .1, .0625}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+				, {.125, .0625, .0625}												//	x2:	 .1, , .1, } 		
+				, {.125, .25, {.125, .1, .125}, .0625, {.125, .125, .125} }			//	x2:	.25, .25,
+				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
 				, 1.125
 				};
 			return multipliers;
@@ -42,13 +42,13 @@ namespace klib
 	struct SArmor		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		static SEntityPointsMultiplier getMultipliers()
-		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.125, .1, .25}
-				, {.1, .1, .11}
-				, {.1, .1, {.1, .1, .125}, .1, {.1, .1, .125} }
-				, 0.125
+		static SEntityPointsMultiplier getMultipliers()										
+		{																					 
+			static const SEntityPointsMultiplier multipliers = 						//	x1:	1.125 		
+				{ {.125, .1, .25}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+				, {.125, .1, .25}													//	x2:	 .1, , .1, } 		
+				, {.0625, .0625, {.125, .0625, .125}, .125, {.125, .0625, .125} }	//	x2:	.25, .25,
+				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
 				, 1.125
 				};
 			return multipliers;
@@ -60,30 +60,46 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.25, .125, .125}
-				, {.125, .11, .11}
-				, {.11, .11, {.11, .11, .11}, .11, {.11, .11, .11} }
-				, 0.125
+			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+				{ {.25, .125, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+				, {.25, .125, .0625}											//	x2:	 .1, , .1, } 
+				, {.125, .125, {.0625, .125, .0625}, .125, {.125, .1, .1} }		//	x2:	.25, .25,
+				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
 				, 1.125
 				};
 			return multipliers;
 		}
 	};
 
-	struct SVehicle		: public SEntity	
+	struct SAccessory		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.1, .1, .25}
-				, {.1, .1, .125}
-				, {.1, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
-				, 0.125
-				, 1.125
-				};
-			return multipliers;
+			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+				{ {.125, .25, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
+				, {.125, .25, .0625}											//	x2:	 .1, , .1, } 
+				, {.125, .1, {.0625, .0625, .125}, .1, {.125, .125, .125} }		//	x2:	.25, .25,
+				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
+				, 1.125															
+				};																
+			return multipliers;													
+		}																		
+	};																			
+																				
+	struct SVehicle		: public SEntity										
+	{ 																			
+		using SEntity::SEntity; 												
+		SEntityPointsMultiplier getMultipliers() const 
+		{
+			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+				{ {.0625, .0625, .25}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
+				, {.0625, .0625, .25}											//	x2:	 .1, , .1, } 
+				, {.125, .125, {.125, .125, .125}, .125, {.125, .1, .125} }		//	x2:	.25, .25,
+				, 0.1															//	x4:	.0625}	{.0625,	.0625}	.0625, 
+				, 1.125															
+				};																
+			return multipliers;													
 		}
 	};
 
@@ -93,9 +109,9 @@ namespace klib
 		SEntityPointsMultiplier getMultipliers() const 
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.5, .5, .5}
-				, {.5, .5, .5}
-				, {.5, .5, {.5, .5, .5}, .5, {.5, .5, .5} }
+				{ {.25, .25, .25}
+				, {.25, .25, .25}
+				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
 				, 0.125
 				, 1.125
 				};
@@ -109,9 +125,9 @@ namespace klib
 		SEntityPointsMultiplier getMultipliers() const 
 		{
 			static const SEntityPointsMultiplier multipliers = 
-				{ {.5, .5, .5}
-				, {.5, .5, .5}
-				, {.5, .5, {.5, .5, .5}, .5, {.5, .5, .5} }
+				{ {.25, .25, .25}
+				, {.25, .25, .25}
+				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
 				, 0.125
 				, 1.125
 				};
@@ -125,6 +141,7 @@ namespace klib
 	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
 	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;
 	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmors;
+	typedef SEntityContainer<SAccessory		, MAX_INVENTORY_SLOTS>	SInventoryAccessories;
 	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicles;
 	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
 	typedef SEntityContainer<SFacility		, MAX_INVENTORY_SLOTS>	SInventoryFacilities;
@@ -133,6 +150,7 @@ namespace klib
 	typedef struct SEntityRecord<SProfession	>	CRecordProfession	;
 	typedef struct SEntityRecord<SWeapon		>	CRecordWeapon		;
 	typedef struct SEntityRecord<SArmor			>	CRecordArmor		;
+	typedef struct SEntityRecord<SAccessory		>	CRecordAccessory	;
 	typedef struct SEntityRecord<SVehicle		>	CRecordVehicle		;
 	typedef struct SEntityRecord<SStageProp		>	CRecordStageProp	;
 	typedef struct SEntityRecord<SFacility		>	CRecordFacility		;

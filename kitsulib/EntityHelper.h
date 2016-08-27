@@ -49,12 +49,12 @@ namespace klib
 			return;
 	
 		bool bCancel = false; 
-		if( 0 < entityContainer.Slots[slotIndex].Entity.Index && -1 == completedResearch.Definitions.FindElement(entityContainer.Slots[slotIndex].Entity.Index)) { 
+		if( 0 < entityContainer.Slots[slotIndex].Entity.Index		&& (-1) == completedResearch.Definitions.FindElement(entityContainer.Slots[slotIndex].Entity.Index)) { 
 			bCancel = true;
 			printf(cantAccessDefinitionError.c_str(), tableDefinitions[entityContainer.Slots[slotIndex].Entity.Index].Name.c_str());	//
 		} 
 
-		if( 0 < entityContainer.Slots[slotIndex].Entity.Modifier && -1 == completedResearch.Modifiers.FindElement(entityContainer.Slots[slotIndex].Entity.Modifier)) { 
+		if( 0 < entityContainer.Slots[slotIndex].Entity.Modifier	&& (-1) == completedResearch.Modifiers.FindElement(entityContainer.Slots[slotIndex].Entity.Modifier)) { 
 			bCancel = true;
 			static char itemText[128] = {}; 
 			sprintf_s(itemText, tableModifiers[entityContainer.Slots[slotIndex].Entity.Modifier].Name.c_str(), researchTypeString.c_str());
@@ -72,8 +72,8 @@ namespace klib
 	};
 
 	template<typename _EntityType, size_t _definitionCount, size_t _modifierCount>
-	static SEntityPoints getEntityPoints(const _EntityType& entity,const SEntityRecord<_EntityType> (&definitions)[_definitionCount], const SEntityRecord<_EntityType> (&modifiers)[_modifierCount], const SEntityPointsMultiplier& multipliers) {
-		return (definitions[entity.Index].Points + modifiers[entity.Modifier].Points)*(multipliers*entity.Level);
+	static SEntityPoints getEntityPoints(const _EntityType& entity,const SEntityRecord<_EntityType> (&definitions)[_definitionCount], const SEntityRecord<_EntityType> (&modifiers)[_modifierCount]) {
+		return (definitions[entity.Index].Points + modifiers[entity.Modifier].Points)*(entity.getMultipliers()*entity.Level);
 	}
 
 	template<typename _EntityType, size_t _definitionCount, size_t _modifierCount>

@@ -1,4 +1,5 @@
-#include "Misc.h"
+#include <string>
+#include <iostream>
 
 #ifndef __MENU_H__926349827164392740982169862598423__
 #define __MENU_H__926349827164392740982169862598423__
@@ -6,6 +7,20 @@
 namespace klib
 {
 #pragma pack(push, 1)
+	// returns -1 if the user entered an invalid numeric input
+	static inline int64_t getNumericInput()
+	{
+		// Get user input
+		std::string userChoice;
+		getline(std::cin, userChoice);
+	
+		// Convert the input string to a menuitem index.
+		int64_t selectedOption = -1;
+		try { selectedOption = std::stoll(userChoice); }
+		catch(std::invalid_argument) {}	// this try/catch bullshit is required because std::stoi() throws exceptions if the input can't be converted to a number.
+
+		return selectedOption;
+	}
 
 	template <typename _ReturnType>
 	class SMenuItem

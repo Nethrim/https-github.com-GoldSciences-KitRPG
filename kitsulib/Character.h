@@ -3,6 +3,8 @@
 
 #include "CharacterPoints.h"
 
+#include <vector>
+
 #ifndef __GAMEBASE_H__98236498027346892734689273__
 #define __GAMEBASE_H__98236498027346892734689273__
 
@@ -12,46 +14,72 @@ namespace klib
 	struct SCharacterEquip
 	{
 		SWeapon					Weapon		= {0,0,1};	// Index, ModifierIndex, Level
-		SArmor					Armor		= {0,0,1};	// Index, ModifierIndex, Level
+		SAccessory				Accessory	= {0,0,1};	// Index, ModifierIndex, Level
 		SProfession				Profession	= {0,0,1};	// Index, ModifierIndex, Level
+		SArmor					Armor		= {0,0,1};	// Index, ModifierIndex, Level
 		SVehicle				Vehicle		= {0,0,1};	// Index, ModifierIndex, Level
+		SFacility				Facility	= {0,0,1};	// Index, ModifierIndex, Level
 	};
 
 	struct SCharacterResearch
 	{
 		SResearchGroup			Weapon		= {};
-		SResearchGroup			Armor		= {};
+		SResearchGroup			Accessory	= {};
 		SResearchGroup			Profession	= {};
+		SResearchGroup			Armor		= {};
 		SResearchGroup			Vehicle		= {};
+		SResearchGroup			Facility	= {};
+		SStageProp				StageProp	= {};
 	};
 
 	// We don't need to create complex classes from SItem
-	class CArmor;
 	class CWeapon;
+	class CAccessory;
+	class CArmor;
 	class CProfession;
 	class CVehicle;
+	class CFacility;
 	class CStageProp;
 
-	typedef SInventoryItems											SCharacterItems			;
 	typedef SEntityContainer<SWeapon*		, MAX_INVENTORY_SLOTS>	SCharacterWeapons		;
+	typedef SEntityContainer<SAccessory*	, MAX_INVENTORY_SLOTS>	SCharacterAccessories	;
 	typedef SEntityContainer<SArmor*		, MAX_INVENTORY_SLOTS>	SCharacterArmors		;
 	typedef SEntityContainer<SProfession*	, MAX_INVENTORY_SLOTS>	SCharacterProfessions	;
 	typedef SEntityContainer<SVehicle*		, MAX_INVENTORY_SLOTS>	SCharacterVehicles		;
 	typedef SEntityContainer<SStageProp*	, MAX_INVENTORY_SLOTS>	SCharacterStageProps	;
+	typedef SEntityContainer<SFacility*		, MAX_INVENTORY_SLOTS>	SCharacterFacilities	;
+	typedef SInventoryItems											SCharacterItems			;
 
 	struct SCharacterInventory
 	{
-		SCharacterItems			Items		= {};
-		SInventoryWeapons		Weapons		= {};
-		SInventoryArmors		Armors		= {};
 		SInventoryProfessions	Professions	= {};
+		SInventoryAccessories	Accessories	= {};
+		SInventoryArmors		Armors		= {};
+		SInventoryWeapons		Weapons		= {};
 		SInventoryVehicles		Vehicles	= {};
+		SInventoryFacilities	Facilities	= {};
+		SInventoryStageProps	StageProps	= {};
+		SInventoryItems			Items		= {};
 	};
 
 	struct SCharacterTurnBonus
 	{
 		SCombatBonus			Points			= SCombatBonus	();
 		SCombatStatus			Status			= SCombatStatus	();
+	};
+
+
+	template<typename _EntityType, CHARACTER_TYPE _CharacterType>
+	struct SEquip
+	{
+		CHARACTER_TYPE			Type			= _CharacterType;
+		_EntityType				Entity			= {0,0,1};
+
+		SEntityPoints			Points			= SEntityPoints();	
+		SEntityFlags			Flags			= SEntityFlags();	
+		SCharacterTurnBonus		ActiveBonus		= SCharacterTurnBonus();
+
+		SCharacterInventory		Inventory		= SCharacterInventory();
 	};
 
 	//template<typename _EntityType>
@@ -86,19 +114,6 @@ namespace klib
 			,Researched			(SCharacterResearch		())
 		{};
 
-		int32_t					Save(FILE* fp)	const;
-		int32_t					Load(FILE* fp);
-
-		void					UnequipWeapon		()	{	unequipEntity(Inventory.Weapons		, CurrentEquip.Weapon		);	};
-		void					UnequipArmor		()	{	unequipEntity(Inventory.Armors		, CurrentEquip.Armor		);	};
-		void					UnequipProfession	()	{	unequipEntity(Inventory.Professions	, CurrentEquip.Profession	);	};
-		void					UnequipVehicle		()	{	unequipEntity(Inventory.Vehicles	, CurrentEquip.Vehicle		);	};
-
-		void					EquipWeapon			(size_t inventorySlotIndex);
-		void					EquipArmor			(size_t inventorySlotIndex);
-		void					EquipProfession		(size_t inventorySlotIndex);
-		void					EquipVehicle		(size_t inventorySlotIndex);
-
 		bool					DidLoseTurn			() {
 			return 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_STUN		) 
 				|| 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_SLEEP	) 
@@ -106,9 +121,9 @@ namespace klib
 		};
 	};
 
-	SEntityPoints	calculateFinalPoints			(const SCharacter& character);
-	SEntityFlags	calculateFinalFlags				(const SCharacter& character);
-	void			rest							(SCharacter& adventurerPoints);	// Take a nap and recover Life Points up to Max Value.
+	SEntityPoints				calculateFinalPoints			(const SCharacter& character);
+	SEntityFlags				calculateFinalFlags				(const SCharacter& character);
+	void						rest							(SCharacter& adventurerPoints);	// Take a nap and recover Life Points up to Max Value.
 
 	class CCharacter : public SCharacter
 	{
@@ -120,11 +135,23 @@ namespace klib
 			:SCharacter	(characterType, maxHP, hitChance, attack, coins, characterEffect, characterStatus)
 			,Name		(name)
 			{};
-
-		int		Save(FILE* fp)	const;
-		int		Load(FILE* fp);
 	};
 
+	class CCharacterManager
+	{
+		const CCharacter*	m_WorldCharacters[256] = {0};
+		uint32_t			Count = 0;
+	public:
+		~CCharacterManager() {
+			for( uint32_t i=0; i<Count; ++i)
+				delete(m_WorldCharacters[i]);
+		};
+
+		void CreateCharacter(CCharacter*& createdCharacter)  {
+			if(createdCharacter = new CCharacter())
+				m_WorldCharacters[Count++] = createdCharacter;
+		};
+	};
 #pragma pack(pop)
 
 } // namespace

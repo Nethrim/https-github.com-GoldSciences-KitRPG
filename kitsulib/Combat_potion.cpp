@@ -67,9 +67,9 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_MOVEMENT_SPEED	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Speed.Movement		, drinkerBonus.TurnsLeftPoints.Attack.Speed.Movement		, "Movement Speed"	);
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_REFLEXES			)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Speed.Reflexes		, drinkerBonus.TurnsLeftPoints.Attack.Speed.Reflexes		, "Reflexes"		);
 	if(	itemDescription.Property	&	 PROPERTY_TYPE_ABSORPTION		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.Absorption			, drinkerBonus.TurnsLeftPoints.Attack.Absorption			, "Absorption"		);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Health	, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Health	, "Health Damage"	);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA_DAMAGE		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Mana		, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Mana		, "Mana Damage"		);
-	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.ExtraDamage.Shield	, drinkerBonus.TurnsLeftPoints.Attack.ExtraDamage.Shield	, "Shield Damage"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_HEALTH_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.DirectDamage.Health	, drinkerBonus.TurnsLeftPoints.Attack.DirectDamage.Health	, "Health Damage"	);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_MANA_DAMAGE		)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.DirectDamage.Mana	, drinkerBonus.TurnsLeftPoints.Attack.DirectDamage.Mana		, "Mana Damage"		);
+	if(	itemDescription.Property	&	 PROPERTY_TYPE_SHIELD_DAMAGE	)	bUsedItem = bUsedItem || potionAttackBonus	(potionDrinker, itemPotion.Level,	drinkerBonus.Points.Attack.DirectDamage.Shield	, drinkerBonus.TurnsLeftPoints.Attack.DirectDamage.Shield	, "Shield Damage"	);
 
 	if(bUsedItem)
 		potionDrinker.Score.PotionsUsed++;

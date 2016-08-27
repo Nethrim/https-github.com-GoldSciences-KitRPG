@@ -53,50 +53,47 @@ namespace klib
 			const char* stringLeft=0, *stringRight=0;
 			if(bIsModifier)
 			{
-				if( 0 != equipInventory.Slots[i].Entity.Modifier && -1 == researchedList.FindElement(equipInventory.Slots[i].Entity.Modifier) ) { 
-					stringLeft	= definitionsTable[equipInventory.Slots[i].Entity.Modifier].Name.c_str();
+				int32_t selectedEntityModifier = equipInventory.Slots[i].Entity.Modifier;
+				if( 0 != selectedEntityModifier && (-1) == researchedList.FindElement(selectedEntityModifier) ) { 
+					stringLeft	= definitionsTable[selectedEntityModifier].Name.c_str();
 					stringRight	= itemFormat.c_str();
-					value = equipInventory.Slots[i].Entity.Modifier;
+					value = selectedEntityModifier;
+					sprintf_s(menuItemText, stringLeft, stringRight);
+#ifndef DISABLE_RESEARCH_REQUIREMENTS
+					if(bIsProgressive) {
+						if(value > adventurerMaxEquip.Modifier) {
+							printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Modifier);
+							continue;
+						}
+					}
+#endif
 				}
 				else 
 					continue;
 			} 
 			else
 			{
-				if( 0 != equipInventory.Slots[i].Entity.Index && -1 == researchedList.FindElement(equipInventory.Slots[i].Entity.Index) ) {
-					stringRight	= definitionsTable[equipInventory.Slots[i].Entity.Index].Name.c_str();
+				int32_t selectedEntityIndex = equipInventory.Slots[i].Entity.Index;
+				if( 0 != selectedEntityIndex && (-1) == researchedList.FindElement(selectedEntityIndex) ) {
+					stringRight	= definitionsTable[selectedEntityIndex].Name.c_str();
 					stringLeft	= itemFormat.c_str();
-					value = equipInventory.Slots[i].Entity.Index; 
+					value = selectedEntityIndex; 
+					sprintf_s(menuItemText, stringLeft, stringRight);
+#ifndef DISABLE_RESEARCH_REQUIREMENTS
+					if(bIsProgressive) {
+						if(value > adventurerMaxEquip.Index) {
+							printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Index);
+							continue;
+						}
+					}
+#endif
 				}
 				else 
 					continue;
 			}
 
-			sprintf_s(menuItemText, stringLeft, stringRight);
 
 			bool bRequiresInserting = true;
-	#ifndef DISABLE_RESEARCH_REQUIREMENTS
-			if(bIsProgressive) {
-				if(bIsModifier) 
-				{
-					if(value > adventurerMaxEquip.Modifier) {
-						printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Modifier);
-						continue;
-					}
-				}
-				else
-				{
-					if(value > adventurerMaxEquip.Index) {
-						printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Index);
-						continue;
-					}
-				}
-			}
-	#endif
-
-			if(!bRequiresInserting)
-				continue;
-
 			for(int32_t i=0; i<menuItemCount; ++i)
 				if(menuItems[i].ReturnValue == value) {
 					printf("You seem to have an additional research point for %s.\n", menuItemText);

@@ -92,7 +92,7 @@ namespace klib
 		};
 
 		inline int32_t					FindElement(const _EntityType& element) const { 
-			for(uint32_t i=0, count=(_Size < Count) ? _Size : Count; i<count; i++)
+			for(uint32_t i=0, count=(_Size < Count) ? _Size : Count; i<count; ++i)
 				if(Slots[i].Entity == element)
 					return i;
 			return -1;

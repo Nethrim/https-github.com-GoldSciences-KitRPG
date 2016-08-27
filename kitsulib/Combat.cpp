@@ -224,6 +224,24 @@ void applyWeaponLeech(ATTACK_EFFECT testEffectBit, ATTACK_EFFECT attackerWeaponE
 	}
 }
 
+SLifePoints applyUnshieldableDamage(CCharacter& attacker, CCharacter& target, const SLifePoints& damageDealt)
+{
+	const SLifePoints finalDamage = 
+	{	(	target.Points.LifeCurrent.Health	< damageDealt.Health	) ? target.Points.LifeCurrent.Health	: damageDealt.Health
+	,	(	target.Points.LifeCurrent.Mana		< damageDealt.Mana		) ? target.Points.LifeCurrent.Mana		: damageDealt.Mana
+	,	(	target.Points.LifeCurrent.Shield	< damageDealt.Shield	) ? target.Points.LifeCurrent.Shield	: damageDealt.Shield
+	};
+
+	if( finalDamage.Health	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Health	, target.Name.c_str(), "Health"	);
+	if( finalDamage.Mana	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Mana	, target.Name.c_str(), "Mana"	);
+	if( finalDamage.Shield	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Shield	, target.Name.c_str(), "Shield"	);
+
+	target.Points.LifeCurrent.Health	-= finalDamage.Health	;
+	target.Points.LifeCurrent.Mana		-= finalDamage.Mana		;
+	target.Points.LifeCurrent.Shield	-= finalDamage.Shield	;
+	return finalDamage;
+}
+
 SLifePoints klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, int32_t damage, bool bAddStatus, COMBAT_STATUS grenadeStatus, int32_t statusTurns, const std::string& sourceName) {
 	return applySuccessfulHit(attacker, target, damage, getArmorAbsorption(target.CurrentEquip.Armor), bAddStatus, grenadeStatus, statusTurns, sourceName);
 }
@@ -233,12 +251,18 @@ SLifePoints klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, i
 	SLifePoints finalDamage = klib::applyShieldableDamage(target, damage, sourceName);
 	klib::applyArmorReflect(attacker, target, finalDamage.Shield, sourceName);
 	
+	const SLifePoints& directDamage = calculateFinalPoints(attacker).Attack.DirectDamage;
+	applyUnshieldableDamage(attacker, target, directDamage);
+
 	// Clear sleep on successful hit.
 	if(finalDamage.Health || finalDamage.Shield || finalDamage.Mana) {
 		for(uint32_t i=0; i < target.ActiveBonus.Status.Count; ++i)
 			if( target.ActiveBonus.Status.Status[i] == COMBAT_STATUS_SLEEP )
 			{
-				printf("%s awakes from his induced nap!\n", target.Name.c_str());
+				if(target.Points.LifeCurrent.Health < 0)
+					printf("Sweet Dreams, %s!\n", target.Name.c_str());
+				else
+					printf("%s awakes from his induced nap!\n", target.Name.c_str());
 				target.ActiveBonus.Status.TurnsLeft[i] = 0;
 			}
 	}
@@ -259,12 +283,15 @@ void klib::applyWeaponLeechEffects(CCharacter& attacker, CCharacter& targetRefle
 	SEntityFlags			attackerFlags			= calculateFinalFlags(attacker);
 	ATTACK_EFFECT			attackerWeaponEffect	= attackerFlags.Effect.Attack;
 	applyWeaponLeech(ATTACK_EFFECT_LEECH_HEALTH	, attackerFlags.Effect.Attack, finalDamage.Health	, attackerPoints.LifeMax.Health	, attacker.Points.LifeCurrent.Health	, attacker.Name	, targetReflecting.Name	, sourceName, "Health", "drains", "loses" );
+
 	attackerPoints			= calculateFinalPoints(attacker);
 	attackerFlags			= calculateFinalFlags(attacker);
 	applyWeaponLeech(ATTACK_EFFECT_LEECH_MANA	, attackerFlags.Effect.Attack, finalDamage.Mana		, attackerPoints.LifeMax.Mana	, attacker.Points.LifeCurrent.Mana		, attacker.Name	, targetReflecting.Name	, sourceName, "Mana", "drains", "loses" );
+
 	attackerPoints			= calculateFinalPoints(attacker);
 	attackerFlags			= calculateFinalFlags(attacker);
 	applyWeaponLeech(ATTACK_EFFECT_LEECH_SHIELD	, attackerFlags.Effect.Attack, finalDamage.Shield	, attackerPoints.LifeMax.Shield	, attacker.Points.LifeCurrent.Shield	, attacker.Name	, targetReflecting.Name	, sourceName, "Shield", "steals", "gives" );
+
 	attackerPoints			= calculateFinalPoints(attacker);
 	attackerFlags			= calculateFinalFlags(attacker);
 	applyWeaponLeech(ATTACK_EFFECT_STEAL		, attackerFlags.Effect.Attack, finalDamage.Health+finalDamage.Shield+finalDamage.Mana	
@@ -315,16 +342,16 @@ bool klib::attack(CCharacter& attacker, CCharacter& target)
 		printf("Blindness causes %s to have %u hit chance for this turn.\n", attacker.Name.c_str(), attackerPoints.Attack.Hit >>= 1);
 
 	if(0 < target.ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_STUN)) {
-		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
-		finalChance	+= attackerPoints.Attack.Hit/2;
+		printf("As %s is stunned, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit>>1);
+		finalChance	+= attackerPoints.Attack.Hit>>1;
 	}
 	else if(0 < target.ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_SLEEP)) {
-		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit);
+		printf("As %s is asleep, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/3);
 		finalChance	+= attackerPoints.Attack.Hit/3;
 	}
 	else if(0 < target.ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_BLIND)) {
-		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit/2);
-		finalChance	+= attackerPoints.Attack.Hit/4;
+		printf("As %s is blind, %s gains %u hit chance for this turn.\n", target.Name.c_str(), attacker.Name.c_str(), attackerPoints.Attack.Hit>>2);
+		finalChance	+= attackerPoints.Attack.Hit>>2;
 	}
 
 	if ((rand() % 100) < finalChance ) {
