@@ -16,6 +16,24 @@ void displayFacility	(const klib::CCharacter& adventurer);			//
 void displayScore		(const klib::SCharacterScore&	adventurer);	// Displays the player's character points and statistics.
 void displayInventory	(const klib::SInventoryItems& inventory, const std::string& characterName);
 
+template <size_t _Size1, size_t _Size2>
+int32_t displayInventoryMenu(klib::CCharacter& adventurer, const char (&menuTitle)[_Size1], const char (&exitOption)[_Size2])
+{
+	klib::SMenuItem<int32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
+	char itemOption[128] = {};
+	for(uint32_t i=0; i<adventurer.Inventory.Items.Count; ++i)
+	{
+		std::string itemName = klib::getItemName(adventurer.Inventory.Items.Slots[i].Entity);
+		sprintf_s(itemOption, "- x%.2u %s", adventurer.Inventory.Items.Slots[i].Count, itemName.c_str());
+		itemOptions[i].ReturnValue	= i;
+ 		itemOptions[i].Text			= itemOption;
+	}
+	itemOptions[adventurer.Inventory.Items.Count].ReturnValue	= adventurer.Inventory.Items.Count;
+	itemOptions[adventurer.Inventory.Items.Count].Text			= exitOption;
+
+	return displayMenu(adventurer.Inventory.Items.Count+1, menuTitle, itemOptions);
+}
+
 void combat(klib::CCharacter& adventurer, int32_t enemyType);	// Combat is executed from the mercenary job menu and executes the battle turns until one of the combatants is dead.
 
 #endif // __GAME_H__99823740927349023649827346982734__

@@ -30,6 +30,8 @@ SEntityPoints klib::calculateFinalPoints(const SCharacter& character)
 	const SEntityPoints		facilityPoints		= klib::getFacilityPoints	(character.CurrentEquip.Facility);
 	const SEntityPoints&	bonusPoints			= character.ActiveBonus.Points.Points;
 
+	// Currently, SEntityPoints::Coins and SEntityPoints::LifeCurrent values of the equipment are used in a different 
+	// way from the character's points so we avoid adding the character points to the result for these two.
 	SEntityPoints result	= bonusPoints + weaponPoints + accessoryPoints + facilityPoints + armorPoints + vehiclePoints + professionPoints;
 	result.LifeMax			= result.LifeMax	+ character.Points.LifeMax;	// 
 	result.Attack			= result.Attack		+ character.Points.Attack;	// 
@@ -49,7 +51,6 @@ SEntityFlags klib::calculateFinalFlags(const SCharacter& character)
 	const SEntityFlags&	bonusFlags			= character.ActiveBonus.Points.Flags;
 	
 	result	= bonusFlags | weaponFlags | accessoryFlags | armorFlags | vehicleFlags | professionFlags | facilityFlags | character.Flags;
-
 	return result;
 };
 

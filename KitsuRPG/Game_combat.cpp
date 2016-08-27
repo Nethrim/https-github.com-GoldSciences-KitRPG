@@ -479,17 +479,19 @@ int32_t selectItemsPlayer(klib::CCharacter& user, klib::CCharacter& target)
 
 	if(indexInventory == user.Inventory.Items.Count)	// exit option
 		indexInventory = user.Inventory.Items.Count;	// Exit menu
-	else if (user.Inventory.Items.Slots[indexInventory].Count <= 0)
+	else if (user.Inventory.Items.Slots[indexInventory].Count <= 0) {
 		printf("You don't have anymore of that. Use something else...\n"); 
+		indexInventory = user.Inventory.Items.Count;
+	}
 	else {
+		// Only use potions if we have less than Max HP
 		const klib::SItem&			entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
 		const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Index];
 		const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
-		// Only use potions if we have less than 60% HP
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
-			&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	> (userFinalPoints.LifeMax.Health	*.60))
-				||	(klib::PROPERTY_TYPE_SHIELD	== itemDescription.Property && user.Points.LifeCurrent.Shield	> (userFinalPoints.LifeMax.Shield	*.60))
-				||	(klib::PROPERTY_TYPE_MANA	== itemDescription.Property && user.Points.LifeCurrent.Mana		> (userFinalPoints.LifeMax.Mana		*.60))
+			&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	>= (userFinalPoints.LifeMax.Health	))
+				||	(klib::PROPERTY_TYPE_SHIELD	== itemDescription.Property && user.Points.LifeCurrent.Shield	>= (userFinalPoints.LifeMax.Shield	))
+				||	(klib::PROPERTY_TYPE_MANA	== itemDescription.Property && user.Points.LifeCurrent.Mana		>= (userFinalPoints.LifeMax.Mana	))
 				)
 		)
 		{

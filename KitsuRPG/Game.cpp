@@ -488,6 +488,30 @@ void displayResume(const klib::CCharacter& adventurer)
 	basePoints.Attack.Print();
 	finalFlags.Print();
 }
+
+
+
+int32_t sell(klib::CCharacter& adventurer, klib::CCharacter& target)
+{
+	int32_t indexInventory = adventurer.Inventory.Items.Count;	// this initial value exits the menu
+
+	while (true)	// break the loop to leave the shop
+	{
+		indexInventory = displayInventoryMenu(adventurer, "Select an item to sell", "Back to combat options");
+		if(indexInventory == adventurer.Inventory.Items.Count) {	// exit option
+			indexInventory = adventurer.Inventory.Items.Count;	// Exit menu
+			break;
+		}
+		else if (adventurer.Inventory.Items.Slots[indexInventory].Count <= 0) {
+			printf("You don't have anymore of that. Use something else...\n"); 
+			indexInventory = adventurer.Inventory.Items.Count;
+		}
+	}
+
+	return indexInventory;
+}
+
+
 //
 //void displayEquip(const klib::CCharacter& adventurer) 
 //{

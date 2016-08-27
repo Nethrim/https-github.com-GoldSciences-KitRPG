@@ -9,27 +9,31 @@ namespace klib
 #pragma pack(push, 1)
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordFacility modifiersFacilities[] = 
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Small %s"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Large %s"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Advanced %s"	}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s Hub"		}
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Small %s"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Large %s"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,2000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Advanced %s"	}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,5000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s Hub"		}
 };	
 	
+#define DEFAULT_FACILITY_EFFECTS	{ATTACK_EFFECT_NONE, DEFEND_EFFECT_NONE, }
+
 // Currently the amount of points available for a single character is 14.	
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordFacility definitionsFacilities[] =
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Dog House"			}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Training Room"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Foundry"			}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Warfare Labs"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Physics Labs"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Chemical Labs"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Mechanics Labs"	}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Airport"			}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Digital Labs"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Launch Base"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Quantum Labs"		}
-,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Genetic Labs"		}
+{	{{{00,0,00},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,10	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Dog House"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,100	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Training Room"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Cult Center"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,200	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Foundry"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Warfare Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hospital"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,400	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Physics Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Chemical Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,600	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Mechanics Labs"	}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,700	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Airport"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,800	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Digital Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Launch Base"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Quantum Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Genetic Labs"		}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Shack"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Barn"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Wall"				}

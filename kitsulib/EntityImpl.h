@@ -12,12 +12,12 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers =						//	x1:	1.125 		
+			static const SEntityPointsMultiplier multipliers =						//	x1:	0.85 		
 				{ {.125, .125, .125}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
 				, {.125, .125, .125}												//	x2:	 .1, , .1, } 		
 				, {.125, .125, {.125, .125, .125}, .125, {.125, .125, .125} }		//	x2:	.25, .25,
 				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}
@@ -28,12 +28,12 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers =						//	x1:	1.125 		
+			static const SEntityPointsMultiplier multipliers =						//	x1:	0.85 		
 				{ {.125, .1, .0625}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
 				, {.125, .0625, .0625}												//	x2:	 .1, , .1, } 		
 				, {.125, .25, {.125, .1, .125}, .0625, {.125, .125, .125} }			//	x2:	.25, .25,
 				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}
@@ -44,12 +44,12 @@ namespace klib
 		using SEntity::SEntity; 
 		static SEntityPointsMultiplier getMultipliers()										
 		{																					 
-			static const SEntityPointsMultiplier multipliers = 						//	x1:	1.125 		
+			static const SEntityPointsMultiplier multipliers = 						//	x1:	0.85 		
 				{ {.125, .1, .25}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
 				, {.125, .1, .25}													//	x2:	 .1, , .1, } 		
 				, {.0625, .0625, {.125, .0625, .125}, .125, {.125, .0625, .125} }	//	x2:	.25, .25,
 				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}
@@ -60,12 +60,12 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
 				{ {.25, .125, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
 				, {.25, .125, .0625}											//	x2:	 .1, , .1, } 
 				, {.125, .125, {.0625, .125, .0625}, .125, {.125, .1, .1} }		//	x2:	.25, .25,
 				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}
@@ -76,12 +76,12 @@ namespace klib
 		using SEntity::SEntity; 
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
 				{ {.125, .25, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
 				, {.125, .25, .0625}											//	x2:	 .1, , .1, } 
 				, {.125, .1, {.0625, .0625, .125}, .1, {.125, .125, .125} }		//	x2:	.25, .25,
 				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125															
+				, 0.85															
 				};																
 			return multipliers;													
 		}																		
@@ -92,12 +92,12 @@ namespace klib
 		using SEntity::SEntity; 												
 		SEntityPointsMultiplier getMultipliers() const 
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	1.125 
+			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
 				{ {.0625, .0625, .25}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
 				, {.0625, .0625, .25}											//	x2:	 .1, , .1, } 
 				, {.125, .125, {.125, .125, .125}, .125, {.125, .1, .125} }		//	x2:	.25, .25,
 				, 0.1															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 1.125															
+				, 0.85															
 				};																
 			return multipliers;													
 		}
@@ -113,7 +113,7 @@ namespace klib
 				, {.25, .25, .25}
 				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
 				, 0.125
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}
@@ -129,7 +129,7 @@ namespace klib
 				, {.25, .25, .25}
 				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
 				, 0.125
-				, 1.125
+				, 0.85
 				};
 			return multipliers;
 		}

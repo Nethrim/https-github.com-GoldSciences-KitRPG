@@ -52,6 +52,7 @@ void main()
 
 	while(bPlayAgain)
 	{
+		adventurer = klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
 		initPlayerCharacter(adventurer);
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
