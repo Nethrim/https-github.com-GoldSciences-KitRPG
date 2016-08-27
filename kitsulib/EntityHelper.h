@@ -23,7 +23,7 @@ namespace klib
 	template<typename _EntityType, size_t _DefinitionCount>
 	void unequipEntity(SEntityContainer<_EntityType, _DefinitionCount>& container, _EntityType& currentEntity) 
 	{	
-		if( 0 == currentEntity.Index || 0 == currentEntity.Modifier || 0 == currentEntity.Level ) 
+		if( 0 == currentEntity.Index && 0 == currentEntity.Modifier && 0 == currentEntity.Level )
 			return; 
 		container.AddElement(currentEntity);	
 		currentEntity = {0,0,0};

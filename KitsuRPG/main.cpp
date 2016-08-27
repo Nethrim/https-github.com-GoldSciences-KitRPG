@@ -70,26 +70,26 @@ void main()
 //
 void initPlayerCharacter(klib::CCharacter& adventurer)
 {
-	adventurer.CurrentEquip.Weapon		.Index		= 0;
-	adventurer.CurrentEquip.Accessory	.Index		= 0;
-	adventurer.CurrentEquip.Armor		.Index		= 0;
-	adventurer.CurrentEquip.Profession	.Index		= 0;
-	adventurer.CurrentEquip.Vehicle		.Index		= 0;
-	adventurer.CurrentEquip.Facility	.Index		= 0;
+	adventurer.CurrentEquip.Weapon		.Index		= (int16_t)std::min(3U, size(klib::definitionsWeapon		)-1);
+	adventurer.CurrentEquip.Accessory	.Index		= (int16_t)std::min(3U, size(klib::definitionsAccessory	)-1);
+	adventurer.CurrentEquip.Armor		.Index		= (int16_t)std::min(3U, size(klib::definitionsArmor		)-1);
+	adventurer.CurrentEquip.Profession	.Index		= (int16_t)std::min(3U, size(klib::definitionsProfession	)-1);
+	adventurer.CurrentEquip.Vehicle		.Index		= (int16_t)std::min(3U, size(klib::definitionsVehicle		)-1);
+	adventurer.CurrentEquip.Facility	.Index		= (int16_t)std::min(3U, size(klib::definitionsFacilities	)-1);
 
-	adventurer.CurrentEquip.Weapon		.Modifier	= 0;
-	adventurer.CurrentEquip.Accessory	.Modifier	= 0;
-	adventurer.CurrentEquip.Armor		.Modifier	= 0;
-	adventurer.CurrentEquip.Profession	.Modifier	= 0;
-	adventurer.CurrentEquip.Vehicle		.Modifier	= 0;
-	adventurer.CurrentEquip.Facility	.Modifier	= 0;
+	adventurer.CurrentEquip.Weapon		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersWeapon		)-1);
+	adventurer.CurrentEquip.Accessory	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersAccessory	)-1);
+	adventurer.CurrentEquip.Armor		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersArmor		)-1);
+	adventurer.CurrentEquip.Profession	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersProfession	)-1);
+	adventurer.CurrentEquip.Vehicle		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersVehicle		)-1);
+	adventurer.CurrentEquip.Facility	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersFacilities	)-1);
 
-	adventurer.CurrentEquip.Weapon		.Level		= 0;
-	adventurer.CurrentEquip.Accessory	.Level		= 0;
-	adventurer.CurrentEquip.Armor		.Level		= 0;
-	adventurer.CurrentEquip.Profession	.Level		= 0;
-	adventurer.CurrentEquip.Vehicle		.Level		= 0;
-	adventurer.CurrentEquip.Facility	.Level		= 0;
+	adventurer.CurrentEquip.Weapon		.Level		= 10;
+	adventurer.CurrentEquip.Accessory	.Level		= 10;
+	adventurer.CurrentEquip.Armor		.Level		= 10;
+	adventurer.CurrentEquip.Profession	.Level		= 10;
+	adventurer.CurrentEquip.Vehicle		.Level		= 10;
+	adventurer.CurrentEquip.Facility	.Level		= 10;
 
 	adventurer.MaxEquip.Weapon			.Index		= adventurer.CurrentEquip.Weapon		.Index;		
 	adventurer.MaxEquip.Armor			.Index		= adventurer.CurrentEquip.Armor			.Index;		
@@ -115,7 +115,7 @@ void initPlayerCharacter(klib::CCharacter& adventurer)
 	adventurer.Inventory.Weapons		.AddElement({1,1,1});
 	adventurer.Inventory.Accessories	.AddElement({1,1,1});
 	adventurer.Inventory.Armors			.AddElement({1,1,1});
-	adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,1});
+	adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,20});
 	adventurer.Inventory.Vehicles		.AddElement({1,1,1});
 	adventurer.Inventory.Facilities		.AddElement({1,1,1});
 

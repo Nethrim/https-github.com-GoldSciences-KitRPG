@@ -25,15 +25,15 @@ void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t 
 	//											  
 	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon			)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon			)-2));	
 	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor			)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor			)-2));	
-	currentEnemy.CurrentEquip.Accessory		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersAccessory	)-2) ? twoEnemyType : (int16_t)size(	modifiersAccessory	)-2));	
+	currentEnemy.CurrentEquip.Accessory		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersAccessory		)-2) ? twoEnemyType : (int16_t)size(	modifiersAccessory		)-2));	
 	currentEnemy.CurrentEquip.Vehicle		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersVehicle		)-2) ? twoEnemyType : (int16_t)size(	modifiersVehicle		)-2));	
 	currentEnemy.CurrentEquip.Facility		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersFacilities		)-2) ? twoEnemyType : (int16_t)size(	modifiersFacilities		)-2));	
 	currentEnemy.CurrentEquip.Profession	.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersProfession		)-2) ? twoEnemyType : (int16_t)size(	modifiersProfession		)-2));	
 //
-	currentEnemy.CurrentEquip.Weapon		.Level		= (0 > (adventurer.CurrentEquip.Weapon		.Level-1)) ? 0 : adventurer.CurrentEquip.Weapon		.Level-1;
-	currentEnemy.CurrentEquip.Armor			.Level		= (0 > (adventurer.CurrentEquip.Armor		.Level-1)) ? 0 : adventurer.CurrentEquip.Armor		.Level-1;
-	currentEnemy.CurrentEquip.Profession	.Level		= (0 > (adventurer.CurrentEquip.Profession	.Level-1)) ? 0 : adventurer.CurrentEquip.Profession	.Level-1;
-	currentEnemy.CurrentEquip.Vehicle		.Level		= (0 > (adventurer.CurrentEquip.Vehicle		.Level-1)) ? 0 : adventurer.CurrentEquip.Vehicle	.Level-1;
+	currentEnemy.CurrentEquip.Weapon		.Level		= (0 > (adventurer.CurrentEquip.Weapon		.Level-1)) ? 0 : adventurer.CurrentEquip.Weapon		.Level;
+	currentEnemy.CurrentEquip.Armor			.Level		= (0 > (adventurer.CurrentEquip.Armor		.Level-1)) ? 0 : adventurer.CurrentEquip.Armor		.Level;
+	currentEnemy.CurrentEquip.Profession	.Level		= (0 > (adventurer.CurrentEquip.Profession	.Level-1)) ? 0 : adventurer.CurrentEquip.Profession	.Level;
+	currentEnemy.CurrentEquip.Vehicle		.Level		= (0 > (adventurer.CurrentEquip.Vehicle		.Level-1)) ? 0 : adventurer.CurrentEquip.Vehicle	.Level;
 
 	//
 	currentEnemy.MaxEquip.Weapon			.Index		= currentEnemy.CurrentEquip.Weapon		.Index;

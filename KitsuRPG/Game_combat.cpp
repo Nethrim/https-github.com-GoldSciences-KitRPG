@@ -251,13 +251,13 @@ void senseMenu(klib::CCharacter& enemy)
 
 		// Interpret user input.
 			 if( 1 == tavernChoice )	{	displayWeapon					(enemy);								}	// 
+		else if( 2 == tavernChoice )	{	displayAccessory				(enemy);								}	// 
 		else if( 3 == tavernChoice )	{	displayArmor					(enemy);								}	// 
-		else if( 3 == tavernChoice )	{	displayAccessory				(enemy);								}	// 
-		else if( 2 == tavernChoice )	{	displayProfession				(enemy);								}	// 
-		else if( 4 == tavernChoice )	{	displayVehicle					(enemy);								}	// 
-		else if( 3 == tavernChoice )	{	displayFacility					(enemy);								}	// 
-		else if( 5 == tavernChoice )	{	displayInventory				(enemy.Inventory.Items, enemy.Name);	}	// 
-		else if( 6 == tavernChoice )	{	break;	}	// Exit the main loop, which effectively closes the game.
+		else if( 4 == tavernChoice )	{	displayProfession				(enemy);								}	// 
+		else if( 5 == tavernChoice )	{	displayVehicle					(enemy);								}	// 
+		else if( 6 == tavernChoice )	{	displayFacility					(enemy);								}	// 
+		else if( 7 == tavernChoice )	{	displayInventory				(enemy.Inventory.Items, enemy.Name);	}	// 
+		else if( 8 == tavernChoice )	{	break;	}	// Exit the main loop, which effectively closes the game.
 		else {	
 			printf("Option not supported yet.\n");
 		}	// Exit the main loop, which effectively closes the game.
@@ -482,11 +482,23 @@ int32_t selectItemsPlayer(klib::CCharacter& user, klib::CCharacter& target)
 	else if (user.Inventory.Items.Slots[indexInventory].Count <= 0)
 		printf("You don't have anymore of that. Use something else...\n"); 
 	else {
-		// if we reached here it means that the input was valid so we select the description and exit the loop
-		const std::string userMessage = "You don't need to use %s!\n";
-		const std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
-		printf(userMessage.c_str(), itemName.c_str());
-		indexInventory = user.Inventory.Items.Count;
+		const klib::SItem&			entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
+		const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Index];
+		const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
+		// Only use potions if we have less than 60% HP
+		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
+			&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	> (userFinalPoints.LifeMax.Health	*.60))
+				||	(klib::PROPERTY_TYPE_SHIELD	== itemDescription.Property && user.Points.LifeCurrent.Shield	> (userFinalPoints.LifeMax.Shield	*.60))
+				||	(klib::PROPERTY_TYPE_MANA	== itemDescription.Property && user.Points.LifeCurrent.Mana		> (userFinalPoints.LifeMax.Mana		*.60))
+				)
+		)
+		{
+			// if we reached here it means that the input was valid so we select the description and exit the loop
+			const std::string userMessage = "You don't need to use %s!\n";
+			const std::string itemName = klib::getItemName(user.Inventory.Items.Slots[indexInventory].Entity);
+			printf(userMessage.c_str(), itemName.c_str());
+			indexInventory = user.Inventory.Items.Count;
+		}
 	}
 	return indexInventory;
 }
