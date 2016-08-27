@@ -115,8 +115,9 @@ namespace klib
 		{};
 
 		bool					DidLoseTurn			() {
-			return 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_STUN		) 
-				|| 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_SLEEP	) 
+			return 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_SLEEP	) 
+				|| 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_STUN		) 
+				|| 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_PETRIFY	) 
 				|| 0 < ActiveBonus.Status.GetStatusTurns(COMBAT_STATUS_FROZEN	);
 		};
 	};
