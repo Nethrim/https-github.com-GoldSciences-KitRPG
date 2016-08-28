@@ -176,13 +176,14 @@
   <ItemGroup>
     <ClCompile Include="asciiscreen.cpp" />
     <ClCompile Include="draw.cpp" />
-    <ClCompile Include="draw_intro.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menus.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asciiscreen.h" />
+    <ClInclude Include="draw.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="menus.h" />

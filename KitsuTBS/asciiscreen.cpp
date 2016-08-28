@@ -8,8 +8,8 @@
 static char* _backBuffer	= 0;
 static char* _frontBuffer	= 0;
 
-static const int _backBufferWidth	= 160;
-static const int _backBufferHeight	= 80;
+static const int _backBufferWidth	= DEFAULT_ASCII_SCREEN_WIDTH;
+static const int _backBufferHeight	= DEFAULT_ASCII_SCREEN_HEIGHT;
 
 class CGBackBufferDeleter
 {
@@ -64,8 +64,8 @@ void game::initASCIIScreen()
 	csbiInfo.dwMaximumWindowSize.X	= _backBufferWidth;
 	csbiInfo.dwMaximumWindowSize.Y	= _backBufferHeight;
 	csbiInfo.bFullscreenSupported	= TRUE;
-	csbiInfo.srWindow.Top		= 100;
-	csbiInfo.srWindow.Left		= 100;
+	csbiInfo.srWindow.Top		= 10;
+	csbiInfo.srWindow.Left		= 10;
 	csbiInfo.srWindow.Right		= 800;
 	csbiInfo.srWindow.Bottom	= 600;
 	csbiInfo.ColorTable[0]		= 0x00000000;

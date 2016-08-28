@@ -4,17 +4,39 @@
 #ifndef __GAME_H__91827309126391263192312312354__
 #define __GAME_H__91827309126391263192312312354__
 
-#define TACTICAL_DISPLAY_DEPTH	48
-#define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2
 
+template<size_t _Width, size_t _Depth>
 struct STacticalDisplay
 {
-	char						Screen			[TACTICAL_DISPLAY_DEPTH][TACTICAL_DISPLAY_WIDTH] = {};
-	float						DisplayWeights	[TACTICAL_DISPLAY_DEPTH][TACTICAL_DISPLAY_WIDTH] = {};
-	float						Speed			[TACTICAL_DISPLAY_DEPTH][TACTICAL_DISPLAY_WIDTH] = {};
-	float						SpeedTarget		[TACTICAL_DISPLAY_DEPTH][TACTICAL_DISPLAY_WIDTH] = {};
-	char						TargetX			[TACTICAL_DISPLAY_DEPTH][TACTICAL_DISPLAY_WIDTH] = {};
+	const uint32_t				Width			= (uint32_t)_Width;
+	const uint32_t				Depth			= (uint32_t)_Depth;
+	char						Screen			[_Depth][_Width] = {};
+	float						DisplayWeights	[_Depth][_Width] = {};
+	float						Speed			[_Depth][_Width] = {};
+	float						SpeedTarget		[_Depth][_Width] = {};
+	char						TargetX			[_Depth][_Width] = {};
 };
+
+
+template<size_t _Width, size_t _Height>
+void fillDisplayValueFromNoise( STacticalDisplay<_Width, _Height>& display, char value, int32_t seed, char clearValue = ' ') {
+	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z)
+		for(uint32_t x=0, maxX=_Width; x<maxX; ++x)
+			display.Screen[z][x] = (int(noise2D(x, z, _Width, seed)*12)) ? clearValue : value;
+}
+
+template<size_t _Width, size_t _Height>
+void clearDisplay( STacticalDisplay<_Width, _Height>& display, char clearValue = ' ') {
+	memset(display.Screen, clearValue, _Height*_Width);
+}
+
+template<size_t _Width, size_t _Height>
+void drawDisplayBorders( STacticalDisplay<_Width, _Height>& display, char value)
+{
+	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z){ display.Screen[z][0] = value; display.Screen[z][_Width-1] = value; }
+	for(uint32_t x=0, maxX=_Width; x<maxX; ++x){ display.Screen[0][x] = value; display.Screen[_Height-1][x] = value; }
+}
+
 
 struct SGame
 {
@@ -27,22 +49,46 @@ struct SGame
 	klib::SCharacterInventory	PlayerInventory			= {};
 	klib::SCharacterInventory	EnemyInventory			= {};
 
-	klib::CCharacter			PlayerArmy		[512]	= {};
-	klib::CCharacter			EnemyArmy		[512]	= {};
-	klib::CCharacter			PlayerSquad		[32]	= {};
-	klib::CCharacter			EnemySquad		[32]	= {};
+	klib::SEntityContainer<klib::CCharacter, 256>	PlayerArmy	= {};
+	klib::SEntityContainer<klib::CCharacter, 256>	EnemyArmy	= {};
+	klib::SEntityContainer<klib::CCharacter, 16>	PlayerSquad = {};
+	klib::SEntityContainer<klib::CCharacter, 16>	EnemySquad	= {};
 
-	STacticalDisplay					TacticalMap				= {};
+#define TACTICAL_DISPLAY_DEPTH	48
+#define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2
+
+	STacticalDisplay<TACTICAL_DISPLAY_WIDTH, TACTICAL_DISPLAY_DEPTH>			TacticalDisplay	= {};
+	STacticalDisplay<DEFAULT_ASCII_SCREEN_WIDTH, DEFAULT_ASCII_SCREEN_HEIGHT>	GlobalDisplay	= {};
 
 	SInput						FrameInput				= {};
 	STimer						FrameTimer				= {};
 
 	int16_t						Seed					= 0;
-
-
 };
 
 
 void drawState( SGame& instanceGame );
+void showMenu(SGame& instanceGame);
+
+
+
+static double noise1D(uint32_t x, uint64_t Seed=15731) {
+	x = (x<<13) ^ x;
+	return ( 1.0 - ( (x * (x * x * Seed + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);    
+}
+
+static double noise2D(uint32_t x, uint32_t y, uint32_t nWidth, uint64_t Seed=15731 ) {
+	//uint32_t n = x + (y * xWidth);
+	x += (y * nWidth);
+	x = (x<<13) ^ x;
+	return ( 1.0 - ( (x * (x * x * Seed + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);    
+}
+
+static double noise3D( uint32_t x, uint32_t y, uint32_t z, uint32_t nWidth, uint32_t nHeight, uint64_t Seed=15731 ) {
+	uint32_t n = x+(y*nWidth+(z*nHeight*nWidth));
+	n = (n<<13) ^ n;
+	return ( 1.0 - ( (n*(n * n * Seed + 789221) + 1376312589 ) & 0x7fffffff) / 1073741824.0);    
+	//return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);    
+}
 
 #endif // __GAME_H__91827309126391263192312312354__

@@ -13,7 +13,6 @@
 
 //#define DISABLE_RESEARCH_REQUIREMENTS
 
-
 void  researchWeaponDefinition(klib::CCharacter& adventurer) 
 { 
 	research

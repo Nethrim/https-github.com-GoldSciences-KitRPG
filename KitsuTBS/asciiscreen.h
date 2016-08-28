@@ -6,6 +6,9 @@
 #ifndef __ASCIISCREEN_H__20983472903740928374234__
 #define __ASCIISCREEN_H__20983472903740928374234__
 
+#define DEFAULT_ASCII_SCREEN_HEIGHT	80
+#define DEFAULT_ASCII_SCREEN_WIDTH	DEFAULT_ASCII_SCREEN_HEIGHT*2
+
 namespace game
 {
 	void initASCIIScreen();
@@ -33,7 +36,7 @@ namespace game
 	template <typename... _Args>
 	void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN bCenter, const char* format, _Args... args )
 	{
-		char precookStr[256] = {};
+		char precookStr[1024] = {};
 		uint32_t precookLen = sprintf_s(precookStr, format, args...);
 		if( 0 == precookLen )
 			return;

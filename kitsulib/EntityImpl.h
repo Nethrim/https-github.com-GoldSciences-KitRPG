@@ -136,7 +136,7 @@ namespace klib
 	};
 
 
-#define MAX_INVENTORY_SLOTS 512
+#define MAX_INVENTORY_SLOTS 32
 	typedef SEntityContainer<SItem			, MAX_INVENTORY_SLOTS>	SInventoryItems;
 	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
 	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;

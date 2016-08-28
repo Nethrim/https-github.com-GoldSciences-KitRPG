@@ -27,10 +27,10 @@
     <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="draw_intro.cpp">
+    <ClCompile Include="draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="draw.cpp">
+    <ClCompile Include="menus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="draw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

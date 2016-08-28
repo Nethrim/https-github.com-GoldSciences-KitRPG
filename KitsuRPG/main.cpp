@@ -17,7 +17,7 @@
 #include <time.h>
 
 // Sets up initial equipment and items for the player to carry or wear.
-void initPlayerCharacter(klib::CCharacter& adventurer);
+void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name);
 
 // This function seeds the rand() and enters the tavern() after initializing the player.
 // If the player leaves the tavern() it means the game was requested to close. 
@@ -37,10 +37,10 @@ void main()
 
 	printf("Welcome Stranger!! who are you?\n");
 	printf("My name is: \n");
-	std::string Name;
-	getline(std::cin, Name);
+	std::string adventurerName;
+	getline(std::cin, adventurerName);
 
-	klib::CCharacter* pAdventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
+	klib::CCharacter* pAdventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, adventurerName);
 	klib::CCharacter& adventurer = *pAdventurer;
 
 	static const klib::SMenuItem<int32_t> playAgainMenu[]
@@ -52,8 +52,7 @@ void main()
 
 	while(bPlayAgain)
 	{
-		adventurer = klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, Name);
-		initPlayerCharacter(adventurer);
+		initPlayerCharacter(adventurer, adventurerName);
 
 		std::cout << "\nSo, " << adventurer.Name << "... What brings you here?\n";
 		tavern(adventurer);	// Tavern is the main menu of our game.
@@ -69,8 +68,17 @@ void main()
 }
 
 //
-void initPlayerCharacter(klib::CCharacter& adventurer)
+void createPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 {
+	klib::CCharacter* tempadventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, name);
+	adventurer = *tempadventurer;
+	delete(tempadventurer);
+}
+
+//
+void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
+{
+	createPlayerCharacter(adventurer, name);
 	klib::SCharacterEquip& currentEquip = adventurer.CurrentEquip;
 	klib::SCharacterEquip& maxEquip		= adventurer.MaxEquip;
 #if defined(POWER_START)

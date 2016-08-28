@@ -13,12 +13,14 @@
 static double lastKeyPress = 0.5;
 static STimer timer;
 
+#define MENU_ROFFSET 6
+
 template <size_t _ArraySize, typename _ReturnType>
-_ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu")
+_ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu", bool disableEscKeyClose=false)
 {
 	optionCount = (optionCount < _ArraySize) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
-	int32_t lineOffset = game::getASCIIBackBufferHeight()-6-optionCount;
+	int32_t lineOffset = game::getASCIIBackBufferHeight()-MENU_ROFFSET-optionCount;
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "-- %s --", title.c_str() );	// Print menu title
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "Make your selection:" );
 
@@ -34,9 +36,9 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 		
 	timer.Frame();
 	lastKeyPress += timer.LastTimeSeconds;
-	if( lastKeyPress > 1.0 )
+	if( lastKeyPress > 0.8 )
 	{
-		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount]) {
+		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) {
 			lastKeyPress = 0;
 			return exitValue;
 		}
@@ -58,8 +60,8 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 }
 
 template <size_t _ArraySize, typename _ReturnType>
-_ReturnType drawMenu(const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu") {
-	return drawMenu(_ArraySize, title, menuItems, frameInput, exitValue, exitText);
+_ReturnType drawMenu(const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu", bool disableEscapeKey=false) {
+	return drawMenu(_ArraySize, title, menuItems, frameInput, exitValue, exitText, disableEscapeKey);
 }
 
 enum GAME_STATE
@@ -222,6 +224,7 @@ enum TURN_ACTION
 ,	TURN_ACTION_SENSE
 ,	TURN_ACTION_RUN
 ,	TURN_ACTION_CANCEL
+,	TURN_ACTION_CONTINUE
 };
 
 // 9
@@ -259,5 +262,6 @@ static const klib::SMenuItem<GAME_STATE> optionsSell[] =
 };
 
 #pragma pack(pop)
+
 
 #endif // __MENUS_H__9237409126340927634987234__
