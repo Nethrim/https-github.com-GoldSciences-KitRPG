@@ -17,14 +17,21 @@ void displayScore		(const klib::SCharacterScore&	adventurer);	// Displays the pl
 void displayInventory	(const klib::SInventoryItems& inventory, const std::string& characterName);
 
 template <size_t _Size1, size_t _Size2>
-int32_t displayInventoryMenu(klib::CCharacter& adventurer, const char (&menuTitle)[_Size1], const char (&exitOption)[_Size2])
+int32_t displayInventoryMenu(klib::CCharacter& adventurer, const char (&menuTitle)[_Size1], const char (&exitOption)[_Size2], bool bPrintPrice=false, bool bSellPrice=true)
 {
 	klib::SMenuItem<int32_t> itemOptions[MAX_INVENTORY_SLOTS+1];
 	char itemOption[128] = {};
 	for(uint32_t i=0; i<adventurer.Inventory.Items.Count; ++i)
 	{
-		std::string itemName = klib::getItemName(adventurer.Inventory.Items.Slots[i].Entity);
-		sprintf_s(itemOption, "- x%.2u %s", adventurer.Inventory.Items.Slots[i].Count, itemName.c_str());
+		const klib::SItem& itemEntity = adventurer.Inventory.Items.Slots[i].Entity;
+		std::string itemName = klib::getItemName(itemEntity);
+		int32_t finalPrice = klib::getItemPrice(itemEntity, bSellPrice);
+
+		if(bPrintPrice)
+			sprintf_s(itemOption, "%i coins each - x%.2u %s", finalPrice, adventurer.Inventory.Items.Slots[i].Count, itemName.c_str());
+		else
+			sprintf_s(itemOption, "- x%.2u %s", adventurer.Inventory.Items.Slots[i].Count, itemName.c_str());
+		
 		itemOptions[i].ReturnValue	= i;
  		itemOptions[i].Text			= itemOption;
 	}

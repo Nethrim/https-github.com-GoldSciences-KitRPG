@@ -143,9 +143,10 @@ static const CItem itemDescriptions[] =
 		return formattedName;
 	}
 
-	static inline int32_t getItemPrice(const SItem& item)
+	static inline int32_t getItemPrice(const SItem& item, bool bSellPrice=false)
 	{
-		return itemDescriptions[item.Index].Price*item.Level;
+		return (int32_t)( bSellPrice ? (itemDescriptions[item.Index].Price*item.Level)*.5 : itemDescriptions[item.Index].Price*item.Level );
+		;
 	}
 
 #pragma pack(pop)

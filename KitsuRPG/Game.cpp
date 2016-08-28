@@ -55,7 +55,7 @@ void equipEntityMenu
 	}	
 
 	printf(currentlyCarryingMessage.c_str(), klib::getEntityName(currentEntity, tableDefinitions, tableModifiers).c_str(), currentEntity.Level);
-	menuItems[menuItemCount++] = {256, "Back to tavern"}; 
+	menuItems[menuItemCount++] = {256, "Exit this menu"}; 
 	int32_t selectedValue = klib::displayMenu(selectYourChoiceMessage.c_str(), menuItems, menuItemCount);	
 	if(selectedValue == 256) 
 		return; 
@@ -297,6 +297,24 @@ void arsenal(klib::CCharacter& adventurer)
 	}
 }
 
+void sell(klib::CCharacter& adventurer)
+{
+	while (true)	// break the loop to leave the shop
+	{
+		int32_t indexInventory = displayInventoryMenu(adventurer, "Select an item to sell", "Back to tavern");
+		if(indexInventory == adventurer.Inventory.Items.Count) {	// exit option
+			indexInventory = adventurer.Inventory.Items.Count;	// Exit menu
+			break;
+		}
+		else {
+			const klib::SItem& itemEntity = adventurer.Inventory.Items.Slots[indexInventory].Entity;
+			int32_t itemPrice =  getItemPrice(itemEntity, true);
+			adventurer.Inventory.Items.DecreaseEntity(indexInventory);
+			printf("You sold %s and got paid %i coins for it.\n", getItemName(itemEntity).c_str(), itemPrice); 
+		}
+	}
+}
+
 void tavern(klib::CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
@@ -307,8 +325,9 @@ void tavern(klib::CCharacter& adventurer)
 	, {	3, "Visit research labs"		}
 	, {	4, "Inspect current equipment"	}
 	, {	5, "Go for a drink"				}
-	, {	6, "Display score"				}
-	, {	7, "Exit game"					}
+	, {	6, "Sell stuff you don't need"	}
+	, {	7, "Display score"				}
+	, {	8, "Exit game"					}
 	};
 
 	while (true)  // Wait for exit request
@@ -321,8 +340,9 @@ void tavern(klib::CCharacter& adventurer)
 		else if( 3 == tavernChoice ) {	labs				(adventurer);	}
 		else if( 4 == tavernChoice ) {	inspect				(adventurer);	}
 		else if( 5 == tavernChoice ) {	bar					(adventurer);	}
-		else if( 6 == tavernChoice ) {	displayScore		(adventurer.Score);	}
-		else if( 7 == tavernChoice ) {	break;	}	// 
+		else if( 6 == tavernChoice ) {	sell				(adventurer);	}
+		else if( 7 == tavernChoice ) {	displayScore		(adventurer.Score);	}
+		else if( 8 == tavernChoice ) {	break;	}	// 
 		else {	
 			printf(optionNotSupported);
 		}
@@ -487,28 +507,6 @@ void displayResume(const klib::CCharacter& adventurer)
 	printf("- Attack:\n");
 	basePoints.Attack.Print();
 	finalFlags.Print();
-}
-
-
-
-int32_t sell(klib::CCharacter& adventurer, klib::CCharacter& target)
-{
-	int32_t indexInventory = adventurer.Inventory.Items.Count;	// this initial value exits the menu
-
-	while (true)	// break the loop to leave the shop
-	{
-		indexInventory = displayInventoryMenu(adventurer, "Select an item to sell", "Back to combat options");
-		if(indexInventory == adventurer.Inventory.Items.Count) {	// exit option
-			indexInventory = adventurer.Inventory.Items.Count;	// Exit menu
-			break;
-		}
-		else if (adventurer.Inventory.Items.Slots[indexInventory].Count <= 0) {
-			printf("You don't have anymore of that. Use something else...\n"); 
-			indexInventory = adventurer.Inventory.Items.Count;
-		}
-	}
-
-	return indexInventory;
 }
 
 

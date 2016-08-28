@@ -102,7 +102,7 @@ void initPlayerCharacter(klib::CCharacter& adventurer)
 	adventurer.Inventory.Weapons		.AddElement({1,1,1});
 	adventurer.Inventory.Accessories	.AddElement({1,1,1});
 	adventurer.Inventory.Armors			.AddElement({1,1,1});
-	adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,20});
+	adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,10});
 	adventurer.Inventory.Vehicles		.AddElement({1,1,1});
 	adventurer.Inventory.Facilities		.AddElement({1,1,1});
 

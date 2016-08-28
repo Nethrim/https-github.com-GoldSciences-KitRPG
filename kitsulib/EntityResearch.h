@@ -110,7 +110,7 @@ namespace klib
 			return; 
 		} 
 	
-		menuItems[menuItemCount++] = {maxItemCount, "Back to tavern"}; 
+		menuItems[menuItemCount++] = {maxItemCount, "Exit this menu"}; 
 	
 		sprintf_s(menuItemText, "%s", selectItemToResearch.c_str());
 		int32_t selectedValue = klib::displayMenu(menuItemText, menuItems, menuItemCount); 
