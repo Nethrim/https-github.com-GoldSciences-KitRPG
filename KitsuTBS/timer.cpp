@@ -15,6 +15,7 @@ void STimer::Reset()
 	LastTimeMicroSeconds	= 0;
 	LastTimeSeconds			= 0;
 
+	FramesLastSecond		= 0;
 };
 
 void STimer::Frame()
@@ -23,4 +24,16 @@ void STimer::Frame()
 	LastTimeMicroSeconds	= (CurrentTimeStamp - PrevTimeStamp)/CountsPerMicroSecond;
 	LastTimeSeconds			= (CurrentTimeStamp - PrevTimeStamp) * SecondsPerCount;//LastTimeMicroSeconds*1000000;//(CurrentTimeStamp - PrevTimeStamp) * SecondsPerCount;
 	PrevTimeStamp = CurrentTimeStamp;
+
+	FramesThisSecond++;
+	FrameCounterSeconds	+= LastTimeSeconds;
+
+	int32_t totalFrames		= int32_t(FramesThisSecond/FrameCounterSeconds	);
+	int32_t framesPerSecond	= int32_t(totalFrames/FrameCounterSeconds		);
+	while(FrameCounterSeconds >= 1.0)
+	{
+		FramesLastSecond	= framesPerSecond;
+		FrameCounterSeconds	-= 1.0f;
+		FramesThisSecond	= 0;
+	}
 };

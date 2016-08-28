@@ -175,6 +175,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asciiscreen.cpp" />
+    <ClCompile Include="draw.cpp" />
+    <ClCompile Include="draw_intro.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="timer.cpp" />

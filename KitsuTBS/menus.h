@@ -8,8 +8,10 @@
 #ifndef __MENUS_H__9237409126340927634987234__
 #define __MENUS_H__9237409126340927634987234__
 
-double lastKeyPress = 0.5;
-STimer timer;
+#pragma pack(push, 1)
+
+static double lastKeyPress = 0.5;
+static STimer timer;
 
 template <size_t _ArraySize, typename _ReturnType>
 _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu")
@@ -256,5 +258,6 @@ static const klib::SMenuItem<GAME_STATE> optionsSell[] =
 //, { GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
 };
 
+#pragma pack(pop)
 
 #endif // __MENUS_H__9237409126340927634987234__

@@ -33,32 +33,30 @@ double noise3D( uint32_t x, uint32_t y, uint32_t z, uint32_t nWidth, uint32_t nH
 	//return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);    
 }
 
+void showMenu(SGame& instanceGame);
 
-GAME_STATE drawCredits()
+void drawAndPresentGame( SGame& instanceGame )
 {
-	static double offset = (double)game::getASCIIBackBufferHeight();// (game::getASCIIBackBufferHeight()>>1)-4;
-	if((offset+1) >= 0 && (offset+1) < (double)game::getASCIIBackBufferHeight()) game::lineToScreen((int32_t)(offset+1), 0, game::CENTER, "%-34.34s: %13.13s", "Programming"						, "Kitsu."		);
-	if((offset+2) >= 0 && (offset+2) < (double)game::getASCIIBackBufferHeight()) game::lineToScreen((int32_t)(offset+2), 0, game::CENTER, "%-34.34s: %13.13s", "Everything else"					, "Kitsu."		);
-	if((offset+3) >= 0 && (offset+3) < (double)game::getASCIIBackBufferHeight()) game::lineToScreen((int32_t)(offset+3), 0, game::CENTER, "%-34.34s: %13.13s", "Loosely based on homework code by"	, "Nethrim."	);
-	if((offset+6) >= 0 && (offset+6) < (double)game::getASCIIBackBufferHeight()) game::lineToScreen((int32_t)(offset+6), 0, game::CENTER, "Press ESC to go back.");
+	static STimer frameMeasure;
+
+	game::clearASCIIBackBuffer( ' ' );
+
+	game::lineToScreen(game::getASCIIBackBufferHeight()-2, 1, game::RIGHT, "%s.", instanceGame.UserMessage.c_str());
+	game::lineToScreen(game::getASCIIBackBufferHeight()-2, 1, game::LEFT, "sizeof(SGame): %u.", sizeof(SGame));
+
+	drawState(instanceGame);
+	showMenu(instanceGame);
+
+	frameMeasure.Frame();
+	instanceGame.FrameTimer.Frame();
+	game::lineToScreen(1, 1, game::LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
+	game::lineToScreen(2, 1, game::LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
+
 	
-	offset -= 0.01;
+	game::presentASCIIBackBuffer();
+}; 	// 
 
-	if( offset <= -5 )
-		offset = game::getASCIIBackBufferHeight()+5;
-	
-	return GAME_CREDITS;
-}
 
-void drawStage(SGame& instancedGame)	{
-
-	int32_t offset = 5;
-	for(uint32_t z=0, maxZ=TACTICAL_MAP_DEPTH; z<maxZ; ++z) {
-		char row[TACTICAL_MAP_WIDTH+1] = {};
-		memcpy(row, instancedGame.TacticalMap.Tiles[z], TACTICAL_MAP_WIDTH);
-		game::lineToScreen(offset++, 0, game::CENTER, "%s", row	);
-	}
-};
 
 void showMenu(SGame& instanceGame)	{
 	
@@ -115,7 +113,7 @@ void showMenu(SGame& instanceGame)	{
 	case	GAME_MENU_OPTIONS_SCREEN				:	instanceGame.	UserMessage = "Screen Options"			;	newAction = drawMenu(	"Screen Options"		, optionsMain			, instanceGame.FrameInput, GAME_MENU_OPTIONS		);	break;
 	case	GAME_MENU_OPTIONS_HOTKEYS				:	instanceGame.	UserMessage = "Hotkeys"					;	newAction = drawMenu(	"Hotkeys"				, optionsMain			, instanceGame.FrameInput, GAME_MENU_OPTIONS		);	break;
 	case	GAME_START_MISSION						:	instanceGame.	UserMessage = "Start mission"			;	newAction = drawMenu(	"Start mission"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	);	break;
-	case	GAME_CREDITS							:	drawCredits();	if(instanceGame.FrameInput.Keys[VK_ESCAPE]) newAction=GAME_MENU_MAIN; break;
+	case	GAME_CREDITS							:	if(instanceGame.FrameInput.Keys[VK_ESCAPE]) newAction=GAME_MENU_MAIN; break;
 	case	GAME_EXIT								:	instanceGame.	UserMessage = "Exiting game..."	;	instanceGame.bRunning = false; break;
 	default:
 		newAction=-1;
@@ -138,27 +136,6 @@ void showMenu(SGame& instanceGame)	{
 	//};
 
 };
-
-void drawAndPresentGame( SGame& instanceGame )
-{
-	static STimer frameMeasure;
-
-	game::clearASCIIBackBuffer( ' ' );
-
-	game::lineToScreen(game::getASCIIBackBufferHeight()-2, 1, game::RIGHT, "%s.", instanceGame.UserMessage.c_str());
-	game::lineToScreen(game::getASCIIBackBufferHeight()-2, 1, game::LEFT, "sizeof(SGame): %u.", sizeof(SGame));
-	
-	if(instanceGame.CurrentMenu != GAME_CREDITS)
-		drawStage(instanceGame);
-	showMenu(instanceGame);
-
-	frameMeasure.Frame();
-	game::lineToScreen(1, 1, game::LEFT, "Frame time: %.5f seconds.", frameMeasure.LastTimeSeconds);
-	//game::lineToScreen(2, 1, game::LEFT, "Frames per second: %f.", frameMeasure.LastTimeSeconds);
-
-	
-	game::presentASCIIBackBuffer();
-}; 	// 
 
 // Use this function to draw our game data
 void draw( SGame& instancedGame ) // 
@@ -189,13 +166,13 @@ int main(void)
 
 	int32_t seed = rand();
 
-	for(uint32_t z=0, maxZ=TACTICAL_MAP_DEPTH; z<maxZ; ++z)
-		for(uint32_t x=0, maxX=TACTICAL_MAP_WIDTH; x<maxX; ++x) {
-			instancedGame.TacticalMap.Tiles[z][x] = (int(noise2D(x, z, TACTICAL_MAP_WIDTH, seed)*12)) ? ' ' : 21;
+	for(uint32_t z=0, maxZ=TACTICAL_DISPLAY_DEPTH; z<maxZ; ++z)
+		for(uint32_t x=0, maxX=TACTICAL_DISPLAY_WIDTH; x<maxX; ++x) {
+			instancedGame.TacticalMap.Screen[z][x] = (int(noise2D(x, z, TACTICAL_DISPLAY_WIDTH, seed)*12)) ? ' ' : 21;
 		}
 
-	for(uint32_t z=0, maxZ=TACTICAL_MAP_DEPTH; z<maxZ; ++z)	{ instancedGame.TacticalMap.Tiles[z][0] = '#'; instancedGame.TacticalMap.Tiles[z][TACTICAL_MAP_WIDTH-1] = '#';}
-	for(uint32_t x=0, maxX=TACTICAL_MAP_WIDTH; x<maxX; ++x) { instancedGame.TacticalMap.Tiles[0][x] = '#'; instancedGame.TacticalMap.Tiles[TACTICAL_MAP_DEPTH-1][x] = '#';}
+	for(uint32_t z=0, maxZ=TACTICAL_DISPLAY_DEPTH; z<maxZ; ++z)	{ instancedGame.TacticalMap.Screen[z][0] = '#'; instancedGame.TacticalMap.Screen[z][TACTICAL_DISPLAY_WIDTH-1] = '#';}
+	for(uint32_t x=0, maxX=TACTICAL_DISPLAY_WIDTH; x<maxX; ++x) { instancedGame.TacticalMap.Screen[0][x] = '#'; instancedGame.TacticalMap.Screen[TACTICAL_DISPLAY_DEPTH-1][x] = '#';}
 
 
 	while(instancedGame.bRunning)
