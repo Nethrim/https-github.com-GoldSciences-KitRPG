@@ -8,41 +8,47 @@
 #ifndef __MENUS_H__9237409126340927634987234__
 #define __MENUS_H__9237409126340927634987234__
 
-static double lastKeyPress = 0.5;
-static STimer timer;
+double lastKeyPress = 0.5;
+STimer timer;
 
 template <size_t _ArraySize, typename _ReturnType>
-_ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput)
+_ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu")
 {
 	optionCount = (optionCount < _ArraySize) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
-	timer.Frame();
-	lastKeyPress += timer.LastTimeSeconds;
-
-	int32_t lineOffset = game::getASCIIBackBufferHeight()-10-optionCount;
+	int32_t lineOffset = game::getASCIIBackBufferHeight()-6-optionCount;
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "-- %s --", title.c_str() );	// Print menu title
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "Make your selection:" );
 
-	lineOffset += 2;
+	lineOffset += 1;
 	// Print menu options
+	char numberKey[4] = {};
 	for(size_t i=0; i<optionCount; i++) {
-		char numberKey[4] = {};
 		sprintf_s(numberKey, "%u", (uint32_t)(i+1));
 		game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, menuItems[i].Text.c_str());	
 	}
+	sprintf_s(numberKey, "%u", (uint32_t)(optionCount+1));
+	game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, exitText.c_str());	
 		
-	if( lastKeyPress > 0.5 )
+	timer.Frame();
+	lastKeyPress += timer.LastTimeSeconds;
+	if( lastKeyPress > 1.0 )
 	{
-		for(uint32_t i='1', count = '1'+optionCount; i < count; i++) 
-			if(frameInput.Keys[i]) {
+		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount]) {
+			lastKeyPress = 0;
+			return exitValue;
+		}
+
+		for(uint32_t i=0, count = optionCount; i < count; i++) 
+			if(frameInput.Keys['1'+i]) {
 				lastKeyPress = 0;
-				return menuItems[i-'1'].ReturnValue;
+				return menuItems[i].ReturnValue;
 			}
 
-		for(uint32_t i=VK_NUMPAD1, count = VK_NUMPAD1+optionCount; i < count; i++) 
-			if(frameInput.Keys[i]) {
+		for(uint32_t i=0, count = optionCount; i < count; i++) 
+			if(frameInput.Keys[VK_NUMPAD1+i]) {
 				lastKeyPress = 0;
-				return menuItems[i-VK_NUMPAD1].ReturnValue;
+				return menuItems[i].ReturnValue;
 			}
 	}
 
@@ -50,8 +56,8 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 }
 
 template <size_t _ArraySize, typename _ReturnType>
-_ReturnType drawMenu(const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput) {
-	return drawMenu(_ArraySize, title, menuItems, frameInput);
+_ReturnType drawMenu(const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, const std::string& exitText="Exit this menu") {
+	return drawMenu(_ArraySize, title, menuItems, frameInput, exitValue, exitText);
 }
 
 enum GAME_STATE
@@ -125,7 +131,7 @@ enum GAME_STATE
 };
 
 // 1
-static const klib::SMenuItem<int32_t> optionsResearch[] =
+static const klib::SMenuItem<GAME_STATE> optionsResearch[] =
 {	{ GAME_MENU_RESEARCH_WEAPON				, "Research new weapons"					}
 ,	{ GAME_MENU_RESEARCH_MODIFIER_WEAPON	, "Research new sciences"					}
 ,	{ GAME_MENU_RESEARCH_ACCESSORY			, "Research new accessories"				}
@@ -138,11 +144,11 @@ static const klib::SMenuItem<int32_t> optionsResearch[] =
 ,	{ GAME_MENU_RESEARCH_MODIFIER_VEHICLE	, "Research new advancements"				}
 ,	{ GAME_MENU_RESEARCH_FACILITY			, "Research new buildings"					}
 ,	{ GAME_MENU_RESEARCH_MODIFIER_FACILITY	, "Research new architectures"				}
-,	{ GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
+//,	{ GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
 };
 
 // 2
-static const klib::SMenuItem<int32_t> optionsInspect[] =
+static const klib::SMenuItem<GAME_STATE> optionsInspect[] =
 {	{ GAME_INSPECT_WEAPON					, "Inspect equipped weapon"					}
 ,	{ GAME_INSPECT_CHARACTER				, "Inspect equipped accessory"				}
 ,	{ GAME_INSPECT_ARMOR					, "Inspect equipped armor"					}
@@ -150,11 +156,11 @@ static const klib::SMenuItem<int32_t> optionsInspect[] =
 ,	{ GAME_INSPECT_VEHICLE					, "Inspect current vehicle"					}
 ,	{ GAME_INSPECT_FACILITY					, "Inspect current facility"				}
 ,	{ GAME_INSPECT_ITEMS					, "Show inventory"							}
-,	{ GAME_MENU_CONTROL_CENTER				, "Back to main menu"						}
+//,	{ GAME_MENU_CONTROL_CENTER				, "Back to main menu"						}
 };	
 
 // 3
-static const klib::SMenuItem<int32_t> optionsSense[] =
+static const klib::SMenuItem<GAME_STATE> optionsSense[] =
 {	{ GAME_SENSE_WEAPON						, "Inspect enemy weapon"					}
 ,	{ GAME_SENSE_ACCESSORY					, "Inspect enemy accessory"					}
 ,	{ GAME_SENSE_ARMOR						, "Inspect enemy armor"						}
@@ -162,7 +168,7 @@ static const klib::SMenuItem<int32_t> optionsSense[] =
 ,	{ GAME_SENSE_VEHICLE					, "Inspect enemy vehicle"					}
 ,	{ GAME_SENSE_FACILITY					, "Inspect enemy building"					}
 ,	{ GAME_SENSE_ITEMS						, "Peek enemy inventory"					}
-,	{ GAME_MENU_ACTION_MAIN					, "Back to action menu"						}
+//,	{ GAME_MENU_ACTION_MAIN					, "Back to action menu"						}
 };
 
 // 4
@@ -172,14 +178,14 @@ static const klib::SMenuItem<GAME_STATE> optionsEquip[] =
 ,	{ GAME_MENU_EQUIP_ARMOR					, "Equip armor"								}
 ,	{ GAME_MENU_EQUIP_VEHICLE				, "Select vehicle"							}
 ,	{ GAME_MENU_EQUIP_FACILITY				, "Assign building"							}
-,	{ GAME_MENU_CONTROL_CENTER				, "Back to main menu"						}
+//,	{ GAME_MENU_CONTROL_CENTER				, "Back to main menu"						}
 };
 
 // 5
 static const klib::SMenuItem<GAME_STATE> optionsConfig[] =
 {	{ GAME_MENU_OPTIONS_SCREEN				, "Screen size"								}
 ,	{ GAME_MENU_OPTIONS_HOTKEYS				, "Keyboard configuration"					}
-,	{ GAME_MENU_MAIN						, "Back to main menu"						}
+//,	{ GAME_MENU_MAIN						, "Back to main menu"						}
 };
 
 // 6
@@ -193,7 +199,7 @@ static const klib::SMenuItem<GAME_STATE> optionsMain[] =
 {	{ GAME_MENU_CONTROL_CENTER				, "Start new game"							}
 ,	{ GAME_MENU_OPTIONS						, "Options"									}
 ,	{ GAME_CREDITS							, "Credits"									}
-,	{ GAME_EXIT								, "Exit Game"								}
+//,	{ GAME_EXIT								, "Exit Game"								}
 };
 
 // 8
@@ -204,7 +210,7 @@ static const klib::SMenuItem<GAME_STATE> optionsControlCenter[] =
 //,	{ GAME_MENU_CONSTRUCTION_MAIN			, "Visit Factory"							}
 ,	{ GAME_MENU_BUY_MAIN					, "Buy items and/or equipment"				}
 ,	{ GAME_MENU_SELL_MAIN					, "Sell items and/or equipment"				}
-,	{ GAME_MENU_MAIN						, "Quit game"								}
+//,	{ GAME_MENU_MAIN						, "Quit game"								}
 };
 
 enum TURN_ACTION
@@ -235,7 +241,7 @@ static const klib::SMenuItem<GAME_STATE> optionsBuy[] =
 , { GAME_MENU_BUY_EQUIP_ARMOR				, "Buy Armors"								}
 , { GAME_MENU_BUY_EQUIP_VEHICLE				, "Buy Vehicles"							}
 , { GAME_MENU_BUY_EQUIP_FACILITY			, "Build Facilities"						}
-, { GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
+//, { GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
 };
 
 // 11
@@ -247,7 +253,7 @@ static const klib::SMenuItem<GAME_STATE> optionsSell[] =
 , { GAME_MENU_SELL_EQUIP_ARMOR				, "Sell Armors"								}
 , { GAME_MENU_SELL_EQUIP_VEHICLE			, "Sell Vehicles"							}
 , { GAME_MENU_SELL_EQUIP_FACILITY			, "Dismantle Facilities"					}
-, { GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
+//, { GAME_MENU_CONTROL_CENTER				, "Back to Control Center"					}
 };
 
 

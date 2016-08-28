@@ -7,10 +7,10 @@
 struct STacticalMap
 {
 
-#define TACTICAL_MAP_HEIGHT	32
-#define TACTICAL_MAP_WIDTH	32
+#define TACTICAL_MAP_DEPTH	48
+#define TACTICAL_MAP_WIDTH	TACTICAL_MAP_DEPTH*2
 
-	const char	Tiles[TACTICAL_MAP_HEIGHT][TACTICAL_MAP_WIDTH] = {};
+	char	Tiles[TACTICAL_MAP_DEPTH][TACTICAL_MAP_WIDTH] = {};
 };
 
 
@@ -22,6 +22,8 @@ struct SGame
 
 	std::string			UserMessage			= "";
 
+	klib::CCharacter	PlayerArmy	[512]	= {};
+	klib::CCharacter	EnemyArmy	[512]	= {};
 	klib::CCharacter	PlayerSquad	[32]	= {};
 	klib::CCharacter	EnemySquad	[32]	= {};
 
