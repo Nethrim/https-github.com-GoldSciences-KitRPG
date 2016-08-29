@@ -180,6 +180,12 @@ void showMenu(SGame& instanceGame)	{
 		game::lineToScreen(game::getASCIIBackBufferHeight()-2, 1, game::RIGHT, "%s.", "Unrecognized game state!!");
 	}			
 
+	if(newAction == GAME_MENU_MAIN && instanceGame.CurrentMenu != GAME_MENU_MAIN)
+	{
+		fillDisplayValueFromNoise(instanceGame.TacticalDisplay, 19, (int32_t)(instanceGame.FrameTimer.FramesLastSecond*10));
+		drawDisplayBorders(instanceGame.TacticalDisplay, '@'); 
+	}
+
 	if(newAction > -1)
 		instanceGame.CurrentMenu = (GAME_STATE)newAction;
 

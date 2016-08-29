@@ -15,7 +15,6 @@ struct STacticalDisplay
 	float						DisplayWeights	[_Depth][_Width]= {};
 	float						Speed			[_Depth][_Width]= {};
 	float						SpeedTarget		[_Depth][_Width]= {};
-	//char						TargetX			[_Depth][_Width]= {};
 };
 
 

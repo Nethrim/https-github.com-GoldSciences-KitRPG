@@ -36,7 +36,7 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 		
 	timer.Frame();
 	lastKeyPress += timer.LastTimeSeconds;
-	if( lastKeyPress > 0.8 )
+	if( lastKeyPress > 0.6 )
 	{
 		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) {
 			lastKeyPress = 0;

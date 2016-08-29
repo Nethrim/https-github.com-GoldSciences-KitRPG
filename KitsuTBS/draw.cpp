@@ -117,7 +117,7 @@ void drawState( SGame& instanceGame )
 	
 	if(instanceGame.CurrentMenu == GAME_CREDITS)
 	{
-		drawFireBackground(instanceGame.GlobalDisplay, instanceGame.FrameTimer.LastTimeSeconds);
+		drawSnowBackground(instanceGame.GlobalDisplay, instanceGame.FrameTimer.LastTimeSeconds);
 		drawGlobalDisplay(instanceGame.GlobalDisplay, 0);
 		drawCredits(instanceGame.FrameTimer.LastTimeSeconds);
 	}
