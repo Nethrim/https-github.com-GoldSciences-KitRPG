@@ -2,6 +2,12 @@
 
 #include "Game.h"
 #include "draw.h"
+#include "Profession.h"
+#include "Weapon.h"
+#include "Armor.h"
+#include "Accessory.h"
+#include "Facility.h"
+#include "Vehicle.h"
 
 #include <algorithm>
 
@@ -21,27 +27,94 @@ GAME_STATE processMenuReturn(SGame& instanceGame, TURN_ACTION returnValue)
 	}
 };
 
-GAME_STATE drawSquadSelectMenu(SGame& instanceGame, GAME_STATE returnValue)
+#define MAX_AGENT_ROWS 2
+#define MAX_AGENT_COLUMNS 3
+#define MAX_AGENT_SLOTS (MAX_AGENT_ROWS*MAX_AGENT_COLUMNS)
+
+void displayEmptySlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex)
 {
-	int32_t optionCount = instanceGame.PlayerArmy.Count;
-#define MAX_AGENT_SLOTS 6
-	std::string line;
-	for(int32_t i=0, count=MAX_AGENT_SLOTS; i<count; ++i) {
-		game::lineToScreen(instanceGame.TacticalDisplay.Depth+2+TACTICAL_DISPLAY_YPOS, 0, game::CENTER, "Agent #%u", i);
-		char formatted[128] = {};
-		sprintf_s(formatted, " %32.32s ", instanceGame.PlayerSquad.Slots[i].Entity.Name.c_str());
-		line += formatted;
+	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
+}
+
+void displayAgentSlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex, klib::CCharacter& character)
+{
+	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-36.36s", agentIndex, character.Name.c_str());
+	game::lineToScreen(offsetY+2	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Class"				, klib::getProfessionName	(character.CurrentEquip.Profession	).c_str());
+	game::lineToScreen(offsetY+3	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Weapon"				, klib::getWeaponName		(character.CurrentEquip.Weapon		).c_str());
+	game::lineToScreen(offsetY+4	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Armor"				, klib::getArmorName		(character.CurrentEquip.Armor		).c_str());
+	game::lineToScreen(offsetY+5	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Accessory"			, klib::getAccessoryName	(character.CurrentEquip.Accessory	).c_str());
+	game::lineToScreen(offsetY+6	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Vehicle"				, klib::getVehicleName		(character.CurrentEquip.Vehicle		).c_str());
+	game::lineToScreen(offsetY+7	, offsetX, game::LEFT, "%-24.24s: %-24.24s"	, "Building assigned"	, klib::getFacilityName		(character.CurrentEquip.Facility	).c_str());
+}
+
+template <size_t _Size>
+void drawSquadSlots(SGame& instanceGame, GAME_STATE returnValue, std::string (&out_agentNames)[_Size])
+{
+	game::clearASCIIBackBuffer(' ');
+	STacticalDisplay<instanceGame.TacticalDisplay.Width, instanceGame.TacticalDisplay.Depth>& display = instanceGame.TacticalDisplay;
+	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
+	static const int32_t slotHeight	= display.Depth / MAX_AGENT_ROWS;
+	std::string agentNames[MAX_AGENT_ROWS][MAX_AGENT_COLUMNS] = {};
+	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y) {
+		for(int32_t x=0, countX=MAX_AGENT_COLUMNS; x<countX; ++x) {
+			const int32_t linearIndex = y*MAX_AGENT_COLUMNS+x;
+			if(linearIndex < (int32_t)instanceGame.PlayerSquad.size())
+				agentNames[y][x] = instanceGame.PlayerSquad[linearIndex].Name;
+			else
+				agentNames[y][x] = "Position available.";
+			out_agentNames[linearIndex] = agentNames[y][x];
+		}
 	}
 
-	klib::SMenuItem<klib::CCharacter*> menuItems[64];
-	switch(returnValue) { 
-	case GAME_MENU_MAIN:
-	default: 
-		break;
+
+	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y) {
+		for(int32_t x=0, countX=MAX_AGENT_COLUMNS; x<countX; ++x) {
+			int32_t linearIndex = y*countX+x;
+			if(linearIndex < (int32_t)instanceGame.PlayerSquad.size())
+				displayAgentSlot(TACTICAL_DISPLAY_YPOS+25*y, 1+53*x, linearIndex+1, instanceGame.PlayerSquad[linearIndex]);
+			else											 
+				displayEmptySlot(TACTICAL_DISPLAY_YPOS+25*y, 1+53*x, linearIndex+1);
+		}
+	}
+}
+
+GAME_STATE drawSquadSetupMenu(SGame& instanceGame, GAME_STATE returnValue)
+{
+	int32_t optionCount = (int32_t)instanceGame.PlayerArmy.size();
+	std::string agentNames[MAX_AGENT_ROWS*MAX_AGENT_COLUMNS] = {};
+
+	drawSquadSlots(instanceGame, returnValue, agentNames);
+
+	klib::SMenuItem<int32_t> menuItems[] = 
+	{	{0, "%s"}
+	,	{1, "%s"}
+	,	{2, "%s"}
+	,	{3, "%s"}
+	,	{4, "%s"}
+	,	{5, "%s"}
+	};
+
+	for(uint32_t i=0, count=(uint32_t)size(menuItems); i<count; i++) {
+		char buffer[128];
+		if(i < instanceGame.PlayerSquad.size()) {
+			sprintf_s(buffer, menuItems[i].Text.c_str(), instanceGame.PlayerSquad[i].Name.c_str());
+			menuItems[i].Text = buffer;
+		}
+		else
+			menuItems[i].Text = "Empty slot";
 	}
 
+	int32_t result = drawMenu(instanceGame.UserMessage = "Squad Setup", menuItems, instanceGame.FrameInput, 6);
+	if(6 == result)
+		return GAME_MENU_CONTROL_CENTER;
 
-	return returnValue;
+	if( result < 0 || result > 5 )
+		return GAME_MENU_SQUAD_SETUP_MAIN;
+
+	if( result < ((int32_t)instanceGame.PlayerSquad.size()) && 0 == instanceGame.FrameInput.Keys[VK_LSHIFT] )
+		return GAME_MENU_EQUIP_MAIN;
+
+	return GAME_MENU_EQUIP_CHARACTER;
 }
 
 void showMenu(SGame& instanceGame)	{
@@ -50,10 +123,11 @@ void showMenu(SGame& instanceGame)	{
 	switch(instanceGame.CurrentMenu) {
 	case	GAME_MENU_MAIN							:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Main Menu"				, optionsMain			, instanceGame.FrameInput, GAME_EXIT				, "Exit game", true));	break;
 	case	GAME_MENU_CONTROL_CENTER				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Control Center"			, optionsControlCenter	, instanceGame.FrameInput, GAME_MENU_MAIN			));	break;
-	case	GAME_MENU_SQUAD_SELECT_MAIN				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Squad Select"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
+	case	GAME_MENU_SQUAD_SETUP_MAIN				:	;	instanceGame.UserMessage	= "Squad Setup"; newAction = processMenuReturn(instanceGame, drawSquadSetupMenu(instanceGame, GAME_MENU_SQUAD_SETUP_MAIN	));	break;
+	//case	GAME_MENU_SQUAD_SETUP_MAIN				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Squad Select"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
 	case	GAME_MENU_CONSTRUCTION_MAIN				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Construction"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_MAIN			));	break;
 	case	GAME_MENU_EQUIP_MAIN					:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Equipment"				, optionsEquip			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
-	case	GAME_MENU_EQUIP_CHARACTER				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Equip character"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
+	case	GAME_MENU_EQUIP_CHARACTER				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Agent seletion"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
 	case	GAME_MENU_EQUIP_WEAPON					:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Equip weapon"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
 	case	GAME_MENU_EQUIP_ACCESSORY				:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Equip accessory"			, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;
 	case	GAME_MENU_EQUIP_ARMOR					:	;	newAction = processMenuReturn(instanceGame, drawMenu(	instanceGame.UserMessage	= "Equip armor"				, optionsMain			, instanceGame.FrameInput, GAME_MENU_CONTROL_CENTER	));	break;

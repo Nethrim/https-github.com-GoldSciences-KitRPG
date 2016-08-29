@@ -20,7 +20,7 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 {
 	optionCount = (optionCount < _ArraySize) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
-	int32_t lineOffset = game::getASCIIBackBufferHeight()-MENU_ROFFSET-optionCount;
+	int32_t lineOffset = (int32_t)(game::getASCIIBackBufferHeight()-MENU_ROFFSET-optionCount);
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "-- %s --", title.c_str() );	// Print menu title
 	game::lineToScreen(lineOffset++,	0, game::CENTER, "Make your selection:" );
 
@@ -43,13 +43,13 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 			return exitValue;
 		}
 
-		for(uint32_t i=0, count = optionCount; i < count; i++) 
+		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys['1'+i]) {
 				lastKeyPress = 0;
 				return menuItems[i].ReturnValue;
 			}
 
-		for(uint32_t i=0, count = optionCount; i < count; i++) 
+		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys[VK_NUMPAD1+i]) {
 				lastKeyPress = 0;
 				return menuItems[i].ReturnValue;
@@ -67,7 +67,7 @@ _ReturnType drawMenu(const std::string& title, const klib::SMenuItem<_ReturnType
 enum GAME_STATE
 {	GAME_MENU_MAIN							
 ,	GAME_MENU_CONTROL_CENTER				
-,	GAME_MENU_SQUAD_SELECT_MAIN				
+,	GAME_MENU_SQUAD_SETUP_MAIN				
 ,	GAME_MENU_CONSTRUCTION_MAIN				
 ,	GAME_MENU_EQUIP_MAIN					
 ,	GAME_MENU_EQUIP_CHARACTER				
@@ -209,7 +209,7 @@ static const klib::SMenuItem<GAME_STATE> optionsMain[] =
 // 8
 static const klib::SMenuItem<GAME_STATE> optionsControlCenter[] = 
 {	{ GAME_START_MISSION					, "Start new Mission"						}
-,	{ GAME_MENU_SQUAD_SELECT_MAIN			, "Set up Squad"							}
+,	{ GAME_MENU_SQUAD_SETUP_MAIN			, "Set up Squad"							}
 ,	{ GAME_MENU_RESEARCH					, "Visit Labs"								}
 //,	{ GAME_MENU_CONSTRUCTION_MAIN			, "Visit Factory"							}
 ,	{ GAME_MENU_BUY_MAIN					, "Buy items and/or equipment"				}

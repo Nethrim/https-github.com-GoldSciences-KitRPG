@@ -18,7 +18,7 @@ void drawFireBackground( STacticalDisplay<_Width, _Height>& display, double last
 		{
 			if( rand()%2 )
 			{
-				display.Screen			[displayDepth-1][x] = '.';
+				display.Screen			[displayDepth-1][x] = (rand()%2) ? '.' : (rand()%2) ? '`' : ',';
 				display.DisplayWeights	[displayDepth-1][x] = .0000001f;
 				display.Speed			[displayDepth-1][x] = rand()*.033f;
 				display.SpeedTarget		[displayDepth-1][x] = rand()*.033f;
@@ -41,26 +41,27 @@ void drawFireBackground( STacticalDisplay<_Width, _Height>& display, double last
 			display.DisplayWeights[z][x] += (float)(lastTimeSeconds*display.Speed[z][x]);
 
 			if(display.Speed[z][x] < display.SpeedTarget[z][x])
-				display.Speed	[z][x] += (float)((lastTimeSeconds+z*.001)*.01);//*(z/(float)TACTICAL_DISPLAY_DEPTH));
+				display.Speed	[z][x] += (float)((lastTimeSeconds)*z*1.5);//*.001);//*(z/(float)TACTICAL_DISPLAY_DEPTH));
 			else
-				display.Speed	[z][x] -= (float)((lastTimeSeconds+z*.001)*.01);//*(z/(float)TACTICAL_DISPLAY_DEPTH));
+				display.Speed	[z][x] -= (float)((lastTimeSeconds)*z*1.5);//*.001);//*(z/(float)TACTICAL_DISPLAY_DEPTH));
 				
 			int randX = (rand()%2) ? rand()%5-2 : 0;
 			if(display.DisplayWeights[z][x] > 1.0)
 			{
-				if(0 == z-1)
+				if(1 == z)
 				{
-					display.Screen			[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= ' ';
-					display.DisplayWeights	[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= 0;
-					display.Speed			[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= 0; 
-					display.SpeedTarget		[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= 0;
+					display.Screen			[0][x]	= ' ';
+					display.DisplayWeights	[0][x]	= 0;
+					display.Speed			[0][x]	= 0; 
+					display.SpeedTarget		[0][x]	= 0;
 				}
 				else
 				{
-					display.Screen			[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= display.Screen[z][x];
-					display.DisplayWeights	[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= 0.000001f;
-					display.Speed			[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= rand()*.0025f; 
-					display.SpeedTarget		[z-1][std::max(std::min((int)x+randX, displayWidth-1), 0)]	= rand()*.0025f*(z/(float)displayDepth);
+					int32_t xpos = std::max(std::min((int)x+randX, displayWidth-1), 0);
+					display.Screen			[z-1][xpos]	= display.Screen[z][x];
+					display.DisplayWeights	[z-1][xpos]	= 0.00001f;
+					display.Speed			[z-1][xpos]	= rand()*.002f; 
+					display.SpeedTarget		[z-1][xpos]	= rand()*.02f*(z/(float)displayDepth);
 				}
 
 				display.Screen			[z][x]		= ' ';

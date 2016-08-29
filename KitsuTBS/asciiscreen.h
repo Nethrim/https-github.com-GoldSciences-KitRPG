@@ -28,9 +28,12 @@ namespace game
 	void presentASCIIBackBuffer( void );
 
 	enum ALIGN
-	{	LEFT	= 1
-	,	RIGHT	= 2
-	,	CENTER	= 3
+	{	LEFT	= 0x1
+	,	RIGHT	= 0x2
+	,	CENTER	= 0x3
+	,	TOP		= 0x4
+	,	BOTTOM	= 0x8
+	,	VCENTER	= TOP | BOTTOM
 	};
 
 	template <typename... _Args>

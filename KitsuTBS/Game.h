@@ -8,13 +8,14 @@
 template<size_t _Width, size_t _Depth>
 struct STacticalDisplay
 {
-	const uint32_t				Width			= (uint32_t)_Width;
-	const uint32_t				Depth			= (uint32_t)_Depth;
-	char						Screen			[_Depth][_Width] = {};
-	float						DisplayWeights	[_Depth][_Width] = {};
-	float						Speed			[_Depth][_Width] = {};
-	float						SpeedTarget		[_Depth][_Width] = {};
-	char						TargetX			[_Depth][_Width] = {};
+	static const uint32_t		Width			= (uint32_t)_Width;
+	static const uint32_t		Depth			= (uint32_t)_Depth;
+
+	char						Screen			[_Depth][_Width]= {};
+	float						DisplayWeights	[_Depth][_Width]= {};
+	float						Speed			[_Depth][_Width]= {};
+	float						SpeedTarget		[_Depth][_Width]= {};
+	//char						TargetX			[_Depth][_Width]= {};
 };
 
 
@@ -49,10 +50,13 @@ struct SGame
 	klib::SCharacterInventory	PlayerInventory			= {};
 	klib::SCharacterInventory	EnemyInventory			= {};
 
-	klib::SEntityContainer<klib::CCharacter, 256>	PlayerArmy	= {};
-	klib::SEntityContainer<klib::CCharacter, 256>	EnemyArmy	= {};
-	klib::SEntityContainer<klib::CCharacter, 16>	PlayerSquad = {};
-	klib::SEntityContainer<klib::CCharacter, 16>	EnemySquad	= {};
+	int32_t						SelectedPlayerUnit		= 0;
+	int32_t						SelectedTargetUnit		= 0;
+
+	std::vector<klib::CCharacter>	PlayerArmy	= {};
+	std::vector<klib::CCharacter>	EnemyArmy	= {};
+	std::vector<klib::CCharacter>	PlayerSquad = {};
+	std::vector<klib::CCharacter>	EnemySquad	= {};
 
 #define TACTICAL_DISPLAY_DEPTH	48
 #define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2

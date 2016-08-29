@@ -45,7 +45,7 @@ static const std::string namesSpecialThanks[] =
 ,	"Nicolas"												
 ,	"Martin"												
 ,	"Mauro"													
-,	"Luis"													
+,	"Luis"														
 ,	"Carlos"												
 ,	"... and also to those which I'm going to add later to this list!"	
 };
@@ -56,28 +56,30 @@ GAME_STATE drawCredits(double lastFrameTime)
 	int32_t curLine = (int32_t)offset;
 	static int32_t maxDifference = curLine;
 	int32_t curDifference = curLine;
-	curLine = (int32_t)(curLine += 1);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "-- Loosely based on homework code and idea by --"	);
-	curLine = (int32_t)(curLine += 2);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Nethrim"											);
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "-- Programming --"								);
-	curLine = (int32_t)(curLine += 2);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Kitsu"											);
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "-- Beta Testing --"								);
-	curLine = (int32_t)(curLine += 2);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Gorby"											);
-	curLine = (int32_t)(curLine += 2);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Nethrim"											);
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "-- Everything else --"							);
-	curLine = (int32_t)(curLine += 2);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Kitsu"											);
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "-- Special Thanks to --"							);
+	double bbHeight = (double)game::getASCIIBackBufferHeight();
+#define IN_RANGE(currentline) (currentline >= 0 && currentline < bbHeight)
+	curLine = (int32_t)(curLine += 1);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "-- Loosely based on homework code and idea by --"	);
+	curLine = (int32_t)(curLine += 2);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "Nethrim"											);
+	curLine = (int32_t)(curLine += 4);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "-- Programming --"								);
+	curLine = (int32_t)(curLine += 2);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "Kitsu"											);
+	curLine = (int32_t)(curLine += 4);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "-- Beta Testing --"								);
+	curLine = (int32_t)(curLine += 2);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "Gorby"											);
+	curLine = (int32_t)(curLine += 2);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "Nethrim"											);
+	curLine = (int32_t)(curLine += 4);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "-- Everything else --"							);
+	curLine = (int32_t)(curLine += 2);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "Kitsu"											);
+	curLine = (int32_t)(curLine += 4);	if(IN_RANGE(curLine))	game::lineToScreen(curLine, 0, game::CENTER, "-- Special Thanks to --"							);
 	for(uint32_t i=0; i<klib::size(namesSpecialThanks); ++i) {
 		curLine = (int32_t)(curLine += 2);	
-		if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight()) 
+		if(curLine >= 0 && curLine < bbHeight) 
 			game::lineToScreen(curLine, 0, game::CENTER, "%s", namesSpecialThanks[i].c_str());
 	}
 
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Have a nice weekend!"								); else if(curLine < -10) game::lineToScreen( game::getASCIIBackBufferHeight()+curLine+maxDifference, 0, game::CENTER, "Press ESC to go back."							);
-	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < (double)game::getASCIIBackBufferHeight())	game::lineToScreen(curLine, 0, game::CENTER, "Press ESC to go back."							); else if(curLine < -10) game::lineToScreen( game::getASCIIBackBufferHeight()+curLine+maxDifference, 0, game::CENTER, "Press ESC to go back."							);
+	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < bbHeight)	game::lineToScreen(curLine, 0, game::CENTER, "Have a nice weekend!"					); 
+	curLine = (int32_t)(curLine += 4);	if(curLine >= 0 && curLine < bbHeight)	game::lineToScreen(curLine, 0, game::CENTER, "Press ESC to return to main menu."	); 
 	
 	maxDifference = std::max(curLine - curDifference, maxDifference);
 
-	offset -= lastFrameTime*10.0;
+	offset -= lastFrameTime*6.0;
 
 	if( offset <= -maxDifference )
 		offset += game::getASCIIBackBufferHeight()+maxDifference;

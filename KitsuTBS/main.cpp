@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "menus.h"
+#include "Enemy.h"
 
 #define NOMINMAX
 
@@ -67,6 +68,12 @@ int main(void)
 
 	fillDisplayValueFromNoise(instancedGame.TacticalDisplay, 19, seed);
 	drawDisplayBorders(instancedGame.TacticalDisplay, '@');
+	
+	instancedGame.PlayerArmy.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+	instancedGame.PlayerArmy.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+
+	instancedGame.PlayerSquad.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+	instancedGame.PlayerSquad.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 
 	while(instancedGame.bRunning)
 	{
