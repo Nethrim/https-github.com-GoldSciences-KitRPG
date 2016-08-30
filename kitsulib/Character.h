@@ -29,7 +29,7 @@ namespace klib
 		SResearchGroup			Armor		= {};
 		SResearchGroup			Vehicle		= {};
 		SResearchGroup			Facility	= {};
-		SStageProp				StageProp	= {};
+		SResearchGroup			StageProp	= {};
 	};
 
 	// We don't need to create complex classes from SItem

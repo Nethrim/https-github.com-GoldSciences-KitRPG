@@ -11,10 +11,10 @@ struct STacticalDisplay
 	static const uint32_t		Width			= (uint32_t)_Width;
 	static const uint32_t		Depth			= (uint32_t)_Depth;
 
-	char						Screen			[_Depth][_Width]= {};
-	float						DisplayWeights	[_Depth][_Width]= {};
-	float						Speed			[_Depth][_Width]= {};
-	float						SpeedTarget		[_Depth][_Width]= {};
+	char						Screen			[_Depth][_Width] = {};
+	float						DisplayWeights	[_Depth][_Width] = {};
+	float						Speed			[_Depth][_Width] = {};
+	float						SpeedTarget		[_Depth][_Width] = {};
 };
 
 
@@ -33,29 +33,31 @@ void clearDisplay( STacticalDisplay<_Width, _Height>& display, char clearValue =
 template<size_t _Width, size_t _Height>
 void drawDisplayBorders( STacticalDisplay<_Width, _Height>& display, char value)
 {
-	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z){ display.Screen[z][0] = value; display.Screen[z][_Width-1] = value; }
-	for(uint32_t x=0, maxX=_Width; x<maxX; ++x){ display.Screen[0][x] = value; display.Screen[_Height-1][x] = value; }
+	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z){ display.Screen[z][0] = value; display.Screen[z][_Width-1]  = value; }
+	for(uint32_t x=0, maxX=_Width ; x<maxX; ++x){ display.Screen[0][x] = value; display.Screen[_Height-1][x] = value; }
 }
 
 
 struct SGame
 {
-	bool						bRunning				= true;
+	bool							bRunning			= true;
 
-	GAME_STATE					CurrentMenu				= GAME_MENU_MAIN;
+	SGameState						CurrentState			= {GAME_STATE_MENU_MAIN,};
 
-	std::string					UserMessage				= "";
+	std::string						UserMessage			= "";
 
-	klib::SCharacterInventory	PlayerInventory			= {};
-	klib::SCharacterInventory	EnemyInventory			= {};
+	klib::SCharacterInventory		PlayerInventory		= {};
+	klib::SCharacterInventory		EnemyInventory		= {};
 
-	int32_t						SelectedPlayerUnit		= 0;
-	int32_t						SelectedTargetUnit		= 0;
+	int32_t							SelectedPlayerUnit	= 0;
+	int32_t							SelectedTargetUnit	= 0;
 
-	std::vector<klib::CCharacter>	PlayerArmy	= {};
-	std::vector<klib::CCharacter>	EnemyArmy	= {};
-	std::vector<klib::CCharacter>	PlayerSquad = {};
-	std::vector<klib::CCharacter>	EnemySquad	= {};
+	klib::SCharacterResearch		PlayerResearch		= {};
+
+	std::vector<klib::CCharacter>	PlayerArmy			= {};
+	std::vector<klib::CCharacter>	EnemyArmy			= {};
+	std::vector<klib::CCharacter>	PlayerSquad			= {};
+	std::vector<klib::CCharacter>	EnemySquad			= {};
 
 #define TACTICAL_DISPLAY_DEPTH	48
 #define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2
@@ -63,10 +65,13 @@ struct SGame
 	STacticalDisplay<TACTICAL_DISPLAY_WIDTH, TACTICAL_DISPLAY_DEPTH>			TacticalDisplay	= {};
 	STacticalDisplay<DEFAULT_ASCII_SCREEN_WIDTH, DEFAULT_ASCII_SCREEN_HEIGHT>	GlobalDisplay	= {};
 
-	SInput						FrameInput				= {};
-	STimer						FrameTimer				= {};
+	SInput							FrameInput			= {};
+	STimer							FrameTimer			= {};
 
-	int16_t						Seed					= 0;
+	uint32_t						TickCount			= 0;
+	float							NextTick			= 0;
+
+	int16_t							Seed				= 0;
 };
 
 
