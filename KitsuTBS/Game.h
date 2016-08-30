@@ -48,7 +48,7 @@ struct SGame
 	bool							bRunning			= true;
 	bool							bStarted			= false;
 
-	SGameState						CurrentState			= {GAME_STATE_MENU_MAIN,};
+	SGameState						State				= {GAME_STATE_MENU_MAIN,};
 
 	std::string						UserMessage			= "";
 

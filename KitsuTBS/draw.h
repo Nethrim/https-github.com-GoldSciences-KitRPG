@@ -10,7 +10,7 @@
 #define TACTICAL_DISPLAY_YPOS 5
 
 template<size_t _Width, size_t _Height>
-void drawSnowBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawSnowBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds, uint32_t disturbance = 1 )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
@@ -47,7 +47,7 @@ void drawSnowBackground( SWeightedDisplay<_Width, _Height>& display, double last
 			else
 				display.Speed	[z][x] -= (float)((display.Speed[z][x]*lastTimeSeconds*lastTimeSeconds))*.1f;
 				
-			int randX = (rand()%2) ? rand()%3-1 : 0;
+			int randX = (rand()%2) ? rand()%(1+disturbance*2)-disturbance : 0;
 			if(display.DisplayWeights[z][x] > 1.0)
 			{
 				int32_t xpos = std::max(std::min((int)x+randX, displayWidth-1), 0);
@@ -66,7 +66,7 @@ void drawSnowBackground( SWeightedDisplay<_Width, _Height>& display, double last
 }
 
 template<size_t _Width, size_t _Height>
-void drawFireBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawFireBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds, uint32_t disturbance = 2 )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
@@ -103,7 +103,7 @@ void drawFireBackground( SWeightedDisplay<_Width, _Height>& display, double last
 			else
 				display.Speed	[z][x] -= (float)((display.Speed[z][x]*lastTimeSeconds))*(display.Depth-z);
 			
-			int randX = (rand()%2) ? rand()%5-2 : 0;
+			int randX = (rand()%2) ? rand()%(1+disturbance*2)-disturbance : 0;
 			if(display.DisplayWeights[z][x] > 1.0)
 			{
 				if(1 == z)
@@ -137,13 +137,13 @@ void drawFireBackground( SWeightedDisplay<_Width, _Height>& display, double last
 
 
 template<size_t _Width, size_t _Height>
-void drawBubblesBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawBubblesBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds, uint32_t disturbance=2 )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
 
 	for(int32_t x=0; x<displayWidth; ++x) 
-		if(display.Screen	[displayDepth-1][x] == ' ') 
+		if(display.Screen[displayDepth-1][x] == ' ') 
 		{
 			if( rand()%2 )
 			{
@@ -174,9 +174,9 @@ void drawBubblesBackground( SWeightedDisplay<_Width, _Height>& display, double l
 			else
 				display.Speed	[z][x] -= (float)((display.Speed[z][x]*lastTimeSeconds))*(display.Depth-z);
 
-			display.Speed	[z][x] *= .999f;
+			display.Speed[z][x] *= .999f;
 			
-			int randX = (rand()%2) ? rand()%5-2 : 0;
+			int randX = (rand()%2) ? rand()%(1+disturbance*2)-disturbance : 0;
 			if(display.DisplayWeights[z][x] > 1.0)
 			{
 				if(1 == z)
@@ -216,6 +216,59 @@ void drawBubblesBackground( SWeightedDisplay<_Width, _Height>& display, double l
 		}
 }
 
+
+// returns true if done printing all the text.
+template <size_t _Size>
+bool getMessageSlow(char (&message)[_Size], const std::string& textToPrint, float& nextTick, uint32_t& tickCount, double lastFrameSeconds)
+{
+	int32_t mesLen = strlen(message);
+	nextTick	+= (float)lastFrameSeconds;
+	if(nextTick > 0.05f)
+	{
+		tickCount++;
+		if(mesLen < (_Size-2))
+		{
+			if(mesLen-1 < (int32_t)textToPrint.size()){
+				message[mesLen-1]	= textToPrint[mesLen-1];
+				message[mesLen]		= '_';
+				message[mesLen+1]	= 0;
+				nextTick = 0.0f;
+			}
+			else if(0 == (tickCount % 100))
+			{
+				if(message[mesLen-1] == '_')
+					message[mesLen-1] = ' ';
+				else
+					message[mesLen-1] = '_';
+			}
+		}
+		else 
+			return true;
+	}
+
+	return ( mesLen-1 == textToPrint.size() );
+}
+
+// returns true if done printing all the text.
+template <size_t _Size>
+bool drawMessageSlow(char (&message)[_Size], const std::string& textToPrint, float& nextTick, uint32_t& tickCount, double lastFrameSeconds)
+{
+	bool bDonePrinting = getMessageSlow(message, textToPrint, nextTick, tickCount, lastFrameSeconds);
+
+	game::lineToScreen(game::getASCIIBackBufferHeight()/2-1, game::getASCIIBackBufferWidth()/2-textToPrint.size()/2, game::LEFT, message);
+	return bDonePrinting;
+};
+
+
+
+template<size_t _Width, size_t _Height>
+void drawSpaceBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
+{
+	for(uint32_t i=0; i<_Width; ++i)
+		if(rand()%2)
+			display.Screen[_Height-1][i] = (rand()%2) ? '.' : '|';
+	return drawFireBackground( display, lastTimeSeconds*4, 0 );
+}
 
 
 

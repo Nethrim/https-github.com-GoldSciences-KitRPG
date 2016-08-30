@@ -115,7 +115,7 @@ SGameState drawResearchMenu(SGame& instanceGame, SGameState returnState)
 
 	int32_t selectedChoice;
 	int32_t iArmySoldier, iSquadSoldier;
-	switch(instanceGame.CurrentState.Substate)
+	switch(instanceGame.State.Substate)
 	{
 	case GAME_SUBSTATE_ACCESSORY:
 		for(iArmySoldier=0; iArmySoldier<armySize; ++iArmySoldier)
@@ -168,7 +168,7 @@ SGameState drawResearchMenu(SGame& instanceGame, SGameState returnState)
 		return {GAME_STATE_MENU_CONTROL_CENTER};
 
 
-	return instanceGame.CurrentState;
+	return instanceGame.State;
 }
 
 
@@ -232,21 +232,52 @@ void drawIntro( SGame& instanceGame )
 	memcpy(&instanceGame.TacticalDisplay.Screen[displayDepth	/2+1]	[displayWidth/2-strlen("Game"		)/2-1], "Game" 		, strlen("Game"		));
 };
 
+
+
+SGameState drawResearch(SGame& instanceGame, SGameState returnValue)
+{
+	static const std::string textToPrint = "Welcome back commander " + instanceGame.PlayerName + ".";
+
+	bool bDonePrinting = drawMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.NextTick, instanceGame.TickCount, instanceGame.FrameTimer.LastTimeSeconds);
+	if ( bDonePrinting ) {
+		return drawMenu(instanceGame.UserMessage = "Control Center", optionsControlCenter, instanceGame.FrameInput, {GAME_STATE_MENU_MAIN,}, {GAME_STATE_WELCOME_COMMANDER,}, false, "Exit this menu");
+	}
+
+	return returnValue;
+};
+
 void drawState( SGame& instanceGame )
 {
-	if(instanceGame.CurrentState.State == GAME_STATE_MENU_MAIN)
+	if(instanceGame.State.State == GAME_STATE_MENU_MAIN)
 		drawIntro(instanceGame);
 	
-	if(instanceGame.CurrentState.State == GAME_STATE_CREDITS)
+	if(instanceGame.State.State == GAME_STATE_CREDITS)
 	{
 		drawSnowBackground(instanceGame.GlobalDisplay, instanceGame.FrameTimer.LastTimeSeconds);
 		drawDisplay(instanceGame.GlobalDisplay, 0);
 		drawCredits(instanceGame.FrameTimer.LastTimeSeconds);
 	}
-	else if(instanceGame.CurrentState.State == GAME_STATE_MENU_RESEARCH)
+	else if(instanceGame.State.State == GAME_STATE_MENU_RESEARCH)
 	{
-		drawBubblesBackground(instanceGame.TacticalDisplay, instanceGame.FrameTimer.LastTimeSeconds/2);
+		static const std::string textToPrint = "Resarch center.";
+
+		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.NextTick, instanceGame.TickCount, instanceGame.FrameTimer.LastTimeSeconds);
+		memcpy(&instanceGame.TacticalDisplay.Screen[instanceGame.TacticalDisplay.Depth/2][instanceGame.TacticalDisplay.Width/2-(strlen(instanceGame.SlowMessage)+1)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
+		if ( bDonePrinting )
+			drawBubblesBackground(instanceGame.TacticalDisplay, instanceGame.FrameTimer.LastTimeSeconds/2);
+
 		drawDisplay(instanceGame.TacticalDisplay, 5);
+	}
+	else if(instanceGame.State.State == GAME_STATE_MENU_SQUAD_SETUP)
+	{
+		static const std::string textToPrint = "  Squad setup.";
+
+		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.NextTick, instanceGame.TickCount, instanceGame.FrameTimer.LastTimeSeconds);
+		memcpy(&instanceGame.GlobalDisplay.Screen[instanceGame.GlobalDisplay.Depth/2][instanceGame.GlobalDisplay.Width/2-(strlen(instanceGame.SlowMessage)+4)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
+		if ( bDonePrinting )
+			drawSpaceBackground(instanceGame.GlobalDisplay, instanceGame.FrameTimer.LastTimeSeconds/2);
+
+		drawDisplay(instanceGame.GlobalDisplay, 0);
 	}
 	else
 		drawDisplay(instanceGame.TacticalDisplay, 5);
@@ -265,14 +296,25 @@ void displayEmptySlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex)
 void displayAgentSlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex, klib::CCharacter& character, bool bAddFieldNames=false)
 {
 	std::string nameAndLevelText;
+	klib::SEntityPoints agentPoints = klib::calculateFinalPoints( character );
 	if( bAddFieldNames ) {
-		nameAndLevelText = character.Name												;	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-24.24s (Lv. %i)", agentIndex		, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		nameAndLevelText = klib::getProfessionName	(character.CurrentEquip.Profession	);	game::lineToScreen(offsetY+2	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		nameAndLevelText = klib::getWeaponName		(character.CurrentEquip.Weapon		);	game::lineToScreen(offsetY+3	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
-		nameAndLevelText = klib::getArmorName		(character.CurrentEquip.Armor		);	game::lineToScreen(offsetY+4	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
-		nameAndLevelText = klib::getAccessoryName	(character.CurrentEquip.Accessory	);	game::lineToScreen(offsetY+5	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Accessory"			, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
-		nameAndLevelText = klib::getVehicleName		(character.CurrentEquip.Vehicle		);	game::lineToScreen(offsetY+6	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Vehicle"				, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
-		//nameAndLevelText = klib::getFacilityName	(character.CurrentEquip.Facility	);	game::lineToScreen(offsetY+7	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Building assigned"	, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+		nameAndLevelText = character.Name													;	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-25.25s (Lv. %i)", agentIndex		, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getProfessionName	(character.CurrentEquip.Profession		);	game::lineToScreen(offsetY+2	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getWeaponName		(character.CurrentEquip.Weapon			);	game::lineToScreen(offsetY+3	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
+		nameAndLevelText = klib::getArmorName		(character.CurrentEquip.Armor			);	game::lineToScreen(offsetY+4	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
+		nameAndLevelText = klib::getAccessoryName	(character.CurrentEquip.Accessory		);	game::lineToScreen(offsetY+5	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Accessory"			, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
+		nameAndLevelText = klib::getVehicleName		(character.CurrentEquip.Vehicle			);	game::lineToScreen(offsetY+6	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Vehicle"				, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
+		//nameAndLevelText = klib::getFacilityName	(character.CurrentEquip.Facility		);	game::lineToScreen(offsetY+7	, offsetX, game::LEFT, "%-10.10s: %-26.26s (Lv. %i)"	, "Building assigned"	, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+		nameAndLevelText = std::to_string			(agentPoints.LifeMax.Health				);	game::lineToScreen(offsetY+8	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Health"		, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.LifeMax.Shield				);	game::lineToScreen(offsetY+9	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Shield"		, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Hit					);	game::lineToScreen(offsetY+10	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Hit Chance"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Damage				);	game::lineToScreen(offsetY+11	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Damage"		, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Absorption			);	game::lineToScreen(offsetY+12	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Absorption"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.DirectDamage.Health	);	game::lineToScreen(offsetY+13	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "DD. Health"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.DirectDamage.Shield	);	game::lineToScreen(offsetY+14	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "DD. Shield"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Speed.Attack		);	game::lineToScreen(offsetY+15	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Atk. Speed"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Speed.Movement		);	game::lineToScreen(offsetY+16	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Mov. Speed"	, nameAndLevelText.c_str());
+		nameAndLevelText = std::to_string			(agentPoints.Attack.Speed.Reflexes		);	game::lineToScreen(offsetY+17	, offsetX, game::LEFT, "%-10.10s: %-26.26s"	, "Reflexes"	, nameAndLevelText.c_str());
 	}
 	else {
 		nameAndLevelText = character.Name												;	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- %-21.21s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
@@ -287,19 +329,19 @@ void displayAgentSlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex, klib
 
 void drawSquadSlots(SGame& instanceGame, SGameState returnValue)
 {
-	game::clearASCIIBackBuffer(' ');
+	//game::clearASCIIBackBuffer(' ');
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
-	static const int32_t slotHeight	= 7;// display.Depth / (MAX_AGENT_ROWS);
+	static const int32_t slotRowSpace	= 20;// display.Depth / (MAX_AGENT_ROWS);
 
 	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y)
 		for(int32_t x=0, countX=MAX_AGENT_COLUMNS; x<countX; ++x) 
 		{
 			int32_t linearIndex = y*countX+x;
 			if(linearIndex < (int32_t)instanceGame.PlayerSquad.size())
-				displayAgentSlot(TACTICAL_DISPLAY_YPOS+slotHeight*2*y, 1+slotWidth*x, linearIndex+1, instanceGame.PlayerSquad[linearIndex], true);
+				displayAgentSlot(TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, linearIndex+1, instanceGame.PlayerSquad[linearIndex], true);
 			else											 
-				displayEmptySlot(TACTICAL_DISPLAY_YPOS+slotHeight*2*y, 1+slotWidth*x, linearIndex+1);
+				displayEmptySlot(TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, linearIndex+1);
 		}
 }
 
