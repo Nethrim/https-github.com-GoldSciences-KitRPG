@@ -6,7 +6,7 @@
 
 
 template<size_t _Width, size_t _Depth>
-struct STacticalDisplay
+struct SWeightedDisplay
 {
 	static const uint32_t		Width			= (uint32_t)_Width;
 	static const uint32_t		Depth			= (uint32_t)_Depth;
@@ -19,28 +19,34 @@ struct STacticalDisplay
 
 
 template<size_t _Width, size_t _Height>
-void fillDisplayValueFromNoise( STacticalDisplay<_Width, _Height>& display, char value, int32_t seed, char clearValue = ' ') {
+void fillDisplayValueFromNoise( SWeightedDisplay<_Width, _Height>& display, char value, int32_t seed, char clearValue = ' ') {
 	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z)
 		for(uint32_t x=0, maxX=_Width; x<maxX; ++x)
 			display.Screen[z][x] = (int(noise2D(x, z, _Width, seed)*12)) ? clearValue : value;
 }
 
 template<size_t _Width, size_t _Height>
-void clearDisplay( STacticalDisplay<_Width, _Height>& display, char clearValue = ' ') {
+void clearDisplay( SWeightedDisplay<_Width, _Height>& display, char clearValue = ' ') {
 	memset(display.Screen, clearValue, _Height*_Width);
 }
 
 template<size_t _Width, size_t _Height>
-void drawDisplayBorders( STacticalDisplay<_Width, _Height>& display, char value)
+void drawDisplayBorders( SWeightedDisplay<_Width, _Height>& display, char value)
 {
 	for(uint32_t z=0, maxZ=_Height; z<maxZ; ++z){ display.Screen[z][0] = value; display.Screen[z][_Width-1]  = value; }
 	for(uint32_t x=0, maxX=_Width ; x<maxX; ++x){ display.Screen[0][x] = value; display.Screen[_Height-1][x] = value; }
 }
 
+#define TACTICAL_DISPLAY_DEPTH	48
+#define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2
+
+typedef SWeightedDisplay<TACTICAL_DISPLAY_WIDTH, TACTICAL_DISPLAY_DEPTH>			STacticalDisplay;
+typedef	SWeightedDisplay<DEFAULT_ASCII_SCREEN_WIDTH, DEFAULT_ASCII_SCREEN_HEIGHT>	SGlobalDisplay	;
 
 struct SGame
 {
 	bool							bRunning			= true;
+	bool							bStarted			= false;
 
 	SGameState						CurrentState			= {GAME_STATE_MENU_MAIN,};
 
@@ -59,11 +65,8 @@ struct SGame
 	std::vector<klib::CCharacter>	PlayerSquad			= {};
 	std::vector<klib::CCharacter>	EnemySquad			= {};
 
-#define TACTICAL_DISPLAY_DEPTH	48
-#define TACTICAL_DISPLAY_WIDTH	TACTICAL_DISPLAY_DEPTH*2
-
-	STacticalDisplay<TACTICAL_DISPLAY_WIDTH, TACTICAL_DISPLAY_DEPTH>			TacticalDisplay	= {};
-	STacticalDisplay<DEFAULT_ASCII_SCREEN_WIDTH, DEFAULT_ASCII_SCREEN_HEIGHT>	GlobalDisplay	= {};
+	STacticalDisplay				TacticalDisplay		= {};
+	SGlobalDisplay					GlobalDisplay		= {};
 
 	SInput							FrameInput			= {};
 	STimer							FrameTimer			= {};
@@ -71,14 +74,16 @@ struct SGame
 	uint32_t						TickCount			= 0;
 	float							NextTick			= 0;
 
+	char							SlowMessage[256]	= {'_',};
+
 	int16_t							Seed				= 0;
+
+	std::string						PlayerName			= "Anonymous";
 };
 
-
+void initGame(SGame& instanceGame);
 void drawState( SGame& instanceGame );
 void showMenu(SGame& instanceGame);
-
-
 
 static double noise1D(uint32_t x, uint64_t Seed=15731) {
 	x = (x<<13) ^ x;

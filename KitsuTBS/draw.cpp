@@ -1,5 +1,12 @@
 #include "draw.h"
 
+#include "Profession.h"
+#include "Weapon.h"
+#include "Armor.h"
+#include "Accessory.h"
+#include "Facility.h"
+#include "Vehicle.h"
+
 void drawIntro(SGame& instanceGame);
 static const std::string namesProgramming[] =
 {	"Kitsu"											
@@ -203,7 +210,7 @@ SGameState drawCredits(double lastFrameTime)
 }
 
 template<size_t _Width, size_t _Depth>
-void drawDisplay(STacticalDisplay<_Width, _Depth>& source, uint32_t offset)	
+void drawDisplay(SWeightedDisplay<_Width, _Depth>& source, uint32_t offset)	
 {
 	for(uint32_t z=0, maxZ=std::min(source.Depth, game::getASCIIBackBufferHeight()-1-offset); z<maxZ; ++z) {
 		char row[_Width+1] = {};
@@ -245,3 +252,92 @@ void drawState( SGame& instanceGame )
 		drawDisplay(instanceGame.TacticalDisplay, 5);
 }
 
+
+#define MAX_AGENT_ROWS 2
+#define MAX_AGENT_COLUMNS 3
+#define MAX_AGENT_SLOTS (MAX_AGENT_ROWS*MAX_AGENT_COLUMNS)
+
+void displayEmptySlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex)
+{
+	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
+}
+
+void displayAgentSlot(int32_t offsetY, int32_t offsetX, int32_t agentIndex, klib::CCharacter& character, bool bAddFieldNames=false)
+{
+	std::string nameAndLevelText;
+	if( bAddFieldNames ) {
+		nameAndLevelText = character.Name												;	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- Agent #%u: %-24.24s (Lv. %i)", agentIndex		, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getProfessionName	(character.CurrentEquip.Profession	);	game::lineToScreen(offsetY+2	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getWeaponName		(character.CurrentEquip.Weapon		);	game::lineToScreen(offsetY+3	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
+		nameAndLevelText = klib::getArmorName		(character.CurrentEquip.Armor		);	game::lineToScreen(offsetY+4	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
+		nameAndLevelText = klib::getAccessoryName	(character.CurrentEquip.Accessory	);	game::lineToScreen(offsetY+5	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Accessory"			, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
+		nameAndLevelText = klib::getVehicleName		(character.CurrentEquip.Vehicle		);	game::lineToScreen(offsetY+6	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Vehicle"				, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
+		//nameAndLevelText = klib::getFacilityName	(character.CurrentEquip.Facility	);	game::lineToScreen(offsetY+7	, offsetX, game::LEFT, "%-9.9s: %-26.26s (Lv. %i)"	, "Building assigned"	, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+	}
+	else {
+		nameAndLevelText = character.Name												;	game::lineToScreen(offsetY		, offsetX, game::LEFT, "-- %-21.21s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getProfessionName	(character.CurrentEquip.Profession	);	game::lineToScreen(offsetY+2	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		nameAndLevelText = klib::getWeaponName		(character.CurrentEquip.Weapon		);	game::lineToScreen(offsetY+3	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
+		nameAndLevelText = klib::getArmorName		(character.CurrentEquip.Armor		);	game::lineToScreen(offsetY+4	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
+		nameAndLevelText = klib::getAccessoryName	(character.CurrentEquip.Accessory	);	game::lineToScreen(offsetY+5	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
+		nameAndLevelText = klib::getVehicleName		(character.CurrentEquip.Vehicle		);	game::lineToScreen(offsetY+6	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
+		//nameAndLevelText = klib::getFacilityName	(character.CurrentEquip.Facility	);	game::lineToScreen(offsetY+7	, offsetX, game::LEFT, "%-24.24s (Lv. %i)"		, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+	}
+}
+
+void drawSquadSlots(SGame& instanceGame, SGameState returnValue)
+{
+	game::clearASCIIBackBuffer(' ');
+	SGlobalDisplay& display = instanceGame.GlobalDisplay;
+	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
+	static const int32_t slotHeight	= 7;// display.Depth / (MAX_AGENT_ROWS);
+
+	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y)
+		for(int32_t x=0, countX=MAX_AGENT_COLUMNS; x<countX; ++x) 
+		{
+			int32_t linearIndex = y*countX+x;
+			if(linearIndex < (int32_t)instanceGame.PlayerSquad.size())
+				displayAgentSlot(TACTICAL_DISPLAY_YPOS+slotHeight*2*y, 1+slotWidth*x, linearIndex+1, instanceGame.PlayerSquad[linearIndex], true);
+			else											 
+				displayEmptySlot(TACTICAL_DISPLAY_YPOS+slotHeight*2*y, 1+slotWidth*x, linearIndex+1);
+		}
+}
+
+
+SGameState drawSquadSetupMenu(SGame& instanceGame, SGameState returnValue)
+{
+	int32_t optionCount = (int32_t)instanceGame.PlayerArmy.size();
+	drawSquadSlots(instanceGame, returnValue);
+
+	klib::SMenuItem<int32_t> menuItems[] = 
+	{	{0, "%s"}
+	,	{1, "%s"}
+	,	{2, "%s"}
+	,	{3, "%s"}
+	,	{4, "%s"}
+	,	{5, "%s"}
+	};
+
+	for(uint32_t i=0, count=(uint32_t)size(menuItems); i<count; i++) 
+	{
+		char buffer[128];
+		if(i < instanceGame.PlayerSquad.size()) {
+			sprintf_s(buffer, menuItems[i].Text.c_str(), instanceGame.PlayerSquad[i].Name.c_str());
+			menuItems[i].Text = buffer;
+		}
+		else
+			menuItems[i].Text = "Empty slot";
+	}
+
+	int32_t result = drawMenu(instanceGame.UserMessage = "Squad Setup", menuItems, instanceGame.FrameInput, 6);
+	if(6 == result)
+		return {GAME_STATE_WELCOME_COMMANDER};
+
+	if( result < 0 || result > 5 )
+		return {GAME_STATE_MENU_SQUAD_SETUP};
+
+	if( result < ((int32_t)instanceGame.PlayerSquad.size()) && 0 == instanceGame.FrameInput.Keys[VK_LSHIFT] )
+		return {GAME_STATE_MENU_EQUIPMENT};
+
+	return {GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_CHARACTER};
+}

@@ -119,10 +119,7 @@ void game::clearASCIIBackBuffer( int value )
 		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
 		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
 		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-		csbiInfo.dwCursorPosition.Y = csbiInfo.dwSize.Y-1;
-		//csbiInfo.dwCursorPosition.Y = 0;
-		//csbiInfo.dwCursorPosition.X = 0;
-		//csbiInfo.dwCursorPosition.X = 0;
+		csbiInfo.dwCursorPosition.Y = _backBufferHeight/2;//csbiInfo.dwSize.Y-1;
 		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
 	}
 
@@ -131,7 +128,7 @@ void game::clearASCIIBackBuffer( int value )
 void game::presentASCIIFrontBuffer( void )
 {
 #if defined( WIN32 )
-	static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
+	const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {};
     GetConsoleScreenBufferInfo( hConsoleOut, &csbiInfo );
 	COORD   Coords = {0, csbiInfo.dwSize.Y-_backBufferHeight};
@@ -148,6 +145,8 @@ void game::presentASCIIFrontBuffer( void )
 		fprintf(stdout, "\n%s", _frontBuffer );
 	}
 #endif
+
+
 };
 
 void game::presentASCIIBackBuffer( void )

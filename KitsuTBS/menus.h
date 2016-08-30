@@ -10,10 +10,10 @@
 
 #pragma pack(push, 1)
 
-static double lastKeyPress = 0.5;
-static STimer timer;
-
 #define MENU_ROFFSET 6
+
+extern double drawMenu_lastKeyPress;
+extern STimer drawMenu_timer;
 
 template <size_t _ArraySize, typename _ReturnType>
 _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, _ReturnType noActionValue = -1, bool disableEscKeyClose=false, const std::string& exitText="Exit this menu")
@@ -34,24 +34,24 @@ _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::S
 	sprintf_s(numberKey, "%u", (uint32_t)(optionCount+1));
 	game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, exitText.c_str());	
 		
-	timer.Frame();
-	lastKeyPress += timer.LastTimeSeconds;
-	if( lastKeyPress > 0.6 )
+	drawMenu_timer.Frame();
+	drawMenu_lastKeyPress += drawMenu_timer.LastTimeSeconds;
+	if( drawMenu_lastKeyPress > 0.6 )
 	{
 		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) {
-			lastKeyPress = 0;
+			drawMenu_lastKeyPress = 0;
 			return exitValue;
 		}
 
 		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys['1'+i]) {
-				lastKeyPress = 0;
+				drawMenu_lastKeyPress = 0;
 				return menuItems[i].ReturnValue;
 			}
 
 		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys[VK_NUMPAD1+i]) {
-				lastKeyPress = 0;
+				drawMenu_lastKeyPress = 0;
 				return menuItems[i].ReturnValue;
 			}
 	}
@@ -76,6 +76,7 @@ enum GAME_SUBSTATE : uint8_t
 ,	GAME_SUBSTATE_STAGEPROP
 ,	GAME_SUBSTATE_ITEM
 ,	GAME_SUBSTATE_SKILL
+,	GAME_SUBSTATE_RESET
 };
 
 enum GAME_STATE_EX : uint8_t
@@ -108,6 +109,36 @@ struct SGameState
 };
 
 // 1
+static const klib::SMenuItem<SGameState> optionsMain[] = 
+{	{ {	GAME_STATE_WELCOME_COMMANDER	, GAME_SUBSTATE_RESET	}, "Start new game"	}
+,	{ {	GAME_STATE_MENU_OPTIONS			, GAME_SUBSTATE_MAIN	}, "Options"		}
+,	{ {	GAME_STATE_CREDITS				, GAME_SUBSTATE_MAIN	}, "Credits"		}
+};
+
+// 2
+static const klib::SMenuItem<SGameState> optionsMainInGame[] = 
+{	{ {	GAME_STATE_WELCOME_COMMANDER	, GAME_SUBSTATE_MAIN	}, "Continue game"	}
+,	{ {	GAME_STATE_WELCOME_COMMANDER	, GAME_SUBSTATE_RESET	}, "Start new game"	}
+,	{ {	GAME_STATE_MENU_OPTIONS			, GAME_SUBSTATE_MAIN	}, "Options"		}
+,	{ {	GAME_STATE_CREDITS				, GAME_SUBSTATE_MAIN	}, "Credits"		}
+};
+
+// 3
+static const klib::SMenuItem<SGameState> optionsConfig[] =
+{	{ {GAME_STATE_MENU_OPTIONS_SCREEN	}, "Screen size"									}
+,	{ {GAME_STATE_MENU_OPTIONS_HOTKEYS	}, "Keyboard configuration"							}
+};
+
+// 4
+static const klib::SMenuItem<SGameState> optionsControlCenter[] = 
+{	{	{ GAME_STATE_START_MISSION		}, "Start new Mission"								}
+,	{	{ GAME_STATE_MENU_SQUAD_SETUP	}, "Set up Squad"									}
+,	{	{ GAME_STATE_MENU_RESEARCH		}, "Visit Labs"										}
+,	{	{ GAME_STATE_MENU_BUY			}, "Buy items and/or equipment"						}
+,	{	{ GAME_STATE_MENU_SELL			}, "Sell items and/or equipment"					}
+};
+
+// 5
 static const klib::SMenuItem<SGameState> optionsResearch[] =
 {	{ {GAME_STATE_MENU_RESEARCH, GAME_SUBSTATE_WEAPON		}, "Research new weapons"		}
 ,	{ {GAME_STATE_MENU_RESEARCH, GAME_SUBSTATE_ACCESSORY	}, "Research new accessories"	}
@@ -117,7 +148,7 @@ static const klib::SMenuItem<SGameState> optionsResearch[] =
 ,	{ {GAME_STATE_MENU_RESEARCH, GAME_SUBSTATE_FACILITY		}, "Research new buildings"		}
 };
 
-// 2
+// 6
 static const klib::SMenuItem<SGameState> optionsInspect[] =
 {	{ {	GAME_STATE_MENU_INSPECT, GAME_SUBSTATE_WEAPON		}, "Inspect equipped weapon"	}
 ,	{ {	GAME_STATE_MENU_INSPECT, GAME_SUBSTATE_CHARACTER	}, "Inspect equipped accessory"	}
@@ -128,7 +159,7 @@ static const klib::SMenuItem<SGameState> optionsInspect[] =
 ,	{ {	GAME_STATE_MENU_INSPECT, GAME_SUBSTATE_ITEM			}, "Show inventory"				}
 };	
 
-// 3
+// 7
 static const klib::SMenuItem<SGameState> optionsSense[] =
 {	{ {	GAME_STATE_MENU_SENSE, GAME_SUBSTATE_WEAPON			}, "Inspect enemy weapon"		}
 ,	{ {	GAME_STATE_MENU_SENSE, GAME_SUBSTATE_ACCESSORY		}, "Inspect enemy accessory"	}
@@ -139,7 +170,7 @@ static const klib::SMenuItem<SGameState> optionsSense[] =
 ,	{ {	GAME_STATE_MENU_SENSE, GAME_SUBSTATE_ITEM			}, "Peek enemy inventory"		}
 };
 
-// 4
+// 8
 static const klib::SMenuItem<SGameState> optionsEquip[] =
 {	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_WEAPON		}, "Equip weapon"				}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ACCESSORY	}, "Equip accessorie"			}
@@ -148,34 +179,6 @@ static const klib::SMenuItem<SGameState> optionsEquip[] =
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_VEHICLE	}, "Equip vehicle"				}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_FACILITY	}, "Build facility"				}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ITEM		}, "Equip items"				}
-};
-
-// 5
-static const klib::SMenuItem<SGameState> optionsConfig[] =
-{	{ {GAME_STATE_MENU_OPTIONS_SCREEN	}, "Screen size"									}
-,	{ {GAME_STATE_MENU_OPTIONS_HOTKEYS	}, "Keyboard configuration"							}
-};
-
-// 6
-static const klib::SMenuItem<int32_t> optionsAreYouSure[]
-{	{ 1, "Yes"	}
-,	{ 0, "No"	}
-};
-
-// 7
-static const klib::SMenuItem<SGameState> optionsMain[] = 
-{	{ {	GAME_STATE_WELCOME_COMMANDER	}, "Start new game"									}
-,	{ {	GAME_STATE_MENU_OPTIONS			}, "Options"										}
-,	{ {	GAME_STATE_CREDITS				}, "Credits"										}
-};
-
-// 8
-static const klib::SMenuItem<SGameState> optionsControlCenter[] = 
-{	{	{ GAME_STATE_START_MISSION		}, "Start new Mission"								}
-,	{	{ GAME_STATE_MENU_SQUAD_SETUP	}, "Set up Squad"									}
-,	{	{ GAME_STATE_MENU_RESEARCH		}, "Visit Labs"										}
-,	{	{ GAME_STATE_MENU_BUY			}, "Buy items and/or equipment"						}
-,	{	{ GAME_STATE_MENU_SELL			}, "Sell items and/or equipment"					}
 };
 
 // 9
@@ -200,7 +203,6 @@ static const klib::SMenuItem<SGameState> optionsSell[] =
 ,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ITEM		}	, "Sell items"					}
 };
 
-
 enum TURN_ACTION
 {	TURN_ACTION_ATTACK
 ,	TURN_ACTION_INVENTORY
@@ -219,6 +221,13 @@ static const klib::SMenuItem<TURN_ACTION> optionsCombatTurn[] =
 , { TURN_ACTION_SENSE		, "Sense"			}
 , { TURN_ACTION_CANCEL		, "Cancel turn"		}
 , { TURN_ACTION_RUN			, "Run"				}
+};
+
+
+// 12
+static const klib::SMenuItem<int32_t> optionsAreYouSure[]
+{	{ 1, "Yes"	}
+,	{ 0, "No"	}
 };
 
 #pragma pack(pop)

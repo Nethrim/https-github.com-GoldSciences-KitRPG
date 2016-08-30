@@ -10,7 +10,7 @@
 #define TACTICAL_DISPLAY_YPOS 5
 
 template<size_t _Width, size_t _Height>
-void drawSnowBackground( STacticalDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawSnowBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
@@ -66,7 +66,7 @@ void drawSnowBackground( STacticalDisplay<_Width, _Height>& display, double last
 }
 
 template<size_t _Width, size_t _Height>
-void drawFireBackground( STacticalDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawFireBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
@@ -137,7 +137,7 @@ void drawFireBackground( STacticalDisplay<_Width, _Height>& display, double last
 
 
 template<size_t _Width, size_t _Height>
-void drawBubblesBackground( STacticalDisplay<_Width, _Height>& display, double lastTimeSeconds )
+void drawBubblesBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
 {
 	int32_t displayWidth	= (int32_t)display.Width;
 	int32_t displayDepth	= (int32_t)display.Depth;
