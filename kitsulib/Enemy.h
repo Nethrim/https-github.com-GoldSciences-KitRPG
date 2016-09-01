@@ -34,7 +34,7 @@ namespace klib
 	,	{CHARACTER_TYPE_ENEMY,	15,		70,		15,	300	,	{}	,	{DEATH_STATUS_INFLICT	,	DEATH_STATUS_IMMUNITY	},	"Death"		}
 	};
 
-	void setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType);
+	void setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType);
 #pragma pack(pop)
 }	// namespace
 #endif // __ENEMY_H__923409234902364897234__

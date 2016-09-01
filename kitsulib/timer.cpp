@@ -10,6 +10,8 @@ void STimer::Reset()
 {
 	QueryPerformanceFrequency( ( LARGE_INTEGER* )&CountsPerSecond );
 	CountsPerMicroSecond	= CountsPerSecond/1000000;
+	if( 0 == CountsPerMicroSecond )
+		CountsPerMicroSecond = 1;
 	SecondsPerCount			= (1.0 / (CountsPerSecond));
 	QueryPerformanceCounter( ( LARGE_INTEGER* )&PrevTimeStamp );		
 	LastTimeMicroSeconds	= 0;

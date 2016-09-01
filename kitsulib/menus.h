@@ -2,6 +2,7 @@
 #include "input.h"
 #include "timer.h"
 #include "asciiscreen.h"
+#include "Misc.h"
 
 #include <Windows.h>
 
@@ -12,46 +13,69 @@
 
 #define MENU_ROFFSET 6
 
-extern double drawMenu_lastKeyPress;
+extern uint32_t drawMenu_tickCount;
+extern float drawMenu_tickTime;
+//extern double drawMenu_lastKeyPress;
 extern STimer drawMenu_timer;
+extern klib::SAccumulator<double> drawMenu_accumulator;
+
+template <size_t _ArraySize>
+void resetCursorString(char (&textContainer)[_ArraySize]) {
+	textContainer[textContainer[1] = 0] = '_';
+}
+
 
 template <size_t _ArraySize, typename _ReturnType>
 _ReturnType drawMenu(size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], SInput& frameInput, _ReturnType exitValue, _ReturnType noActionValue = -1, bool disableEscKeyClose=false, const std::string& exitText="Exit this menu")
 {
+	drawMenu_timer.Frame();
+
 	optionCount = (optionCount < _ArraySize) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
-	int32_t lineOffset = (int32_t)(game::getASCIIBackBufferHeight()-MENU_ROFFSET-optionCount);
-	game::lineToScreen(lineOffset++,	0, game::CENTER, "-- %s --", title.c_str() );	// Print menu title
-	game::lineToScreen(lineOffset++,	0, game::CENTER, "Make your selection:" );
+	int32_t lineOffset = (int32_t)(klib::getASCIIBackBufferHeight()-MENU_ROFFSET-5-optionCount);
 
+	const std::string textToPrint = "-- " + title + " --";
+	static char slowMessage[128] = {'_',};
+
+	bool bDonePrinting = getMessageSlow(slowMessage, textToPrint, drawMenu_timer.LastTimeSeconds*2);
+	klib::lineToScreen(lineOffset++,	0, klib::CENTER, slowMessage);		//"-- %s --", title.c_str() );	// Print menu title
+	if( !bDonePrinting )
+		return noActionValue;
+
+	lineOffset += 1;
+	klib::lineToScreen(lineOffset++,	0, klib::CENTER, "Make your selection:" );
 	lineOffset += 1;
 	// Print menu options
 	char numberKey[4] = {};
 	for(size_t i=0; i<optionCount; i++) {
 		sprintf_s(numberKey, "%u", (uint32_t)(i+1));
-		game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, menuItems[i].Text.c_str());	
+		klib::lineToScreen(lineOffset++, 10, klib::CENTER, "%2.2s: %-38.38s", numberKey, menuItems[i].Text.c_str());	
 	}
-	sprintf_s(numberKey, "%u", (uint32_t)(optionCount+1));
-	game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, exitText.c_str());	
+	sprintf_s(numberKey, "0");//"%u", (uint32_t)(optionCount+1));
+	klib::lineToScreen(klib::getASCIIBackBufferHeight()-MENU_ROFFSET, 10, klib::CENTER, "%2.2s: %-38.38s", numberKey, exitText.c_str());	
+	//game::lineToScreen(lineOffset++, 10, game::CENTER, "%2.2s: %-38.38s", numberKey, exitText.c_str());	
 		
-	drawMenu_timer.Frame();
-	drawMenu_lastKeyPress += drawMenu_timer.LastTimeSeconds;
-	if( drawMenu_lastKeyPress > 0.6 )
+	//drawMenu_lastKeyPress += drawMenu_timer.LastTimeSeconds;
+	//if( drawMenu_lastKeyPress > 0.6 )
+	if( drawMenu_accumulator.Accumulate(drawMenu_timer.LastTimeSeconds) )
 	{
-		if(frameInput.Keys['1'+optionCount] || frameInput.Keys[VK_NUMPAD1+optionCount] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) {
-			drawMenu_lastKeyPress = 0;
+		if(frameInput.Keys['0'] || frameInput.Keys[VK_NUMPAD0] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) {
+			drawMenu_accumulator.Value = 0;
+			resetCursorString(slowMessage);
 			return exitValue;
 		}
 
 		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys['1'+i]) {
-				drawMenu_lastKeyPress = 0;
+				drawMenu_accumulator.Value = 0;
+				resetCursorString(slowMessage);
 				return menuItems[i].ReturnValue;
 			}
 
 		for(uint32_t i=0, count = (uint32_t)optionCount; i < count; i++) 
 			if(frameInput.Keys[VK_NUMPAD1+i]) {
-				drawMenu_lastKeyPress = 0;
+				drawMenu_accumulator.Value = 0;
+				resetCursorString(slowMessage);
 				return menuItems[i].ReturnValue;
 			}
 	}
@@ -77,6 +101,8 @@ enum GAME_SUBSTATE : uint8_t
 ,	GAME_SUBSTATE_ITEM
 ,	GAME_SUBSTATE_SKILL
 ,	GAME_SUBSTATE_RESET
+,	GAME_SUBSTATE_SCREEN				
+,	GAME_SUBSTATE_HOTKEY			
 };
 
 enum GAME_STATE_EX : uint8_t
@@ -92,8 +118,6 @@ enum GAME_STATE_EX : uint8_t
 ,	GAME_STATE_MENU_SELL
 ,	GAME_STATE_MENU_USE
 ,	GAME_STATE_MENU_OPTIONS						
-,	GAME_STATE_MENU_OPTIONS_SCREEN				
-,	GAME_STATE_MENU_OPTIONS_HOTKEYS				
 ,	GAME_STATE_START_MISSION						
 ,	GAME_STATE_WELCOME_COMMANDER					
 ,	GAME_STATE_CREDITS							
@@ -104,8 +128,6 @@ struct SGameState
 {
 	GAME_STATE_EX State;
 	GAME_SUBSTATE Substate;
-	GAME_STATE_EX PreviousState;
-	GAME_SUBSTATE PreviousSubState;
 };
 
 // 1
@@ -125,8 +147,8 @@ static const klib::SMenuItem<SGameState> optionsMainInGame[] =
 
 // 3
 static const klib::SMenuItem<SGameState> optionsConfig[] =
-{	{ {GAME_STATE_MENU_OPTIONS_SCREEN	}, "Screen size"									}
-,	{ {GAME_STATE_MENU_OPTIONS_HOTKEYS	}, "Keyboard configuration"							}
+{	{ {GAME_STATE_MENU_OPTIONS			, GAME_SUBSTATE_SCREEN	}, "Screen size"					}
+,	{ {GAME_STATE_MENU_OPTIONS			, GAME_SUBSTATE_HOTKEY	}, "Keyboard configuration"			}
 };
 
 // 4
@@ -173,34 +195,34 @@ static const klib::SMenuItem<SGameState> optionsSense[] =
 // 8
 static const klib::SMenuItem<SGameState> optionsEquip[] =
 {	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_WEAPON		}, "Equip weapon"				}
-,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ACCESSORY	}, "Equip accessorie"			}
+,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ACCESSORY	}, "Equip accessories"			}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ARMOR		}, "Equip armor"				}
-,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_CHARACTER	}, "Hire agent"					}
+,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_CHARACTER	}, "Assign another agent"		}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_VEHICLE	}, "Equip vehicle"				}
-,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_FACILITY	}, "Build facility"				}
+,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_FACILITY	}, "Assign facility"			}
 ,	{ {	GAME_STATE_MENU_EQUIPMENT, GAME_SUBSTATE_ITEM		}, "Equip items"				}
 };
 
 // 9
 static const klib::SMenuItem<SGameState> optionsBuy[] =
-{	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_WEAPON		}	, "Buy weapons"					}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ACCESSORY	}	, "Buy accessories"				}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ARMOR		}	, "Buy armors"					}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_CHARACTER	}	, "Hire agents"					}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_VEHICLE		}	, "Buy vehicles"				}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_FACILITY		}	, "Build facilities"			}
-,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ITEM			}	, "Buy items"					}
+{	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_WEAPON			}, "Buy weapons"				}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ACCESSORY		}, "Buy accessories"			}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ARMOR			}, "Buy armors"					}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_CHARACTER		}, "Hire agents"				}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_VEHICLE			}, "Buy vehicles"				}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_FACILITY			}, "Build facilities"			}
+,	{ {	GAME_STATE_MENU_BUY, GAME_SUBSTATE_ITEM				}, "Buy items"					}
 };
 
 // 10
-static const klib::SMenuItem<SGameState> optionsSell[] =
-{	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_WEAPON		}	, "Sell weapons"				}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ACCESSORY	}	, "Sell accessories"			}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ARMOR		}	, "Sell armors"					}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_CHARACTER	}	, "Sack agents"					}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_VEHICLE		}	, "Buy vehicles"				}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_FACILITY	}	, "Dismantle facilities"		}
-,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ITEM		}	, "Sell items"					}
+static const klib::SMenuItem<SGameState> optionsSell[] =	
+{	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_WEAPON			}, "Sell weapons"				}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ACCESSORY		}, "Sell accessories"			}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ARMOR			}, "Sell armors"				}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_CHARACTER		}, "Sack agents"				}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_VEHICLE			}, "Buy vehicles"				}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_FACILITY		}, "Dismantle facilities"		}
+,	{ {	GAME_STATE_MENU_SELL, GAME_SUBSTATE_ITEM			}, "Sell items"					}
 };
 
 enum TURN_ACTION

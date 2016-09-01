@@ -89,12 +89,12 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 	currentEquip.Vehicle	.Index		= (int16_t)std::min(3U, size(klib::definitionsVehicle		)-1);
 	currentEquip.Facility	.Index		= (int16_t)std::min(3U, size(klib::definitionsFacilities	)-1);
 
-	currentEquip.Weapon		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersWeapon		)-1);
-	currentEquip.Accessory	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersAccessory	)-1);
-	currentEquip.Armor		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersArmor		)-1);
-	currentEquip.Profession	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersProfession	)-1);
-	currentEquip.Vehicle	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersVehicle		)-1);
-	currentEquip.Facility	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersFacilities	)-1);
+	currentEquip.Weapon		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersWeapon			)-1);
+	currentEquip.Accessory	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersAccessory		)-1);
+	currentEquip.Armor		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersArmor			)-1);
+	currentEquip.Profession	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersProfession		)-1);
+	currentEquip.Vehicle	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersVehicle			)-1);
+	currentEquip.Facility	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersFacilities		)-1);
 
 	currentEquip.Weapon		.Level		= 10;
 	currentEquip.Accessory	.Level		= 10;

@@ -21,27 +21,27 @@ public:
 	}
 } bbDeleter;
 
-char* game::getASCIIBackBuffer( void )
+char* klib::getASCIIBackBuffer( void )
 {
 	return _backBuffer;
 };
 
-const char* game::getASCIIFrontBuffer( void )
+const char* klib::getASCIIFrontBuffer( void )
 {
 	return _frontBuffer;
 };
 
-uint32_t game::getASCIIBackBufferWidth( void )
+uint32_t klib::getASCIIBackBufferWidth( void )
 {
 	return _backBufferWidth;
 };
 
-uint32_t game::getASCIIBackBufferHeight( void )
+uint32_t klib::getASCIIBackBufferHeight( void )
 {
 	return _backBufferHeight;
 };
 
-void game::swapASCIIBuffers( void )
+void klib::swapASCIIBuffers( void )
 {
 	char* bB		= _backBuffer;
 	char* fB		= _frontBuffer;
@@ -51,7 +51,7 @@ void game::swapASCIIBuffers( void )
 };
 
 
-void game::initASCIIScreen()
+void klib::initASCIIScreen()
 {
 	static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
@@ -87,14 +87,14 @@ void game::initASCIIScreen()
 	csbiInfo.wAttributes		= FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY;
 
 	SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-	game::clearASCIIBackBuffer(' ');
-	game::presentASCIIBackBuffer();
-	game::clearASCIIBackBuffer(' ');
-	game::presentASCIIBackBuffer();
+	klib::clearASCIIBackBuffer(' ');
+	klib::presentASCIIBackBuffer();
+	klib::clearASCIIBackBuffer(' ');
+	klib::presentASCIIBackBuffer();
 }
 
 
-void game::clearASCIIBackBuffer( int value )
+void klib::clearASCIIBackBuffer( int value )
 {
 	if( 0 == _backBuffer )
 	{
@@ -125,7 +125,7 @@ void game::clearASCIIBackBuffer( int value )
 
 };
 
-void game::presentASCIIFrontBuffer( void )
+void klib::presentASCIIFrontBuffer( void )
 {
 #if defined( WIN32 )
 	const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -149,7 +149,7 @@ void game::presentASCIIFrontBuffer( void )
 
 };
 
-void game::presentASCIIBackBuffer( void )
+void klib::presentASCIIBackBuffer( void )
 {
 	swapASCIIBuffers();
 	presentASCIIFrontBuffer();

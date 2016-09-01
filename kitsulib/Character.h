@@ -126,14 +126,23 @@ namespace klib
 	SEntityFlags				calculateFinalFlags				(const SCharacter& character);
 	void						rest							(SCharacter& adventurerPoints);	// Take a nap and recover Life Points up to Max Value.
 
+
+	struct SCellCoord
+	{
+		int32_t x;
+		int32_t z;
+	};
+
 	class CCharacter : public SCharacter
 	{
 	public:
-		std::string				Name			= "Unnamed";
+		SCellCoord				Position	= {};
+		std::string				Name		= "Unnamed";
 
 		CCharacter() = default;
 		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus, const std::string& name)
 			:SCharacter	(characterType, maxHP, hitChance, attack, coins, characterEffect, characterStatus)
+			,Position	({0,0})
 			,Name		(name)
 			{};
 	};

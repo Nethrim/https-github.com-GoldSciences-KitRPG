@@ -32,7 +32,7 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Lava"			}	
 ,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_POISON	}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Venom"			}
 ,	{{{0,0,0},{2,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Priest"		}
-,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,200}	,{{ATTACK_EFFECT_STEAL	},{}		, {ENTITY_TECHNOLOGY_MECHANIC			}},	"Bonny and Clyde's %s"	}
+,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,200}	,{{ATTACK_EFFECT_STEAL	},{}		, {ENTITY_TECHNOLOGY_MECHANIC			}},	"Bonny & Clyde's %s"	}
 //			0,		0,								001									  
 ,	{{{3,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Soldier's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},3,300}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Assassin's %s"			}

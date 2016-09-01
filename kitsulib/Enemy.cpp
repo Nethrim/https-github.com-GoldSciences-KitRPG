@@ -9,7 +9,7 @@
 #include "Accessory.h"
 #include "Facility.h"
 
-void klib::setupEnemy(CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType)
+void klib::setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType)
 {
 	currentEnemy.Inventory.Items.AddElement({1, 1, 1});
 	for(int32_t i=1; i<enemyType; ++i)
