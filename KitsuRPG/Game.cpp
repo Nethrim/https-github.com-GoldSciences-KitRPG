@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameMenu.h"
 
 #include "Item.h"
 #include "Enemy.h"
@@ -56,7 +57,7 @@ void equipEntityMenu
 
 	printf(currentlyCarryingMessage.c_str(), klib::getEntityName(currentEntity, tableDefinitions, tableModifiers).c_str(), currentEntity.Level);
 	menuItems[menuItemCount++] = {256, "Exit this menu"}; 
-	int32_t selectedValue = klib::displayMenu(selectYourChoiceMessage.c_str(), menuItems, menuItemCount);	
+	int32_t selectedValue = displayMenu(selectYourChoiceMessage.c_str(), menuItems, menuItemCount);	
 	if(selectedValue == 256) 
 		return; 
 
@@ -213,7 +214,7 @@ void labs(klib::CCharacter& adventurer)
 
 	while (true)  // Wait for exit request
 	{
-		int tavernChoice = klib::displayMenu("You take a look at your collected samples..", tavernOptions);
+		int tavernChoice = displayMenu("You take a look at your collected samples..", tavernOptions);
 
 			 if( 0	== tavernChoice ) {	researchWeaponDefinition		(adventurer);	}	// 
 		else if( 1	== tavernChoice ) {	researchWeaponModifier			(adventurer);	}	// 
@@ -249,7 +250,7 @@ void inspect(klib::CCharacter& adventurer)
 
 	while (true)  // Wait for exit request
 	{
-		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
+		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
 		// Interpret user input.
 			 if( 0 == tavernChoice ) {	displayWeapon		(adventurer);	}	// 
@@ -281,7 +282,7 @@ void arsenal(klib::CCharacter& adventurer)
 
 	while (true)  // Wait for exit request
 	{
-		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
+		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
 		// Interpret user input.
 			 if( 0 == tavernChoice ) {	equipProfessionMenu	(adventurer);	}	// 
@@ -315,6 +316,13 @@ void sell(klib::CCharacter& adventurer)
 	}
 }
 
+void rest(klib::SCharacter& character)
+{
+	klib::rest(character);
+	printf("\nYou decide to get some rest.\n");
+	character.Points.LifeCurrent.Print();
+}
+
 void tavern(klib::CCharacter& adventurer)
 {
 	// This is the main loop of the game and queries for user input until the exit option is selected.
@@ -332,7 +340,7 @@ void tavern(klib::CCharacter& adventurer)
 
 	while (true)  // Wait for exit request
 	{
-		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
+		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
 			 if( 0 == tavernChoice ) {	rest				(adventurer);	}
 		else if( 1 == tavernChoice ) {	mercenaryJob		(adventurer);	}

@@ -11,7 +11,7 @@
 
 #include "Enemy.h"
 
-#include "Menu.h"
+#include "GameMenu.h"
 
 #include <algorithm>
 
@@ -247,7 +247,7 @@ void senseMenu(klib::CCharacter& enemy)
 
 	while (true)  // Wait for exit request
 	{
-		int tavernChoice = klib::displayMenu("You wonder about what to do next..", tavernOptions);
+		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
 		// Interpret user input.
 			 if( 1 == tavernChoice )	{	displayWeapon					(enemy);								}	// 

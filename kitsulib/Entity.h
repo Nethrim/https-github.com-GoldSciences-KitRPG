@@ -83,6 +83,7 @@ namespace klib
 			}
 		};
 
+		// Returns the amount of remaining items of the type pointed by the provided index
 		inline uint32_t					DecreaseEntity(size_t index) { 
 			if( --Slots[index].Count )
 				return Slots[index].Count;
@@ -91,6 +92,7 @@ namespace klib
 			return 0; 
 		};
 
+		// Returns the index of the provided type if found or -1 if not found.
 		inline int32_t					FindElement(const _EntityType& element) const { 
 			for(uint32_t i=0, count=(_Size < Count) ? _Size : Count; i<count; ++i)
 				if(Slots[i].Entity == element)

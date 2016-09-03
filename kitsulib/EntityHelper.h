@@ -37,7 +37,7 @@ namespace klib
 
 	// Looks into a research container for the requested technology and equips the entity in equippedEntity if the research is complete.
 	template<typename _EntityType, size_t _EntityContainerSize, size_t _DefinitionCount, size_t _ModifierCount>
-	void equipEntityIfResearched			
+	bool equipEntityIfResearched			
 		( size_t slotIndex
 		, SEntityContainer<_EntityType, _EntityContainerSize>& entityContainer
 		, const SResearchGroup& completedResearch 
@@ -52,7 +52,7 @@ namespace klib
 		)	
 	{	
 		if(slotIndex >= entityContainer.Count) //invalid index do nothing.
-			return;
+			return false;
 	
 		bool bCancel = false; 
 		if( 0 < entityContainer.Slots[slotIndex].Entity.Index		&& (-1) == completedResearch.Definitions.FindElement(entityContainer.Slots[slotIndex].Entity.Index)) { 
@@ -68,13 +68,14 @@ namespace klib
 		}	
 
 		if(bCancel)
-			return; 
+			return false;
 
 		printf(storeOldWeaponMessage.c_str(), getEntityName(equippedEntity, tableDefinitions, tableModifiers).c_str(), equippedEntity.Level); 
 		unequipEntity(entityContainer, equippedEntity);
 		equippedEntity = entityContainer.Slots[slotIndex].Entity;	// Assign selected entity.
 		entityContainer.DecreaseEntity(slotIndex);
 		printf(equipNewWeaponMessage.c_str(), getEntityName(equippedEntity, tableDefinitions, tableModifiers).c_str(), equippedEntity.Level); 
+		return true;
 	};
 
 	template<typename _EntityType, size_t _definitionCount, size_t _modifierCount>

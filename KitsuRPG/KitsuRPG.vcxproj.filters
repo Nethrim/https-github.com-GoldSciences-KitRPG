@@ -35,5 +35,8 @@
     <ClInclude Include="GameResearch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

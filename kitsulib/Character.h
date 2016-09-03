@@ -125,8 +125,11 @@ namespace klib
 
 	SEntityPoints				calculateFinalPoints			(const SCharacter& character);
 	SEntityFlags				calculateFinalFlags				(const SCharacter& character);
-	void						rest							(SCharacter& adventurerPoints);	// Take a nap and recover Life Points up to Max Value.
 
+	static inline void			rest(SCharacter& character) {
+		const SEntityPoints finalPoints	= calculateFinalPoints(character);
+		character.Points.LifeCurrent	= finalPoints.LifeMax	;
+	}
 
 	struct SCellCoord
 	{

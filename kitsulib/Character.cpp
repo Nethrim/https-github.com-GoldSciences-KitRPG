@@ -12,14 +12,6 @@
 
 using namespace klib;
 
-void klib::rest(SCharacter& character)
-{
-	const SEntityPoints finalPoints	= calculateFinalPoints(character);
-	character.Points.LifeCurrent	= finalPoints.LifeMax	;
-	printf("\nYou decide to get some rest.\n");
-	character.Points.LifeCurrent.Print();
-}
-
 SEntityPoints klib::calculateFinalPoints(const SCharacter& character)
 {
 	const SEntityPoints		weaponPoints		= klib::getWeaponPoints		(character.CurrentEquip.Weapon);

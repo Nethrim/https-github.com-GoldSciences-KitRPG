@@ -10,7 +10,7 @@
 #include "Accessory.h"
 #include "Facility.h"
 
-#include "Menu.h"
+#include "GameMenu.h"
 
 #include <iostream>
 #include <algorithm>
