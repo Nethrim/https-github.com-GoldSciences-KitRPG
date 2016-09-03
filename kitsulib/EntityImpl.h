@@ -138,13 +138,13 @@ namespace klib
 
 #define MAX_INVENTORY_SLOTS 32
 	typedef SEntityContainer<SItem			, MAX_INVENTORY_SLOTS>	SInventoryItems;
-	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfessions;
-	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapons;
-	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmors;
-	typedef SEntityContainer<SAccessory		, MAX_INVENTORY_SLOTS>	SInventoryAccessories;
-	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicles;
-	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProps;
-	typedef SEntityContainer<SFacility		, MAX_INVENTORY_SLOTS>	SInventoryFacilities;
+	typedef SEntityContainer<SProfession	, MAX_INVENTORY_SLOTS>	SInventoryProfession;
+	typedef SEntityContainer<SWeapon		, MAX_INVENTORY_SLOTS>	SInventoryWeapon;
+	typedef SEntityContainer<SArmor			, MAX_INVENTORY_SLOTS>	SInventoryArmor;
+	typedef SEntityContainer<SAccessory		, MAX_INVENTORY_SLOTS>	SInventoryAccessory;
+	typedef SEntityContainer<SVehicle		, MAX_INVENTORY_SLOTS>	SInventoryVehicle;
+	typedef SEntityContainer<SStageProp		, MAX_INVENTORY_SLOTS>	SInventoryStageProp;
+	typedef SEntityContainer<SFacility		, MAX_INVENTORY_SLOTS>	SInventoryFacility;
 
 	typedef struct SEntityRecord<SItem			>	CRecordItem			;
 	typedef struct SEntityRecord<SProfession	>	CRecordProfession	;

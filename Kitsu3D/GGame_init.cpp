@@ -2,7 +2,9 @@
 #include "GGame.h"
 #include "GGame_function_macros.h"
 #include "GCore_function_macros.h"
+
 #include "draw.h"
+#include "helper_macros.h"
 
 #include <math.h>
 #ifdef WIN32
@@ -42,10 +44,8 @@ CGGame::~CGGame( void )
 {};
 
 error_t CGGame::ShutdownGame( void ) {
-	if(m_pGame) {
-		delete(m_pGame);
-		m_pGame = 0;
-	}
+
+	safe_delete(m_pGame);
 
 	return CGBaseGame::ShutdownGame();
 }
@@ -63,10 +63,9 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 		return -1;
 	}
 
-	klib::initASCIIScreen();
-	
-	m_pGame = new klib::SGame;
-	initGame(*m_pGame);
+	// We initialize the game before initializing any asset so we make sure the game is not dependant on the graphical representation.
+	KLIB_INIT_GAME(m_pGame);
+
 
 #ifdef CreateFont
 #undef  CreateFont
@@ -106,8 +105,19 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 	};
 
 	// - Create tile list
-	GGrid2DPOD(STileGeometry) MazeGeometryData(m_TerrainBitmaps[0]->nColumnCount, m_TerrainBitmaps[0]->nElementCount/m_TerrainBitmaps[0]->nColumnCount);
-	if( 0 > buildGeometryMapFromImage( m_TerrainBitmaps[0].get_address(), 0.05f, MazeGeometryData[0] ) ){
+
+	uint32_t gridWidth = m_pGame->TacticalTiles.Width, gridDepth = m_pGame->TacticalTiles.Depth;
+
+	GGrid2DPOD(STileGeometry) MazeGeometryData(gridWidth, gridDepth);//(m_TerrainBitmaps[0]->nColumnCount, m_TerrainBitmaps[0]->nElementCount/m_TerrainBitmaps[0]->nColumnCount);
+	//if( 0 > buildGeometryMapFromImage( m_TerrainBitmaps[0].get_address(), 0.05f, MazeGeometryData[0] ) ){
+	GPNCO(god, SBuffer) tacticalMap;
+	gcreateBuffer(GDATA_TYPE_UINT8_4, GUSAGE_TEXEL, gridWidth*gridDepth, gridWidth, &tacticalMap);
+
+	const klib::STopologyTile* topologyCells = &m_pGame->TacticalTiles.Terrain.Topology.Cells[0][0];
+	for(uint32_t i=0, count=gridWidth*gridDepth; i<count; ++i)
+		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].HeightSharp, 0, topologyCells[i].HeightSmooth, 0xFFU);
+
+	if( 0 > buildGeometryMapFromImage( tacticalMap.get_address(), 0.05f, MazeGeometryData[0] ) ){
 		error_printf("buildGeometryMapFromImage() FAILED!");
 		return -1;
 	};
@@ -154,7 +164,7 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 		error_printf("Failed to load ms3d file: %s", filename);
 		return -1;
 	}
-	newModelEntity->SetScale( 0.05f, 0.05f, 0.05f );
+	newModelEntity->SetScale(0.02f, 0.02f, 0.02f);
 	m_World.DelegateEntity(newModelEntity);
 
 	if( result = SetupTileSetWorlds() ) {

@@ -62,7 +62,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserWeaponName.c_str(), loser.CurrentEquip.Armor.Level, loser.Name.c_str());
 		klib::SWeapon oldWinnerWeapon	= winner.CurrentEquip.Weapon;
-		winner.Inventory.Weapons.AddElement(loser.CurrentEquip.Weapon);
+		winner.Inventory.Weapon.AddElement(loser.CurrentEquip.Weapon);
 
 		klib::SWeapon loserNewWeapon = 
 		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Index	)	))
@@ -72,7 +72,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 		if(loserNewWeapon.Index || loserNewWeapon.Modifier || loserNewWeapon.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getWeaponName(loserNewWeapon).c_str(), loserNewWeapon.Level);
-		loser.Inventory.Weapons.AddElement(loserNewWeapon);
+		loser.Inventory.Weapon.AddElement(loserNewWeapon);
 		loser.CurrentEquip.Weapon = {0,0,1};
 	}
 	else
@@ -83,7 +83,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserAccessoryName.c_str(), loser.CurrentEquip.Accessory.Level, loser.Name.c_str());
 		klib::SAccessory oldWinnerAccessory	= winner.CurrentEquip.Accessory;
-		winner.Inventory.Accessories.AddElement(loser.CurrentEquip.Accessory);
+		winner.Inventory.Accessory.AddElement(loser.CurrentEquip.Accessory);
 
 		klib::SAccessory loserNewAccessory = 
 		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Index		)	))
@@ -93,7 +93,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 		if(loserNewAccessory.Index || loserNewAccessory.Modifier || loserNewAccessory.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getAccessoryName(loserNewAccessory).c_str(), loserNewAccessory.Level);
-		loser.Inventory.Accessories.AddElement(loserNewAccessory);
+		loser.Inventory.Accessory.AddElement(loserNewAccessory);
 		loser.CurrentEquip.Accessory = {0,0,1};
 	}
 	else
@@ -104,7 +104,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserArmorName.c_str(), loser.CurrentEquip.Armor.Level, loser.Name.c_str());
 		klib::SArmor oldWinnerArmor	= winner.CurrentEquip.Armor;
-		winner.Inventory.Armors.AddElement(loser.CurrentEquip.Armor);
+		winner.Inventory.Armor.AddElement(loser.CurrentEquip.Armor);
 
 		klib::SArmor loserNewArmor = 
 		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Index		)	))
@@ -114,7 +114,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 		if(loserNewArmor.Index || loserNewArmor.Modifier || loserNewArmor.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loserNewArmor).c_str(), loserNewArmor.Level);
-		loser.Inventory.Armors.AddElement(loserNewArmor);
+		loser.Inventory.Armor.AddElement(loserNewArmor);
 		loser.CurrentEquip.Armor = {0,0,1};
 	}
 	else
@@ -125,7 +125,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserVehicleName.c_str(), loser.CurrentEquip.Vehicle.Level, loser.Name.c_str());
 		klib::SVehicle oldWinnerVehicle	= winner.CurrentEquip.Vehicle;
-		winner.Inventory.Vehicles.AddElement(loser.CurrentEquip.Vehicle);
+		winner.Inventory.Vehicle.AddElement(loser.CurrentEquip.Vehicle);
 
 		klib::SVehicle loserNewVehicle = 
 		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Index		)	))
@@ -135,7 +135,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 		if(loserNewVehicle.Index || loserNewVehicle.Modifier || loserNewVehicle.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getVehicleName(loserNewVehicle).c_str(), loserNewVehicle.Level);
-		loser.Inventory.Vehicles.AddElement(loserNewVehicle);
+		loser.Inventory.Vehicle.AddElement(loserNewVehicle);
 		loser.CurrentEquip.Vehicle = {0,0,1};
 	}
 	else
@@ -146,7 +146,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	{
 		printf("%s recovers %s level %u from %s.\n", winner.Name.c_str(), loserFacilityName.c_str(), loser.CurrentEquip.Facility.Level, loser.Name.c_str());
 		klib::SFacility oldWinnerFacility	= winner.CurrentEquip.Facility;
-		winner.Inventory.Facilities.AddElement(loser.CurrentEquip.Facility);
+		winner.Inventory.Facility.AddElement(loser.CurrentEquip.Facility);
 
 		klib::SFacility loserNewFacility = 
 		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Index		)	))
@@ -156,7 +156,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 
 		//if(loserNewFacility.Index || loserNewFacility.Modifier || loserNewFacility.Level > 1)
 		//	printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getFacilityName(loserNewFacility).c_str(), loserNewFacility.Level);
-		//loser.Inventory.Facilities.AddElement(loserNewFacility);
+		//loser.Inventory.Facility.AddElement(loserNewFacility);
 		//loser.CurrentEquip.Facility = {0,0,1};
 	}
 	else
@@ -167,7 +167,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	if(rand()%2)
 	{
 		printf("%s recovers a %s level %u from %s.\n", winner.Name.c_str(), loserProfessionName.c_str(), loser.CurrentEquip.Profession.Level, loser.Name.c_str());
-		winner.Inventory.Professions.AddElement(loser.CurrentEquip.Profession);
+		winner.Inventory.Profession.AddElement(loser.CurrentEquip.Profession);
 	}
 	else
 		printf("%s doesn't get to recover %s from %s because it's too damaged.\n", winner.Name.c_str(), loserProfessionName.c_str(), loser.Name.c_str());

@@ -1,4 +1,4 @@
-#include "EntityResearch.h"
+#include "Entity.h"
 
 #ifndef __ENTITYHELPER_H__98234092340283749023874920834234__
 #define __ENTITYHELPER_H__98234092340283749023874920834234__
@@ -6,6 +6,12 @@
 namespace klib
 {
 #pragma pack(push, 1)
+	struct SResearchGroup
+	{
+		SEntityContainer<int16_t, 256>	Definitions;
+		SEntityContainer<int16_t, 256>	Modifiers;
+	};
+
 
 	// Combines two record tables to get the names and combine them as one for display purposes.
 	template<typename _EntityType, size_t _DefinitionCount, size_t _ModifierCount> 

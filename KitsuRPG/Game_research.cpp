@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameResearch.h"
 
 #include "Weapon.h"
 #include "Armor.h"
@@ -16,7 +17,7 @@
 void  researchWeaponDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Weapons, adventurer.Researched.Weapon.Definitions, klib::definitionsWeapon, adventurer.MaxEquip.Weapon, false	, true
+	(adventurer.Inventory.Weapon, adventurer.Researched.Weapon.Definitions, klib::definitionsWeapon, adventurer.MaxEquip.Weapon, false	, true
 		, "%s Blueprint"		
 		, "You've designed all the blueprints available! (%u)\n"
 		, "You don't have any weapon sample available to research yet!\n"	
@@ -29,7 +30,7 @@ void  researchWeaponDefinition(klib::CCharacter& adventurer)
 void  researchWeaponModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Weapons, adventurer.Researched.Weapon.Modifiers, klib::modifiersWeapon, adventurer.MaxEquip.Weapon, true	, true
+	(adventurer.Inventory.Weapon, adventurer.Researched.Weapon.Modifiers, klib::modifiersWeapon, adventurer.MaxEquip.Weapon, true	, true
 		, "Science"		
 		, "You've researched all the sciences available! (%u)\n"
 		, "You don't have any theory available to experiment yet!\n"	
@@ -43,7 +44,7 @@ void  researchWeaponModifier(klib::CCharacter& adventurer)
 void  researchArmorDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Armors, adventurer.Researched.Armor.Definitions, klib::definitionsArmor, adventurer.MaxEquip.Armor, false	, true
+	(adventurer.Inventory.Armor, adventurer.Researched.Armor.Definitions, klib::definitionsArmor, adventurer.MaxEquip.Armor, false	, true
 		, "%s Design"		
 		, "You've designed all the armors available! (%u)\n"
 		, "You don't have any idea available to design yet!\n"	
@@ -56,7 +57,7 @@ void  researchArmorDefinition(klib::CCharacter& adventurer)
 void  researchArmorModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Armors, adventurer.Researched.Armor.Modifiers, klib::modifiersArmor, adventurer.MaxEquip.Armor, true	, true
+	(adventurer.Inventory.Armor, adventurer.Researched.Armor.Modifiers, klib::modifiersArmor, adventurer.MaxEquip.Armor, true	, true
 		, "Technology"		
 		, "You've researched all the armor technologies available! (%u)\n"
 		, "You don't have any armor sample to study from yet!\n"	
@@ -69,7 +70,7 @@ void  researchArmorModifier(klib::CCharacter& adventurer)
 void  researchAccessoryDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Accessories, adventurer.Researched.Accessory.Definitions, klib::definitionsAccessory, adventurer.MaxEquip.Accessory, false	, true
+	(adventurer.Inventory.Accessory, adventurer.Researched.Accessory.Definitions, klib::definitionsAccessory, adventurer.MaxEquip.Accessory, false	, true
 		, "%s Accessory"		
 		, "You've researched all the accessories available! (%u)\n"
 		, "You don't have any accessories available to research yet!\n"	
@@ -82,7 +83,7 @@ void  researchAccessoryDefinition(klib::CCharacter& adventurer)
 void  researchAccessoryModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Accessories, adventurer.Researched.Accessory.Modifiers, klib::modifiersAccessory, adventurer.MaxEquip.Accessory, true	, true
+	(adventurer.Inventory.Accessory, adventurer.Researched.Accessory.Modifiers, klib::modifiersAccessory, adventurer.MaxEquip.Accessory, true	, true
 		, "Crafting"		
 		, "You've researched all the crafting techniques available! (%u)\n"
 		, "You don't have any crafting techniques to learn about yet!\n"	
@@ -96,7 +97,7 @@ void  researchAccessoryModifier(klib::CCharacter& adventurer)
 void  researchProfessionDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Professions, adventurer.Researched.Profession.Definitions, klib::definitionsProfession, adventurer.MaxEquip.Profession, false	, true
+	(adventurer.Inventory.Profession, adventurer.Researched.Profession.Definitions, klib::definitionsProfession, adventurer.MaxEquip.Profession, false	, true
 		, "%s Mastery"		
 		, "You've mastered all the professions available! (%u)\n"
 		, "You don't have any profession notes available to learn from yet!\n"	
@@ -109,7 +110,7 @@ void  researchProfessionDefinition(klib::CCharacter& adventurer)
 void  researchProfessionModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Professions, adventurer.Researched.Profession.Modifiers, klib::modifiersProfession, adventurer.MaxEquip.Profession, true	, true
+	(adventurer.Inventory.Profession, adventurer.Researched.Profession.Modifiers, klib::modifiersProfession, adventurer.MaxEquip.Profession, true	, true
 		, "Rank"		
 		, "You've achieved all the ranks available! (%u)\n"
 		, "You don't have any rank notes available to learn from yet!\n"	
@@ -122,7 +123,7 @@ void  researchProfessionModifier(klib::CCharacter& adventurer)
 void  researchVehicleDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Vehicles, adventurer.Researched.Vehicle.Definitions, klib::definitionsVehicle, adventurer.MaxEquip.Vehicle, false	, true
+	(adventurer.Inventory.Vehicle, adventurer.Researched.Vehicle.Definitions, klib::definitionsVehicle, adventurer.MaxEquip.Vehicle, false	, true
 		, "%s Prototype"		
 		, "You've designed all the vehicles available! (%u)\n"
 		, "You don't have any transportation technologies available to research yet!\n"	
@@ -135,7 +136,7 @@ void  researchVehicleDefinition(klib::CCharacter& adventurer)
 void  researchVehicleModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Vehicles, adventurer.Researched.Vehicle.Modifiers, klib::modifiersVehicle, adventurer.MaxEquip.Vehicle, true	, true
+	(adventurer.Inventory.Vehicle, adventurer.Researched.Vehicle.Modifiers, klib::modifiersVehicle, adventurer.MaxEquip.Vehicle, true	, true
 		, "Mechanics"		
 		, "You've engineered all the vehicle mechanics available! (%u)\n"
 		, "You don't have any mechanics available to experiment with yet!\n"	
@@ -148,7 +149,7 @@ void  researchVehicleModifier(klib::CCharacter& adventurer)
 void  researchFacilityDefinition(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Facilities, adventurer.Researched.Facility.Definitions, klib::definitionsFacilities, adventurer.MaxEquip.Facility, false	, true
+	(adventurer.Inventory.Facility, adventurer.Researched.Facility.Definitions, klib::definitionsFacility, adventurer.MaxEquip.Facility, false	, true
 		, "%s Architecture"		
 		, "You've researched all the architectures available! (%u)\n"
 		, "You don't have any architectures available to research yet!\n"	
@@ -161,7 +162,7 @@ void  researchFacilityDefinition(klib::CCharacter& adventurer)
 void  researchFacilityModifier(klib::CCharacter& adventurer) 
 { 
 	research
-	(adventurer.Inventory.Facilities, adventurer.Researched.Facility.Modifiers, klib::modifiersFacilities, adventurer.MaxEquip.Facility, true	, true
+	(adventurer.Inventory.Facility, adventurer.Researched.Facility.Modifiers, klib::modifiersFacility, adventurer.MaxEquip.Facility, true	, true
 		, "Construction"		
 		, "You've researched all the construction technology available! (%u)\n"
 		, "You don't have any construction technology to learn about yet!\n"	

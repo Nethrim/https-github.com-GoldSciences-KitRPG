@@ -1,6 +1,8 @@
 #include "timer.h"
 #include <windows.h>
 
+using namespace klib;
+
 STimer::STimer()
 { 
 	Reset();

@@ -1,4 +1,4 @@
-#include "Character.h"
+#include "EntityImpl.h"
 #include "Misc.h"
 
 #include <string>
@@ -95,11 +95,11 @@ static const CRecordItem	itemModifiers[] =
 
 static const CItemV2 itemDefinitions[] = 
 	// Type										Price		Name
-{	{ITEM_TYPE_UNKNOWN							,	0	,	"Water"			}	// the invalid description should be always in the last element
-,	{ITEM_TYPE_POTION							,	10	,	"Potion"		}
-,	{ITEM_TYPE_GRENADE							,	20	,	"Grenade"		}
-,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_POTION	),	100	,	"Potion Box"	}
-,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_GRENADE),	200	,	"Grenade Box"	}
+{	{ITEM_TYPE_UNKNOWN							,	0	,	"Advice"			}	// the invalid description should be always in the last element
+,	{ITEM_TYPE_POTION							,	10	,	"Potion"			}
+,	{ITEM_TYPE_GRENADE							,	20	,	"Grenade"			}
+//,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_POTION	),	100	,	"Potion Box"		}
+//,	{(ITEM_TYPE)(ITEM_TYPE_BOX|ITEM_TYPE_GRENADE),	200	,	"Grenade Box"		}
 };
 
 static const CItem itemDescriptions[] = 

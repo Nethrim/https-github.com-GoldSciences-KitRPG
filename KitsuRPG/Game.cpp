@@ -30,7 +30,7 @@ void equipEntityMenu
 	, const klib::SEntityRecord<_EntityType>(&tableDefinitions)[_DefinitionCount]
 	, const klib::SEntityRecord<_EntityType>(&tableModifiers	)[_ModifierCount]
 	, _EntityType& currentEntity
-	, const std::string& noWeaponsMessage
+	, const std::string& noWeaponMessage
 	, const std::string& currentlyCarryingMessage
 	, const std::string& selectYourChoiceMessage
 	, const std::string& cantAccessDefinitionError
@@ -41,7 +41,7 @@ void equipEntityMenu
 	) 
 { 
 	if( 0 == characterInventory.Count )	{ 
-		printf("%s", noWeaponsMessage.c_str()); 
+		printf("%s", noWeaponMessage.c_str()); 
 		return; 
 	}
 	
@@ -66,7 +66,7 @@ void equipEntityMenu
 void equipWeaponMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Weapons
+		( adventurer.Inventory.Weapon
 		, adventurer.Researched.Weapon
 		, klib::definitionsWeapon
 		, klib::modifiersWeapon
@@ -85,7 +85,7 @@ void equipWeaponMenu	(klib::CCharacter& adventurer)
 void equipAccessoryMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Accessories
+		( adventurer.Inventory.Accessory
 		, adventurer.Researched.Accessory
 		, klib::definitionsAccessory
 		, klib::modifiersAccessory
@@ -104,7 +104,7 @@ void equipAccessoryMenu	(klib::CCharacter& adventurer)
 void equipArmorMenu		(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Armors
+		( adventurer.Inventory.Armor
 		, adventurer.Researched.Armor
 		, klib::definitionsArmor
 		, klib::modifiersArmor
@@ -123,7 +123,7 @@ void equipArmorMenu		(klib::CCharacter& adventurer)
 void equipProfessionMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Professions
+		( adventurer.Inventory.Profession
 		, adventurer.Researched.Profession
 		, klib::definitionsProfession
 		, klib::modifiersProfession
@@ -142,7 +142,7 @@ void equipProfessionMenu	(klib::CCharacter& adventurer)
 void equipVehicleMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Vehicles
+		( adventurer.Inventory.Vehicle
 		, adventurer.Researched.Vehicle
 		, klib::definitionsVehicle
 		, klib::modifiersVehicle
@@ -161,10 +161,10 @@ void equipVehicleMenu	(klib::CCharacter& adventurer)
 void equipFacilityMenu		(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Facilities
+		( adventurer.Inventory.Facility
 		, adventurer.Researched.Facility
-		, klib::definitionsFacilities
-		, klib::modifiersFacilities 
+		, klib::definitionsFacility
+		, klib::modifiersFacility 
 		, adventurer.CurrentEquip.Facility
 		, "You don't have any other building yet!\n"
 		, "You're currently inside a %s level %u.\n"
@@ -481,7 +481,7 @@ void displayVehicle(const klib::CCharacter& adventurer)
 void displayFacility(const klib::CCharacter& adventurer) 
 {
 	const klib::SFacility& current = adventurer.CurrentEquip.Facility;
-	displayCharacterEquip(current, "\n-- %s is in a %s level %u:\n", adventurer.Name, klib::getFacilityName(current), klib::definitionsFacilities, klib::modifiersFacilities);
+	displayCharacterEquip(current, "\n-- %s is in a %s level %u:\n", adventurer.Name, klib::getFacilityName(current), klib::definitionsFacility, klib::modifiersFacility);
 }
 
 void displayResume(const klib::CCharacter& adventurer) 

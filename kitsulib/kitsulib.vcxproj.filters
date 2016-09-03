@@ -13,27 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{0a9aba59-7204-4612-9287-f8d6286269b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{9c820799-58bd-488e-b7ca-ff41b2276531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tables">
+      <UniqueIdentifier>{4e709622-a683-43fb-b988-f4bb95e8fbe9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Profession.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Armor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Combat.h">
@@ -45,40 +39,13 @@
     <ClInclude Include="CombatStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityPoints.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vehicle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EntityHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityResearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Accessory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Facility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="asciiscreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="draw.h">
@@ -90,20 +57,68 @@
     <ClInclude Include="menus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="align.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="text.h">
+    <ClInclude Include="credits.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helper_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityHelper.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityImpl.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityPoints.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="asciiscreen.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Armor.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Vehicle.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="StageProp.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Profession.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Facility.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessory.h">
+      <Filter>Tables</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="misc.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="text.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,16 +140,10 @@
     <ClCompile Include="CombatStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="asciiscreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="menus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
@@ -142,6 +151,21 @@
     </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="research.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="squad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="asciiscreen.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

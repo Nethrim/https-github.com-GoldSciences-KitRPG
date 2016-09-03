@@ -7,8 +7,8 @@
 
 namespace klib
 {
-	template<typename _CellType, typename... _Args>
-	void lineToRect( _CellType * rectangle, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
+	template<typename _TCell, typename... _Args>
+	void lineToRect( _TCell* rectangle, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
 	{
 		char precookStr[1024] = {};
 		int32_t precookLen = sprintf_s(precookStr, format, args...);
@@ -25,10 +25,10 @@ namespace klib
 		}
 		else if(offsetLine < (int32_t)height) 
 		{
-			int32_t cursorOffset	= offsetLine*width+offsetColumn;
+			int32_t cursorOffset	= (int32_t)(offsetLine*width+offsetColumn);
 			int32_t remainingRows	= (int32_t)width-offsetColumn;
 			int32_t maxPrintSize	= (precookLen < remainingRows) ? precookLen : remainingRows;
-			memcpy(&rectangle[cursorOffset], precookStr, maxPrintSize*sizeof(_CellType));
+			memcpy(&rectangle[cursorOffset], precookStr, maxPrintSize*sizeof(_TCell));
 		}
 	}
 
@@ -39,7 +39,7 @@ namespace klib
 		static float nextTick=0.0f;
 		static uint32_t tickCount=0;
 
-		int32_t mesLen = strlen(message);
+		int32_t mesLen = (int32_t)strlen(message);
 		nextTick	+= (float)lastFrameSeconds;
 
 		if(nextTick > 0.025f)
@@ -69,6 +69,10 @@ namespace klib
 		return getMessageSlow(message, textToPrint.c_str(), textToPrint.size(), lastFrameSeconds);
 	}
 
+	template <size_t _ArraySize>
+	void resetCursorString(char (&textContainer)[_ArraySize]) {
+		textContainer[textContainer[1] = 0] = '_';
+	}
 
 } // namespace
 

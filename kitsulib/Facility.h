@@ -8,7 +8,7 @@ namespace klib
 {
 #pragma pack(push, 1)
 //	{SEntityPoints, SEntityFlags, Name}
-static const CRecordFacility modifiersFacilities[] = 
+static const CRecordFacility modifiersFacility[] = 
 {	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Small %s"		}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Large %s"		}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,2000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Advanced %s"	}
@@ -19,7 +19,7 @@ static const CRecordFacility modifiersFacilities[] =
 
 // Currently the amount of points available for a single character is 14.	
 //	{SEntityPoints, SEntityFlags, Name}
-static const CRecordFacility definitionsFacilities[] =
+static const CRecordFacility definitionsFacility[] =
 {	{{{00,0,00},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,10	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Dog House"			}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,100	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Training Room"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Cult Center"		}
@@ -62,15 +62,15 @@ static const CRecordFacility definitionsFacilities[] =
 };
 
 	static std::string getFacilityName(const SFacility& facility) {
-		return getEntityName(facility, definitionsFacilities, modifiersFacilities);
+		return getEntityName(facility, definitionsFacility, modifiersFacility);
 	}
 
 	static SEntityPoints getFacilityPoints(const SFacility& facility) {
-		return getEntityPoints(facility, definitionsFacilities, modifiersFacilities);
+		return getEntityPoints(facility, definitionsFacility, modifiersFacility);
 	}
 
 	static SEntityFlags getFacilityFlags(const SFacility& facility) {
-		return  getEntityFlags(facility, definitionsFacilities, modifiersFacilities);
+		return  getEntityFlags(facility, definitionsFacility, modifiersFacility);
 	}
 
 #pragma pack(pop)

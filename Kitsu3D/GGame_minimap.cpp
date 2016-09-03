@@ -26,7 +26,7 @@ error_t CGGame::SetupMinimap( IGVideoContext* in_pVideoManager, uint32_t nWidth,
 		return -1;
 	}
 
-	if( result = buildTileHeightImage( m_pTerrainEntity->GetTileGeometryList()[0], 3, 10, m_pTerrainEntity->GetTerrainWidth(), m_pTerrainEntity->GetTerrainDepth(), &HeightmapBuffer ) )
+	if( result = buildTileHeightImage( m_pTerrainEntity->GetTileGeometryList()[0], 1, 10, m_pTerrainEntity->GetTerrainWidth(), m_pTerrainEntity->GetTerrainDepth(), &HeightmapBuffer ) )
 	{
 		error_printf("buildTileHeightImage() returned 0x%X!", result);
 		return -1;
@@ -60,11 +60,11 @@ error_t CGGame::SetupMinimap( IGVideoContext* in_pVideoManager, uint32_t nWidth,
 	out_SpriteMinimap.SetTexture( 0, TextureMinimap );
 	out_SpriteMinimap.SetProgram( pnewShader );
 	out_SpriteMinimap.SetColor( GWHITE );
-	out_SpriteMinimap.SetAlphaTestEnabled( true );
+	out_SpriteMinimap.SetAlphaTestEnabled( false );
 
 	GPtrPOD(STransform) TransformData;
-	TransformData->Matrix.Scale( nWidth*-1.0f, nDepth*-1.0f, 1.0f, true );
-	TransformData->Matrix.SetTranslation( SVector3( (float)m_SpriteRenderer.GetViewport()->GetWidth(), nDepth*1.0f, 0.5f ) );
+	TransformData->Matrix.Scale( nWidth*-2.0f, nDepth*-2.0f, 1.0f, true );
+	TransformData->Matrix.SetTranslation( SVector3( (float)m_SpriteRenderer.GetViewport()->GetWidth(), nDepth*2.0f, 0.5f ) );
 	TransformData->MatrixInverse.SetInverse( TransformData->Matrix );
 	out_SpriteMinimap.SetGlobalTransform( TransformData );
 	out_SpriteMinimap.UpdateAnimation(0);

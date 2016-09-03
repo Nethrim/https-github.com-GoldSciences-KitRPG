@@ -139,8 +139,8 @@ int32_t CGGame::ProcessUserInput( float fElapsedTime )
 	GVectorCrossAndNormalize( &pCameraData->Right, &pCameraData->Up, GVectorNormalizeInPlace( &pCameraData->Front ) );
 
 
-	uint32_t nIndexX = min( max( 0, (int)(pCameraData->Position.x/fTileScale) ), (int)m_pTerrainEntity->GetTerrainWidth()-1 ),
-			nIndexZ = min( max( 0, -(int)(pCameraData->Position.z/fTileScale) ), (int)m_pTerrainEntity->GetTerrainDepth()-1 );
+	uint32_t	nIndexX = min( max( 0, (int)(pCameraData->Position.x/fTileScale) ), (int)m_pTerrainEntity->GetTerrainWidth()-1 ),
+				nIndexZ = min( max( 0, -(int)(pCameraData->Position.z/fTileScale) ), (int)m_pTerrainEntity->GetTerrainDepth()-1 );
 	GPtrPOD(STileGeometry) Tile = gacquire( m_pTerrainEntity->GetTileGeometryList()[nIndexZ][nIndexX] );
 
 	double factorX = (pCameraData->Position.x/fTileScale - (int)(pCameraData->Position.x/fTileScale) )
@@ -150,7 +150,7 @@ int32_t CGGame::ProcessUserInput( float fElapsedTime )
 			Height1 = ( Tile->fHeight[1]*(factorX)		*(1.0-factorZ)	),
 			Height2 = ( Tile->fHeight[2]*(1.0-factorX)	*(factorZ)		),
 			Height3 = ( Tile->fHeight[3]*(factorX)		*(factorZ)		);
-	double averageHeight = (Height0+Height1+Height2+Height3)+1.8;
+	double averageHeight = (Height0+Height1+Height2+Height3)+0.8;
 
 	if( (averageHeight - (double)pCameraData->Position.y) < -.05 )
 		m_bFalling = true;

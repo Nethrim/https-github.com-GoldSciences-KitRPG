@@ -77,7 +77,7 @@ namespace klib
 				if( 0 == (rand()%4) )
 				{
 					display.Screen			.Cells[firstRow][x] = (rand()%2) ? '.' : (rand()%2) ? '|' : ',';
-					display.DisplayWeights	.Cells[firstRow][x] = .0000001f;
+					display.DisplayWeights	.Cells[firstRow][x] = .00001f;
 					display.Speed			.Cells[firstRow][x] = rand()*.001f+0.001f;
 					display.SpeedTarget		.Cells[firstRow][x] = rand()*.0009f+0.001f;
 				}
@@ -220,8 +220,6 @@ namespace klib
 			}
 	}
 
-
-
 	template<size_t _Width, size_t _Height>
 	void drawRainBackground( SWeightedDisplay<_Width, _Height>& display, double lastTimeSeconds )
 	{
@@ -231,17 +229,50 @@ namespace klib
 		return drawFireBackground( display, lastTimeSeconds*1.5, 0, 10, true, false );
 	}
 
+	template<typename _TCell, size_t _LineCount>
+	SGameState drawCredits(_TCell* display, size_t width, size_t depth, double lastFrameTime, const std::string (&namesCredits)[_LineCount], const SGameState& returnValue)
+	{
+		static double offset = (double)depth;
+		int32_t curLine = (int32_t)offset;
+		static int32_t maxDifference = curLine;
+		int32_t curDifference = curLine;
+		double bbHeight = (double)depth;
+
+		for(uint32_t i=0; i < klib::size(namesCredits) && curLine < bbHeight; ++i)
+			if((curLine+=2) >= 0)
+				lineToRect(display, width, depth, curLine, 0, CENTER, "%s", namesCredits[i].c_str());
+
+		maxDifference = std::max(curLine - curDifference, maxDifference);
+
+		offset -= lastFrameTime*6.0;
+
+		if( offset <= -maxDifference )
+			offset += depth+maxDifference;
+
+		return returnValue;
+	}
+
+	template<typename _TCell, size_t _Width, size_t _Depth, size_t _LineCount>
+	SGameState drawCredits(SGrid<_TCell, _Width, _Depth>& display, double lastFrameTime, const std::string (&namesCredits)[_LineCount], const SGameState& returnValue) {
+		return drawCredits(&display.Cells[0][0], _Width, _Depth, lastFrameTime, namesCredits, returnValue);
+	}
+
+	template<size_t _LineCount>
+	SGameState drawCredits(double lastFrameTime, const std::string (&namesCredits)[_LineCount], const SGameState& returnValue) {
+		return drawCredits(getASCIIBackBuffer(), getASCIIBackBufferWidth(), getASCIIBackBufferHeight(), lastFrameTime, namesCredits, returnValue);
+	}
+
 	void drawAndPresentGame( SGame& instanceGame );
 
-	// returns true if done printing all the text.
-	template <size_t _Size>
-	bool drawMessageSlow(char (&message)[_Size], const std::string& textToPrint, double lastFrameSeconds)
-	{
-		bool bDonePrinting = getMessageSlow(message, textToPrint, lastFrameSeconds);
-
-		klib::lineToScreen(klib::getASCIIBackBufferHeight()/2-1, klib::getASCIIBackBufferWidth()/2-textToPrint.size()/2, klib::LEFT, message);
-		return bDonePrinting;
-	};
+	//// returns true if done printing all the text.
+	//template <size_t _Size>
+	//bool drawMessageSlow(char (&message)[_Size], const std::string& textToPrint, double lastFrameSeconds)
+	//{
+	//	bool bDonePrinting = getMessageSlow(message, textToPrint, lastFrameSeconds);
+	//
+	//	klib::lineToScreen(klib::getASCIIBackBufferHeight()/2-1, klib::getASCIIBackBufferWidth()/2-(int32_t)textToPrint.size()/2, klib::LEFT, message);
+	//	return bDonePrinting;
+	//};
 } // namespace
 
 #define TACTICAL_DISPLAY_YPOS 5

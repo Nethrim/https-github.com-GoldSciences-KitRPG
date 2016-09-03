@@ -19,6 +19,7 @@ namespace klib
 		SArmor					Armor		= {0,0,1};	// Index, ModifierIndex, Level
 		SVehicle				Vehicle		= {0,0,1};	// Index, ModifierIndex, Level
 		SFacility				Facility	= {0,0,1};	// Index, ModifierIndex, Level
+		SStageProp				StageProp	= {0,0,1};	// Index, ModifierIndex, Level
 	};
 
 	struct SCharacterResearch
@@ -41,24 +42,24 @@ namespace klib
 	class CFacility;
 	class CStageProp;
 
-	typedef SEntityContainer<SWeapon*		, MAX_INVENTORY_SLOTS>	SCharacterWeapons		;
-	typedef SEntityContainer<SAccessory*	, MAX_INVENTORY_SLOTS>	SCharacterAccessories	;
-	typedef SEntityContainer<SArmor*		, MAX_INVENTORY_SLOTS>	SCharacterArmors		;
-	typedef SEntityContainer<SProfession*	, MAX_INVENTORY_SLOTS>	SCharacterProfessions	;
-	typedef SEntityContainer<SVehicle*		, MAX_INVENTORY_SLOTS>	SCharacterVehicles		;
-	typedef SEntityContainer<SStageProp*	, MAX_INVENTORY_SLOTS>	SCharacterStageProps	;
-	typedef SEntityContainer<SFacility*		, MAX_INVENTORY_SLOTS>	SCharacterFacilities	;
+	typedef SEntityContainer<SWeapon*		, MAX_INVENTORY_SLOTS>	SCharacterWeapon		;
+	typedef SEntityContainer<SAccessory*	, MAX_INVENTORY_SLOTS>	SCharacterAccessory	;
+	typedef SEntityContainer<SArmor*		, MAX_INVENTORY_SLOTS>	SCharacterArmor		;
+	typedef SEntityContainer<SProfession*	, MAX_INVENTORY_SLOTS>	SCharacterProfession	;
+	typedef SEntityContainer<SVehicle*		, MAX_INVENTORY_SLOTS>	SCharacterVehicle		;
+	typedef SEntityContainer<SStageProp*	, MAX_INVENTORY_SLOTS>	SCharacterStageProp	;
+	typedef SEntityContainer<SFacility*		, MAX_INVENTORY_SLOTS>	SCharacterFacility	;
 	typedef SInventoryItems											SCharacterItems			;
 
 	struct SCharacterInventory
 	{
-		SInventoryProfessions	Professions	= {};
-		SInventoryAccessories	Accessories	= {};
-		SInventoryArmors		Armors		= {};
-		SInventoryWeapons		Weapons		= {};
-		SInventoryVehicles		Vehicles	= {};
-		SInventoryFacilities	Facilities	= {};
-		SInventoryStageProps	StageProps	= {};
+		SInventoryProfession	Profession	= {};
+		SInventoryAccessory		Accessory	= {};
+		SInventoryArmor			Armor		= {};
+		SInventoryWeapon		Weapon		= {};
+		SInventoryVehicle		Vehicle		= {};
+		SInventoryFacility		Facility	= {};
+		SInventoryStageProp		StageProp	= {};
 		SInventoryItems			Items		= {};
 	};
 
@@ -130,6 +131,7 @@ namespace klib
 	struct SCellCoord
 	{
 		int32_t x;
+		int32_t y;
 		int32_t z;
 	};
 

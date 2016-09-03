@@ -9,12 +9,6 @@ namespace klib
 {
 #pragma pack(push, 1)
 
-	struct SResearchGroup
-	{
-		SEntityContainer<int16_t, 256>	Definitions;
-		SEntityContainer<int16_t, 256>	Modifiers;
-	};
-
 	// This hell creates an user menu for the entity records available for research
 	template <typename _TEquipClass, typename _TInventory, typename _TResearched, size_t _SizeInventory, size_t _SizeResearched, size_t _SizeDefinitions>
 	void research

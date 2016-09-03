@@ -87,14 +87,14 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 	currentEquip.Armor		.Index		= (int16_t)std::min(3U, size(klib::definitionsArmor			)-1);
 	currentEquip.Profession	.Index		= (int16_t)std::min(3U, size(klib::definitionsProfession	)-1);
 	currentEquip.Vehicle	.Index		= (int16_t)std::min(3U, size(klib::definitionsVehicle		)-1);
-	currentEquip.Facility	.Index		= (int16_t)std::min(3U, size(klib::definitionsFacilities	)-1);
+	currentEquip.Facility	.Index		= (int16_t)std::min(3U, size(klib::definitionsFacility	)-1);
 
 	currentEquip.Weapon		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersWeapon			)-1);
 	currentEquip.Accessory	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersAccessory		)-1);
 	currentEquip.Armor		.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersArmor			)-1);
 	currentEquip.Profession	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersProfession		)-1);
 	currentEquip.Vehicle	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersVehicle			)-1);
-	currentEquip.Facility	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersFacilities		)-1);
+	currentEquip.Facility	.Modifier	= (int16_t)std::min(3U,	size(klib::modifiersFacility		)-1);
 
 	currentEquip.Weapon		.Level		= 10;
 	currentEquip.Accessory	.Level		= 10;
@@ -107,20 +107,20 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 	memset(&maxEquip	, 0, sizeof(klib::SCharacterEquip));
 #endif
 
-	adventurer.Inventory.Weapons		.AddElement({1,1,1});
-	adventurer.Inventory.Accessories	.AddElement({1,1,1});
-	adventurer.Inventory.Armors			.AddElement({1,1,1});
-	adventurer.Inventory.Professions	.AddElement({adventurer.CurrentEquip.Profession.Index,1,10});
-	adventurer.Inventory.Vehicles		.AddElement({1,1,1});
-	adventurer.Inventory.Facilities		.AddElement({1,1,1});
+	adventurer.Inventory.Weapon		.AddElement({1,1,1});
+	adventurer.Inventory.Accessory	.AddElement({1,1,1});
+	adventurer.Inventory.Armor			.AddElement({1,1,1});
+	adventurer.Inventory.Profession	.AddElement({adventurer.CurrentEquip.Profession.Index,1,10});
+	adventurer.Inventory.Vehicle		.AddElement({1,1,1});
+	adventurer.Inventory.Facility		.AddElement({1,1,1});
 
 	int16_t i = 5;
-	adventurer.Inventory.Weapons		.AddElement(	{	rand()%(int16_t)size(klib::definitionsWeapon		), rand()%(int16_t)size(klib::modifiersWeapon		), ++i	});
-	adventurer.Inventory.Accessories	.AddElement(	{	rand()%(int16_t)size(klib::definitionsAccessory		), rand()%(int16_t)size(klib::modifiersAccessory	), ++i	});
-	adventurer.Inventory.Armors			.AddElement(	{	rand()%(int16_t)size(klib::definitionsArmor			), rand()%(int16_t)size(klib::modifiersArmor		), ++i	});
-	adventurer.Inventory.Professions	.AddElement(	{	rand()%(int16_t)size(klib::definitionsProfession	), rand()%(int16_t)size(klib::modifiersProfession	), ++i	});
-	adventurer.Inventory.Vehicles		.AddElement(	{	rand()%(int16_t)size(klib::definitionsVehicle		), rand()%(int16_t)size(klib::modifiersVehicle		), ++i	});
-	adventurer.Inventory.Facilities		.AddElement(	{	rand()%(int16_t)size(klib::definitionsFacilities	), rand()%(int16_t)size(klib::modifiersFacilities	), ++i	});
+	adventurer.Inventory.Weapon		.AddElement(	{	rand()%(int16_t)size(klib::definitionsWeapon		), rand()%(int16_t)size(klib::modifiersWeapon		), ++i	});
+	adventurer.Inventory.Accessory	.AddElement(	{	rand()%(int16_t)size(klib::definitionsAccessory		), rand()%(int16_t)size(klib::modifiersAccessory	), ++i	});
+	adventurer.Inventory.Armor			.AddElement(	{	rand()%(int16_t)size(klib::definitionsArmor			), rand()%(int16_t)size(klib::modifiersArmor		), ++i	});
+	adventurer.Inventory.Profession	.AddElement(	{	rand()%(int16_t)size(klib::definitionsProfession	), rand()%(int16_t)size(klib::modifiersProfession	), ++i	});
+	adventurer.Inventory.Vehicle		.AddElement(	{	rand()%(int16_t)size(klib::definitionsVehicle		), rand()%(int16_t)size(klib::modifiersVehicle		), ++i	});
+	adventurer.Inventory.Facility		.AddElement(	{	rand()%(int16_t)size(klib::definitionsFacility	), rand()%(int16_t)size(klib::modifiersFacility	), ++i	});
 
 	adventurer.Inventory.Items			.AddElement({1,1,1});
 	for(int32_t i=1; i<3; ++i)

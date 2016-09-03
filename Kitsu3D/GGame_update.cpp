@@ -18,6 +18,8 @@
 #include "GDebugger_core.h"
 #include "draw.h"
 
+#include "helper_macros.h"
+
 #include <chrono>
 #include <thread>
 
@@ -28,15 +30,17 @@ int32_t CGGame::Update( float fElapsedTime )
 {
 	__CGGAME_FUNCTION_HEADER( -1 );
 
-	pollInput(m_pGame->FrameInput);
-	drawAndPresentGame(*m_pGame);
+	if(m_pGame)
+	{
+		KLIB_UPDATE_GAME(m_pGame);
+		if(!m_pGame->bRunning)
+			return ShutdownGame();
+	}
 
-	//
-	if(!m_pGame->bRunning)
-		return ShutdownGame();
 
-	const SGameState& newState = m_pGame->State, &prevState = m_pGame->PreviousState;
-	if(newState.State == GAME_STATE_START_MISSION && prevState.State != GAME_STATE_START_MISSION )
+
+	const klib::SGameState& newState = m_pGame->State, &prevState = m_pGame->PreviousState;
+	if(newState.State == klib::GAME_STATE_START_MISSION && prevState.State != klib::GAME_STATE_START_MISSION )
 	{
 		// Add here the geometry generation for the generated map
 		debug_printf("%s", "Something fishy is going on.");
