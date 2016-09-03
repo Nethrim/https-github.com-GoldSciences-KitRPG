@@ -310,6 +310,7 @@ void sell(klib::CCharacter& adventurer)
 		else {
 			const klib::SItem& itemEntity = adventurer.Inventory.Items.Slots[indexInventory].Entity;
 			int32_t itemPrice =  getItemPrice(itemEntity, true);
+			adventurer.Points.Coins += itemPrice;
 			adventurer.Inventory.Items.DecreaseEntity(indexInventory);
 			printf("You sold %s and got paid %i coins for it.\n", getItemName(itemEntity).c_str(), itemPrice); 
 		}
@@ -342,7 +343,7 @@ void tavern(klib::CCharacter& adventurer)
 	{
 		int tavernChoice = displayMenu("You wonder about what to do next..", tavernOptions);
 
-			 if( 0 == tavernChoice ) {	rest				(adventurer);	}
+			 if( 0 == tavernChoice ) {	::rest				(adventurer);	}
 		else if( 1 == tavernChoice ) {	mercenaryJob		(adventurer);	}
 		else if( 2 == tavernChoice ) {	arsenal				(adventurer);	}
 		else if( 3 == tavernChoice ) {	labs				(adventurer);	}

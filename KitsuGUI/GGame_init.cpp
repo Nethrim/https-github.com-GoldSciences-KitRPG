@@ -44,13 +44,12 @@ god::error_t god::CGGame::InitGame( IGFramework* pFramework )
 #endif
 	glabel name = "Arial";
 #define FW_NORMAL           400
-	reterr_msg_if(0 > m_pVideoContext->CreateFont(14, 0, FW_NORMAL, name, false, &m_Font), "Failed to create font! Font name: '%s'", name);
-
 
 	reterr_msg_if(0 > CGBaseGame::InitGame(pFramework), "CGBaseGame::InitGame(pFramework) failed.");
 	reterr_msg_if(0 > m_MainGUI.InitGUI( m_pVideoManager, m_MainViewport->Width/2, m_MainViewport->Height/2), "InitGUI failed.");
 	reterr_msg_if(0 > InitCursorSprite(), "InitCursorSprite failed.");
 	reterr_msg_if(0 > InitGUISprite(), "InitGUISprite failed.");
+	reterr_msg_if(0 > m_pVideoContext->CreateFont(14, 0, FW_NORMAL, name, false, &m_Font), "Failed to create font! Font name: '%s'", name);
 
 	m_pMouseManager->SetImmediate(true);
 	m_pMouseManager->SetForeground(true);

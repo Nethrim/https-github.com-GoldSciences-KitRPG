@@ -58,9 +58,10 @@ namespace klib
 
 		const uint32_t posXOffset = 0;
 		uint32_t actualOptionCount = std::min(9U, (uint32_t)(optionCount-(currentPage*9)));
+		const size_t itemOffset = currentPage*9;
 		for(size_t i=0, count = (menuItemAccum < actualOptionCount) ? menuItemAccum : actualOptionCount; i<count; i++) {
 			sprintf_s(numberKey, "%u", (uint32_t)(i+1));
-			klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset++, posXOffset, klib::CENTER, formatString, numberKey, menuItems[i].Text.c_str());	
+			klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset++, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());	
 		}
 		if(menuItemAccum > actualOptionCount) {
 			sprintf_s(numberKey, "%s", "0");
@@ -103,7 +104,7 @@ namespace klib
 					if(frameInput.Keys['1'+i] || frameInput.Keys[VK_NUMPAD1+i]) 
 					{
 						bResetMenuStuff = true;
-						resultVal = menuItems[i].ReturnValue;
+						resultVal = menuItems[i+itemOffset].ReturnValue;
 						break;
 					}
 		}
