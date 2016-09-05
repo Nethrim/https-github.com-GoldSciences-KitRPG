@@ -8,20 +8,20 @@
 namespace klib
 {
 	template<typename _TCell, typename... _Args>
-	void lineToRect( _TCell* rectangle, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
+	int32_t lineToRect( _TCell* rectangle, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
 	{
 		char precookStr[1024] = {};
 		int32_t precookLen = sprintf_s(precookStr, format, args...);
-		if( 0 == precookLen )
-			return;
+		//if( 0 == precookLen )
+		//	return 0;
 
 		if(align == CENTER) {
 			int32_t offsetX = (int32_t)(width>>1)-(precookLen>>1)+offsetColumn;
-			lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
+			return lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
 		}
 		else if(align == RIGHT) {
 			int32_t offsetX =(int32_t)(width)-(precookLen)-offsetColumn;
-			lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
+			return lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
 		}
 		else if(offsetLine < (int32_t)height) 
 		{
@@ -30,6 +30,8 @@ namespace klib
 			int32_t maxPrintSize	= (precookLen < remainingRows) ? precookLen : remainingRows;
 			memcpy(&rectangle[cursorOffset], precookStr, maxPrintSize*sizeof(_TCell));
 		}
+
+		return offsetColumn;
 	}
 
 	// returns true if done printing all the text.

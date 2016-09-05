@@ -10,10 +10,11 @@ namespace klib
 
 	template<size_t _Width, size_t _Depth>
 	struct SWeightedDisplay {
-		SGrid<char ,  _Width, _Depth>	Screen			= {};
-		SGrid<float, _Width, _Depth>	DisplayWeights	= {};
-		SGrid<float, _Width, _Depth>	Speed			= {};
-		SGrid<float, _Width, _Depth>	SpeedTarget		= {};
+		SGrid<char		, _Width, _Depth>	Screen			= {};
+		SGrid<uint16_t	, _Width, _Depth>	TextAttributes	= {};
+		SGrid<float		, _Width, _Depth>	DisplayWeights	= {};
+		SGrid<float		, _Width, _Depth>	Speed			= {};
+		SGrid<float		, _Width, _Depth>	SpeedTarget		= {};
 
 		static const uint32_t			Width			= (uint32_t)_Width;
 		static const uint32_t			Depth			= (uint32_t)_Depth;
@@ -21,6 +22,7 @@ namespace klib
 		void							Clear()
 		{
 			clearGrid(Screen			, ' ');
+			clearGrid(TextAttributes	, (uint16_t)1);
 			clearGrid(DisplayWeights	, 0.0f);
 			clearGrid(Speed				, 0.0f);
 			clearGrid(SpeedTarget		, 0.0f);

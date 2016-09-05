@@ -30,7 +30,7 @@ void klib::initTacticalMap(SGame& instanceGame)
 void klib::resetGame(SGame& instanceGame)
 {
 	initGame(instanceGame);
-	klib::clearASCIIBackBuffer(' ');
+	klib::clearASCIIBackBuffer(' ', 5);
 
 	instanceGame.PostEffectDisplay									.Clear();
 	instanceGame.TacticalDisplay									.Clear();
@@ -44,12 +44,13 @@ void klib::resetGame(SGame& instanceGame)
 
 	klib::lineToScreen(screenHeight/2-1, 0, klib::CENTER, "Enter your name:");
 
+	klib::presentASCIIBackBuffer();
+
 	static const HANDLE hConsoleOut	= GetStdHandle( STD_OUTPUT_HANDLE );
 	COORD cursorPos = {(SHORT)screenWidth/2-5, (SHORT)screenHeight/2};
 	SetConsoleCursorPosition( hConsoleOut, cursorPos );
+	SetConsoleTextAttribute(hConsoleOut, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
 	SetConsoleDisplayMode(hConsoleOut, CONSOLE_FULLSCREEN_MODE, 0);
-	klib::presentASCIIBackBuffer();
-
 	static const HANDLE hConsoleIn	= GetStdHandle( STD_INPUT_HANDLE );
 	FlushConsoleInputBuffer(hConsoleIn);
 	getline(std::cin, instanceGame.PlayerName);

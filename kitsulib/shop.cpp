@@ -41,7 +41,7 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 	}
 	menuTitle += " a la carte";
 
-	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");
+	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");
 	if(selectedChoice == SHOP_EXIT_VALUE)
 		return {GAME_STATE_MENU_BUY};
 
@@ -61,7 +61,7 @@ SGameState drawBuy(SGame& instanceGame, const SGameState& returnState)
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
 		static const SMenu<SGameState, size(optionsBuy)> menuBuy(optionsBuy, {GAME_STATE_WELCOME_COMMANDER}, "Order Menu", 26);
-		return drawMenu(instanceGame.GlobalDisplay.Screen,	menuBuy, instanceGame.FrameInput, instanceGame.State);
+		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuBuy, instanceGame.FrameInput, instanceGame.State);
 	}
 	else 
 		return drawBuyMenu(instanceGame, returnState);

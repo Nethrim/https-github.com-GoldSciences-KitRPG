@@ -80,6 +80,7 @@ namespace klib
 					display.DisplayWeights	.Cells[firstRow][x] = .00001f;
 					display.Speed			.Cells[firstRow][x] = rand()*.001f+0.001f;
 					display.SpeedTarget		.Cells[firstRow][x] = rand()*.0009f+0.001f;
+					display.TextAttributes	.Cells[firstRow][x] = bReverse ? ((rand() % 2)?COLOR_CYAN:COLOR_BLUE): (rand()%2) ? COLOR_ORANGE : COLOR_RED;
 				}
 			}
 	
@@ -105,36 +106,48 @@ namespace klib
 						display.DisplayWeights	.Cells[lastRow][x]	= 0;
 						display.Speed			.Cells[lastRow][x]	= 0; 
 						display.SpeedTarget		.Cells[lastRow][x]	= 0;
+						display.TextAttributes	.Cells[lastRow][x]	= COLOR_WHITE;
 					}
 					else
 					{
 						int32_t xpos = std::max(std::min((int)x+randX, displayWidth-1), 0);
 						int32_t zpos = bReverse ? z+1 : z-1;
-						display.Screen.Cells			[zpos][xpos]	= display.Screen.Cells[z][x];
-
+	
 						if((rand()%disappearChanceDivisor) == 0) {
-							display.Screen.Cells		[zpos][xpos] = ' ';
-							display.DisplayWeights.Cells[zpos][xpos] = 0;
+							display.Screen			.Cells[zpos][xpos] = ' ';
+							display.DisplayWeights	.Cells[zpos][xpos] = 0;
+							//display.TextAttributes	.Cells[zpos][xpos] = 1;
 						}
-						else { 
-							if( '|' == display.Screen.Cells	[zpos][xpos] && z < (display.Depth/5*4))
-								display.Screen.Cells		[zpos][xpos] = '.';
+						else 
+						{ 
+							if(('|' == display.Screen	.Cells[zpos][xpos]) && z < (display.Depth/5*4)) {
+								display.Screen			.Cells[zpos][xpos] = '.';
+								display.TextAttributes	.Cells[zpos][xpos] = COLOR_ORANGE;
+							}
+							else if( bReverse && z > (display.Depth/5)) {
+								display.Screen			.Cells[zpos][xpos] = '|';
+								display.TextAttributes	.Cells[zpos][xpos] = COLOR_CYAN;
+							}
+							else {
+								display.Screen			.Cells[zpos][xpos]	= display.Screen.Cells[z][x];
+								display.TextAttributes	.Cells[zpos][xpos]	= display.TextAttributes.Cells[z][x];
+							}
+
 
 							display.DisplayWeights	.Cells[zpos][xpos]	= 0.00001f;
 							display.Speed			.Cells[zpos][xpos]	= display.Speed.Cells[z][x];
 							display.SpeedTarget		.Cells[zpos][xpos]	= (float)((rand()%1000))*0.05f;
 							if(bDontSlowdown)
-								display.SpeedTarget		.Cells[zpos][xpos]	*= ((bReverse ? display.Depth-z : z )*2/(float)display.Depth);
+								display.SpeedTarget	.Cells[zpos][xpos]	*= ((bReverse ? display.Depth-z : z )*2/(float)display.Depth);
+							display.SpeedTarget		.Cells[zpos][xpos]	+= 0.001f;
 						}
-
-
-						display.SpeedTarget		.Cells[zpos][xpos]	+= 0.001f;
 					}
 
 					display.Screen				.Cells[z][x]	= ' ';
 					display.DisplayWeights		.Cells[z][x]	= 0;
 					display.Speed				.Cells[z][x]	= 0; 
 					display.SpeedTarget			.Cells[z][x]	= 0;
+					display.TextAttributes		.Cells[z][x]	= COLOR_WHITE;
 				}
 			}
 	}
@@ -159,6 +172,7 @@ namespace klib
 					display.DisplayWeights	.Cells[displayDepth-1][x] = .000001f;
 					display.Speed			.Cells[displayDepth-1][x] = rand()*.001f+0.001f;
 					display.SpeedTarget		.Cells[displayDepth-1][x] = rand()*.0025f+0.001f;
+					display.TextAttributes	.Cells[displayDepth-1][x] = (rand() % 2)?COLOR_GREEN:COLOR_DARKGREEN;
 				}
 			}
 	
@@ -186,6 +200,7 @@ namespace klib
 						display.DisplayWeights	.Cells[0][x]	= 0;
 						display.Speed			.Cells[0][x]	= 0; 
 						display.SpeedTarget		.Cells[0][x]	= 0;
+						display.TextAttributes	.Cells[0][x]	= COLOR_WHITE;
 					}
 					else
 					{
@@ -206,6 +221,7 @@ namespace klib
 							else if( 'o' == display.Screen.Cells[z-1][xpos] && z < (display.Depth/2))
 								display.Screen.Cells[z-1][xpos] = '.';
 
+							display.TextAttributes	.Cells[z-1][xpos]	= (rand()%2) ? COLOR_DARKGREEN : COLOR_GREEN;
 							display.DisplayWeights	.Cells[z-1][xpos]	= 0.00001f;
 							display.Speed			.Cells[z-1][xpos]	= display.Speed.Cells[z][x];
 							display.SpeedTarget		.Cells[z-1][xpos]	= (float)((rand()%100))*(z*1.0f/display.Depth)*.2f+0.001f;
@@ -216,6 +232,7 @@ namespace klib
 					display.DisplayWeights	.Cells[z][x]		= 0;
 					display.Speed			.Cells[z][x]		= 0; 
 					display.SpeedTarget		.Cells[z][x]		= 0;
+					display.TextAttributes	.Cells[z][x]		= COLOR_WHITE;
 				}
 			}
 	}

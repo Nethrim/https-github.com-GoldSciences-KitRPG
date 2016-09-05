@@ -111,7 +111,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 		}
 	}
 
-	int32_t result = drawMenu(instanceGame.GlobalDisplay.Screen, "Squad setup", menuItems, instanceGame.FrameInput, SGameSquad::Size, -1, std::max(24, maxNameLen+4));
+	int32_t result = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], "Squad setup", menuItems, instanceGame.FrameInput, SGameSquad::Size, -1, std::max(24, maxNameLen+4));
 	if(SGameSquad::Size == result)
 		return {GAME_STATE_WELCOME_COMMANDER};
 

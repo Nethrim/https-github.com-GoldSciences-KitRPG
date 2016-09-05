@@ -170,6 +170,7 @@
     <ClInclude Include="Armor.h" />
     <ClInclude Include="asciiscreen.h" />
     <ClInclude Include="CharacterPoints.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="CombatPoints.h" />
     <ClInclude Include="CombatStatus.h" />

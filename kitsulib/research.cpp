@@ -162,7 +162,7 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 	}
 
 	SResearchable selectedChoice;
-	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, (size_t)researchableCount, "Available Research", menuItems, instanceGame.FrameInput, {(int32_t)researchableCount}, {-1}, 40U);
+	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], (size_t)researchableCount, "Available Research", menuItems, instanceGame.FrameInput, {(int32_t)researchableCount}, {-1}, 40U);
 	if(selectedChoice.ResearchIndex == researchableCount)
 		return {GAME_STATE_MENU_RESEARCH};
 
@@ -199,7 +199,7 @@ SGameState drawResearch(SGame& instanceGame, const SGameState& returnState)
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
 		static const SMenu<SGameState, size(optionsResearch)> menuResearch(optionsResearch, {GAME_STATE_WELCOME_COMMANDER}, "Research Center", 28);
-		return drawMenu(instanceGame.GlobalDisplay.Screen,	menuResearch, instanceGame.FrameInput, instanceGame.State);
+		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuResearch, instanceGame.FrameInput, instanceGame.State);
 	}
 	else 
 		return drawResearchMenu(instanceGame, returnState);

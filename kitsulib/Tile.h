@@ -108,8 +108,8 @@ namespace klib
 
 
 	template<typename _CellType, size_t _Width, size_t _Height, typename... _Args>
-	void lineToGrid( SGrid<_CellType, _Width, _Height>& display, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-		lineToRect(&display.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, format, args... );
+	int32_t lineToGrid( SGrid<_CellType, _Width, _Height>& display, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
+		return lineToRect(&display.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, format, args... );
 	}
 
 } // namespace

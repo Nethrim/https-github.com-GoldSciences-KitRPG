@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-
-
 #ifndef __ASCIISCREEN_H__20983472903740928374234__
 #define __ASCIISCREEN_H__20983472903740928374234__
 
@@ -14,15 +12,11 @@ namespace klib
 {
 	void initASCIIScreen();
 
-	//struct SConsoleCell
-	//{
-	//	uint8_t	Color;
-	//	char	Letter;
-	//};
-
-
 	char* getASCIIBackBuffer( void );
 	const char* getASCIIFrontBuffer( void );
+
+	uint16_t* getASCIIColorBackBuffer( void );
+	const uint16_t* getASCIIColorFrontBuffer( void );
 
 	uint32_t getASCIIBackBufferWidth( void );
 	uint32_t getASCIIBackBufferHeight( void );
@@ -31,7 +25,7 @@ namespace klib
 	//int32_t setASCIIBackBufferHeight( uint32_t backBufferHeight );
 
 	void swapASCIIBuffers( void );
-	void clearASCIIBackBuffer( int value );
+	void clearASCIIBackBuffer( int value, uint16_t colorValue=0x1 );
 	void presentASCIIFrontBuffer( void );
 	void presentASCIIBackBuffer( void );
 

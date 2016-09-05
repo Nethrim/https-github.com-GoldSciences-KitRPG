@@ -1,12 +1,16 @@
 #include "asciiscreen.h"
+#include "color.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 #include <Windows.h>
 
-static char* _backBuffer	= 0;
-static char* _frontBuffer	= 0;
+static char* _backBuffer			= 0;
+static char* _frontBuffer			= 0;
+static uint16_t* _colorBackBuffer	= 0;
+static uint16_t* _colorFrontBuffer	= 0;
 
 static const int _backBufferWidth	= DEFAULT_ASCII_SCREEN_WIDTH;
 static const int _backBufferHeight	= DEFAULT_ASCII_SCREEN_HEIGHT;
@@ -22,11 +26,21 @@ public:
 } bbDeleter;
 
 char* klib::getASCIIBackBuffer( void ) {
+	if( 0 == _backBuffer )
+		clearASCIIBackBuffer(' ', COLOR_WHITE);
 	return _backBuffer;
 };
 
 const char* klib::getASCIIFrontBuffer( void ) {
 	return _frontBuffer;
+};
+
+uint16_t* klib::getASCIIColorBackBuffer( void ) {
+	return _colorBackBuffer;
+};
+
+const uint16_t* klib::getASCIIColorFrontBuffer( void ) {
+	return _colorFrontBuffer;
 };
 
 uint32_t klib::getASCIIBackBufferWidth( void ) {
@@ -38,9 +52,13 @@ uint32_t klib::getASCIIBackBufferHeight( void ) {
 };
 
 void klib::swapASCIIBuffers( void ) {
-	char* bB		= _backBuffer;
-	_backBuffer		= _frontBuffer;
-	_frontBuffer	= bB;
+	char* bB			= _backBuffer;
+	_backBuffer			= _frontBuffer;
+	_frontBuffer		= bB;
+
+	uint16_t* cBB		= _colorBackBuffer;
+	_colorBackBuffer	= _colorFrontBuffer;
+	_colorFrontBuffer	= cBB;
 };
 
 
@@ -61,8 +79,11 @@ void klib::presentASCIIFrontBuffer( void )
 	DWORD dummy=0;
 
     COORD    Home = { 0, 0 };
-	if( _frontBuffer )
+	//static WORD curColor = 0;
+	if( _frontBuffer ) {
 		WriteConsoleOutputCharacterA( hConsoleOut, _frontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
+		WriteConsoleOutputAttribute( hConsoleOut, _colorFrontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
+	}
 #else
 	if( _frontBuffer )
 	{
@@ -72,7 +93,7 @@ void klib::presentASCIIFrontBuffer( void )
 #endif
 };
 
-void klib::clearASCIIBackBuffer( int value )
+void klib::clearASCIIBackBuffer( int value, uint16_t colorValue )
 {
 	if( 0 == _backBuffer )
 	{
@@ -89,6 +110,7 @@ void klib::clearASCIIBackBuffer( int value )
 		_backBuffer = (char*)malloc( sizeof( char )*_backBufferWidth*_backBufferHeight+1 );	// We're going to draw our map in this array. the assignment of empty brackets = {} initializes all chars in the array to 0
 		if( 0 == _backBuffer )
 			throw("damn");
+		_colorBackBuffer = (uint16_t*)malloc( sizeof( uint16_t )*_backBufferWidth*_backBufferHeight+1 );	
 	}
 
 	if( _backBuffer)
@@ -101,6 +123,10 @@ void klib::clearASCIIBackBuffer( int value )
 		csbiInfo.dwCursorPosition.Y = _backBufferHeight/2;//csbiInfo.dwSize.Y-1;
 		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
 	}
+	if(_colorBackBuffer) {
+		memset(_colorBackBuffer, colorValue, sizeof( uint16_t )*_backBufferWidth*_backBufferHeight+1);
+	}
+
 };
 
 void klib::initASCIIScreen()
@@ -120,23 +146,23 @@ void klib::initASCIIScreen()
 	csbiInfo.srWindow.Left		= 10;
 	csbiInfo.srWindow.Right		= 800;
 	csbiInfo.srWindow.Bottom	= 600;
-	csbiInfo.ColorTable[0]		= 0x00000000;
-	csbiInfo.ColorTable[1]		= 0x00FFFFFF;
-	csbiInfo.ColorTable[2]		= 0x00FF0000;
-	csbiInfo.ColorTable[3]		= 0x0000FF00;
-	csbiInfo.ColorTable[4]		= 0x000000FF;
-	csbiInfo.ColorTable[5]		= 0x00FFFFFF;//0x0000FFFF;
-	csbiInfo.ColorTable[6]		= 0x00FF00FF;
-	csbiInfo.ColorTable[7]		= 0x00FFFF00;
-	csbiInfo.ColorTable[8]		= 0x00000FFF;
-	csbiInfo.ColorTable[9]		= 0x0000FFF0;
-	csbiInfo.ColorTable[10]		= 0x000FFF00;
-	csbiInfo.ColorTable[11]		= 0x00FFF000;
-	csbiInfo.ColorTable[12]		= 0x00FF000F;
-	csbiInfo.ColorTable[13]		= 0x00F000FF;
-	csbiInfo.ColorTable[14]		= 0x0000F0F0;
-	csbiInfo.ColorTable[15]		= 0x00FFFFFF;//0x00F000F0;
-	csbiInfo.wAttributes		= FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY;
+	csbiInfo.ColorTable[0 ]		= COLOR_0 ;
+	csbiInfo.ColorTable[1 ]		= COLOR_1 ;
+	csbiInfo.ColorTable[2 ]		= COLOR_2 ;
+	csbiInfo.ColorTable[3 ]		= COLOR_3 ;
+	csbiInfo.ColorTable[4 ]		= COLOR_4 ;
+	csbiInfo.ColorTable[5 ]		= COLOR_5 ;
+	csbiInfo.ColorTable[6 ]		= COLOR_6 ;
+	csbiInfo.ColorTable[7 ]		= COLOR_7 ;
+	csbiInfo.ColorTable[8 ]		= COLOR_8 ;
+	csbiInfo.ColorTable[9 ]		= COLOR_9 ;
+	csbiInfo.ColorTable[10]		= COLOR_10;
+	csbiInfo.ColorTable[11]		= COLOR_11;
+	csbiInfo.ColorTable[12]		= COLOR_12;
+	csbiInfo.ColorTable[13]		= COLOR_13;
+	csbiInfo.ColorTable[14]		= COLOR_14;
+	csbiInfo.ColorTable[15]		= COLOR_15;
+	csbiInfo.wAttributes		= FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | BACKGROUND_INTENSITY;
 
 	SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
 	//klib::clearASCIIBackBuffer(' ');
