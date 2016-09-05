@@ -21,35 +21,87 @@ public:
 	}
 } bbDeleter;
 
-char* klib::getASCIIBackBuffer( void )
-{
+char* klib::getASCIIBackBuffer( void ) {
 	return _backBuffer;
 };
 
-const char* klib::getASCIIFrontBuffer( void )
-{
+const char* klib::getASCIIFrontBuffer( void ) {
 	return _frontBuffer;
 };
 
-uint32_t klib::getASCIIBackBufferWidth( void )
-{
+uint32_t klib::getASCIIBackBufferWidth( void ) {
 	return _backBufferWidth;
 };
 
-uint32_t klib::getASCIIBackBufferHeight( void )
-{
+uint32_t klib::getASCIIBackBufferHeight( void ) {
 	return _backBufferHeight;
 };
 
-void klib::swapASCIIBuffers( void )
-{
+void klib::swapASCIIBuffers( void ) {
 	char* bB		= _backBuffer;
-	char* fB		= _frontBuffer;
-
-	_backBuffer		= fB;
+	_backBuffer		= _frontBuffer;
 	_frontBuffer	= bB;
 };
 
+
+void klib::presentASCIIBackBuffer( void )
+{
+	swapASCIIBuffers();
+	presentASCIIFrontBuffer();
+};
+
+void klib::presentASCIIFrontBuffer( void )
+{
+#if defined( WIN32 )
+	const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
+	CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {};
+    GetConsoleScreenBufferInfo( hConsoleOut, &csbiInfo );
+	COORD   Coords = {0, csbiInfo.dwSize.Y-_backBufferHeight};
+	char* myLine=0;
+	DWORD dummy=0;
+
+    COORD    Home = { 0, 0 };
+	if( _frontBuffer )
+		WriteConsoleOutputCharacterA( hConsoleOut, _frontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
+#else
+	if( _frontBuffer )
+	{
+		_frontBuffer[(_backBufferWidth*_backBufferHeight)] = 0;
+		fprintf(stdout, "\n%s", _frontBuffer );
+	}
+#endif
+};
+
+void klib::clearASCIIBackBuffer( int value )
+{
+	if( 0 == _backBuffer )
+	{
+		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
+		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
+		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
+		csbiInfo.dwCursorPosition.Y = csbiInfo.dwSize.Y-1;
+		//csbiInfo.dwCursorPosition.X = 0;
+		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
+		DWORD dummy=0;
+		COORD Home = { 0, 0 };
+		FillConsoleOutputCharacter( hConsoleOut, ' ', csbiInfo.dwSize.X * csbiInfo.dwSize.Y, Home, &dummy );
+		//csbiInfo.dwSize.X = 
+		_backBuffer = (char*)malloc( sizeof( char )*_backBufferWidth*_backBufferHeight+1 );	// We're going to draw our map in this array. the assignment of empty brackets = {} initializes all chars in the array to 0
+		if( 0 == _backBuffer )
+			throw("damn");
+	}
+
+	if( _backBuffer)
+	{
+		memset(_backBuffer, value, sizeof( char )*_backBufferWidth*_backBufferHeight+1);
+
+		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
+		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
+		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
+		csbiInfo.dwCursorPosition.Y = _backBufferHeight/2;//csbiInfo.dwSize.Y-1;
+		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
+	}
+};
 
 void klib::initASCIIScreen()
 {
@@ -87,71 +139,8 @@ void klib::initASCIIScreen()
 	csbiInfo.wAttributes		= FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY;
 
 	SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-	klib::clearASCIIBackBuffer(' ');
-	klib::presentASCIIBackBuffer();
-	klib::clearASCIIBackBuffer(' ');
-	klib::presentASCIIBackBuffer();
+	//klib::clearASCIIBackBuffer(' ');
+	//klib::presentASCIIBackBuffer();
+	//klib::clearASCIIBackBuffer(' ');
+	//klib::presentASCIIBackBuffer();
 }
-
-
-void klib::clearASCIIBackBuffer( int value )
-{
-	if( 0 == _backBuffer )
-	{
-		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
-		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
-		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-		csbiInfo.dwCursorPosition.Y = csbiInfo.dwSize.Y-1;
-		//csbiInfo.dwCursorPosition.X = 0;
-		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-		DWORD dummy=0;
-		COORD Home = { 0, 0 };
-		FillConsoleOutputCharacter( hConsoleOut, ' ', csbiInfo.dwSize.X * csbiInfo.dwSize.Y, Home, &dummy );
-		//csbiInfo.dwSize.X = 
-		_backBuffer = (char*)malloc( sizeof( char )*_backBufferWidth*_backBufferHeight+1 );	// We're going to draw our map in this array. the assignment of empty brackets = {} initializes all chars in the array to 0
-		if( 0 == _backBuffer )
-			throw("damn");
-	}
-	if( _backBuffer)
-	{
-		memset(_backBuffer, value, sizeof( char )*_backBufferWidth*_backBufferHeight+1);
-
-		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
-		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
-		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-		csbiInfo.dwCursorPosition.Y = _backBufferHeight/2;//csbiInfo.dwSize.Y-1;
-		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-	}
-
-};
-
-void klib::presentASCIIFrontBuffer( void )
-{
-#if defined( WIN32 )
-	const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
-	CONSOLE_SCREEN_BUFFER_INFO csbiInfo = {};
-    GetConsoleScreenBufferInfo( hConsoleOut, &csbiInfo );
-	COORD   Coords = {0, csbiInfo.dwSize.Y-_backBufferHeight};
-	char* myLine=0;
-	DWORD dummy=0;
-
-    COORD    Home = { 0, 0 };
-	if( _frontBuffer )
-		WriteConsoleOutputCharacterA( hConsoleOut, _frontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
-#else
-	if( _frontBuffer )
-	{
-		_frontBuffer[(_backBufferWidth*_backBufferHeight)] = 0;
-		fprintf(stdout, "\n%s", _frontBuffer );
-	}
-#endif
-
-
-};
-
-void klib::presentASCIIBackBuffer( void )
-{
-	swapASCIIBuffers();
-	presentASCIIFrontBuffer();
-};
-

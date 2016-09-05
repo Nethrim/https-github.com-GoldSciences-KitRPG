@@ -22,6 +22,7 @@ static const CRecordArmor modifiersArmor[] =
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,300	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_SHOCK		}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Insulating %s"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,300	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_POISON		}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Biohazard %s"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,300	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_FREEZING	}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Warm %s"				}
+// --------------------- Update
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,300	},{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_FROZEN		}	,{ENTITY_TECHNOLOGY_DIGITAL	}},	"Self-Heating %s"		}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},1,{0,0,0}}	,0,400	},{{ATTACK_EFFECT_NONE, DEFEND_EFFECT_REFLECT},	{}		,{ENTITY_TECHNOLOGY_BASIC	}},	"Reflective %s"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,400	},	POLARIZED_EFFECTS,	POLARIZED_STATUS				,{ENTITY_TECHNOLOGY_BASIC	}},	"Polarized %s"			}
@@ -40,10 +41,12 @@ static const CRecordArmor definitionsArmor[] =
 ,	{{{0,0,3},	{0,0,0}	,{0,0,{0,0,0},3	,{0,0,0}}	,0,0	},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Wooden Armor"			}
 ,	{{{0,0,4},	{0,0,0}	,{0,0,{0,0,0},4	,{0,0,0}}	,0,0	},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Chainmail Armor"		}
 ,	{{{0,0,5},	{0,0,0}	,{0,0,{0,0,0},5	,{0,0,0}}	,0,0	},	{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_BLEEDING}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Plate Armor"			}
+//--------------------------------------- Update 1
 ,	{{{0,0,6},	{0,0,0}	,{0,0,{0,0,0},6	,{0,0,0}}	,0,0	},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Kevlar Armor"			}
 ,	{{{0,0,7},	{0,0,0}	,{0,0,{0,0,0},7	,{0,0,0}}	,0,0	},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Diamond Armor"			}
 ,	{{{0,0,8},	{0,0,0}	,{0,0,{0,0,0},8	,{0,0,0}}	,0,0	},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Dragon Scale Armor"	}
 ,	{{{0,0,8},	{0,1,0}	,{0,0,{0,0,0},9	,{0,0,0}}	,0,0	},	{{},{COMBAT_STATUS_BLIND,COMBAT_STATUS_STUN}		,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Stardust Armor"		}
+//--------------------------------------- Update 2
 ,	{{{0,0,10},	{0,0,0}	,{0,1,{0,0,0},9 ,{0,0,0}}	,0,0	},	{MECH_ARMOR_EFFECTS	,{COMBAT_STATUS_SHOCK}			,{MECH_ARMOR_TECHNOLOGY		, ENTITY_GRADE_HEAVY	}},	"Mech Armor"			}
 ,	{{{0,0,9},	{1,0,0}	,{0,1,{0,0,0},9 ,{0,0,0}}	,0,0	},	{MECH_ARMOR_EFFECTS	,{COMBAT_STATUS_SHOCK}			,{BIOMECH_ARMOR_TECHNOLOGY	, ENTITY_GRADE_MEDIUM	}},	"Biomech Armor"			}
 ,	{{{0,0,9},	{0,0,0}	,{1,0,{1,1,1},10 ,{0,0,0}}	,0,0	},	{FORCE_FIELD_EFFECTS,{}								,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Force Field"			}

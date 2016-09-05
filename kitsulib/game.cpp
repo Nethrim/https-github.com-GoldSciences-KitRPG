@@ -13,18 +13,17 @@ void klib::initTacticalMap(SGame& instanceGame)
 	const uint32_t	terrainWidth = instanceGame.TacticalTiles.Terrain.Topology.Width, 
 					terrainDepth = instanceGame.TacticalTiles.Terrain.Topology.Depth;
 
-	clearGrid(instanceGame.TacticalTiles.Terrain.Topology, {0, 0});
+	instanceGame.TacticalTiles.Clear();
 	fillCellsFromNoise(instanceGame.TacticalTiles.Terrain.Topology, {1,0}, (int32_t)instanceGame.Seed, {0, 0});
 	fillCellsFromNoise(instanceGame.TacticalTiles.Terrain.Topology, {0,1}, (int32_t)instanceGame.Seed+3, {0, 0});
 	fillCellsFromNoise(instanceGame.TacticalTiles.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0});
 	fillCellsFromNoise(instanceGame.TacticalTiles.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0});
 	//fillCellsFromNoise(instanceGame.TacticalTiles.Terrain.Topology, {0,0}, (int32_t)instanceGame.Seed+5, {0, 0});
 	
-	int8_t*			cellsOcclusion	= &instanceGame.TacticalTiles.Terrain.Occlusion.Cells[0][0];
-	STopologyTile*	cellsHeight		= &instanceGame.TacticalTiles.Terrain.Topology.Cells[0][0];
-	for(uint32_t i=0, count = terrainDepth*terrainWidth; i<count; i++)
-	{
-		cellsOcclusion[i] = cellsHeight[i].HeightSharp + cellsHeight[i].HeightSmooth;
+	int8_t*				cellsOcclusion	= &instanceGame.TacticalTiles.Terrain.Occlusion.Cells[0][0];
+	STopologyHeight*	cellsHeight		= &instanceGame.TacticalTiles.Terrain.Topology.Cells[0][0];
+	for(uint32_t i=0, count = terrainDepth*terrainWidth; i<count; i++) {
+		cellsOcclusion[i] = cellsHeight[i].Sharp + cellsHeight[i].Smooth;
 	};
 }
 
@@ -33,17 +32,26 @@ void klib::resetGame(SGame& instanceGame)
 	initGame(instanceGame);
 	klib::clearASCIIBackBuffer(' ');
 
+	instanceGame.PostEffectDisplay									.Clear();
+	instanceGame.TacticalDisplay									.Clear();
+	instanceGame.GlobalDisplay										.Clear();
+	instanceGame.TacticalTiles										.Clear();
+	clearGrid(instanceGame.MenuDisplay);
+
 	// Set up a nice prompt 
 	uint32_t screenWidth  =	klib::getASCIIBackBufferWidth(),
 			 screenHeight =	klib::getASCIIBackBufferHeight();
 
 	klib::lineToScreen(screenHeight/2-1, 0, klib::CENTER, "Enter your name:");
-	static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
+
+	static const HANDLE hConsoleOut	= GetStdHandle( STD_OUTPUT_HANDLE );
 	COORD cursorPos = {(SHORT)screenWidth/2-5, (SHORT)screenHeight/2};
 	SetConsoleCursorPosition( hConsoleOut, cursorPos );
 	SetConsoleDisplayMode(hConsoleOut, CONSOLE_FULLSCREEN_MODE, 0);
-
 	klib::presentASCIIBackBuffer();
+
+	static const HANDLE hConsoleIn	= GetStdHandle( STD_INPUT_HANDLE );
+	FlushConsoleInputBuffer(hConsoleIn);
 	getline(std::cin, instanceGame.PlayerName);
 
 	instanceGame.bStarted = true;

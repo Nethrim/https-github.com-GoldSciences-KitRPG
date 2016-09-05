@@ -6,6 +6,7 @@
 #include "Accessory.h"
 #include "Facility.h"
 #include "Vehicle.h"
+#include "StageProp.h"
 
 using namespace klib;
 
@@ -21,12 +22,14 @@ void displayAgentSlot(SGrid<_TCell, _Width, _Depth>& display, int32_t offsetY, i
 	SEntityPoints agentPoints = calculateFinalPoints( character );
 	if( bAddFieldNames ) {
 		nameAndLevelText = character.Name												;	lineToGrid(display, offsetY++	, offsetX, LEFT, "-- Agent #%u: %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		++offsetY;
 		nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
 		nameAndLevelText = getWeaponName		(character.CurrentEquip.Weapon			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
 		nameAndLevelText = getArmorName			(character.CurrentEquip.Armor			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
 		nameAndLevelText = getAccessoryName		(character.CurrentEquip.Accessory		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Accessory"			, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
 		nameAndLevelText = getVehicleName		(character.CurrentEquip.Vehicle			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Vehicle"				, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
-//		nameAndLevelText = getFacilityName		(character.CurrentEquip.Facility		);	lineToGrid(display, offsetY+++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Building assigned"	, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+		nameAndLevelText = getFacilityName		(character.CurrentEquip.Facility		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Facility"			, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
+		nameAndLevelText = getStagePropName		(character.CurrentEquip.StageProp		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Stage prop"			, nameAndLevelText.c_str(), character.CurrentEquip.StageProp	.Level);
 		lineToGrid(display, ++offsetY, offsetX, LEFT, "- Final Points:");
 		offsetY+=2;
 		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Health				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Health"		, nameAndLevelText.c_str());
@@ -66,7 +69,7 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 {
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
-	static const int32_t slotRowSpace	= 25;// display.Depth / (MAX_AGENT_ROWS);
+	static const int32_t slotRowSpace	= 27;// display.Depth / (MAX_AGENT_ROWS);
 
 	int32_t playerOffset = (instanceGame.SelectedPlayerUnit != -1) ? std::min(std::max(0, instanceGame.SelectedPlayerUnit-1), SGameSquad::Size-6) : 0;
 
@@ -89,7 +92,6 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 
 SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue)
 {
-	//clearGrid(instanceGame.MenuDisplay);
 	drawSquadSlots(instanceGame, returnValue);
 
 	static SMenuItem<int32_t> menuItems[SGameSquad::Size] = {};

@@ -54,6 +54,9 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	lineToScreen(getASCIIBackBufferHeight()-2, 1, RIGHT, "%s.", instanceGame.UserMessage.c_str());
 	lineToScreen(getASCIIBackBufferHeight()-2, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
 	
+	lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
+	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
+
 	presentASCIIBackBuffer();
 }; 	// 
 

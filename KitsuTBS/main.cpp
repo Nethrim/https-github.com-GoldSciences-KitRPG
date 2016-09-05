@@ -1,25 +1,12 @@
-#include "Game.h"
-
-//#include "menus.h"
 #include "draw.h"
-#include "Enemy.h"
-
-
-#define NOMINMAX
 
 #include <crtdbg.h>
-#include <Windows.h>
-
-#include <algorithm>
-#include <ctime>
-
 
 // Use this function to draw our game data
 void draw( klib::SGame& instanceGame ) // 
 {
  	drawAndPresentGame(instanceGame);
 };
-
 
 int main(void)
 {

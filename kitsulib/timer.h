@@ -12,29 +12,45 @@ namespace klib
 		_ValueType	Value;
 		_ValueType	MaxValue;
 
-		bool		Accumulate( _ValueType amount ){
-			if( Value >= MaxValue )
-				return true;
-			
-			Value += amount;
-			if( Value > MaxValue )
+		// The Accumulate and Deplete functions of SAccumulator won't prevent overflow when using negative numbers as arguments.
+		// This is so we don't have unnecessary condition checks in places where we are going to operate always with positive values
+		_ValueType		Accumulate( _ValueType amount ){
+			if( (Value += amount) > MaxValue ) {
+				_ValueType difference = Value-MaxValue;
 				Value = MaxValue;
+				return difference;
+			}
 			
-			return MaxValue == Value;
+			return 0;
 		}
 
-		bool		Deplete( _ValueType amount ){
-			if( Value == 0 )
-				return true;
-			
-			Value += amount*-1;
-			if( Value < 0 )
+		// The Accumulate and Deplete functions of SAccumulator won't prevent overflow when using negative numbers as arguments.
+		// This is so we don't have unnecessary condition checks in places where we know that we are going to operate always with positive values
+		// 
+		_ValueType		Deplete( _ValueType amount ){
+			if( (Value -= amount) < 0 ) {
+				_ValueType difference = Value;
 				Value = 0;
+				return difference;
+			}
 			
-			return 0 == Value;
+			return 0;
 		}
 	};
 
+	//template<typename _ValueType>
+	//struct SAccumulatorStatistics
+	//{
+	//	_ValueType	Accumulated;
+	//	_ValueType	Depleted;
+	//	uint64_t	TimesAccumulated;
+	//	uint64_t	TimesDepleted;
+	//
+	//	inline _ValueType		Accumulate	( _ValueType amount ){ TimesAccumulated	++;	return Accumulated	+= amount; } //return amount; }
+	//	inline _ValueType		Deplete		( _ValueType amount ){ TimesDepleted	++;	return Depleted		+= amount; } //return amount; }
+	//};
+
+	// This thing is to provide high-precision 
 	struct STimer
 	{
 		// members
@@ -51,7 +67,7 @@ namespace klib
 
 	private:
 		int64_t		CountsPerSecond			= 0;
-		int64_t		CountsPerMicroSecond	= 0;
+		double		CountsPerMicroSecond	= 0;
 		int64_t		PrevTimeStamp			= 0;
 		int64_t		CurrentTimeStamp		= 0;
 		double		SecondsPerCount			= 0.0;

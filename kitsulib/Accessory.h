@@ -17,7 +17,8 @@ static const CRecordAccessory modifiersAccessory[] =
 ,	{{{0,0,0},{0,0,0}	,{2,1,{0,0,0},1,{0,0,0}},1,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glass %s"			}
 ,	{{{0,0,1},{0,0,0}	,{2,1,{0,0,0},1,{0,0,0}},1,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Titanium %s"		}
 ,	{{{0,0,2},{0,0,0}	,{2,1,{0,0,0},1,{0,0,0}},1,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Diamond %s"		}
-,	{{{0,0,2},{0,0,0}	,{2,2,{0,0,0},1,{0,0,0}},1,400}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Laser %s"			}
+// - Update
+,	{{{0,0,2},{0,0,1}	,{2,2,{0,0,0},1,{0,0,0}},1,400}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Laser %s"			}
 ,	{{{0,0,2},{0,0,1}	,{2,2,{0,0,0},1,{0,0,0}},1,450}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Power %s"			}
 ,	{{{0,0,2},{0,0,1}	,{2,2,{0,0,0},1,{0,0,0}},1,400}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s of Ambition"	}
 ,	{{{0,0,2},{0,0,1}	,{2,2,{0,0,0},1,{0,0,0}},1,450}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s of Passion"		}
@@ -40,6 +41,7 @@ static const CRecordAccessory definitionsAccessory[] =
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Monocle"	}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Scope"		}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glasses"	}
+//- Update
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Watch"		}
 };
 

@@ -113,9 +113,9 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 	GPNCO(god, SBuffer) tacticalMap;
 	gcreateBuffer(GDATA_TYPE_UINT8_4, GUSAGE_TEXEL, gridWidth*gridDepth, gridWidth, &tacticalMap);
 
-	const klib::STopologyTile* topologyCells = &m_pGame->TacticalTiles.Terrain.Topology.Cells[0][0];
+	const klib::STopologyHeight* topologyCells = &m_pGame->TacticalTiles.Terrain.Topology.Cells[0][0];
 	for(uint32_t i=0, count=gridWidth*gridDepth; i<count; ++i)
-		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].HeightSharp, 0, topologyCells[i].HeightSmooth, 0xFFU);
+		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].Sharp, 0, topologyCells[i].Smooth, 0xFFU);
 
 	if( 0 > buildGeometryMapFromImage( tacticalMap.get_address(), 0.05f, MazeGeometryData[0] ) ){
 		error_printf("buildGeometryMapFromImage() FAILED!");

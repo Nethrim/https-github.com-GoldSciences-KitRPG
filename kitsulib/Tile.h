@@ -18,13 +18,13 @@ namespace klib
 	};
 
 	struct SCharacterTile {
-		int8_t	SquadIndex = -1;
-		int8_t	AgentIndex = -1;
+		int8_t	SquadIndex	;
+		int8_t	AgentIndex	;
 	};
 
-	struct STopologyTile {
-		int8_t	HeightSmooth;
-		int8_t	HeightSharp	;
+	struct STopologyHeight {
+		int8_t	Smooth	;
+		int8_t	Sharp	;
 	};
 
 #pragma pack(pop)
@@ -32,17 +32,32 @@ namespace klib
 	template <size_t _Width, size_t _Depth> 
 	struct STerrainTiles
 	{
-		SGrid<STopologyTile	, _Width, _Depth>	Topology;
-		SGrid<int8_t		, _Width, _Depth>	Occlusion;	//	This value defines wether the terrain blocks the sight up to a given height.
+		SGrid<STopologyHeight	, _Width, _Depth>	Topology	;
+		SGrid<int8_t			, _Width, _Depth>	Occlusion	;	//	This value defines wether the terrain blocks the sight up to a given height.
+		void Clear() {
+			clearGrid(Topology	, STopologyHeight({0, 0}));
+			clearGrid(Occlusion	, (int8_t)0);
+		}
 	};
 
 	template <size_t _Width, size_t _Depth> 
 	struct SEntityTiles
 	{
-		SGrid<SCharacterTile, _Width, _Depth>	AgentsPlayer;
-		SGrid<SCharacterTile, _Width, _Depth>	AgentsEnemy;
-		SGrid<uint16_t		, _Width, _Depth>	ItemsPlayer;
-		SGrid<uint16_t		, _Width, _Depth>	ItemsEnemy;
+		SGrid<SCharacterTile, _Width, _Depth>	AgentsPlayer	;
+		SGrid<SCharacterTile, _Width, _Depth>	AgentsEnemy		;
+		SGrid<SCharacterTile, _Width, _Depth>	AgentsNeutral	;
+		SGrid<int32_t		, _Width, _Depth>	ItemsPlayer		;
+		SGrid<int32_t		, _Width, _Depth>	ItemsEnemy		;
+		SGrid<int32_t		, _Width, _Depth>	ItemsNeutral	;
+
+		void Clear() {
+			clearGrid(	AgentsPlayer	, {-1, -1} );
+			clearGrid(	AgentsEnemy		, {-1, -1} );
+			clearGrid(	AgentsNeutral	, {-1, -1} );
+			clearGrid(	ItemsPlayer		, -1 );
+			clearGrid(	ItemsEnemy		, -1 );
+			clearGrid(	ItemsNeutral	, -1 );
+		}
 	};
 
 	template <size_t _Width, size_t _Depth> 
@@ -50,6 +65,11 @@ namespace klib
 	{
 		STerrainTiles<_Width, _Depth>	Terrain;
 		SEntityTiles<_Width, _Depth>	Entities;
+
+		void Clear() {
+			Entities.Clear();
+			Terrain.Clear();
+		}
 
 		static const uint32_t Width = (uint32_t)_Width;
 		static const uint32_t Depth = (uint32_t)_Depth;
@@ -79,6 +99,7 @@ namespace klib
 			display.Cells[z][0] = value; 
 			display.Cells[z][_Width-1]  = value; 
 		}
+
 		for(uint32_t x=0, maxX=_Width ; x<maxX; ++x){ 
 			display.Cells[0][x] = value; 
 			display.Cells[_Height-1][x] = value; 

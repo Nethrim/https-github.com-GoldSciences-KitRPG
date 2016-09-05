@@ -27,10 +27,12 @@ static const CRecordFacility definitionsFacility[] =
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Warfare Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hospital"			}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,400	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Physics Labs"		}
+// ----------- Update 1
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Chemical Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,600	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Mechanics Labs"	}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,700	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Airport"			}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,800	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Digital Labs"		}
+// ----------- Update 2
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Launch Base"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Quantum Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Genetic Labs"		}

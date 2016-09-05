@@ -14,14 +14,21 @@ namespace klib
 {
 	void initASCIIScreen();
 
+	//struct SConsoleCell
+	//{
+	//	uint8_t	Color;
+	//	char	Letter;
+	//};
+
+
 	char* getASCIIBackBuffer( void );
 	const char* getASCIIFrontBuffer( void );
 
 	uint32_t getASCIIBackBufferWidth( void );
 	uint32_t getASCIIBackBufferHeight( void );
 
-	int32_t setASCIIBackBufferWidth( uint32_t backBufferWidth );
-	int32_t setASCIIBackBufferHeight( uint32_t backBufferHeight );
+	//int32_t setASCIIBackBufferWidth( uint32_t backBufferWidth );
+	//int32_t setASCIIBackBufferHeight( uint32_t backBufferHeight );
 
 	void swapASCIIBuffers( void );
 	void clearASCIIBackBuffer( int value );

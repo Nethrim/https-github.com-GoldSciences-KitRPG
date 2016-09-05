@@ -18,40 +18,41 @@ namespace klib
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordWeapon modifiersWeapon[] = 
 //
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s"					}
-,	{{{1,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Resistance"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},1,100}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Thief"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	POLISHED_STATUS_INFLICT	}	, {ENTITY_TECHNOLOGY_BASIC				}},	"Polished %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Fire"			}	
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	COMBAT_STATUS_POISON	}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Poison"			}
-,	{{{0,0,0},{1,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Acolyte"			}
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s"					}
+,	{{{1,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Resistance"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},1,100}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Thief"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	POLISHED_STATUS_INFLICT	}		, {ENTITY_TECHNOLOGY_BASIC				}},	"Polished %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	COMBAT_STATUS_BURN		}		, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Fire"			}	
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{	COMBAT_STATUS_POISON	}		, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Poison"			}
+,	{{{0,0,0},{1,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Acolyte"			}
 //					0,								001									  
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},	THERMAL_STATUS				, {ENTITY_TECHNOLOGY_BASIC				}},	"Thermal %s"			}
-,	{{{2,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Vitality"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},2,200}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Rogue"		}
-,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Lava"			}	
-,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_POISON	}	, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Venom"			}
-,	{{{0,0,0},{2,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Priest"		}
-,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,200}	,{{ATTACK_EFFECT_STEAL	},{}		, {ENTITY_TECHNOLOGY_MECHANIC			}},	"Bonny & Clyde's %s"	}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},	THERMAL_STATUS					, {ENTITY_TECHNOLOGY_BASIC				}},	"Thermal %s"			}
+,	{{{2,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Vitality"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},2,200}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Rogue"		}
+,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_BURN		}		, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Lava"			}	
+,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{0,0,0}},0,200}	,{{},{	COMBAT_STATUS_POISON	}		, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of Venom"			}
+,	{{{0,0,0},{2,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"%s of the Priest"		}
+,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,200}	,{{ATTACK_EFFECT_STEAL			},{}	, {ENTITY_TECHNOLOGY_MECHANIC			}},	"Bonny & Clyde's %s"	}
+//------------------------------------------------------------------ Update
 //			0,		0,								001									  
-,	{{{3,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Soldier's %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},3,300}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Assassin's %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_STUN		}	, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Sonic %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BLEEDING	}	, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Gauss %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BURN		}	, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Laser %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_POISON		}	, {ENTITY_TECHNOLOGY_BASIC				}},	"Acid %s"				}
-,	{{{0,0,0},{3,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"Saint's %s"			}
+,	{{{3,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Soldier's %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},3,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Assassin's %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_STUN		}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Sonic %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BLEEDING	}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Gauss %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BURN		}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Laser %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_POISON		}		, {ENTITY_TECHNOLOGY_BASIC				}},	"Acid %s"				}
+,	{{{0,0,0},{3,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Saint's %s"			}
 //		  ,0	  ,0							   100
-,	{{{4,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"Executioner's %s"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},4,400}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"Stalker's %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400}	,{{},{COMBAT_STATUS_BURN}			, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Plasma %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400}	,{{},{RADIACTIVE_STATUS_INFLICT}	, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Radiactive %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{1,0,1}},0,400}	,{{},{RADIACTIVE_STATUS_INFLICT}	, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Neutron %s"			}
-,	{{{0,0,0},{4,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"Angel's %s"			}
-,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}								, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{VAMPIRE_FLAGS																},	"Vampire's %s"			}
+,	{{{4,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Executioner's %s"		}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},4,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Stalker's %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400}	,{{},{COMBAT_STATUS_BURN}				, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Plasma %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Radiactive %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{1,0,1}},0,400}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Neutron %s"			}
+,	{{{0,0,0},{4,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Angel's %s"			}
+,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{VAMPIRE_FLAGS																	},	"Vampire's %s"			}
 //												   100
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700},{	{},{	COMBAT_STATUS_BURN	}	, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellite Orbital %s"	}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellite Orbital %s"	}
 };
 
 #define DEATH_SCYTHE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
@@ -65,7 +66,7 @@ static const CRecordWeapon definitionsWeapon[] =
 // 6th grade	No weapon: five points of hit chance.
 {	{{{0,0,0},{0,0,0}	,{5,0, {0,0,0},0,{0,0,0}},0	,10		},{{},{COMBAT_STATUS_NONE				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Glove"						}
 // 5th grade five points							 100
-,	{{{0,0,0},{0,0,0}	,{3,2, {0,0,0},0,{0,0,0}},0	,50		},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Rod"						}
+,	{{{0,0,0},{0,0,0}	,{3,2, {0,0,0},0,{0,0,0}},0	,50		},{{},{COMBAT_STATUS_NONE				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Rod"						}
 ,	{{{3,0,0},{0,0,0}	,{0,2, {0,0,0},0,{0,0,0}},0	,100	},{{},{COMBAT_STATUS_STUN				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Club"						}
 ,	{{{0,0,0},{0,0,0}	,{4,1, {0,0,0},0,{0,0,0}},0	,150	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Dagger"					}
 ,	{{{0,0,0},{0,0,0}	,{4,1, {0,0,0},0,{0,0,0}},0	,200	},{{},{COMBAT_STATUS_SLEEP				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Knuckle"					}
@@ -83,6 +84,8 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{-1,0,0},{0,0,0}	,{0,7, {0,0,0},0,{0,0,0}},0	,350	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Bow"						}
 // 3rd grade seven									 100
 ,	{{{0,0,0},{0,0,0}	,{2,5, {0,0,0},0,{0,0,0}},0	,600	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Crossbow"					}
+
+//------------------------------------------------------------------ Update
 ,	{{{0,0,0},{0,0,0}	,{1,6, {0,0,0},0,{0,0,0}},0	,600	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Pistol"					}
 ,	{{{1,0,0},{0,0,0}	,{1,5, {0,0,0},0,{0,0,0}},0	,600	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Rifle"						}
 ,	{{{2,0,0},{0,0,0}	,{-2,7,{0,0,0},0,{0,0,0}},0	,600	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Shotgun"					}

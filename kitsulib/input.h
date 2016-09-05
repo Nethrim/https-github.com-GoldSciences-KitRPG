@@ -24,6 +24,9 @@ namespace klib
 
 		uint8_t MouseButtons[8];
 		uint8_t PreviousMouseButtons[8];
+
+		uint32_t MouseX;
+		uint32_t MouseY;
 	};
 
 	void pollInput(SInput& input);

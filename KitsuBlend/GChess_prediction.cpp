@@ -6,18 +6,8 @@
 #endif 
 //#define GPROFILE_ENABLED
 /// This file is part of the Game Object Data System
-/// Copyright © 2013: Pablo Ariel Zorrilla Cepeda
+/// Copyright © 2013-2016: Pablo Ariel Zorrilla Cepeda
 #include "GGame.h"
-#include "GGame_function_macros.h"
-#include "IGFramework.h"
-
-#ifdef WIN32
-#include <Windows.h>
-#include <crtdbg.h>
-#endif
-
-#include "GCore_printf.h"
-#include "GDebugger_core.h"
 
 using namespace god;
 //

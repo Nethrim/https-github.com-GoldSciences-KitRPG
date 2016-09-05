@@ -16,21 +16,24 @@ static const CRecordVehicle modifiersVehicle[] =
 ,	{{{0,0,5},{0,0,0}	,{0,0,{0,0,0},5,{0,0,0}},2,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Cargo %s"				}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,3,0},0,{0,0,0}},1,400	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Raid %s"				}
 ,	{{{0,0,3},{0,0,1}	,{2,5,{0,4,0},4,{0,0,0}},0,500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Combat %s"				}
+//--------------------------------------- Upgrade
 ,	{{{0,0,5},{0,0,0}	,{1,4,{0,5,0},5,{0,0,0}},0,600	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Military %s"			}
 ,	{{{0,0,7},{0,0,1}	,{0,0,{0,0,0},7,{0,0,0}},1,700	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_HEAVY	}},	"Armored %s"			}
 ,	{{{0,0,2},{0,0,0}	,{0,4,{0,5,2},2,{0,0,0}},0,800	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Nuclear %s"			}
 ,	{{{0,1,0},{0,1,0}	,{0,4,{0,7,0},1,{1,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Supersonic %s"			}
+// -------------------------------------- Update 2
 ,	{{{2,1,4},{2,2,2}	,{5,7,{0,9,0},4,{1,1,1}},2,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Warp %s"				}
 }; //											   
 //												   
 //	{SEntityPoints, SEntityFlags, Name}			   
 // Not sure how to deal with the fucntions		   
 static const CRecordVehicle definitionsVehicle[] = 
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,1,0},0,{0,0,0}},0,10	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Rollers"				}
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,1,0},0,{0,0,0}},0,10	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Socks"					}
 ,	{{{0,0,1},{0,0,0}	,{0,0,{0,1,0},0,{0,0,0}},0,50	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Boat"					}
 ,	{{{0,0,1},{0,0,0}	,{0,1,{0,2,0},0,{0,0,0}},0,100	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Carriage"				}
 ,	{{{0,0,2},{0,0,0}	,{0,2,{0,1,0},0,{0,0,0}},0,150	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Ship"					}
 ,	{{{0,0,0},{0,0,0}	,{0,2,{0,2,0},0,{0,0,0}},0,200	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Bike"					}
+//--------------------------------------- Upgrade
 ,	{{{0,0,0},{0,0,0}	,{0,3,{0,5,0},0,{0,0,0}},0,200	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Motorbike"				}
 ,	{{{0,0,3},{0,0,0}	,{0,0,{0,5,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Car"					}
 ,	{{{0,0,4},{0,0,0}	,{0,0,{0,4,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Van"					}
@@ -47,9 +50,8 @@ static const CRecordVehicle definitionsVehicle[] =
 ,	{{{0,0,6},{0,0,0}	,{0,5,{0,1,0},0,{0,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Submarine"				}
 ,	{{{0,0,2},{0,0,0}	,{0,2,{0,4,0},0,{0,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Helicopter"			}
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Jet"					}
-,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1100	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Scout Spaceship"		}
-,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1200	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Cargo Spaceship"		}
-,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1300	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Orbital Battleship"	}
+// -------------------------------------- Update 2
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1200	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Spaceship"				}
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,8,0},0,{0,0,0}},0,1400	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Mothership"			}
 ,	{{{0,0,4},{0,0,4}	,{0,4,{0,8,0},0,{0,0,0}},0,2000	}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Death Planet"			}
 };

@@ -11,7 +11,7 @@ STimer::STimer()
 void STimer::Reset()
 {
 	QueryPerformanceFrequency( ( LARGE_INTEGER* )&CountsPerSecond );
-	CountsPerMicroSecond	= CountsPerSecond/1000000;
+	CountsPerMicroSecond	= CountsPerSecond/1000000.0;
 	if( 0 == CountsPerMicroSecond )
 		CountsPerMicroSecond = 1;
 	SecondsPerCount			= (1.0 / (CountsPerSecond));
@@ -25,7 +25,7 @@ void STimer::Reset()
 void STimer::Frame()
 {
 	QueryPerformanceCounter( ( LARGE_INTEGER* ) &CurrentTimeStamp );
-	LastTimeMicroSeconds	= (CurrentTimeStamp - PrevTimeStamp)/CountsPerMicroSecond;
+	LastTimeMicroSeconds	= (int64_t)((CurrentTimeStamp - PrevTimeStamp)/CountsPerMicroSecond);
 	LastTimeSeconds			= (CurrentTimeStamp - PrevTimeStamp) * SecondsPerCount;//LastTimeMicroSeconds*1000000;//(CurrentTimeStamp - PrevTimeStamp) * SecondsPerCount;
 	PrevTimeStamp = CurrentTimeStamp;
 

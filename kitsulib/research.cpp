@@ -105,12 +105,17 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		break;
 	}
 
+	struct SResearchable {
+		int32_t ResearchIndex;
+		bool	IsModifier;
+	};
 #define MAX_RESEARCH_ITEMS	64
-	static klib::SMenuItem<int32_t> menuItems[MAX_RESEARCH_ITEMS] = {};
+	static klib::SMenuItem<SResearchable> menuItems[MAX_RESEARCH_ITEMS] = {};
 
 	uint32_t researchableCount=0;
 	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS, (int32_t)researchableDefinitions); i<count; ++i) {
-		menuItems[researchableCount].ReturnValue	= researchableCount;
+		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
+		menuItems[researchableCount].ReturnValue.IsModifier		= false;
 		switch(instanceGame.State.Substate)
 		{
 		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].Text	= definitionsAccessory		[researchableItems.Accessory	.Definitions.Slots[i].Entity	].Name; break;
@@ -127,7 +132,8 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 	}
 	
 	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS-researchableCount, researchableModifiers); i<count; ++i) {
-		menuItems[researchableCount].ReturnValue	= researchableCount;
+		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
+		menuItems[researchableCount].ReturnValue.IsModifier		= true;
 		switch(instanceGame.State.Substate)
 		{
 		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].Text	= modifiersAccessory		[researchableItems.Accessory	.Modifiers.Slots[i].Entity	].Name; break;
@@ -155,10 +161,26 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		researchableCount++;
 	}
 
-	int32_t selectedChoice;
-	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, (size_t)researchableCount, "Available Research", menuItems, instanceGame.FrameInput, MAX_RESEARCH_ITEMS, -1, 40U, false, "Exit this menu");
-	if(selectedChoice == MAX_RESEARCH_ITEMS)
+	SResearchable selectedChoice;
+	selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, (size_t)researchableCount, "Available Research", menuItems, instanceGame.FrameInput, {(int32_t)researchableCount}, {-1}, 40U);
+	if(selectedChoice.ResearchIndex == researchableCount)
 		return {GAME_STATE_MENU_RESEARCH};
+
+	if(selectedChoice.ResearchIndex == -1)
+		return returnState;
+
+	switch(instanceGame.State.Substate)
+	{
+	case GAME_SUBSTATE_ACCESSORY	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Accessory	.Modifiers.AddElement(researchableItems.	Accessory	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Accessory	.Definitions.AddElement(researchableItems.	Accessory	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_STAGEPROP	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	StageProp	.Modifiers.AddElement(researchableItems.	StageProp	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	StageProp	.Definitions.AddElement(researchableItems.	StageProp	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_FACILITY		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Facility	.Modifiers.AddElement(researchableItems.	Facility	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Facility	.Definitions.AddElement(researchableItems.	Facility	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_VEHICLE		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Vehicle		.Modifiers.AddElement(researchableItems.	Vehicle		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Vehicle		.Definitions.AddElement(researchableItems.	Vehicle		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_PROFESSION	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Profession	.Modifiers.AddElement(researchableItems.	Profession	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Profession	.Definitions.AddElement(researchableItems.	Profession	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_WEAPON		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Weapon		.Modifiers.AddElement(researchableItems.	Weapon		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Weapon		.Definitions.AddElement(researchableItems.	Weapon		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_ARMOR		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Armor		.Modifiers.AddElement(researchableItems.	Armor		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Armor		.Definitions.AddElement(researchableItems.	Armor		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	default:
+		break;
+	}
 
 	return returnState;
 }
@@ -166,7 +188,6 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 
 SGameState drawResearch(SGame& instanceGame, const SGameState& returnState)
 {
-	clearGrid(instanceGame.GlobalDisplay.Screen);
 	std::string textToPrint = "Research center.";
 
 	bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds);

@@ -14,40 +14,59 @@
 
 #define MENU_ROFFSET 6
 
-extern klib::STimer drawMenu_timer;
-extern klib::SAccumulator<double> drawMenu_accumulator;
+struct SDrawMenuGlobals
+{
+	klib::STimer				Timer;
+	klib::SAccumulator<double>	Accumulator;
+};
+
+extern SDrawMenuGlobals	drawMenu_globals;
+
+struct SDrawMenuLocalStatics
+{
+	char	SlowMessage[128]	= {'_',};
+	size_t	MenuItemAccum		= 0;
+	size_t	CurrentPage			= 0;
+};
+
 
 namespace klib
 {
+	static void printMultipageHelp(char* targetASCII, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset=0) {
+		if(currentPage == 0)					klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page down: Next page.");	
+		else if(currentPage == (pageCount-1))	klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page.");	
+		else									klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page. Page down: Next page");	
+	}
+
 
 	template <size_t _ArraySize, typename _ReturnType>
-	_ReturnType drawMenu(char* targetASCII, size_t targetWidth, size_t targetHeight, size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], const klib::SInput& frameInput, _ReturnType exitValue, _ReturnType noActionValue=-1, uint32_t rowWidth=20, bool disableEscKeyClose=false, const std::string& exitText="Exit this menu")
+	_ReturnType drawMenu(char* targetASCII, size_t targetWidth, size_t targetHeight, size_t optionCount, const std::string& title, const klib::SMenuItem<_ReturnType>(&menuItems)[_ArraySize], const klib::SInput& frameInput, const _ReturnType& exitValue, const _ReturnType& noActionValue=-1, uint32_t rowWidth=20, bool disableEscKeyClose=false, const std::string& exitText="Exit this menu")
 	{
-		drawMenu_timer.Frame();
+		drawMenu_globals.Timer.Frame();
 
 		optionCount = (optionCount < _ArraySize) ? optionCount : _ArraySize; // Fix optionCount to the maximum size of the array if optionCount is higher than the allowed size.
 
 		int32_t lineOffset = (int32_t)(targetHeight-MENU_ROFFSET-3-std::min((int32_t)optionCount, 9));
 		std::string clearString(128, ' ');
-		for(int32_t i=0, count = (int32_t)targetHeight-lineOffset; i<count; ++i)
+		for(int32_t i=-1, count = (int32_t)targetHeight-lineOffset; i<count; ++i)
 			klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset+i, 0, klib::CENTER, "%s", clearString.c_str());		//"-- %s --", title.c_str() );	// Print menu title
 
 		const std::string textToPrint = "-- " + title + " --";
-		static char slowMessage[128] = {'_',};
-		static size_t menuItemAccum = 0;
-		static size_t currentPage = 0;
-		bool multipage = optionCount > 9;
+
+		
+		const bool multipage = optionCount > 9;
 		const uint32_t pageCount = (uint32_t)((multipage == false) ? 1 : 1+optionCount/9);
 
-		if( currentPage >= pageCount )
-			currentPage = 0;
+		static SDrawMenuLocalStatics localPersistentState;
+		if( localPersistentState.CurrentPage >= pageCount )
+			localPersistentState.CurrentPage = 0;
 
-		bool bDonePrinting = getMessageSlow(slowMessage, textToPrint, drawMenu_timer.LastTimeSeconds*2);
-		klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset++, 0, klib::CENTER, slowMessage);		//"-- %s --", title.c_str() );	// Print menu title
+		const bool bDonePrinting = getMessageSlow(localPersistentState.SlowMessage, textToPrint, drawMenu_globals.Timer.LastTimeSeconds*4);
+		klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset++, 0, klib::CENTER, localPersistentState.SlowMessage);		//"-- %s --", title.c_str() );	// Print menu title
 		if( !bDonePrinting )
 			return noActionValue;
-		else if(drawMenu_accumulator.Value < 0.575)
-			drawMenu_accumulator.Value = 0.575;
+		else if(drawMenu_globals.Accumulator.Value < 0.575)
+			drawMenu_globals.Accumulator.Value = 0.575;
 
 		lineOffset += 1;
 		// Print menu options
@@ -57,43 +76,38 @@ namespace klib
 		sprintf_s(formatString, "%%2.2s: %%-%u.%us", numberCharsAvailable, numberCharsAvailable);
 
 		const uint32_t posXOffset = 0;
-		uint32_t actualOptionCount = std::min(9U, (uint32_t)(optionCount-(currentPage*9)));
-		const size_t itemOffset = currentPage*9;
-		for(size_t i=0, count = (menuItemAccum < actualOptionCount) ? menuItemAccum : actualOptionCount; i<count; i++) {
+		uint32_t actualOptionCount = std::min(9U, (uint32_t)(optionCount-(localPersistentState.CurrentPage*9)));
+		const size_t itemOffset = localPersistentState.CurrentPage*9;
+		for(size_t i=0, count = (localPersistentState.MenuItemAccum < actualOptionCount) ? localPersistentState.MenuItemAccum : actualOptionCount; i<count; i++) {
 			sprintf_s(numberKey, "%u", (uint32_t)(i+1));
 			klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset++, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());	
 		}
-		if(menuItemAccum > actualOptionCount) {
+		if(localPersistentState.MenuItemAccum > actualOptionCount) {
 			sprintf_s(numberKey, "%s", "0");
 			klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, numberKey, exitText.c_str());	
 		}
-		if(multipage)
-		{
-			if(currentPage == 0)
-				klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page down: Next page.");	
-			else if(currentPage == (pageCount-1))
-				klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page.");	
-			else
-				klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page. Page down: Next page");	
-		}
+
+		// Print page control help if multipage.
+		if(multipage) 
+			printMultipageHelp(targetASCII, targetWidth, targetHeight, localPersistentState.CurrentPage, pageCount, posXOffset);
 		
-		_ReturnType& resultVal = noActionValue;
+		_ReturnType resultVal = noActionValue;
 		bool bResetMenuStuff = false;
-		if( drawMenu_accumulator.Accumulate(drawMenu_timer.LastTimeSeconds) )
+		if( drawMenu_globals.Accumulator.Accumulate(drawMenu_globals.Timer.LastTimeSeconds) )
 		{
 			// Don't process keys until the menu has finished displaying
-			if(menuItemAccum <= actualOptionCount) {
-				drawMenu_accumulator.Value = 0.575;
-				menuItemAccum++;
+			if(localPersistentState.MenuItemAccum <= actualOptionCount) {
+				drawMenu_globals.Accumulator.Value = 0.575;
+				localPersistentState.MenuItemAccum++;
 			}
 			// Process page change keys first.
-			else if(currentPage < (pageCount-1) && frameInput.Keys[VK_NEXT]) {
+			else if(localPersistentState.CurrentPage < (pageCount-1) && frameInput.Keys[VK_NEXT]) {
 				bResetMenuStuff = true;
-				currentPage++;
+				localPersistentState.CurrentPage++;
 			}
-			else if(currentPage > 0 && frameInput.Keys[VK_PRIOR]) {
+			else if(localPersistentState.CurrentPage > 0 && frameInput.Keys[VK_PRIOR]) {
 				bResetMenuStuff = true;
-				currentPage--;
+				localPersistentState.CurrentPage--;
 			}
 			else if(frameInput.Keys['0'] || frameInput.Keys[VK_NUMPAD0] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose))  {
 				bResetMenuStuff = true;
@@ -111,9 +125,9 @@ namespace klib
 
 		if(bResetMenuStuff)
 		{
-			menuItemAccum = 0;
-			drawMenu_accumulator.Value = 0;
-			resetCursorString(slowMessage);
+			localPersistentState.MenuItemAccum = actualOptionCount/2;
+			drawMenu_globals.Accumulator.Value = 0;
+			resetCursorString(localPersistentState.SlowMessage);
 		}
 
 		return resultVal;
@@ -162,16 +176,15 @@ namespace klib
 		return drawMenu(&display.Cells[0][0], _Width, _Depth, optionCount, menuInstance.Title, menuInstance.Items, frameInput, menuInstance.ValueExit, noActionValue, menuInstance.RowWidth, menuInstance.bDisableEscapeKey, menuInstance.TextExit);
 	}
 
-
-	// We can use 3 bits for the substate modifier and 5 bits for the substate itself
+	// We can use 3 bits for the substate modifier and 5 bits for the substate itself?
 	enum GAME_SUBSTATE_MODIFIER : uint8_t
-	{	GAME_SUBSTATE_MODIFIER_MAIN			= 0
-	,	GAME_SUBSTATE_MODIFIER_SMALL		= 1
-	,	GAME_SUBSTATE_MODIFIER_REGULAR		= 2
-	,	GAME_SUBSTATE_MODIFIER_LARGE		= 3
-	,	GAME_SUBSTATE_MODIFIER_HUGE			= 4
-	,	GAME_SUBSTATE_MODIFIER_PRIMARY		= 5
-	,	GAME_SUBSTATE_MODIFIER_SECONDARY	= 6
+	{	GAME_SUBSTATE_MODIFIER_MAIN			= 0x00
+	,	GAME_SUBSTATE_MODIFIER_SMALL		= 0x01
+	,	GAME_SUBSTATE_MODIFIER_REGULAR		= 0x02
+	,	GAME_SUBSTATE_MODIFIER_LARGE		= 0x03
+	,	GAME_SUBSTATE_MODIFIER_HUGE			= 0x04
+	,	GAME_SUBSTATE_MODIFIER_PRIMARY		= 0x08
+	,	GAME_SUBSTATE_MODIFIER_SECONDARY	= 0x10
 	};
 
 	enum GAME_SUBSTATE : uint8_t
@@ -195,6 +208,7 @@ namespace klib
 	{	GAME_STATE_MENU_MAIN
 	,	GAME_STATE_MENU_CONTROL_CENTER
 	,	GAME_STATE_MENU_SQUAD_SETUP
+	,	GAME_STATE_MENU_CHARACTER_SETUP
 	,	GAME_STATE_MENU_RESEARCH
 	,	GAME_STATE_MENU_EQUIPMENT
 	,	GAME_STATE_MENU_INSPECT
