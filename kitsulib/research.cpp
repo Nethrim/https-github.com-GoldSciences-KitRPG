@@ -15,16 +15,16 @@ using namespace klib;
 
 template<typename _EntityType>
 void addIfResearchable
-(	klib::SResearchGroup& researchableItems
+(	klib::SResearchGroup<_EntityType>& researchableItems
 ,	const _EntityType& entity
-,	const klib::SResearchGroup& researchCompleted
+,	const klib::SResearchGroup<_EntityType>& researchCompleted
 ,	bool bIsParallelDefinition		= false
 ,	bool bIsParallelModifier		= false
 ,	const _EntityType& maxResearch	= {0,0,1}
 )
 {
-	if(entity.Index && -1 == researchCompleted.Definitions.FindElement(entity.Index) && (bIsParallelDefinition || entity.Index <= (maxResearch.Index+1)) )
-		researchableItems.Definitions.AddElement(entity.Index);
+	if(entity.Definition && -1 == researchCompleted.Definitions.FindElement(entity.Definition) && (bIsParallelDefinition || entity.Definition <= (maxResearch.Definition+1)) )
+		researchableItems.Definitions.AddElement(entity.Definition);
 
 	if(entity.Modifier && -1 == researchCompleted.Modifiers.FindElement(entity.Modifier) && (bIsParallelModifier || entity.Modifier <= (maxResearch.Modifier+1)) ) 
 		researchableItems.Modifiers.AddElement(entity.Modifier);
@@ -33,7 +33,7 @@ void addIfResearchable
 
 // Returns the possible research for a given type of researchable
 template<typename _EntityType, size_t _Size>
-void generateResearchableList(klib::SResearchGroup& researchableItems, const klib::SEntityContainer<_EntityType, _Size>& playerInventory, const klib::SResearchGroup& researchCompleted
+void generateResearchableList(klib::SResearchGroup<_EntityType>& researchableItems, const klib::SEntityContainer<_EntityType, _Size>& playerInventory, const klib::SResearchGroup<_EntityType>& researchCompleted
 ,	bool bIsParallelDefinition		= false
 ,	bool bIsParallelModifier		= false
 ,	const _EntityType& maxResearch	= {0,0,1}
@@ -60,7 +60,7 @@ void generateResearchableList(klib::SCharacterResearch& researchableItems, const
 }
 
 template<typename _EntityType, size_t _Size>
-void generateResearchableListFromAgent(klib::SResearchGroup& researchableItems, const _EntityType& equippedEntity, const klib::SEntityContainer<_EntityType, _Size>& agentInventory, const klib::SResearchGroup& researchCompleted
+void generateResearchableListFromAgent(klib::SResearchGroup<_EntityType>& researchableItems, const _EntityType& equippedEntity, const klib::SEntityContainer<_EntityType, _Size>& agentInventory, const klib::SResearchGroup<_EntityType>& researchCompleted
 ,	bool bIsParallelDefinition		= false
 ,	bool bIsParallelModifier		= false
 ,	const _EntityType& maxResearch	= {0,0,1}
@@ -72,25 +72,25 @@ void generateResearchableListFromAgent(klib::SResearchGroup& researchableItems, 
 
 SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 {
-	klib::SCharacterResearch& researchCompleted = instanceGame.PlayerResearch;
+	klib::SCharacterResearch& researchCompleted = instanceGame.Player.CompletedResearch;
 	klib::SCharacterResearch  researchableItems;
 
 #define GET_AVAILABLE_RESEARCH_FOR_ENTITY(EntityToken_, ProgressiveDefinitions_, ProgressiveModifiers_)																\
-		generateResearchableList(researchableItems.EntityToken_, instanceGame.PlayerInventory.EntityToken_, researchCompleted.EntityToken_							\
-			, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.PlayerMaxResearch.EntityToken_);															\
+		generateResearchableList(researchableItems.EntityToken_, instanceGame.Player.Inventory.EntityToken_, researchCompleted.EntityToken_							\
+			, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.Player.MaxResearch.EntityToken_);														\
 		for(iAgent=0; iAgent<armySize; ++iAgent) 																													\
 			generateResearchableListFromAgent( researchableItems.EntityToken_ 																						\
-				, instanceGame.GameArmies.Player[iAgent].CurrentEquip.EntityToken_ 																					\
-				, instanceGame.GameArmies.Player[iAgent].Inventory.EntityToken_ 																					\
+				, instanceGame.Player.Army[iAgent].CurrentEquip.EntityToken_ 																						\
+				, instanceGame.Player.Army[iAgent].Inventory.EntityToken_ 																							\
 				, researchCompleted.EntityToken_																													\
-				, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.PlayerMaxResearch.EntityToken_														\
+				, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.Player.MaxResearch.EntityToken_														\
 			);																																						\
 																																									\
 		researchableDefinitions	+= researchableItems.EntityToken_.Definitions.Count;																				\
 		researchableModifiers	+= researchableItems.EntityToken_.Modifiers.Count;
 
 	int32_t iAgent;
-	const int32_t armySize	= (int32_t)instanceGame.GameArmies.Player.size();
+	const int32_t armySize	= (int32_t)instanceGame.Player.Army.size();
 	uint32_t researchableDefinitions=0, researchableModifiers=0;
 	switch(instanceGame.State.Substate)
 	{
@@ -171,13 +171,13 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 
 	switch(instanceGame.State.Substate)
 	{
-	case GAME_SUBSTATE_ACCESSORY	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Accessory	.Modifiers.AddElement(researchableItems.	Accessory	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Accessory	.Definitions.AddElement(researchableItems.	Accessory	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_STAGEPROP	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	StageProp	.Modifiers.AddElement(researchableItems.	StageProp	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	StageProp	.Definitions.AddElement(researchableItems.	StageProp	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_FACILITY		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Facility	.Modifiers.AddElement(researchableItems.	Facility	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Facility	.Definitions.AddElement(researchableItems.	Facility	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_VEHICLE		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Vehicle		.Modifiers.AddElement(researchableItems.	Vehicle		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Vehicle		.Definitions.AddElement(researchableItems.	Vehicle		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_PROFESSION	: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Profession	.Modifiers.AddElement(researchableItems.	Profession	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Profession	.Definitions.AddElement(researchableItems.	Profession	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_WEAPON		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Weapon		.Modifiers.AddElement(researchableItems.	Weapon		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Weapon		.Definitions.AddElement(researchableItems.	Weapon		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_ARMOR		: if(selectedChoice.IsModifier)	instanceGame.PlayerResearch.	Armor		.Modifiers.AddElement(researchableItems.	Armor		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.PlayerResearch.	Armor		.Definitions.AddElement(researchableItems.	Armor		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_ACCESSORY	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Accessory	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Accessory	.Modifier = researchableItems.	Accessory	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Accessory	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Accessory	.Definition = researchableItems.	Accessory	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_STAGEPROP	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	StageProp	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	StageProp	.Modifier = researchableItems.	StageProp	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	StageProp	.Definitions.AddElement(instanceGame.Player.MaxResearch.	StageProp	.Definition = researchableItems.	StageProp	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_FACILITY		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Facility	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Facility	.Modifier = researchableItems.	Facility	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Facility	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Facility	.Definition = researchableItems.	Facility	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_VEHICLE		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Vehicle		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Vehicle		.Modifier = researchableItems.	Vehicle		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Vehicle		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Vehicle		.Definition = researchableItems.	Vehicle		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_PROFESSION	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Profession	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Profession	.Modifier = researchableItems.	Profession	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Profession	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Profession	.Definition = researchableItems.	Profession	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_WEAPON		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Weapon		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Weapon		.Modifier = researchableItems.	Weapon		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Weapon		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Weapon		.Definition = researchableItems.	Weapon		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_ARMOR		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Armor		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Armor		.Modifier = researchableItems.	Armor		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Armor		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Armor		.Definition = researchableItems.	Armor		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
 	default:
 		break;
 	}

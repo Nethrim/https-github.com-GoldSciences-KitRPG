@@ -35,9 +35,9 @@ void research
 	static char						menuItemText[maxItemCount]	= {}; 
 	static klib::SMenuItem<int32_t>	menuItems	[maxItemCount]	= {}; 
 
-	adventurerMaxEquip.Modifier	= (adventurerMaxEquip.Modifier	> 1) ? adventurerMaxEquip.Modifier	: 1;
-	adventurerMaxEquip.Index	= (adventurerMaxEquip.Index		> 1) ? adventurerMaxEquip.Index		: 1;
-	adventurerMaxEquip.Level	= (adventurerMaxEquip.Level		> 1) ? adventurerMaxEquip.Level		: 1;
+	adventurerMaxEquip.Modifier		= (adventurerMaxEquip.Modifier	> 1) ? adventurerMaxEquip.Modifier	: 1;
+	adventurerMaxEquip.Definition	= (adventurerMaxEquip.Definition		> 1) ? adventurerMaxEquip.Definition		: 1;
+	adventurerMaxEquip.Level		= (adventurerMaxEquip.Level		> 1) ? adventurerMaxEquip.Level		: 1;
 
 	int32_t menuItemCount=0; 
 	int32_t duplicatedSamples=0;
@@ -66,16 +66,16 @@ void research
 		} 
 		else
 		{
-			int32_t selectedEntityIndex = equipInventory.Slots[i].Entity.Index;
-			if( 0 != selectedEntityIndex && (-1) == researchedList.FindElement(selectedEntityIndex) ) {
-				stringRight	= definitionsTable[selectedEntityIndex].Name.c_str();
+			int32_t selectedEntityDefinition = equipInventory.Slots[i].Entity.Definition;
+			if( 0 != selectedEntityDefinition && (-1) == researchedList.FindElement(selectedEntityDefinition) ) {
+				stringRight	= definitionsTable[selectedEntityDefinition].Name.c_str();
 				stringLeft	= itemFormat.c_str();
-				value = selectedEntityIndex; 
+				value = selectedEntityDefinition; 
 				sprintf_s(menuItemText, stringLeft, stringRight);
 #ifndef DISABLE_RESEARCH_REQUIREMENTS
 				if(bIsProgressive) {
-					if(value > adventurerMaxEquip.Index) {
-						printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Index);
+					if(value > adventurerMaxEquip.Definition) {
+						printf("%s can't be pursued because it's grade %u and your max research grade allowed for is %u.\n", menuItemText, value, adventurerMaxEquip.Definition);
 						continue;
 					}
 				}
@@ -129,7 +129,7 @@ void research
 	}
 	else
 	{
-		adventurerMaxEquip.Index		= std::max(adventurerMaxEquip.Index, (int16_t)(selectedValue+1)); 
+		adventurerMaxEquip.Definition	= std::max(adventurerMaxEquip.Definition, (int16_t)(selectedValue+1)); 
 		printf(doneResearching.c_str(), definitionsTable[selectedValue].Name.c_str()); 
 	}
 	research

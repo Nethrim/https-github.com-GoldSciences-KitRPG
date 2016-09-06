@@ -117,7 +117,7 @@ static const CItem itemDescriptions[] =
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_ABSORPTION									,	10	,	"Potion of Shielding"			}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_HEALTH_DAMAGE									,	10	,	"Epidemic Potion"				}
 ,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_MANA_DAMAGE									,	10	,	"Potion of Damnation"			}
-,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_SHIELD_DAMAGE									,	10	,	"Potion of Corrossion"			}
+,	{ITEM_TYPE_POTION	,	PROPERTY_TYPE_SHIELD_DAMAGE									,	10	,	"Potion of Corrosion"			}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SMOKE											,	10	,	"Smoke Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_SLEEP											,	10	,	"Sleep Grenade"					}
 ,	{ITEM_TYPE_GRENADE	,	PROPERTY_TYPE_STUN											,	10	,	"Stun Grenade"					}
@@ -139,13 +139,13 @@ static const CItem itemDescriptions[] =
 	static std::string getItemName(const SItem& item)
 	{
 		char formattedName[128] = {};
-		sprintf_s(formattedName, itemGrades[item.Level].Name.c_str(), itemDescriptions[item.Index].Name.c_str());
+		sprintf_s(formattedName, itemGrades[item.Level].Name.c_str(), itemDescriptions[item.Definition].Name.c_str());
 		return formattedName;
 	}
 
 	static inline int32_t getItemPrice(const SItem& item, bool bSellPrice=false)
 	{
-		return (int32_t)( bSellPrice ? (itemDescriptions[item.Index].Price*item.Level)*.5 : itemDescriptions[item.Index].Price*item.Level );
+		return (int32_t)( bSellPrice ? (itemDescriptions[item.Definition].Price*item.Level)*.5 : itemDescriptions[item.Definition].Price*item.Level );
 		;
 	}
 

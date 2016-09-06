@@ -18,13 +18,13 @@ void klib::setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, in
 		currentEnemy.Inventory.Items.AddElement({ 1+int16_t(rand()%(size(itemDescriptions)-1)), int16_t(1+rand()%size(itemModifiers)), int16_t(rand()%size(itemGrades)) });
 
 	int16_t twoEnemyType = enemyType*2;
-	currentEnemy.CurrentEquip.Weapon		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsWeapon		)-2) ? twoEnemyType : (int16_t)size(	definitionsWeapon		)-2));	
-	currentEnemy.CurrentEquip.Armor			.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsArmor		)-2) ? twoEnemyType : (int16_t)size(	definitionsArmor		)-2));	
-	currentEnemy.CurrentEquip.Accessory		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsAccessory	)-2) ? twoEnemyType : (int16_t)size(	definitionsAccessory	)-2));	
-	currentEnemy.CurrentEquip.Vehicle		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle		)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle		)-2));
-	currentEnemy.CurrentEquip.Facility		.Index		= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsFacility	)-2) ? twoEnemyType : (int16_t)size(	definitionsFacility	)-2));
-	currentEnemy.CurrentEquip.Profession	.Index		= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
-	currentEnemy.CurrentEquip.StageProp		.Index		= (int16_t)(1+(rand()%(size(definitionsStageProp)-1)));							
+	currentEnemy.CurrentEquip.Weapon		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsWeapon		)-2) ? twoEnemyType : (int16_t)size(	definitionsWeapon		)-2));	
+	currentEnemy.CurrentEquip.Armor			.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsArmor		)-2) ? twoEnemyType : (int16_t)size(	definitionsArmor		)-2));	
+	currentEnemy.CurrentEquip.Accessory		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsAccessory	)-2) ? twoEnemyType : (int16_t)size(	definitionsAccessory	)-2));	
+	currentEnemy.CurrentEquip.Vehicle		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle		)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle		)-2));
+	currentEnemy.CurrentEquip.Facility		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsFacility	)-2) ? twoEnemyType : (int16_t)size(	definitionsFacility	)-2));
+	currentEnemy.CurrentEquip.Profession	.Definition	= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
+	currentEnemy.CurrentEquip.StageProp		.Definition	= (int16_t)(1+(rand()%(size(definitionsStageProp)-1)));							
 	//											  
 	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon			)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon			)-2));	
 	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor			)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor			)-2));	

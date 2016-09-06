@@ -10,19 +10,25 @@
 
 using namespace klib;
 
-template <typename _TCell, size_t _Width, size_t _Depth>
-void displayEmptySlot(SGrid<_TCell, _Width, _Depth>& display, int32_t offsetY, int32_t offsetX, int32_t agentIndex) {
-	lineToGrid(display, offsetY		, offsetX, LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
+template <size_t _Width, size_t _Depth>
+void displayEmptySlot(SWeightedDisplay<_Width, _Depth>& display, int32_t offsetY, int32_t offsetX, int32_t agentIndex) {
+	lineToGrid(display.Screen, offsetY, offsetX, LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
+	for(uint32_t i=0; i<30; i++)
+		display.TextAttributes.Cells[offsetY][offsetX+i] = COLOR_DARKCYAN;
 }
 
-template <typename _TCell, size_t _Width, size_t _Depth>
-void displayAgentSlot(SGrid<_TCell, _Width, _Depth>& display, int32_t offsetY, int32_t offsetX, int32_t agentIndex, CCharacter& character, bool bAddFieldNames=false)
+template <size_t _Width, size_t _Depth>
+void displayAgentSlot(SWeightedDisplay<_Width, _Depth>& display_, int32_t offsetY, int32_t offsetX, int32_t agentIndex, CCharacter& character, bool bAddFieldNames=false)
 {
+	SGrid<char, _Width, _Depth>& display = display_.Screen;
+
 	std::string nameAndLevelText;
 	SEntityPoints agentPoints = calculateFinalPoints( character );
 	if( bAddFieldNames ) {
-		nameAndLevelText = character.Name												;	lineToGrid(display, offsetY++	, offsetX, LEFT, "-- Agent #%u: %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		++offsetY;
+		nameAndLevelText = character.Name												;	lineToGrid(display, offsetY	, offsetX, LEFT, "-- Agent #%u: %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+		for(uint32_t i=0; i<45; i++)
+			display_.TextAttributes.Cells[offsetY][offsetX+i] = COLOR_GREEN; // FOREGROUND_BLUE | FOREGROUND_GREEN;
+		offsetY += 2;
 		nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
 		nameAndLevelText = getWeaponName		(character.CurrentEquip.Weapon			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
 		nameAndLevelText = getArmorName			(character.CurrentEquip.Armor			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
@@ -60,6 +66,7 @@ void displayAgentSlot(SGrid<_TCell, _Width, _Depth>& display, int32_t offsetY, i
 		nameAndLevelText = std::to_string		(agentPoints.Attack.Hit					);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Hit Chance"	, nameAndLevelText.c_str());
 		nameAndLevelText = std::to_string		(agentPoints.Attack.Damage				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Damage"		, nameAndLevelText.c_str());
 	}
+
 }
 
 #define MAX_AGENT_ROWS		2
@@ -71,7 +78,10 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
 	static const int32_t slotRowSpace	= 27;// display.Depth / (MAX_AGENT_ROWS);
 
-	int32_t playerOffset = (instanceGame.SelectedPlayerUnit != -1) ? std::min(std::max(0, instanceGame.SelectedPlayerUnit-1), SGameSquad::Size-6) : 0;
+	SPlayer& player = instanceGame.Player;
+
+
+	int32_t playerOffset = (player.Selection.SelectedPlayerUnit != -1) ? std::min(std::max(0, player.Selection.SelectedPlayerUnit-1), SGameSquad::Size-6) : 0;
 
 	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y)
 	{
@@ -81,10 +91,10 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 			int32_t agentIndexOffset	= linearIndex+playerOffset;
 			
 			if(agentIndexOffset < SGameSquad::Size) {
-				if( instanceGame.PlayerSquads.Agents[agentIndexOffset] != -1 )
-					displayAgentSlot(display.Screen, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1, instanceGame.GameArmies.Player[instanceGame.PlayerSquads.Agents[agentIndexOffset]], true);
+				if( player.Squad.Agents[agentIndexOffset] != -1 )
+					displayAgentSlot(display, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1, player.Army[player.Squad.Agents[agentIndexOffset]], true);
 				else											 
-					displayEmptySlot(display.Screen, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1);
+					displayEmptySlot(display, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1);
 			}
 		}
 	}
@@ -94,6 +104,8 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 {
 	drawSquadSlots(instanceGame, returnValue);
 
+	SPlayer& player = instanceGame.Player;
+
 	static SMenuItem<int32_t> menuItems[SGameSquad::Size] = {};
 	static int32_t maxNameLen = 0;
 	for(uint32_t i=0, count=(uint32_t)size(menuItems); i<count; i++) 
@@ -101,8 +113,8 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 		menuItems[i].ReturnValue = i;
 
 		char buffer[128];
-		if(instanceGame.PlayerSquads.Agents[i] != -1) {
-			maxNameLen = std::max(maxNameLen, sprintf_s(buffer, "Agent #%u: %s", i+1, instanceGame.GameArmies.Player[instanceGame.PlayerSquads.Agents[i]].Name.c_str()));
+		if(player.Squad.Agents[i] != -1) {
+			maxNameLen = std::max(maxNameLen, sprintf_s(buffer, "Agent #%u: %s", i+1, instanceGame.Player.Army[player.Squad.Agents[i]].Name.c_str()));
 			menuItems[i].Text = buffer;
 		}
 		else {
@@ -118,9 +130,9 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 	if( result < 0 || result >= SGameSquad::Size )
 		return {GAME_STATE_MENU_SQUAD_SETUP};
 
-	instanceGame.SelectedPlayerUnit = result;
+	player.Selection.SelectedPlayerUnit = result;
 
-	if( instanceGame.PlayerSquads.Agents[result] != -1 && 0 == instanceGame.FrameInput.Keys[VK_LSHIFT] ) {
+	if( player.Squad.Agents[result] != -1 && 0 == instanceGame.FrameInput.Keys[VK_LSHIFT] ) {
 		return {GAME_STATE_MENU_EQUIPMENT};
 	}
 

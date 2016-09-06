@@ -21,7 +21,7 @@ void generateUnitMinimap( const SGameFrame& currentGameFrame, uint32_t mapWidth,
 error_t	CGGame::UpdateChessStuff( float fElapsedTime )
 { 
 
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	for( uint32_t iPlayer=0; iPlayer < MAX_PLAYERS; iPlayer++ )
 	{
 		for( uint32_t iUnit=0; iUnit < klib::SGameSquad::Size; iUnit++ )
@@ -83,7 +83,7 @@ error_t	CGGame::Update( float fElapsedTime )
 void CGGame::RefreshSpriteMinimapChess( void )
 {
 	GPtrNCO(IGVideoImage) pImage;
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	if( m_pVideoContext->CreateImageFromMemory(width, depth, m_BufferUnitsCurrent, GRESMODE_DEVICE_READ, &pImage ) )
 	{
 		error_printf("Failed to create image from memory for unit map texture!");
@@ -139,7 +139,7 @@ void* god::CGGame::GetInterfacePointer( GINTERFACEID_TYPE InterfaceID )
 void CGGame::ResetBoard( void )
 {
 	int32_t x, z;
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	for( z=0; z<depth; z++ )
 	{
 		for( x=0; x<width; x++ )
@@ -331,7 +331,7 @@ error_t CGGame::MoveUnitCursor( SPointL& cursorDeltas )
 {
 	//if( 0 == cursorDeltas.x && 0 == cursorDeltas.y )
 	//	return 0;
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	if( cursorDeltas.x ) m_UnitCursor.Position.x = std::min(std::max(0, m_UnitCursor.Position.x + cursorDeltas.x), (int32_t)width-1);
 	if( cursorDeltas.y ) m_UnitCursor.Position.y = std::min(std::max(0, m_UnitCursor.Position.y + cursorDeltas.y), (int32_t)depth-1);
 	if( m_UnitSelected != -1 )

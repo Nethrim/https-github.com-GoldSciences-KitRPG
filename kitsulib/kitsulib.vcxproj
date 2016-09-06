@@ -190,6 +190,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="misc.h" />
+    <ClInclude Include="noise.h" />
     <ClInclude Include="Profession.h" />
     <ClInclude Include="StageProp.h" />
     <ClInclude Include="text.h" />

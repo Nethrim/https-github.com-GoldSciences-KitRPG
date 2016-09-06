@@ -55,12 +55,7 @@ namespace klib
 				nextTick = 0.0f;
 			}
 			else if(0 == (tickCount % 100))
-			{
-				if(message[mesLen-1] == '_')
-					message[mesLen-1] = ' ';
-				else
-					message[mesLen-1] = '_';
-			}
+				message[mesLen-1] = (message[mesLen-1] == ' ') ? '_' : ' ';
 		}
 
 		return ( mesLen-1 == sizeToPrint );

@@ -1,5 +1,6 @@
 #include "align.h"
 #include "text.h"
+#include "noise.h"
 
 #ifndef __TILE_H__973098721983761298736129873691872361__
 #define __TILE_H__973098721983761298736129873691872361__
@@ -7,26 +8,33 @@
 namespace klib
 {
 #pragma pack(push, 1)
+	struct SCharacterTile {
+		int8_t		PlayerIndex	;
+		int8_t		SquadIndex	;
+		int8_t		AgentIndex	;
+	};
+
+	struct STopologyHeight {
+		int8_t		Smooth	;
+		int8_t		Sharp	;
+	};
+
+	// The difference between SItemTile and SEntity is that SEntity member values must be always valid whereas these can be -1.
+	// Setting IndexDefinition to -1 will effectively disable the tile whereas setting only Modifier or Level to -1 must default to 0 when converting to an SEntity.
+	struct SItemTile {
+		int16_t		Definition	;
+		int16_t		Modifier	;
+		int16_t		Level		;
+	};
 
 	template<typename _T, size_t _Width, size_t _Depth>
 	struct SGrid
 	{
-		_T						Cells[_Depth][_Width] = {};
+		_T			Cells[_Depth][_Width] = {};
 
 		static const uint32_t	Width = (uint32_t)_Width;
 		static const uint32_t	Depth = (uint32_t)_Depth;
 	};
-
-	struct SCharacterTile {
-		int8_t	SquadIndex	;
-		int8_t	AgentIndex	;
-	};
-
-	struct STopologyHeight {
-		int8_t	Smooth	;
-		int8_t	Sharp	;
-	};
-
 #pragma pack(pop)
 
 	template <size_t _Width, size_t _Depth> 
@@ -43,28 +51,21 @@ namespace klib
 	template <size_t _Width, size_t _Depth> 
 	struct SEntityTiles
 	{
-		SGrid<SCharacterTile, _Width, _Depth>	AgentsPlayer	;
-		SGrid<SCharacterTile, _Width, _Depth>	AgentsEnemy		;
-		SGrid<SCharacterTile, _Width, _Depth>	AgentsNeutral	;
-		SGrid<int32_t		, _Width, _Depth>	ItemsPlayer		;
-		SGrid<int32_t		, _Width, _Depth>	ItemsEnemy		;
-		SGrid<int32_t		, _Width, _Depth>	ItemsNeutral	;
+		SGrid<SCharacterTile, _Width, _Depth>		Agents;
+		SGrid<SItemTile		, _Width, _Depth>		Items;
+		SGrid<SCharacterTile, _Width, _Depth>		ItemOwners;
 
 		void Clear() {
-			clearGrid(	AgentsPlayer	, {-1, -1} );
-			clearGrid(	AgentsEnemy		, {-1, -1} );
-			clearGrid(	AgentsNeutral	, {-1, -1} );
-			clearGrid(	ItemsPlayer		, -1 );
-			clearGrid(	ItemsEnemy		, -1 );
-			clearGrid(	ItemsNeutral	, -1 );
+			clearGrid(	Agents	, {-1, -1, -1} );
+			clearGrid(	Items	, {-1, -1, -1} );
 		}
 	};
 
 	template <size_t _Width, size_t _Depth> 
 	struct SGameTiles 
 	{
-		STerrainTiles<_Width, _Depth>	Terrain;
-		SEntityTiles<_Width, _Depth>	Entities;
+		STerrainTiles<_Width, _Depth>				Terrain;
+		SEntityTiles<_Width, _Depth>				Entities;
 
 		void Clear() {
 			Entities.Clear();
@@ -79,7 +80,7 @@ namespace klib
 	void fillCellsFromNoise( SGrid<_CellType, _Width, _Height>& grid, const _CellType& value, int32_t seed, const _CellType& clearValue = ' ', int32_t diceFaces=10 ) {
 		_CellType* cells = &grid.Cells[0][0];
 		for(uint32_t i=0, count=_Width*_Height;  i<count; ++i) {
-			double noise = noise1D(i+1, seed) * .5 + .5;
+			double noise = noiseNormal(i+1, seed);
 			int32_t dice = int32_t(noise * diceFaces);
 			if(0 == dice)
 				cells[i] = value;

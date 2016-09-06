@@ -7,13 +7,12 @@ using namespace klib;
 void drawIntro(SGame& instanceGame);
 
 template<typename _TCell, size_t _Width, size_t _Depth>
-void drawDisplay(SGrid<_TCell, _Width, _Depth>& source, uint32_t offset)	
+void drawDisplay(SGrid<_TCell, _Width, _Depth>& source, uint32_t offsetY, uint32_t offsetX )
 {
-	for(uint32_t z=0, maxZ=std::min(source.Depth, getASCIIBackBufferHeight()-1-offset); z<maxZ; ++z) {
-		char row[_Width+1] = {};
-		memcpy(row, source.Cells[z], std::min((uint32_t)_Width, getASCIIBackBufferWidth()-1));
-		lineToScreen(offset, 0, CENTER, row);
-		++offset;
+	int32_t	  bbWidth	= getASCIIBackBufferWidth()
+			, bbHeight	= getASCIIBackBufferHeight();
+	for(uint32_t z = 0, maxZ=_Depth; z<maxZ; ++z) {
+		memcpy(&getASCIIBackBuffer()[(offsetY+z)*bbWidth+offsetX], &source.Cells[z][0], std::min(_Width, (size_t)bbWidth-offsetX) );
 	}
 };
 
@@ -35,7 +34,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	drawStateBackground(instanceGame);
 	showMenu(instanceGame);
 
-	drawDisplay(instanceGame.GlobalDisplay.Screen, 0);
+	drawDisplay(instanceGame.GlobalDisplay.Screen, 0, 0);
 	//drawDisplay(instanceGame.MenuDisplay, 0);
 	switch(instanceGame.State.State) { 
 	case GAME_STATE_CREDITS:
@@ -44,7 +43,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_SQUAD_SETUP: 
 		break;
 	default:
-		drawDisplay(instanceGame.PostEffectDisplay.Screen, 5);
+		drawDisplay(instanceGame.PostEffectDisplay.Screen, 5, instanceGame.GlobalDisplay.Screen.Width/2-instanceGame.PostEffectDisplay.Width/2);
 	}
 
 
@@ -61,8 +60,6 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*getASCIIBackBufferWidth()+(getASCIIBackBufferWidth()/2-instanceGame.PostEffectDisplay.TextAttributes.Width/2)], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
 	}
 		
-	lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
-	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
 
 	frameMeasure.Frame();
 	instanceGame.FrameTimer.Frame();
@@ -70,13 +67,16 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	lineToScreen(2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
 	lineToScreen(getASCIIBackBufferHeight()-2, 1, RIGHT, "%s.", instanceGame.UserMessage.c_str());
 	lineToScreen(getASCIIBackBufferHeight()-2, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
-	for(uint32_t i=0; i<36; i++) {
+	for(uint32_t i=0; i<32; i++) {
 		getASCIIColorBackBuffer()[1*getASCIIBackBufferWidth()+i] = COLOR_GREEN;
 		getASCIIColorBackBuffer()[2*getASCIIBackBufferWidth()+i] = COLOR_CYAN;
 		getASCIIColorBackBuffer()[(getASCIIBackBufferHeight()-2)*getASCIIBackBufferWidth()+i] = COLOR_DARKMAGENTA;
 		getASCIIColorBackBuffer()[(getASCIIBackBufferHeight()-2)*getASCIIBackBufferWidth()+(getASCIIBackBufferWidth()-1-i)] = COLOR_DARKYELLOW;
 	}
 
+	lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
+	getASCIIColorBackBuffer()[instanceGame.FrameInput.MouseY*getASCIIBackBufferWidth()+instanceGame.FrameInput.MouseX] = COLOR_MAGENTA;
+	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
 	presentASCIIBackBuffer();
 }; 	// 
 
@@ -100,14 +100,14 @@ void drawIntro( SGame& instanceGame )
 
 SGameState drawWelcome(SGame& instanceGame, const SGameState& returnValue)
 {
-	const std::string textToPrint = "Welcome back commander " + instanceGame.PlayerName + ".";
+	const std::string textToPrint = "Welcome back commander " + instanceGame.Player.Name + ".";
 	int32_t lineOffset		= (instanceGame.GlobalDisplay.Screen.Depth/2-1);
 	int32_t columnOffset	= instanceGame.GlobalDisplay.Screen.Width/2-(int32_t)textToPrint.size()/2;
-	for(size_t i=0, charCount = textToPrint.size()+1; i<charCount; i++)
-		instanceGame.GlobalDisplay.TextAttributes.Cells[lineOffset][columnOffset+i] = COLOR_DARKGREEN;
 
 	bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds);
-	lineToGrid(instanceGame.GlobalDisplay.Screen, lineOffset, columnOffset, klib::LEFT, "%s", instanceGame.SlowMessage);
+	columnOffset = lineToGrid(instanceGame.GlobalDisplay.Screen, lineOffset, columnOffset, klib::LEFT, "%s", instanceGame.SlowMessage);
+	for(size_t i=0, charCount = textToPrint.size()+2; i<charCount; i++)
+		instanceGame.GlobalDisplay.TextAttributes.Cells[lineOffset][columnOffset+i] = COLOR_GREEN;
 	if ( bDonePrinting ) {
 		static SMenu<SGameState, size(optionsControlCenter)> menuControlCenter(optionsControlCenter, {GAME_STATE_MENU_MAIN}, "Options", 28);
 		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuControlCenter, instanceGame.FrameInput, returnValue);

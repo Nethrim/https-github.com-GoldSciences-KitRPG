@@ -49,8 +49,8 @@ struct SChessPiece
 
 struct SChessBoard
 {
-	klib::SGrid<SChessPiece*,	klib::STacticalTiles::Width, klib::STacticalTiles::Depth>	Units			= {};
-	klib::SGrid<uint32_t,		klib::STacticalTiles::Width, klib::STacticalTiles::Depth>	ChangedTimes	= {};
+	klib::SGrid<SChessPiece*,	klib::STacticalBoard::Width, klib::STacticalBoard::Depth>	Units			= {};
+	klib::SGrid<uint32_t,		klib::STacticalBoard::Width, klib::STacticalBoard::Depth>	ChangedTimes	= {};
 };
 
 struct SPlayer

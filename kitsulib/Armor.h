@@ -65,7 +65,7 @@ static const CRecordArmor definitionsArmor[] =
 	}
 
 	static inline constexpr int32_t getArmorAbsorption(const SArmor& armor) {
-		return	(int32_t)((definitionsArmor[armor.Index].Points.Attack.Absorption + modifiersArmor[armor.Modifier].Points.Attack.Absorption) * armor.Level);
+		return	(int32_t)((definitionsArmor[armor.Definition].Points.Attack.Absorption + modifiersArmor[armor.Modifier].Points.Attack.Absorption) * armor.Level);
 	}
 
 #pragma pack(pop)

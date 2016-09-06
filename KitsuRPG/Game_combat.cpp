@@ -65,12 +65,12 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Inventory.Weapon.AddElement(loser.CurrentEquip.Weapon);
 
 		klib::SWeapon loserNewWeapon = 
-		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Index	)	))
-		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Modifier	)	))
-		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Level	)	))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Definition	)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Modifier		)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerWeapon.Level		)	))
 		};
 
-		if(loserNewWeapon.Index || loserNewWeapon.Modifier || loserNewWeapon.Level > 1)
+		if(loserNewWeapon.Definition || loserNewWeapon.Modifier || loserNewWeapon.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getWeaponName(loserNewWeapon).c_str(), loserNewWeapon.Level);
 		loser.Inventory.Weapon.AddElement(loserNewWeapon);
 		loser.CurrentEquip.Weapon = {0,0,1};
@@ -86,12 +86,12 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Inventory.Accessory.AddElement(loser.CurrentEquip.Accessory);
 
 		klib::SAccessory loserNewAccessory = 
-		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Index		)	))
-		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Modifier	)	))
-		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Level		)	))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Definition	)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Modifier		)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerAccessory.Level			)	))
 		};
 
-		if(loserNewAccessory.Index || loserNewAccessory.Modifier || loserNewAccessory.Level > 1)
+		if(loserNewAccessory.Definition || loserNewAccessory.Modifier || loserNewAccessory.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getAccessoryName(loserNewAccessory).c_str(), loserNewAccessory.Level);
 		loser.Inventory.Accessory.AddElement(loserNewAccessory);
 		loser.CurrentEquip.Accessory = {0,0,1};
@@ -107,12 +107,12 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Inventory.Armor.AddElement(loser.CurrentEquip.Armor);
 
 		klib::SArmor loserNewArmor = 
-		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Index		)	))
-		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Modifier	)	))
-		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerArmor.Level		)	))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Definition	)	))
+		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerArmor.Modifier		)	))
+		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerArmor.Level			)	))
 		};
 
-		if(loserNewArmor.Index || loserNewArmor.Modifier || loserNewArmor.Level > 1)
+		if(loserNewArmor.Definition || loserNewArmor.Modifier || loserNewArmor.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getArmorName(loserNewArmor).c_str(), loserNewArmor.Level);
 		loser.Inventory.Armor.AddElement(loserNewArmor);
 		loser.CurrentEquip.Armor = {0,0,1};
@@ -128,12 +128,12 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Inventory.Vehicle.AddElement(loser.CurrentEquip.Vehicle);
 
 		klib::SVehicle loserNewVehicle = 
-		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Index		)	))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Definition	)	))
 		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Modifier	)	))
 		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerVehicle.Level		)	))
 		};
 
-		if(loserNewVehicle.Index || loserNewVehicle.Modifier || loserNewVehicle.Level > 1)
+		if(loserNewVehicle.Definition || loserNewVehicle.Modifier || loserNewVehicle.Level > 1)
 			printf("%s recovers a used %s level %u from the battlefield.\n", loser.Name.c_str(), klib::getVehicleName(loserNewVehicle).c_str(), loserNewVehicle.Level);
 		loser.Inventory.Vehicle.AddElement(loserNewVehicle);
 		loser.CurrentEquip.Vehicle = {0,0,1};
@@ -149,7 +149,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 		winner.Inventory.Facility.AddElement(loser.CurrentEquip.Facility);
 
 		klib::SFacility loserNewFacility = 
-		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Index		)	))
+		{	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Definition	)	))
 		,	1+(rand() %	std::max((int16_t)2, (int16_t)(oldWinnerFacility.Modifier	)	))
 		,	1+(rand() % std::max((int16_t)2, (int16_t)(oldWinnerFacility.Level		)	))
 		};
@@ -486,7 +486,7 @@ int32_t selectItemsPlayer(klib::CCharacter& user, klib::CCharacter& target)
 	else {
 		// Only use potions if we have less than Max HP
 		const klib::SItem&			entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
-		const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Index];
+		const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Definition];
 		const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 
 			&&  (	(klib::PROPERTY_TYPE_HEALTH	== itemDescription.Property && user.Points.LifeCurrent.Health	>= (userFinalPoints.LifeMax.Health	))
@@ -511,7 +511,7 @@ int32_t selectItemsAI(klib::CCharacter& user, klib::CCharacter& target)
 	int32_t indexInventory = (int32_t)(rand() % user.Inventory.Items.Count);
 
 	const klib::SItem&			entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
-	const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Index];
+	const klib::CItem&			itemDescription = klib::itemDescriptions[entityItem.Definition];
 	const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
 	// Only use potions if we have less than 60% HP
 	if( klib::ITEM_TYPE_POTION == itemDescription.Type 
@@ -561,7 +561,7 @@ bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 	if(bUsedItem)
 	{
 		const klib::SItem& entityItem = user.Inventory.Items.Slots[indexInventory].Entity;
-		const klib::CItem& itemDescription = klib::itemDescriptions[entityItem.Index];
+		const klib::CItem& itemDescription = klib::itemDescriptions[entityItem.Definition];
 		const klib::SEntityPoints	userFinalPoints = klib::calculateFinalPoints(user);
 		// Only use potions if we have less than 60% HP
 		if( klib::ITEM_TYPE_POTION == itemDescription.Type 

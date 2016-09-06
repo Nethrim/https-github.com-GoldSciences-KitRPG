@@ -10,23 +10,23 @@ namespace klib
 
 	struct SEntity
 	{
-		int16_t Index		= 0;
+		int16_t Definition	= 0;
 		int16_t Modifier	= 0;
 		int16_t Level		= 1;
 
 		inline constexpr SEntity(const SEntity& other)	= default;
 		inline constexpr SEntity(int16_t index=0, int16_t modifier=0, int16_t level=1)
-			: Index		(index		)
-			, Modifier	(modifier	)
-			, Level		(level		)
+			: Definition	(index		)
+			, Modifier		(modifier	)
+			, Level			(level		)
 		{};
 
-		inline SEntity& operator =(const SEntity& other){ Index = other.Index; Modifier = other.Modifier; Level = other.Level; return *this; };
-		inline constexpr bool operator	==(const SEntity& other) const { return Index == other.Index && Modifier == other.Modifier && Level == other.Level;  };
+		inline SEntity& operator =(const SEntity& other){ Definition = other.Definition; Modifier = other.Modifier; Level = other.Level; return *this; };
+		inline constexpr bool operator	==(const SEntity& other) const { return Definition == other.Definition && Modifier == other.Modifier && Level == other.Level;  };
 
 		void Print() const
 		{
-			printf("Index ......: %i.\n",	Index		);
+			printf("Index ......: %i.\n",	Definition	);
 			printf("Modifier ---: %i.\n",	Modifier	);
 			printf("Level ......: %i.\n",	Level		);
 		}

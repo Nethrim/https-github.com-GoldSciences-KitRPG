@@ -24,13 +24,13 @@ namespace klib
 
 	struct SCharacterResearch
 	{
-		SResearchGroup			Weapon		= {};
-		SResearchGroup			Accessory	= {};
-		SResearchGroup			Profession	= {};
-		SResearchGroup			Armor		= {};
-		SResearchGroup			Vehicle		= {};
-		SResearchGroup			Facility	= {};
-		SResearchGroup			StageProp	= {};
+		SResearchGroup<SWeapon		>	Weapon		= {};
+		SResearchGroup<SAccessory	>	Accessory	= {};
+		SResearchGroup<SProfession	>	Profession	= {};
+		SResearchGroup<SArmor		>	Armor		= {};
+		SResearchGroup<SVehicle		>	Vehicle		= {};
+		SResearchGroup<SFacility	>	Facility	= {};
+		SResearchGroup<SStageProp	>	StageProp	= {};
 	};
 
 	// We don't need to create complex classes from SItem

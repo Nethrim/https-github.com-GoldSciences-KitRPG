@@ -6,8 +6,10 @@
 namespace klib
 {
 #pragma pack(push, 1)
+	template<typename _EntityType>
 	struct SResearchGroup
 	{
+		_EntityType						MaxResearch;
 		SEntityContainer<int16_t, 256>	Definitions;
 		SEntityContainer<int16_t, 256>	Modifiers;
 	};
@@ -21,7 +23,7 @@ namespace klib
 	)
 	{
 		char formattedName[128] = {};
-		sprintf_s(formattedName, tableModifiers[entity.Modifier].Name.c_str(), tableDefinitions[entity.Index].Name.c_str());
+		sprintf_s(formattedName, tableModifiers[entity.Modifier].Name.c_str(), tableDefinitions[entity.Definition].Name.c_str());
 		return formattedName;
 	}
 
@@ -29,7 +31,7 @@ namespace klib
 	template<typename _EntityType, size_t _DefinitionCount>
 	void unequipEntity(SEntityContainer<_EntityType, _DefinitionCount>& container, _EntityType& currentEntity) 
 	{	
-		if( 0 == currentEntity.Index && 0 == currentEntity.Modifier && 0 == currentEntity.Level )
+		if( 0 == currentEntity.Definition && 0 == currentEntity.Modifier && 0 == currentEntity.Level )
 			return; 
 		container.AddElement(currentEntity);	
 		currentEntity = {0,0,0};
@@ -40,7 +42,7 @@ namespace klib
 	bool equipEntityIfResearched			
 		( size_t slotIndex
 		, SEntityContainer<_EntityType, _EntityContainerSize>& entityContainer
-		, const SResearchGroup& completedResearch 
+		, const SResearchGroup<_EntityType>& completedResearch 
 		, const SEntityRecord<_EntityType>(&tableDefinitions)[_DefinitionCount]
 		, const SEntityRecord<_EntityType>(&tableModifiers	)[_ModifierCount]
 		, _EntityType& equippedEntity
@@ -55,9 +57,9 @@ namespace klib
 			return false;
 	
 		bool bCancel = false; 
-		if( 0 < entityContainer.Slots[slotIndex].Entity.Index		&& (-1) == completedResearch.Definitions.FindElement(entityContainer.Slots[slotIndex].Entity.Index)) { 
+		if( 0 < entityContainer.Slots[slotIndex].Entity.Definition	&& (-1) == completedResearch.Definitions.FindElement(entityContainer.Slots[slotIndex].Entity.Definition)) { 
 			bCancel = true;
-			printf(cantAccessDefinitionError.c_str(), tableDefinitions[entityContainer.Slots[slotIndex].Entity.Index].Name.c_str());	//
+			printf(cantAccessDefinitionError.c_str(), tableDefinitions[entityContainer.Slots[slotIndex].Entity.Definition].Name.c_str());	//
 		} 
 
 		if( 0 < entityContainer.Slots[slotIndex].Entity.Modifier	&& (-1) == completedResearch.Modifiers.FindElement(entityContainer.Slots[slotIndex].Entity.Modifier)) { 
@@ -80,12 +82,12 @@ namespace klib
 
 	template<typename _EntityType, size_t _definitionCount, size_t _modifierCount>
 	static SEntityPoints getEntityPoints(const _EntityType& entity,const SEntityRecord<_EntityType> (&definitions)[_definitionCount], const SEntityRecord<_EntityType> (&modifiers)[_modifierCount]) {
-		return (definitions[entity.Index].Points + modifiers[entity.Modifier].Points)*(entity.getMultipliers()*entity.Level);
+		return (definitions[entity.Definition].Points + modifiers[entity.Modifier].Points)*(entity.getMultipliers()*entity.Level);
 	}
 
 	template<typename _EntityType, size_t _definitionCount, size_t _modifierCount>
 	static SEntityFlags getEntityFlags(const _EntityType& entity,const SEntityRecord<_EntityType> (&definitions)[_definitionCount], const SEntityRecord<_EntityType> (&modifiers)[_modifierCount]) {
-		return (definitions[entity.Index].Flags | modifiers[entity.Modifier].Flags);
+		return (definitions[entity.Definition].Flags | modifiers[entity.Modifier].Flags);
 	}
 
 #pragma pack(pop)

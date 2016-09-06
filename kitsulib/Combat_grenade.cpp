@@ -31,7 +31,7 @@ COMBAT_STATUS getGrenadeStatusFromProperty(PROPERTY_TYPE grenadeProperty)
 
 bool klib::useGrenade(const SItem& itemGrenade, CCharacter& thrower, CCharacter& target) 
 {
-	const CItem& itemDescription = itemDescriptions[itemGrenade.Index];
+	const CItem& itemDescription = itemDescriptions[itemGrenade.Definition];
 
 	if(0 == itemGrenade.Level) {
 		printf("The prop grenade thrown by %s puffs in the air and quickly falls to the ground.\n", thrower.Name.c_str());

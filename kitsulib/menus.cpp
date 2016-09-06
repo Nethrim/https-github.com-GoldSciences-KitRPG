@@ -3,8 +3,6 @@
 #include "Game.h"
 #include "draw.h"
 
-#include "credits.h"
-
 #include <algorithm>
 
 SDrawMenuGlobals	drawMenu_globals = {{}, {0, 0.6}};

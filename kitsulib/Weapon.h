@@ -37,10 +37,10 @@ static const CRecordWeapon modifiersWeapon[] =
 //			0,		0,								001									  
 ,	{{{3,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Soldier's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},3,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC	 			}},	"Assassin's %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_STUN		}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Sonic %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BLEEDING	}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Gauss %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BURN		}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Laser %s"				}
 ,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_POISON		}		, {ENTITY_TECHNOLOGY_BASIC				}},	"Acid %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BLEEDING	}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Gauss %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_STUN		}		, {TECHNOLOGY_DIGITAL_MECHANIC			}},	"Sonic %s"				}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,300}	,{{},{COMBAT_STATUS_BURN		}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Laser %s"				}
 ,	{{{0,0,0},{3,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Saint's %s"			}
 //		  ,0	  ,0							   100
 ,	{{{4,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Executioner's %s"		}
@@ -52,7 +52,8 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400}	,{VAMPIRE_FLAGS																	},	"Vampire's %s"			}
 //												   100
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellite Orbital %s"	}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Intercontinental %s"	}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellital %s"			}
 };
 
 #define DEATH_SCYTHE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
@@ -94,9 +95,10 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{2,0,0},{0,0,0}	,{0,6, {0,0,0},0,{0,0,0}},-1,600	},{{},{ROCKET_LAUNCHER_STATUS_INFLICT	},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Rocket Launcher"			}
 ,	{{{0,-3,0},{0,0,0}	,{6,6, {0,0,0},0,{0,0,0}},-2,600	},{{},{TORPEDO_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_MECHANIC		}},	"Torpedo Launcher"			}
 ,	{{{0,-3,0},{0,0,0}	,{6,6, {0,0,0},0,{0,0,0}},-2,600	},{{},{ROCKET_LAUNCHER_STATUS_INFLICT	},	{TECHNOLOGY_DIGITAL_MECHANIC	}},	"Guided Rocket Launcher"	}
+,	{{{0,-3,0},{0,0,0}	,{6,6, {0,0,0},0,{0,0,0}},-2,600	},{{},{ROCKET_LAUNCHER_STATUS_INFLICT	},	{TECHNOLOGY_DIGITAL_MECHANIC	}},	"ICBM Trigger"				}
 // 2nd grade eight		,							 100
-,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{COMBAT_STATUS_STUN				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Thor's Mace"				}
-,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{COMBAT_STATUS_BLIND				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Zeus' Staff"				}
+,	{{{0,0,1},{0,0,1}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{COMBAT_STATUS_STUN				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Thor's Mace"				}
+,	{{{0,1,0},{0,1,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{COMBAT_STATUS_BLIND				},	{ENTITY_TECHNOLOGY_BASIC		}},	"Zeus' Staff"				}
 ,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Anhur's Spear"				}
 ,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	},{{},{DEATH_SCYTHE_STATUS_INFLICT		},	{ENTITY_TECHNOLOGY_BASIC		}},	"Death Scythe"				}
 // 1st grade ten		,							 800

@@ -27,8 +27,8 @@ void displayInventory(const klib::SInventoryItems& inventory, const std::string&
 template<typename _EntityType, size_t _EntityContainerSize, size_t _DefinitionCount, size_t _ModifierCount>
 void equipEntityMenu
 	( klib::SEntityContainer<_EntityType, _EntityContainerSize>& characterInventory
-	, const klib::SResearchGroup& completedResearch 
-	, const klib::SEntityRecord<_EntityType>(&tableDefinitions)[_DefinitionCount]
+	, const klib::SResearchGroup<_EntityType>& completedResearch 
+	, const klib::SEntityRecord<_EntityType>(&tableDefinitions	)[_DefinitionCount]
 	, const klib::SEntityRecord<_EntityType>(&tableModifiers	)[_ModifierCount]
 	, _EntityType& currentEntity
 	, const std::string& noWeaponMessage
@@ -421,7 +421,7 @@ void bar(klib::CCharacter& adventurer)
 	{
 		sprintf_s(menuTitle, "You have %u coins", adventurer.Points.Coins);
 		const klib::SItem selectedItem = displayMenu(menuTitle, itemOptions);
-		if( selectedItem.Index == klib::getFinalItemCount() ) {
+		if( selectedItem.Definition == klib::getFinalItemCount() ) {
 			printf("You leave the bar.\n");
 			break;
 		}

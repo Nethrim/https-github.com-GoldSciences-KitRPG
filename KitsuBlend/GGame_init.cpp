@@ -270,7 +270,7 @@ god::error_t	god::CGGame::InitChessUnitMeshes( void )
 god::error_t	god::CGGame::InitChessBoardMesh( void )
 {
 	m_BoardTextures[0] = "boardtiles.png";
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	m_BoardTiles.resize( width, depth );
 	m_BoardTileTextures.resize(3);
 	GPtrPOD(STileTexture) ttex;
@@ -451,8 +451,8 @@ god::error_t	god::CGGame::InitChessUnitCursorMesh( void )
 
 god::error_t	god::CGGame::InitChessMinimapSprite( void )
 {
-	const uint32_t	width = klib::STacticalTiles::Width,
-					depth = klib::STacticalTiles::Depth;
+	const uint32_t	width = klib::STacticalBoard::Width,
+					depth = klib::STacticalBoard::Depth;
 
 	GPtrPODX(SSprite) SpriteData(onCreateDefaultSSprite,0,0);
 	SpriteData->FrameColumns	= 1;
@@ -497,7 +497,7 @@ god::error_t	god::CGGame::InitChessMinimapSprite( void )
 
 god::error_t	god::CGGame::InitChessUnitCursorSprite( void )
 {
-	const uint32_t width = klib::STacticalTiles::Width, depth = klib::STacticalTiles::Depth;
+	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 
 	GPtrPODX(SSprite) SpriteData(onCreateDefaultSSprite,0,0);
 	SpriteData->FrameColumns	= 1;

@@ -109,22 +109,22 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 
 	adventurer.Inventory.Weapon		.AddElement({1,1,1});
 	adventurer.Inventory.Accessory	.AddElement({1,1,1});
-	adventurer.Inventory.Armor			.AddElement({1,1,1});
-	adventurer.Inventory.Profession	.AddElement({adventurer.CurrentEquip.Profession.Index,1,10});
-	adventurer.Inventory.Vehicle		.AddElement({1,1,1});
-	adventurer.Inventory.Facility		.AddElement({1,1,1});
+	adventurer.Inventory.Armor		.AddElement({1,1,1});
+	adventurer.Inventory.Profession	.AddElement({adventurer.CurrentEquip.Profession.Definition,1,10});
+	adventurer.Inventory.Vehicle	.AddElement({1,1,1});
+	adventurer.Inventory.Facility	.AddElement({1,1,1});
 
 	int16_t i = 5;
 	adventurer.Inventory.Weapon		.AddElement(	{	rand()%(int16_t)size(klib::definitionsWeapon		), rand()%(int16_t)size(klib::modifiersWeapon		), ++i	});
 	adventurer.Inventory.Accessory	.AddElement(	{	rand()%(int16_t)size(klib::definitionsAccessory		), rand()%(int16_t)size(klib::modifiersAccessory	), ++i	});
-	adventurer.Inventory.Armor			.AddElement(	{	rand()%(int16_t)size(klib::definitionsArmor			), rand()%(int16_t)size(klib::modifiersArmor		), ++i	});
+	adventurer.Inventory.Armor		.AddElement(	{	rand()%(int16_t)size(klib::definitionsArmor			), rand()%(int16_t)size(klib::modifiersArmor		), ++i	});
 	adventurer.Inventory.Profession	.AddElement(	{	rand()%(int16_t)size(klib::definitionsProfession	), rand()%(int16_t)size(klib::modifiersProfession	), ++i	});
-	adventurer.Inventory.Vehicle		.AddElement(	{	rand()%(int16_t)size(klib::definitionsVehicle		), rand()%(int16_t)size(klib::modifiersVehicle		), ++i	});
-	adventurer.Inventory.Facility		.AddElement(	{	rand()%(int16_t)size(klib::definitionsFacility	), rand()%(int16_t)size(klib::modifiersFacility	), ++i	});
+	adventurer.Inventory.Vehicle	.AddElement(	{	rand()%(int16_t)size(klib::definitionsVehicle		), rand()%(int16_t)size(klib::modifiersVehicle		), ++i	});
+	adventurer.Inventory.Facility	.AddElement(	{	rand()%(int16_t)size(klib::definitionsFacility	), rand()%(int16_t)size(klib::modifiersFacility	), ++i	});
 
-	adventurer.Inventory.Items			.AddElement({1,1,1});
+	adventurer.Inventory.Items		.AddElement({1,1,1});
 	for(int32_t i=1; i<3; ++i)
-		adventurer.Inventory.Items.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
+		adventurer.Inventory.Items	.AddElement({ 1+int16_t(rand()%(klib::size(klib::itemDescriptions)-1)), int16_t(1+rand()%klib::size(klib::itemModifiers)), int16_t(rand()%klib::size(klib::itemGrades)) });
 
 	const klib::SEntityPoints finalPoints	= klib::calculateFinalPoints(adventurer);
 	adventurer.Points.LifeCurrent			= finalPoints.LifeMax;

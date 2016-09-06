@@ -44,35 +44,36 @@ static const CRecordProfession modifiersProfession[] =
 #define VAMPIRE_EFFECTS			{klib::ATTACK_EFFECT_LEECH_HEALTH,klib::DEFEND_EFFECT_NONE,klib::PASSIVE_EFFECT_MANA_REGEN}
 #define ANDROID_TECHNOLOGY		(klib::ENTITY_TECHNOLOGY)(klib::ENTITY_TECHNOLOGY_GENETIC|klib::ENTITY_TECHNOLOGY_DIGITAL)
 
-// Currently the amount of points available for a single character is 14.	
+// Currently the amount of points available for a single character is 16.	
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordProfession definitionsProfession[] =
-{	{{{1,1,1},{1,1,1}	,{1,1,{1,1,1},1,{1,1,1}},1,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "John Doe"		}
-,	{{{4,0,2},{0,0,0}	,{2,4,{0,0,0},2,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Swordman"		}
-,	{{{2,0,1},{0,0,0}	,{5,1,{4,0,0},0,{0,0,0}},2,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Thief"			}
-,	{{{0,5,0},{2,5,0}	,{0,0,{2,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Acolyte"		}
-,	{{{0,3,0},{0,3,0}	,{3,5,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Mage"			}
-,	{{{1,0,1},{0,0,0}	,{4,4,{4,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Archer"		}
-,	{{{2,0,1},{0,0,0}	,{2,4,{0,0,0},2,{0,0,0}},3,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Merchant"		}
+{	{{{1,1,1},{1,1,1}	,{1,1,{1,1,1},1,{1,1,1}},1,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "John Doe"		}
+,	{{{4,0,2},{0,0,0}	,{2,4,{0,0,0},2,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Swordman"		}
+,	{{{2,0,1},{0,0,0}	,{5,1,{4,0,0},0,{0,0,0}},2,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Thief"			}
+,	{{{0,5,0},{2,5,0}	,{0,0,{2,0,0},0,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Acolyte"		}
+,	{{{0,3,0},{0,3,0}	,{3,5,{0,0,0},0,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Mage"			}
+,	{{{1,0,1},{0,0,0}	,{4,4,{4,0,0},0,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Archer"		}
+,	{{{2,0,1},{0,0,0}	,{2,4,{0,0,0},2,{0,0,0}},3,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Merchant"		}
 // ---------------------------
-,	{{{2,0,1},{0,0,0}	,{4,6,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Executioner"	}
-,	{{{0,2,0},{0,0,0}	,{4,4,{4,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Ninja"			}
-,	{{{0,2,0},{1,4,0}	,{1,6,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Sorcerer"		}
-,	{{{2,0,1},{0,0,0}	,{3,5,{3,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Assassin"		}
+,	{{{2,0,1},{0,0,0}	,{4,6,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Executioner"	}
+,	{{{0,2,0},{0,0,0}	,{4,4,{4,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Ninja"			}
+,	{{{0,2,0},{1,4,0}	,{1,6,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Sorcerer"		}
+,	{{{2,0,1},{0,0,0}	,{3,5,{3,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Assassin"		}
 // ---------------------------
-,	{{{4,0,4},{0,0,0}	,{0,4,{0,0,0},3,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Heavy"			}
-,	{{{2,0,1},{0,0,0}	,{2,5,{2,0,0},2,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Assault"		}
-,	{{{1,4,0},{1,3,1}	,{2,0,{2,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Support"		}
-,	{{{0,1,0},{0,0,0}	,{7,6,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Sniper"		}
-,	{{{2,0,2},{1,0,0}	,{1,6,{0,0,0},2,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Grenadier"		}
-,	{{{0,0,1},{1,0,1}	,{5,5,{1,0,0},0,{0,0,0}},0,0}	,{DRONE_EFFECTS, {},{ENTITY_TECHNOLOGY_BASIC					}}, "Engineer"		}
+,	{{{4,0,4},{0,0,0}	,{0,4,{0,0,0},3,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Heavy"			}
+,	{{{2,0,1},{0,0,0}	,{2,5,{2,0,0},2,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Assault"		}
+,	{{{1,4,0},{1,3,1}	,{2,0,{2,0,0},0,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Support"		}
+,	{{{0,1,0},{0,0,0}	,{7,6,{0,0,0},0,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Sniper"		}
+,	{{{2,0,2},{1,0,0}	,{1,6,{0,0,0},2,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Grenadier"		}
+,	{{{0,0,0},{1,1,0}	,{1,6,{0,0,0},2,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Spy"			}
+,	{{{0,0,1},{1,0,1}	,{5,5,{1,0,0},0,{0,0,0}},0,250}	,{DRONE_EFFECTS, {},{ENTITY_TECHNOLOGY_BASIC					}}, "Engineer"		}
 // ---------------------------
-,	{{{1,0,1},{0,0,0}	,{5,5,{2,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Commando"		}
-,	{{{0,0,0},{0,0,1}	,{5,5,{3,0,0},0,{0,0,0}},0,0}	,{DRONE_EFFECTS, DRONE_COMBAT_STATUS,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Drone"			}
-,	{{{2,1,0},{1,1,0}	,{0,6,{0,0,0},3,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Biochemist"	}
-,	{{{2,0,2},{0,0,0}	,{4,5,{1,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL								}}, "Cyborg"		}
-,	{{{1,0,1},{0,0,1}	,{6,4,{1,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ANDROID_TECHNOLOGY									}}, "Android"		}
-,	{{{3,2,0},{1,1,0}	,{1,5,{1,0,0},0,{0,0,0}},0,0}	,{VAMPIRE_EFFECTS,{COMBAT_STATUS_BLEEDING						}}, "Vampire"		}
+,	{{{1,0,1},{0,0,0}	,{5,5,{2,0,0},0,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Commando"		}
+,	{{{0,0,0},{0,0,1}	,{5,5,{3,0,0},0,{0,0,0}},0,300}	,{DRONE_EFFECTS, DRONE_COMBAT_STATUS,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Drone"			}
+,	{{{2,1,0},{1,1,0}	,{0,6,{0,0,0},3,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC								}}, "Biochemist"	}
+,	{{{2,0,2},{0,0,0}	,{4,5,{1,0,0},0,{0,0,0}},0,500}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL								}}, "Cyborg"		}
+,	{{{1,0,1},{0,0,1}	,{6,4,{1,0,0},0,{0,0,0}},0,500}	,{{},{}	,{ANDROID_TECHNOLOGY									}}, "Android"		}
+,	{{{3,2,0},{1,1,0}	,{1,5,{1,0,0},0,{0,0,0}},0,500}	,{VAMPIRE_EFFECTS,{COMBAT_STATUS_BLEEDING						}}, "Vampire"		}
 };
 
 	static std::string getProfessionName(const SProfession& profession) {

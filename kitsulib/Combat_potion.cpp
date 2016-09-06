@@ -50,7 +50,7 @@ bool klib::usePotion(const SItem& itemPotion, CCharacter& potionDrinker)
 		return true;
 	}
 
-	const CItem& itemDescription = itemDescriptions[itemPotion.Index];
+	const CItem& itemDescription = itemDescriptions[itemPotion.Definition];
 
 	bool bUsedItem = false;
 
