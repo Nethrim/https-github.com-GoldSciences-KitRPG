@@ -173,5 +173,8 @@
     <ClCompile Include="timer.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="equip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

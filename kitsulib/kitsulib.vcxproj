@@ -208,6 +208,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Combat_grenade.cpp" />
     <ClCompile Include="Combat_potion.cpp" />
+    <ClCompile Include="equip.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="menus.cpp" />

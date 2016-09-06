@@ -25,10 +25,11 @@ SGameState processMenuReturn(SGame& instanceGame, TURN_ACTION returnValue)
 	}
 };
 
-SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue);
-SGameState drawResearch(SGame& instanceGame, const SGameState& returnState);
-SGameState drawWelcome(SGame& instanceGame, const SGameState& returnValue);
-SGameState drawBuy(SGame& instanceGame, const SGameState& returnState);
+SGameState drawSquadSetupMenu	(SGame& instanceGame, const SGameState& returnValue);
+SGameState drawResearch			(SGame& instanceGame, const SGameState& returnState);
+SGameState drawWelcome			(SGame& instanceGame, const SGameState& returnValue);
+SGameState drawBuy				(SGame& instanceGame, const SGameState& returnState);
+SGameState drawEquip			(SGame& instanceGame, const SGameState& returnState);
 
 void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState) {
 	clearASCIIBackBuffer(' ');
@@ -85,10 +86,8 @@ void klib::showMenu(SGame& instanceGame) {
 
 	static const SMenu<SGameState, size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"			, 20, true, "Exit game");
 	static const SMenu<SGameState, size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"			, 20, true, "Exit game");
-	static const SMenu<SGameState, size(optionsEquip		)> menuEquip		(optionsEquip		,  {GAME_STATE_MENU_SQUAD_SETUP		},	"Arsenal"			);
 	static const SMenu<SGameState, size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"			, 26);
 	static const SMenu<SGameState, size(optionsMainInGame	)> menuStartMission	(optionsMainInGame	,  {GAME_STATE_WELCOME_COMMANDER	},	"Start mission"		);
-	static const SMenu<SGameState, size(optionsBuy			)> menuBuy			(optionsBuy			,  {GAME_STATE_WELCOME_COMMANDER	},	"Buy"				);
 	static const SMenu<SGameState, size(optionsSell			)> menuSell			(optionsSell		,  {GAME_STATE_WELCOME_COMMANDER	},	"Sell"				);
 
 	switch(instanceGame.State.State) {
@@ -100,14 +99,14 @@ void klib::showMenu(SGame& instanceGame) {
 
 		break;
 
-	case GAME_STATE_MENU_EQUIPMENT		:	instanceGame.UserMessage	= menuEquip			.Title;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuEquip		, instanceGame.FrameInput, instanceGame.State ));	break;
-	case GAME_STATE_MENU_OPTIONS		:	instanceGame.UserMessage	= menuConfig		.Title;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuConfig		, instanceGame.FrameInput, instanceGame.State ));	break;
-	case GAME_STATE_START_MISSION		:	instanceGame.UserMessage	= menuMainInGame	.Title;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuMainInGame	, instanceGame.FrameInput, instanceGame.State ));	break;
-	case GAME_STATE_MENU_SELL			:	instanceGame.UserMessage	= menuSell			.Title;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuSell		, instanceGame.FrameInput, instanceGame.State ));	break;
-	case GAME_STATE_MENU_SQUAD_SETUP	:	instanceGame.UserMessage	= "Squad Setup"			;	newAction = processMenuReturn(instanceGame, drawSquadSetupMenu	(instanceGame, instanceGame.State));	break;
-	case GAME_STATE_WELCOME_COMMANDER	:	instanceGame.UserMessage	= "Welcome Commander"	;	newAction = processMenuReturn(instanceGame, drawWelcome			(instanceGame, instanceGame.State));	break;
-	case GAME_STATE_MENU_RESEARCH		:	instanceGame.UserMessage	= "Research Center"		;	newAction = processMenuReturn(instanceGame, drawResearch			(instanceGame, instanceGame.State));	break;
-	case GAME_STATE_MENU_BUY			:	instanceGame.UserMessage	= "Buy"					;	newAction = processMenuReturn(instanceGame, drawBuy				(instanceGame, instanceGame.State));	break;
+	case GAME_STATE_MENU_OPTIONS		:	instanceGame.UserMessage	= menuConfig		.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuConfig		, instanceGame.FrameInput, instanceGame.State ));	break;
+	case GAME_STATE_START_MISSION		:	instanceGame.UserMessage	= menuMainInGame	.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuMainInGame	, instanceGame.FrameInput, instanceGame.State ));	break;
+	case GAME_STATE_MENU_SELL			:	instanceGame.UserMessage	= menuSell			.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuSell		, instanceGame.FrameInput, instanceGame.State ));	break;
+	case GAME_STATE_MENU_EQUIPMENT		:	instanceGame.UserMessage	= "Equipment Setup"			;	newAction = processMenuReturn(instanceGame, drawEquip			(instanceGame, instanceGame.State));	break;
+	case GAME_STATE_MENU_SQUAD_SETUP	:	instanceGame.UserMessage	= "Squad Setup"				;	newAction = processMenuReturn(instanceGame, drawSquadSetupMenu	(instanceGame, instanceGame.State));	break;
+	case GAME_STATE_WELCOME_COMMANDER	:	instanceGame.UserMessage	= "Welcome Commander"		;	newAction = processMenuReturn(instanceGame, drawWelcome			(instanceGame, instanceGame.State));	break;
+	case GAME_STATE_MENU_RESEARCH		:	instanceGame.UserMessage	= "Research Center"			;	newAction = processMenuReturn(instanceGame, drawResearch		(instanceGame, instanceGame.State));	break;
+	case GAME_STATE_MENU_BUY			:	instanceGame.UserMessage	= "Buy"						;	newAction = processMenuReturn(instanceGame, drawBuy				(instanceGame, instanceGame.State));	break;
 	
 	case GAME_STATE_CREDITS				:	
 		if(instanceGame.FrameInput.Keys[VK_ESCAPE]) 

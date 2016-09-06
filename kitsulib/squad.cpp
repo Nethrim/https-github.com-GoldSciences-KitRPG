@@ -80,8 +80,7 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 
 	SPlayer& player = instanceGame.Player;
 
-
-	int32_t playerOffset = (player.Selection.SelectedPlayerUnit != -1) ? std::min(std::max(0, player.Selection.SelectedPlayerUnit-1), SGameSquad::Size-6) : 0;
+	int32_t playerOffset = (player.Selection.PlayerUnit != -1) ? std::min(std::max(0, player.Selection.PlayerUnit-1), SGameSquad::Size-6) : 0;
 
 	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y)
 	{
@@ -130,7 +129,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 	if( result < 0 || result >= SGameSquad::Size )
 		return {GAME_STATE_MENU_SQUAD_SETUP};
 
-	player.Selection.SelectedPlayerUnit = result;
+	player.Selection.PlayerUnit = result;
 
 	if( player.Squad.Agents[result] != -1 && 0 == instanceGame.FrameInput.Keys[VK_LSHIFT] ) {
 		return {GAME_STATE_MENU_EQUIPMENT};

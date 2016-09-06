@@ -55,10 +55,10 @@ namespace klib
 
 	struct SPlayerSelection	// can be AI or human.
 	{
-		int16_t						SelectedPlayerSquad	;
-		int16_t						SelectedPlayerUnit	;
-		int16_t						SelectedTargetSquad	;
-		int16_t						SelectedTargetUnit	;
+		int16_t						PlayerSquad	;
+		int16_t						PlayerUnit	;
+		int16_t						TargetSquad	;
+		int16_t						TargetUnit	;
 	};
 
 	struct SPlayer	// can be AI or human.
