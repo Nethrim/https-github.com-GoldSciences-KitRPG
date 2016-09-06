@@ -50,6 +50,9 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	memcpy(getASCIIColorBackBuffer(), &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], instanceGame.GlobalDisplay.TextAttributes.Width*instanceGame.GlobalDisplay.TextAttributes.Depth*sizeof(uint16_t));
 
 	uint32_t y=0;
+	uint32_t  bbWidth	= getASCIIBackBufferWidth()
+			, bbHeight	= getASCIIBackBufferHeight();
+
 	switch(instanceGame.State.State) { 
 	case GAME_STATE_CREDITS:
 	case GAME_STATE_WELCOME_COMMANDER: 
@@ -57,25 +60,33 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 		break;
 	default:
 		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
-			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*getASCIIBackBufferWidth()+(getASCIIBackBufferWidth()/2-instanceGame.PostEffectDisplay.TextAttributes.Width/2)], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+(bbWidth/2-instanceGame.PostEffectDisplay.TextAttributes.Width/2)], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
 	}
-		
 
+	// Frame timer
 	frameMeasure.Frame();
 	instanceGame.FrameTimer.Frame();
+
+	// Print user error messages
+	lineToScreen(bbHeight-3, 1, CENTER, "%s", instanceGame.UserMessage.c_str());
+	lineToScreen(bbHeight-2, 1, CENTER, "%s", instanceGame.UserError.c_str());
+	for(uint32_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-3)*bbWidth+bbWidth/2-instanceGame.UserMessage	.size()/2+i] = COLOR_GREEN;
+	for(uint32_t i=0, count = instanceGame.UserError.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-2)*bbWidth+bbWidth/2-instanceGame.UserError		.size()/2+i] = COLOR_RED;
+
+	// Print some debugging information 
 	lineToScreen(1, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
 	lineToScreen(2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
-	lineToScreen(getASCIIBackBufferHeight()-2, 1, RIGHT, "%s.", instanceGame.UserMessage.c_str());
+	lineToScreen(getASCIIBackBufferHeight()-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());
 	lineToScreen(getASCIIBackBufferHeight()-2, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
-	for(uint32_t i=0; i<32; i++) {
-		getASCIIColorBackBuffer()[1*getASCIIBackBufferWidth()+i] = COLOR_GREEN;
-		getASCIIColorBackBuffer()[2*getASCIIBackBufferWidth()+i] = COLOR_CYAN;
-		getASCIIColorBackBuffer()[(getASCIIBackBufferHeight()-2)*getASCIIBackBufferWidth()+i] = COLOR_DARKMAGENTA;
-		getASCIIColorBackBuffer()[(getASCIIBackBufferHeight()-2)*getASCIIBackBufferWidth()+(getASCIIBackBufferWidth()-1-i)] = COLOR_DARKYELLOW;
+	for(uint32_t i=0, count = 32U; i<count; i++) {
+		getASCIIColorBackBuffer()[1*bbWidth+i] = COLOR_GREEN;
+		getASCIIColorBackBuffer()[2*bbWidth+i] = COLOR_CYAN;
+		getASCIIColorBackBuffer()[(bbHeight-2)*bbWidth+i] = COLOR_DARKMAGENTA;
+		getASCIIColorBackBuffer()[(bbHeight-2)*bbWidth+(bbWidth-1-i)] = COLOR_DARKYELLOW;
 	}
 
 	lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
-	getASCIIColorBackBuffer()[instanceGame.FrameInput.MouseY*getASCIIBackBufferWidth()+instanceGame.FrameInput.MouseX] = COLOR_MAGENTA;
+	getASCIIColorBackBuffer()[instanceGame.FrameInput.MouseY*bbWidth+instanceGame.FrameInput.MouseX] = COLOR_MAGENTA;
 	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
 	presentASCIIBackBuffer();
 }; 	// 

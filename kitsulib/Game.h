@@ -86,7 +86,9 @@ namespace klib
 
 		STacticalBoard				TacticalBoard		= {};
 
+		std::string					StateMessage		= "";
 		std::string					UserMessage			= "";
+		std::string					UserError			= "";
 
 		STacticalDisplay			TacticalDisplay		= {};
 		SPostEffectDisplay			PostEffectDisplay	= {};

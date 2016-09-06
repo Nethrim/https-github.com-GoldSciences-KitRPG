@@ -102,7 +102,7 @@ void klib::initGame(SGame& instanceGame)
 	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, rand()%20};
 	adventurer.CurrentEquip.StageProp	= {0, 0, 0};
 
-	for(uint32_t i=1; i<4; i++) {
+	for(uint32_t i=1; i<8; i++) {
 		instanceGame.Player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 		instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 
