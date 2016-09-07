@@ -70,8 +70,8 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	// Print user error messages
 	lineToScreen(bbHeight-3, 1, CENTER, "%s", instanceGame.UserMessage.c_str());
 	lineToScreen(bbHeight-2, 1, CENTER, "%s", instanceGame.UserError.c_str());
-	for(uint32_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-3)*bbWidth+bbWidth/2-instanceGame.UserMessage	.size()/2+i] = COLOR_GREEN;
-	for(uint32_t i=0, count = instanceGame.UserError.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-2)*bbWidth+bbWidth/2-instanceGame.UserError		.size()/2+i] = COLOR_RED;
+	for(size_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-3)*bbWidth+bbWidth/2-instanceGame.UserMessage	.size()/2+i] = COLOR_GREEN;
+	for(size_t i=0, count = instanceGame.UserError	.size()+1; i<count; i++)	getASCIIColorBackBuffer()[(bbHeight-2)*bbWidth+bbWidth/2-instanceGame.UserError		.size()/2+i] = COLOR_RED;
 
 	// Print some debugging information 
 	lineToScreen(1, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
