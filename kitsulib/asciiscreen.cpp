@@ -22,6 +22,8 @@ public:
 	{
 		if( _backBuffer )	delete( _backBuffer );
 		if( _frontBuffer )	delete( _frontBuffer );
+		if( _colorBackBuffer	)	delete( _colorBackBuffer	);
+		if( _colorFrontBuffer	)	delete( _colorFrontBuffer	);
 	}
 } bbDeleter;
 

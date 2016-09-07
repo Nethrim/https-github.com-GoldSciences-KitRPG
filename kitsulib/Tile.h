@@ -25,6 +25,7 @@ namespace klib
 		int16_t		Definition	;
 		int16_t		Modifier	;
 		int16_t		Level		;
+		int16_t		Owner		;
 	};
 
 	template<typename _T, size_t _Width, size_t _Depth>
@@ -53,11 +54,10 @@ namespace klib
 	{
 		SGrid<SCharacterTile, _Width, _Depth>		Agents;
 		SGrid<SItemTile		, _Width, _Depth>		Items;
-		SGrid<SCharacterTile, _Width, _Depth>		ItemOwners;
 
 		void Clear() {
 			clearGrid(	Agents	, {-1, -1, -1} );
-			clearGrid(	Items	, {-1, -1, -1} );
+			clearGrid(	Items	, {-1, 0, 0, 0} );
 		}
 	};
 

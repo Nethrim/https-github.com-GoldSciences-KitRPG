@@ -13,22 +13,25 @@ namespace klib
 		int16_t Definition	= 0;
 		int16_t Modifier	= 0;
 		int16_t Level		= 1;
+		int16_t Owner		= 0;
 
 		inline constexpr SEntity(const SEntity& other)	= default;
-		inline constexpr SEntity(int16_t index=0, int16_t modifier=0, int16_t level=1)
+		inline constexpr SEntity(int16_t index=0, int16_t modifier=0, int16_t level=1, int16_t owner=0)
 			: Definition	(index		)
 			, Modifier		(modifier	)
 			, Level			(level		)
+			, Owner			(owner		)
 		{};
 
-		inline SEntity& operator =(const SEntity& other){ Definition = other.Definition; Modifier = other.Modifier; Level = other.Level; return *this; };
-		inline constexpr bool operator	==(const SEntity& other) const { return Definition == other.Definition && Modifier == other.Modifier && Level == other.Level;  };
+		inline SEntity&			operator	=	(const SEntity& other)			{ Definition = other.Definition; Modifier = other.Modifier; Level = other.Level; Owner = other.Owner; return *this; };
+		inline constexpr bool	operator	==	(const SEntity& other) const	{ return Definition == other.Definition && Modifier == other.Modifier && Level == other.Level && Owner == other.Owner;  };
 
 		void Print() const
 		{
 			printf("Index ......: %i.\n",	Definition	);
 			printf("Modifier ---: %i.\n",	Modifier	);
 			printf("Level ......: %i.\n",	Level		);
+			printf("Owner ------: %i.\n",	Owner		);
 		}
 	};
 

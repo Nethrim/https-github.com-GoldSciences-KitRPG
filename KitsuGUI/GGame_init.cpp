@@ -22,6 +22,7 @@ god::CGGame::CGGame( void )
 {
 	GPROFILE_METHOD( "CGGame", "CGGame" );		 
 	// -- Put your custom initialization code after this line
+	//_CrtSetBreakAlloc( 7539 );
 
 }
 

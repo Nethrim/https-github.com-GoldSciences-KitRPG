@@ -23,6 +23,7 @@ static const CRecordFacility definitionsFacility[] =
 {	{{{00,0,00},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,10	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Dog House"			}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,100	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Training Room"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Cult Center"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Docks"				}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,200	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Foundry"			}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Warfare Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,300	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hospital"			}
@@ -36,6 +37,13 @@ static const CRecordFacility definitionsFacility[] =
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,900	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Launch Base"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Quantum Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Genetic Labs"		}
+,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Space Academy"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Planetgate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Stargate"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Galaxygate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Univergate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Darkgate"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Nothingate"		}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Shack"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Barn"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Wall"				}

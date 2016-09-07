@@ -23,8 +23,8 @@ void klib::setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, in
 	currentEnemy.CurrentEquip.Accessory		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsAccessory	)-2) ? twoEnemyType : (int16_t)size(	definitionsAccessory	)-2));	
 	currentEnemy.CurrentEquip.Vehicle		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsVehicle		)-2) ? twoEnemyType : (int16_t)size(	definitionsVehicle		)-2));
 	currentEnemy.CurrentEquip.Facility		.Definition	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	definitionsFacility	)-2) ? twoEnemyType : (int16_t)size(	definitionsFacility	)-2));
-	currentEnemy.CurrentEquip.Profession	.Definition	= (int16_t)(1+(rand()%(size(definitionsProfession)-1)));							
-	currentEnemy.CurrentEquip.StageProp		.Definition	= (int16_t)(1+(rand()%(size(definitionsStageProp)-1)));							
+	currentEnemy.CurrentEquip.Profession	.Definition	= (int16_t)(1+(rand()%(size(definitionsProfession	)-1)));							
+	currentEnemy.CurrentEquip.StageProp		.Definition	= (int16_t)(1+(rand()%(size(definitionsStageProp	)-1)));							
 	//											  
 	currentEnemy.CurrentEquip.Weapon		.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersWeapon			)-2) ? twoEnemyType : (int16_t)size(	modifiersWeapon			)-2));	
 	currentEnemy.CurrentEquip.Armor			.Modifier	= 1+rand()%(1+((twoEnemyType < (int16_t)size(	modifiersArmor			)-2) ? twoEnemyType : (int16_t)size(	modifiersArmor			)-2));	

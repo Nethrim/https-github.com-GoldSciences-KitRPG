@@ -15,7 +15,6 @@
 
 using namespace klib;
 
-
 SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 {
 #define MAX_BUY_ITEMS 1024
@@ -98,15 +97,15 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 
 SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 {
-	std::string textToPrint = "You can leave your hat on.";
+	SPlayer& player = instanceGame.Player;
+	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1) {
+		std::string textToPrint = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ instanceGame.Player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
+		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds*3);
+		memcpy(&instanceGame.PostEffectDisplay.Screen.Cells[instanceGame.PostEffectDisplay.Depth/2][instanceGame.PostEffectDisplay.Width/2-(strlen(instanceGame.SlowMessage)+1)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
+		if ( !bDonePrinting ) 
+			return returnState;
+	}
 
-	bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds*3);
-	memcpy(&instanceGame.PostEffectDisplay.Screen.Cells[instanceGame.PostEffectDisplay.Depth/2][instanceGame.PostEffectDisplay.Width/2-(strlen(instanceGame.SlowMessage)+1)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
-	if ( !bDonePrinting ) 
-		return returnState;
-
-
-	drawBubblesBackground(instanceGame.PostEffectDisplay, instanceGame.FrameTimer.LastTimeSeconds);
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
 		static const SMenu<SGameState, size(optionsEquip)> menuEquip(optionsEquip, {GAME_STATE_MENU_SQUAD_SETUP}, "Agent Setup", 26);
@@ -114,8 +113,8 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 	}
 	else 
 	{
-		if(instanceGame.Player.Selection.PlayerUnit > (int16_t)klib::size(instanceGame.Player.Squad.Agents))
-			instanceGame.Player.Selection.PlayerUnit = -1;
+		if( player.Selection.PlayerUnit > (int16_t)klib::size(player.Squad.Agents))
+			player.Selection.PlayerUnit = -1;
 
 		return drawEquipMenu(instanceGame, returnState);
 	}
