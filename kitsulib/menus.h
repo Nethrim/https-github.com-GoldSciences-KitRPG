@@ -50,7 +50,7 @@ namespace klib
 		int32_t lineOffset = (int32_t)(targetHeight-MENU_ROFFSET-3-std::min((int32_t)optionCount, 9));
 		std::string clearString(rowWidth<<1, ' ');
 		for(int32_t i=-1, count = (int32_t)targetHeight-lineOffset; i<count; ++i)
-			klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset+i, 0, klib::CENTER, "%s", clearString.c_str()); // clear all lines where we're going to draw
+			klib::printfToRect(targetASCII, targetWidth, targetHeight, lineOffset+i, 0, klib::CENTER, "%s", clearString.c_str()); // clear all lines where we're going to draw
 
 		
 		const bool multipage = optionCount > 9;
@@ -85,7 +85,7 @@ namespace klib
 		const size_t itemOffset = localPersistentState.CurrentPage*9;
 		for(size_t i=0, count = (localPersistentState.MenuItemAccum < actualOptionCount) ? localPersistentState.MenuItemAccum : actualOptionCount; i<count; i++) {
 			sprintf_s(numberKey, "%u", (uint32_t)(i+1));
-			actualOffsetX = klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());
+			actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, lineOffset, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());
 			for(uint32_t i=0; i<rowWidth+1; i++)
 				targetAttributes[lineOffset*targetWidth+actualOffsetX+i] = COLOR_YELLOW;
 			lineOffset++;
@@ -94,7 +94,7 @@ namespace klib
 		// Print Exit option at the end.
 		if(localPersistentState.MenuItemAccum > actualOptionCount) {
 			sprintf_s(numberKey, "%s", "0");
-			actualOffsetX = klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, numberKey, exitText.c_str());	
+			actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, numberKey, exitText.c_str());	
 			for(uint32_t i=0; i<rowWidth+1; i++)
 				targetAttributes[(targetHeight-MENU_ROFFSET)*targetWidth+actualOffsetX+i] = COLOR_GREEN;
 		}

@@ -60,9 +60,6 @@
     <ClInclude Include="Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="align.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="credits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,11 +117,14 @@
     <ClInclude Include="text.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="noise.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Agent_helper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

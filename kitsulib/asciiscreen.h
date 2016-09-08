@@ -31,7 +31,7 @@ namespace klib
 
 	template <typename... _Args>
 	void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-		lineToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args... );
+		printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args... );
 	}
 };
 

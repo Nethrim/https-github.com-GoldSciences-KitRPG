@@ -166,7 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Accessory.h" />
-    <ClInclude Include="align.h" />
+    <ClInclude Include="Agent_helper.h" />
     <ClInclude Include="Armor.h" />
     <ClInclude Include="asciiscreen.h" />
     <ClInclude Include="CharacterPoints.h" />

@@ -33,19 +33,19 @@ SGameState drawEquip			(SGame& instanceGame, const SGameState& returnState);
 
 void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState) {
 	clearASCIIBackBuffer(' ');
-	clearGrid(instanceGame.TacticalDisplay.Screen);
-	clearGrid(instanceGame.GlobalDisplay.Screen);
-	clearGrid(instanceGame.PostEffectDisplay.Screen);
+	instanceGame.TacticalDisplay	.Clear();	//	clearGrid(instanceGame.TacticalDisplay.Screen);
+	instanceGame.GlobalDisplay		.Clear();	//	clearGrid(instanceGame.GlobalDisplay.Screen);
+	instanceGame.PostEffectDisplay	.Clear();	//	clearGrid(instanceGame.PostEffectDisplay.Screen);
 	clearGrid(instanceGame.MenuDisplay);
-	resetCursorString(instanceGame.SlowMessage);
+	//resetCursorString(instanceGame.SlowMessage);
 }
 
 void handleStateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState)
 {
 	clearASCIIBackBuffer(' ');
-	clearGrid(instanceGame.TacticalDisplay.Screen);
-	clearGrid(instanceGame.GlobalDisplay.Screen);
-	clearGrid(instanceGame.PostEffectDisplay.Screen);
+	instanceGame.TacticalDisplay	.Clear();	//clearGrid(instanceGame.TacticalDisplay.Screen		);
+	instanceGame.GlobalDisplay		.Clear();	//clearGrid(instanceGame.GlobalDisplay.Screen		);
+	instanceGame.PostEffectDisplay	.Clear();	//clearGrid(instanceGame.PostEffectDisplay.Screen	);
 	clearGrid(instanceGame.MenuDisplay);
 	resetCursorString(instanceGame.SlowMessage);
 
@@ -71,8 +71,13 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		else
 			instanceGame.StateMessage = "Welcome back commander";
 
-	case GAME_STATE_MENU_SQUAD_SETUP:	instanceGame.StateMessage = "Squad Setup";	break;
-	case GAME_STATE_CREDITS:			instanceGame.StateMessage = "Credits";		break;
+	case GAME_STATE_MENU_SQUAD_SETUP:	
+		instanceGame.StateMessage = "Squad Setup";	break;
+		//instanceGame.GlobalDisplay.Clear();
+	case GAME_STATE_CREDITS:			
+		instanceGame.StateMessage = "Credits";		
+		//instanceGame.GlobalDisplay.Clear();
+		break;
 	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";		break;
 	default:
 		break;

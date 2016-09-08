@@ -287,7 +287,7 @@ namespace klib
 
 		for(uint32_t i=0; i < klib::size(namesCredits) && curLine < bbHeight; ++i)
 			if((curLine+=2) >= 0)
-				lineToRect(display, width, depth, curLine, 0, CENTER, "%s", namesCredits[i].c_str());
+				printfToRect(display, width, depth, curLine, 0, CENTER, "%s", namesCredits[i].c_str());
 
 		maxDifference = std::max(curLine - curDifference, maxDifference);
 

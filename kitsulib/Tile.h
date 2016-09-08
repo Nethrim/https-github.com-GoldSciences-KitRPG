@@ -1,4 +1,4 @@
-#include "align.h"
+#include "misc.h"
 #include "text.h"
 #include "noise.h"
 
@@ -31,7 +31,9 @@ namespace klib
 	template<typename _T, size_t _Width, size_t _Depth>
 	struct SGrid
 	{
-		_T			Cells[_Depth][_Width] = {};
+		typedef _T	TCell;
+
+		TCell		Cells[_Depth][_Width] = {};
 
 		static const uint32_t	Width = (uint32_t)_Width;
 		static const uint32_t	Depth = (uint32_t)_Depth;
@@ -107,10 +109,19 @@ namespace klib
 		}
 	}
 
+	template<typename _TCell, size_t _Width, size_t _Height, typename... _Args>
+	int32_t valueToGrid( SGrid<_TCell, _Width, _Height>& grid, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const _TCell* values, int32_t valueCount, int32_t repeat=0 ) {
+		return valueToRect( &grid.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, values, valueCount, repeat );
+	}
+
+	template<size_t _Width, size_t _Height>
+	int32_t lineToGrid( SGrid<char, _Width, _Height>& display, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* text, uint32_t charCount = 0xFFFFFFFF ) {
+		return lineToRect(&display.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, text, charCount );
+	}
 
 	template<typename _CellType, size_t _Width, size_t _Height, typename... _Args>
-	int32_t lineToGrid( SGrid<_CellType, _Width, _Height>& display, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-		return lineToRect(&display.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, format, args... );
+	int32_t printfToGrid( SGrid<_CellType, _Width, _Height>& display, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
+		return printfToRect(&display.Cells[0][0], _Width, _Height, offsetLine, offsetColumn, align, format, args... );
 	}
 
 } // namespace

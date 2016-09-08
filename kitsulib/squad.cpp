@@ -1,73 +1,10 @@
+#define NOMINMAX
+
+#include "Agent_helper.h"
 #include "draw.h"
 
-#include "Profession.h"
-#include "Weapon.h"
-#include "Armor.h"
-#include "Accessory.h"
-#include "Facility.h"
-#include "Vehicle.h"
-#include "StageProp.h"
 
 using namespace klib;
-
-template <size_t _Width, size_t _Depth>
-void displayEmptySlot(SWeightedDisplay<_Width, _Depth>& display, int32_t offsetY, int32_t offsetX, int32_t agentIndex) {
-	lineToGrid(display.Screen, offsetY, offsetX, LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
-	for(uint32_t i=0; i<30; i++)
-		display.TextAttributes.Cells[offsetY][offsetX+i] = COLOR_DARKCYAN;
-}
-
-template <size_t _Width, size_t _Depth>
-void displayAgentSlot(SWeightedDisplay<_Width, _Depth>& display_, int32_t offsetY, int32_t offsetX, int32_t agentIndex, CCharacter& character, bool bAddFieldNames=false)
-{
-	SGrid<char, _Width, _Depth>& display = display_.Screen;
-
-	std::string nameAndLevelText;
-	SEntityPoints agentPoints = calculateFinalPoints( character );
-	if( bAddFieldNames ) {
-		nameAndLevelText = character.Name												;	lineToGrid(display, offsetY	, offsetX, LEFT, "-- Agent #%u: %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		for(uint32_t i=0; i<45; i++)
-			display_.TextAttributes.Cells[offsetY][offsetX+i] = COLOR_GREEN; // FOREGROUND_BLUE | FOREGROUND_GREEN;
-		offsetY += 2;
-		nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		nameAndLevelText = getWeaponName		(character.CurrentEquip.Weapon			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Weapon"				, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
-		nameAndLevelText = getArmorName			(character.CurrentEquip.Armor			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Armor"				, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
-		nameAndLevelText = getAccessoryName		(character.CurrentEquip.Accessory		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Accessory"			, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
-		nameAndLevelText = getVehicleName		(character.CurrentEquip.Vehicle			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Vehicle"				, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
-		nameAndLevelText = getFacilityName		(character.CurrentEquip.Facility		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Facility"			, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
-		nameAndLevelText = getStagePropName		(character.CurrentEquip.StageProp		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Stage prop"			, nameAndLevelText.c_str(), character.CurrentEquip.StageProp	.Level);
-		lineToGrid(display, ++offsetY, offsetX, LEFT, "- Final Points:");
-		offsetY+=2;
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Health				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Health"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Shield				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Shield"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Mana				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Mana"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Hit					);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Hit Chance"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Damage				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Damage"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.DirectDamage.Health	);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "DD. Health"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.DirectDamage.Shield	);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "DD. Shield"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.DirectDamage.Mana	);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "DD. Mana"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Absorption			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Absorption"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Speed.Attack		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Atk. Speed"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Speed.Movement		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Mov. Speed"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Speed.Reflexes		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Reflexes"	, nameAndLevelText.c_str());
-	}
-	else {
-		nameAndLevelText = character.Name												;	lineToGrid(display, offsetY++	, offsetX, LEFT, "-- %-21.21s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-		nameAndLevelText = getWeaponName		(character.CurrentEquip.Weapon			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);
-		nameAndLevelText = getArmorName			(character.CurrentEquip.Armor			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Armor		.Level);
-		nameAndLevelText = getAccessoryName		(character.CurrentEquip.Accessory		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Accessory	.Level);
-		nameAndLevelText = getVehicleName		(character.CurrentEquip.Vehicle			);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Vehicle		.Level);
-		//nameAndLevelText = getFacilityName	(character.CurrentEquip.Facility		);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Facility		.Level);
-		offsetY+=1;
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Health				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Health"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Shield				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Shield"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.LifeMax.Mana				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Mana"		, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Hit					);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Hit Chance"	, nameAndLevelText.c_str());
-		nameAndLevelText = std::to_string		(agentPoints.Attack.Damage				);	lineToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-10.10s"	, "Damage"		, nameAndLevelText.c_str());
-	}
-
-}
 
 #define MAX_AGENT_ROWS		2
 #define MAX_AGENT_COLUMNS	3
@@ -75,8 +12,10 @@ void displayAgentSlot(SWeightedDisplay<_Width, _Depth>& display_, int32_t offset
 void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 {
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
-	static const int32_t slotWidth	= display.Width / MAX_AGENT_COLUMNS;
-	static const int32_t slotRowSpace	= 27;// display.Depth / (MAX_AGENT_ROWS);
+	static const int32_t slotWidth		= display.Width / MAX_AGENT_COLUMNS;
+	static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
+
+	static const int32_t offsetYBase = TACTICAL_DISPLAY_YPOS-2;
 
 	SPlayer& player = instanceGame.Player;
 

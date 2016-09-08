@@ -7,14 +7,17 @@
 
 namespace klib
 {
+	template<size_t _Width, size_t _Depth>	struct SGridConsoleAttribute	: public SGrid<uint16_t	, _Width, _Depth>	{};
+	template<size_t _Width, size_t _Depth>	struct SGridConsoleText			: public SGrid<char		, _Width, _Depth>	{};
+	
 
 	template<size_t _Width, size_t _Depth>
 	struct SWeightedDisplay {
-		SGrid<char		, _Width, _Depth>	Screen			= {};
-		SGrid<uint16_t	, _Width, _Depth>	TextAttributes	= {};
-		SGrid<float		, _Width, _Depth>	DisplayWeights	= {};
-		SGrid<float		, _Width, _Depth>	Speed			= {};
-		SGrid<float		, _Width, _Depth>	SpeedTarget		= {};
+		SGridConsoleText		<_Width, _Depth>	Screen			= {};
+		SGridConsoleAttribute	<_Width, _Depth>	TextAttributes	= {};
+		SGrid<float		, _Width, _Depth>			DisplayWeights	= {};
+		SGrid<float		, _Width, _Depth>			Speed			= {};
+		SGrid<float		, _Width, _Depth>			SpeedTarget		= {};
 
 		static const uint32_t		Width			= (uint32_t)_Width;
 		static const uint32_t		Depth			= (uint32_t)_Depth;

@@ -116,18 +116,10 @@ void klib::clearASCIIBackBuffer( int value, uint16_t colorValue )
 	}
 
 	if( _backBuffer)
-	{
 		memset(_backBuffer, value, sizeof( char )*_backBufferWidth*_backBufferHeight+1);
 
-		static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
-		CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};
-		GetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-		csbiInfo.dwCursorPosition.Y = _backBufferHeight/2;//csbiInfo.dwSize.Y-1;
-		SetConsoleScreenBufferInfoEx( hConsoleOut, &csbiInfo );
-	}
-	if(_colorBackBuffer) {
+	if(_colorBackBuffer)
 		memset(_colorBackBuffer, colorValue, sizeof( uint16_t )*_backBufferWidth*_backBufferHeight+1);
-	}
 
 };
 

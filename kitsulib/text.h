@@ -1,4 +1,4 @@
-#include "align.h"
+#include "misc.h"
 
 #include <string>
 
@@ -7,31 +7,22 @@
 
 namespace klib
 {
-	template<typename _TCell, typename... _Args>
-	int32_t lineToRect( _TCell* rectangle, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
+	template<typename... _Args>
+	int32_t lineToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* text, int32_t charCount = -1 )
+	{
+		int32_t textLen = (int32_t)strlen(text);
+		if( textLen > charCount && charCount >= 0 )
+			textLen = charCount;
+
+		return valueToRect(rectangleTopLeft, width, height, offsetLine, offsetColumn, align, text, textLen);
+	}
+
+	template<typename... _Args>
+	int32_t printfToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
 	{
 		char precookStr[1024] = {};
 		int32_t precookLen = sprintf_s(precookStr, format, args...);
-		//if( 0 == precookLen )
-		//	return 0;
-
-		if(align == CENTER) {
-			int32_t offsetX = (int32_t)(width>>1)-(precookLen>>1)+offsetColumn;
-			return lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
-		}
-		else if(align == RIGHT) {
-			int32_t offsetX =(int32_t)(width)-(precookLen)-offsetColumn;
-			return lineToRect(rectangle, width, height, offsetLine, offsetX, LEFT, precookStr);
-		}
-		else if(offsetLine < (int32_t)height) 
-		{
-			int32_t cursorOffset	= (int32_t)(offsetLine*width+offsetColumn);
-			int32_t remainingRows	= (int32_t)width-offsetColumn;
-			int32_t maxPrintSize	= (precookLen < remainingRows) ? precookLen : remainingRows;
-			memcpy(&rectangle[cursorOffset], precookStr, maxPrintSize*sizeof(_TCell));
-		}
-
-		return offsetColumn;
+		return valueToRect(rectangleTopLeft, width, height, offsetLine, offsetColumn, align, precookStr, precookLen);
 	}
 
 	// returns true if done printing all the text.
