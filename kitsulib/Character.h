@@ -42,25 +42,16 @@ namespace klib
 	class CFacility;
 	class CStageProp;
 
-	typedef SEntityContainer<SWeapon*		, MAX_INVENTORY_SLOTS>	SCharacterWeapon		;
-	typedef SEntityContainer<SAccessory*	, MAX_INVENTORY_SLOTS>	SCharacterAccessory	;
-	typedef SEntityContainer<SArmor*		, MAX_INVENTORY_SLOTS>	SCharacterArmor		;
-	typedef SEntityContainer<SProfession*	, MAX_INVENTORY_SLOTS>	SCharacterProfession	;
-	typedef SEntityContainer<SVehicle*		, MAX_INVENTORY_SLOTS>	SCharacterVehicle		;
-	typedef SEntityContainer<SStageProp*	, MAX_INVENTORY_SLOTS>	SCharacterStageProp	;
-	typedef SEntityContainer<SFacility*		, MAX_INVENTORY_SLOTS>	SCharacterFacility	;
-	typedef SInventoryItems											SCharacterItems			;
-
 	struct SCharacterInventory
 	{
-		SInventoryProfession	Profession	= {};
-		SInventoryAccessory		Accessory	= {};
-		SInventoryArmor			Armor		= {};
-		SInventoryWeapon		Weapon		= {};
-		SInventoryVehicle		Vehicle		= {};
-		SInventoryFacility		Facility	= {};
-		SInventoryStageProp		StageProp	= {};
-		SInventoryItems			Items		= {};
+		SInventoryProfession	Profession		= {};
+		SInventoryAccessory		Accessory		= {};
+		SInventoryArmor			Armor			= {};
+		SInventoryWeapon		Weapon			= {};
+		SInventoryVehicle		Vehicle			= {};
+		SInventoryFacility		Facility		= {};
+		SInventoryStageProp		StageProp		= {};
+		SInventoryItems			Items			= {};
 	};
 
 	struct SCharacterTurnBonus

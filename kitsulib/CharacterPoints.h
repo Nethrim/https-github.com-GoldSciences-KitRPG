@@ -60,7 +60,7 @@ namespace klib
 			if( 0 < TurnsLeftPoints.Attack.Absorption			)	{	if( 0 == --TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} else if( 0 > TurnsLeftPoints.Attack.Absorption				)	{	if( 0 == ++TurnsLeftPoints.Attack.Absorption			)	Points.Attack.Absorption			= 0;	} 
 
 			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Health	)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Health	)	Points.Attack.DirectDamage.Health	= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Health		)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Health	)	Points.Attack.DirectDamage.Health	= 0;	} 
-			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Mana		)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Mana			)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} 
+			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Mana	)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Mana			)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Mana		)	Points.Attack.DirectDamage.Mana		= 0;	} 
 			if( 0 < TurnsLeftPoints.Attack.DirectDamage.Shield	)	{	if( 0 == --TurnsLeftPoints.Attack.DirectDamage.Shield	)	Points.Attack.DirectDamage.Shield	= 0;	} else if( 0 > TurnsLeftPoints.Attack.DirectDamage.Shield		)	{	if( 0 == ++TurnsLeftPoints.Attack.DirectDamage.Shield	)	Points.Attack.DirectDamage.Shield	= 0;	} 
 			if( 0 < TurnsLeftPoints.Coins						)	{	if( 0 == --TurnsLeftPoints.Coins						)	Points.Coins						= 0;	} else if( 0 > TurnsLeftPoints.Coins							)	{	if( 0 == ++TurnsLeftPoints.Coins						)	Points.Coins						= 0;	} 
 //

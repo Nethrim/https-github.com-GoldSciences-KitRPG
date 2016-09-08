@@ -8,12 +8,11 @@ namespace klib
 	enum ALIGN : uint8_t
 	{	LEFT	= 0x1
 	,	RIGHT	= 0x2
-	,	CENTER	= 0x3
+	,	CENTER	= LEFT | RIGHT
 	,	TOP		= 0x4
 	,	BOTTOM	= 0x8
 	,	VCENTER	= TOP | BOTTOM
 	};
 }
-
 
 #endif // __ALIGN_H__2983746239806492873462093746209364982374623__
