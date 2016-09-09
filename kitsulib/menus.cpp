@@ -66,7 +66,7 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		if(newState.Substate == GAME_SUBSTATE_RESET) {
 			instanceGame.StateMessage = "Welcome commander";
 			resetGame(instanceGame);
-			clearGrid(instanceGame.PostEffectDisplay.Screen);
+			handleSubstateChange(instanceGame, newState, prevState);
 		}
 		else
 			instanceGame.StateMessage = "Welcome back commander";

@@ -140,8 +140,9 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	case GAME_SUBSTATE_ITEM			:	break;
 	case GAME_SUBSTATE_CHARACTER	:	
 		player.Squad.Agents[player.Selection.PlayerUnit] = selectedChoice; 
-		retVal = { GAME_STATE_MENU_EQUIPMENT }; 
+		klib::resetCursorString(instanceGame.SlowMessage);
 		instanceGame.UserMessage = "You assigned " + player.Army[selectedChoice].Name + " as Agent #" + std::to_string(player.Selection.PlayerUnit+1) + "";
+		retVal = { GAME_STATE_MENU_EQUIPMENT }; 
 		break;
 	default:
 		break;
