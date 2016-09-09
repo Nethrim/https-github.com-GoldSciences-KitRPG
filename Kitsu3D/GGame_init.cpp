@@ -129,7 +129,7 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 	GPtrPOD(STiledTerrain) dataTerrain;
 	dataTerrain->Width		= MazeGeometryData.row_size();
 	dataTerrain->Depth		= MazeGeometryData.column_size();
-	dataTerrain->TileScale	= 1.0f/2;
+	dataTerrain->TileScale	= .5f;
 	dataTerrain->Offset		= GVECTOR3_ZERO;
 
 	gelabel lstTextureNames;

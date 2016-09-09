@@ -38,7 +38,7 @@ void klib::resetGame(SGame& instanceGame)
 	uint32_t screenWidth  =	klib::getASCIIBackBufferWidth(),
 			 screenHeight =	klib::getASCIIBackBufferHeight();
 
-	klib::lineToScreen(screenHeight/2-1, 0, klib::CENTER, "Enter your name:");
+	klib::lineToScreen((screenHeight>>1)-1, 0, klib::CENTER, "Enter your name:");
 
 	klib::presentASCIIBackBuffer();
 

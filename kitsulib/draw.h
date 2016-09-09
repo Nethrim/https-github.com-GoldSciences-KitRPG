@@ -156,7 +156,7 @@ namespace klib
 
 							display.DisplayWeights	.Cells[zpos][xpos]	= 0.00001f;
 							display.Speed			.Cells[zpos][xpos]	= display.Speed.Cells[z][x];
-							display.SpeedTarget		.Cells[zpos][xpos]	= (float)((rand()%1000))*0.05f;
+							display.SpeedTarget		.Cells[zpos][xpos]	= (float)noiseNormal(x, seed)*50.0f;
 							if(bDontSlowdown)
 								display.SpeedTarget	.Cells[zpos][xpos]	*= ((bReverse ? display.Depth-z : z )*2/(float)display.Depth);
 							display.SpeedTarget		.Cells[zpos][xpos]	+= 0.001f;
@@ -246,7 +246,7 @@ namespace klib
 									display.Screen.Cells[z-1][xpos] = 'O';
 							else if( 'O' == display.Screen.Cells[z][x] && z < (display.Depth/3*2))
 									display.Screen.Cells[z-1][xpos] = (noise1D(randBase+x, seed+12345) > 0.0) ? 'o' : '\'';
-							else if( 'o' == display.Screen.Cells[z][x] && z < (display.Depth/2))
+							else if( 'o' == display.Screen.Cells[z][x] && z < (display.Depth>>1))
 									display.Screen.Cells[z-1][xpos] = '.';
 							else
 									display.Screen.Cells			[z-1][xpos]	= display.Screen.Cells[z][x];
@@ -254,7 +254,7 @@ namespace klib
 							display.TextAttributes	.Cells[z-1][xpos]	= (noise1D(randBase+x+x, seed+41203) > 0.0) ? COLOR_DARKGREEN : COLOR_GREEN;
 							display.DisplayWeights	.Cells[z-1][xpos]	= 0.00001f;
 							display.Speed			.Cells[z-1][xpos]	= display.Speed.Cells[z][x];
-							display.SpeedTarget		.Cells[z-1][xpos]	= (float)((rand()%100))*(z*1.0f/display.Depth)*.2f+0.001f;
+							display.SpeedTarget		.Cells[z-1][xpos]	= (float)noiseNormal(x, seed) * 20.0f * (z*1.0f/display.Depth)+0.001f;
 						}
 					}
 
@@ -311,15 +311,6 @@ namespace klib
 
 	void drawAndPresentGame( SGame& instanceGame );
 
-	//// returns true if done printing all the text.
-	//template <size_t _Size>
-	//bool drawMessageSlow(char (&message)[_Size], const std::string& textToPrint, double lastFrameSeconds)
-	//{
-	//	bool bDonePrinting = getMessageSlow(message, textToPrint, lastFrameSeconds);
-	//
-	//	klib::lineToScreen(klib::getASCIIBackBufferHeight()/2-1, klib::getASCIIBackBufferWidth()/2-(int32_t)textToPrint.size()/2, klib::LEFT, message);
-	//	return bDonePrinting;
-	//};
 } // namespace
 
 #define TACTICAL_DISPLAY_YPOS 5

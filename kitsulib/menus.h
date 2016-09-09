@@ -144,7 +144,7 @@ namespace klib
 
 		if(bResetMenuStuff)
 		{
-			localPersistentState.MenuItemAccum = actualOptionCount/2;
+			localPersistentState.MenuItemAccum = actualOptionCount>>1;
 			drawMenu_globals.Accumulator.Value = 0;
 			resetCursorString(localPersistentState.SlowMessage);
 		}

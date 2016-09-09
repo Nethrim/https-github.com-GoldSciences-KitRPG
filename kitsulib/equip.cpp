@@ -163,7 +163,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1) {
 		std::string textToPrint = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds*3);
-		memcpy(&instanceGame.GlobalDisplay.Screen.Cells[TACTICAL_DISPLAY_YPOS][instanceGame.GlobalDisplay.Width/2-(strlen(instanceGame.SlowMessage)+1)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
+		memcpy(&instanceGame.GlobalDisplay.Screen.Cells[TACTICAL_DISPLAY_YPOS][(instanceGame.GlobalDisplay.Width>>1)-((strlen(instanceGame.SlowMessage)+1)>>1)], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
 		if ( !bDonePrinting ) 
 			return returnState;
 	}
