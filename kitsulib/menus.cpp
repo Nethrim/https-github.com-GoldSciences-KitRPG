@@ -76,8 +76,25 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";		break;
 	default:
 		break;
-
 	}
+
+	instanceGame.UserError = instanceGame.UserMessage = "";
+}
+
+void updateState(SGame& instanceGame, const SGameState& newState) 
+{
+	instanceGame.PreviousState = instanceGame.State;
+
+	//
+	if(newState.State != instanceGame.State.State) {
+		instanceGame.State			= newState;
+		handleStateChange(instanceGame, instanceGame.State, instanceGame.PreviousState);
+	}
+	else if(newState.Substate != instanceGame.State.Substate) {
+		instanceGame.State.Substate	= newState.Substate;
+		handleSubstateChange(instanceGame, instanceGame.State, instanceGame.PreviousState);
+	}
+
 }
 
 void klib::showMenu(SGame& instanceGame) {
@@ -124,19 +141,9 @@ void klib::showMenu(SGame& instanceGame) {
 		break;
 
 	default:
-		newAction.State = (GAME_STATE_EX)-1;
+		newAction.State = (GAME_STATE)-1;
 		klib::lineToScreen(klib::getASCIIBackBufferHeight()-2, 1, klib::RIGHT, "%s.", "Unrecognized game state!!");
 	}			
 
-	instanceGame.PreviousState = instanceGame.State;
-
-	//
-	if(newAction.State != instanceGame.State.State) {
-		instanceGame.State			= newAction;
-		handleStateChange(instanceGame, instanceGame.State, instanceGame.PreviousState);
-	}
-	else if(newAction.Substate != instanceGame.State.Substate) {
-		instanceGame.State.Substate	= newAction.Substate;
-		handleSubstateChange(instanceGame, instanceGame.State, instanceGame.PreviousState);
-	}
+	updateState(instanceGame, newAction);
 };

@@ -70,27 +70,52 @@ void generateResearchableListFromAgent(klib::SResearchGroup<_EntityType>& resear
 	generateResearchableList(researchableItems, agentInventory, researchCompleted, bIsParallelDefinition, bIsParallelModifier, maxResearch);
 }
 
+struct SResearchable 
+{
+	int32_t		ResearchIndex;
+	bool		IsModifier;
+	std::string	Name;
+};
+
+template <typename _EntityType>
+void completeResearch(const SResearchable& selectedChoice, _EntityType& maxResearch, SResearchGroup<_EntityType>& researchableItems, SResearchGroup<_EntityType>& researchCompleted, std::string& successMessage)
+{
+	if(selectedChoice.IsModifier)	
+	{
+		researchCompleted.Modifiers.AddElement(researchableItems.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); 
+		maxResearch.Modifier	= std::max(maxResearch.Modifier,	researchableItems.Modifiers.Slots[selectedChoice.ResearchIndex].Entity);
+	}
+	else 
+	{
+		researchCompleted.Definitions.AddElement(researchableItems.Definitions.Slots[selectedChoice.ResearchIndex].Entity); 
+		maxResearch.Definition	= std::max(maxResearch.Definition,	researchableItems.Definitions.Slots[selectedChoice.ResearchIndex].Entity);
+	}
+	successMessage = "You have successfully researched " + selectedChoice.Name + ".";
+}
+
 SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 {
 	klib::SCharacterResearch& researchCompleted = instanceGame.Player.CompletedResearch;
 	klib::SCharacterResearch  researchableItems;
+	SPlayer& player = instanceGame.Player;
+
 
 #define GET_AVAILABLE_RESEARCH_FOR_ENTITY(EntityToken_, ProgressiveDefinitions_, ProgressiveModifiers_)																\
-		generateResearchableList(researchableItems.EntityToken_, instanceGame.Player.Inventory.EntityToken_, researchCompleted.EntityToken_							\
-			, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.Player.MaxResearch.EntityToken_);														\
+		generateResearchableList(researchableItems.EntityToken_, player.Inventory.EntityToken_, researchCompleted.EntityToken_										\
+			, ProgressiveDefinitions_, ProgressiveModifiers_, player.MaxResearch.EntityToken_);																		\
 		for(iAgent=0; iAgent<armySize; ++iAgent) 																													\
 			generateResearchableListFromAgent( researchableItems.EntityToken_ 																						\
-				, instanceGame.Player.Army[iAgent].CurrentEquip.EntityToken_ 																						\
-				, instanceGame.Player.Army[iAgent].Inventory.EntityToken_ 																							\
+				, player.Army[iAgent].CurrentEquip.EntityToken_ 																									\
+				, player.Army[iAgent].Inventory.EntityToken_ 																										\
 				, researchCompleted.EntityToken_																													\
-				, ProgressiveDefinitions_, ProgressiveModifiers_, instanceGame.Player.MaxResearch.EntityToken_														\
+				, ProgressiveDefinitions_, ProgressiveModifiers_, player.MaxResearch.EntityToken_																	\
 			);																																						\
 																																									\
 		researchableDefinitions	+= researchableItems.EntityToken_.Definitions.Count;																				\
 		researchableModifiers	+= researchableItems.EntityToken_.Modifiers.Count;
 
 	int32_t iAgent;
-	const int32_t armySize	= (int32_t)instanceGame.Player.Army.size();
+	const int32_t armySize	= (int32_t)player.Army.size();
 	uint32_t researchableDefinitions=0, researchableModifiers=0;
 	switch(instanceGame.State.Substate)
 	{
@@ -105,33 +130,31 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		break;
 	}
 
-	struct SResearchable {
-		int32_t ResearchIndex;
-		bool	IsModifier;
-	};
 #define MAX_RESEARCH_ITEMS	64
 	static klib::SMenuItem<SResearchable> menuItems[MAX_RESEARCH_ITEMS] = {};
 
 	uint32_t researchableCount=0;
-	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS, (int32_t)researchableDefinitions); i<count; ++i) {
+	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS, (int32_t)researchableDefinitions); i<count; ++i) 
+	{
 		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
 		menuItems[researchableCount].ReturnValue.IsModifier		= false;
 		switch(instanceGame.State.Substate)
 		{
-		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].Text	= definitionsAccessory		[researchableItems.Accessory	.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_STAGEPROP	:	menuItems[researchableCount].Text	= definitionsStageProp		[researchableItems.StageProp	.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_FACILITY		:	menuItems[researchableCount].Text	= definitionsFacility		[researchableItems.Facility		.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_VEHICLE		:	menuItems[researchableCount].Text	= definitionsVehicle		[researchableItems.Vehicle		.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_PROFESSION	:	menuItems[researchableCount].Text	= definitionsProfession		[researchableItems.Profession	.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_WEAPON		:	menuItems[researchableCount].Text	= definitionsWeapon			[researchableItems.Weapon		.Definitions.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_ARMOR		:	menuItems[researchableCount].Text	= definitionsArmor			[researchableItems.Armor		.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsAccessory		[researchableItems.Accessory	.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_STAGEPROP	:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsStageProp		[researchableItems.StageProp	.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_FACILITY		:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsFacility		[researchableItems.Facility		.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_VEHICLE		:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsVehicle		[researchableItems.Vehicle		.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_PROFESSION	:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsProfession		[researchableItems.Profession	.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_WEAPON		:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsWeapon			[researchableItems.Weapon		.Definitions.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_ARMOR		:	menuItems[researchableCount].ReturnValue.Name = menuItems[researchableCount].Text	= definitionsArmor			[researchableItems.Armor		.Definitions.Slots[i].Entity	].Name; break;
 		default:
 			break;
 		}
 		researchableCount++;
 	}
 	
-	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS-researchableCount, researchableModifiers); i<count; ++i) {
+	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS-researchableCount, researchableModifiers); i<count; ++i) 
+	{
 		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
 		menuItems[researchableCount].ReturnValue.IsModifier		= true;
 		switch(instanceGame.State.Substate)
@@ -157,6 +180,7 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		else if(instanceGame.State.Substate == GAME_SUBSTATE_ARMOR			) sprintf_s(composite, menuItems[researchableCount].Text.c_str(), "Technology"			);
 
 		menuItems[researchableCount].Text = composite;
+		menuItems[researchableCount].ReturnValue.Name = composite;
 
 		researchableCount++;
 	}
@@ -171,13 +195,13 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 
 	switch(instanceGame.State.Substate)
 	{
-	case GAME_SUBSTATE_ACCESSORY	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Accessory	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Accessory	.Modifier = researchableItems.	Accessory	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Accessory	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Accessory	.Definition = researchableItems.	Accessory	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_STAGEPROP	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	StageProp	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	StageProp	.Modifier = researchableItems.	StageProp	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	StageProp	.Definitions.AddElement(instanceGame.Player.MaxResearch.	StageProp	.Definition = researchableItems.	StageProp	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_FACILITY		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Facility	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Facility	.Modifier = researchableItems.	Facility	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Facility	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Facility	.Definition = researchableItems.	Facility	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_VEHICLE		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Vehicle		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Vehicle		.Modifier = researchableItems.	Vehicle		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Vehicle		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Vehicle		.Definition = researchableItems.	Vehicle		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_PROFESSION	: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Profession	.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Profession	.Modifier = researchableItems.	Profession	.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Profession	.Definitions.AddElement(instanceGame.Player.MaxResearch.	Profession	.Definition = researchableItems.	Profession	.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_WEAPON		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Weapon		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Weapon		.Modifier = researchableItems.	Weapon		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Weapon		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Weapon		.Definition = researchableItems.	Weapon		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
-	case GAME_SUBSTATE_ARMOR		: if(selectedChoice.IsModifier)	instanceGame.Player.CompletedResearch.	Armor		.Modifiers.AddElement(instanceGame.Player.MaxResearch.	Armor		.Modifier = researchableItems.	Armor		.Modifiers.Slots[selectedChoice.ResearchIndex].Entity); else instanceGame.Player.CompletedResearch.	Armor		.Definitions.AddElement(instanceGame.Player.MaxResearch.	Armor		.Definition = researchableItems.	Armor		.Definitions.Slots[selectedChoice.ResearchIndex].Entity);	break;	
+	case GAME_SUBSTATE_ACCESSORY	: completeResearch(selectedChoice, player.MaxResearch.	Accessory	, researchableItems.	Accessory	, researchCompleted.	Accessory	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_STAGEPROP	: completeResearch(selectedChoice, player.MaxResearch.	StageProp	, researchableItems.	StageProp	, researchCompleted.	StageProp	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_FACILITY		: completeResearch(selectedChoice, player.MaxResearch.	Facility	, researchableItems.	Facility	, researchCompleted.	Facility	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_VEHICLE		: completeResearch(selectedChoice, player.MaxResearch.	Vehicle		, researchableItems.	Vehicle		, researchCompleted.	Vehicle		, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_PROFESSION	: completeResearch(selectedChoice, player.MaxResearch.	Profession	, researchableItems.	Profession	, researchCompleted.	Profession	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_WEAPON		: completeResearch(selectedChoice, player.MaxResearch.	Weapon		, researchableItems.	Weapon		, researchCompleted.	Weapon		, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_ARMOR		: completeResearch(selectedChoice, player.MaxResearch.	Armor		, researchableItems.	Armor		, researchCompleted.	Armor		, instanceGame.UserMessage); break; 
 	default:
 		break;
 	}
@@ -188,7 +212,7 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 
 SGameState drawResearch(SGame& instanceGame, const SGameState& returnState)
 {
-	std::string textToPrint = "Research center.";
+	const std::string textToPrint = "Research center.";
 
 	bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds);
 	memcpy(&instanceGame.PostEffectDisplay.Screen.Cells[instanceGame.PostEffectDisplay.Depth/2][instanceGame.PostEffectDisplay.Width/2-(strlen(instanceGame.SlowMessage)+1)/2], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));

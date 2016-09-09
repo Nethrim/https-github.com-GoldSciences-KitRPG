@@ -89,7 +89,8 @@ namespace klib
 		const uint32_t posXOffset = 0;
 		uint32_t actualOptionCount = std::min(9U, (uint32_t)(optionCount-(localPersistentState.CurrentPage*9)));
 		const size_t itemOffset = localPersistentState.CurrentPage*9;
-		for(size_t i=0, count = (localPersistentState.MenuItemAccum < actualOptionCount) ? localPersistentState.MenuItemAccum : actualOptionCount; i<count; i++) {
+		for(size_t i=0, count = (localPersistentState.MenuItemAccum < actualOptionCount) ? localPersistentState.MenuItemAccum : actualOptionCount; i<count; i++) 
+		{
 			sprintf_s(numberKey, "%u", (uint32_t)(i+1));
 			actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, lineOffset, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());
 			for(uint32_t i=0; i<rowWidth+1; i++)
@@ -110,20 +111,24 @@ namespace klib
 		if( drawMenu_globals.Accumulator.Accumulate(drawMenu_globals.Timer.LastTimeSeconds) )
 		{
 			// Don't process keys until the menu has finished displaying
-			if(localPersistentState.MenuItemAccum <= actualOptionCount) {
+			if(localPersistentState.MenuItemAccum <= actualOptionCount) 
+			{
 				drawMenu_globals.Accumulator.Value = 0.575;
 				localPersistentState.MenuItemAccum++;
 			}
 			// Process page change keys first.
-			else if(localPersistentState.CurrentPage < (pageCount-1) && frameInput.Keys[VK_NEXT]) {
+			else if(localPersistentState.CurrentPage < (pageCount-1) && frameInput.Keys[VK_NEXT]) 
+			{
 				bResetMenuStuff = true;
 				localPersistentState.CurrentPage++;
 			}
-			else if(localPersistentState.CurrentPage > 0 && frameInput.Keys[VK_PRIOR]) {
+			else if(localPersistentState.CurrentPage > 0 && frameInput.Keys[VK_PRIOR]) 
+			{
 				bResetMenuStuff = true;
 				localPersistentState.CurrentPage--;
 			}
-			else if(frameInput.Keys['0'] || frameInput.Keys[VK_NUMPAD0] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose))  {
+			else if(frameInput.Keys['0'] || frameInput.Keys[VK_NUMPAD0] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) 
+			{
 				bResetMenuStuff = true;
 				resultVal = exitValue;
 			}
@@ -218,7 +223,7 @@ namespace klib
 	,	GAME_SUBSTATE_HOTKEY		= 13
 	};
 
-	enum GAME_STATE_EX : uint8_t
+	enum GAME_STATE : uint8_t
 	{	GAME_STATE_MENU_MAIN
 	,	GAME_STATE_MENU_CONTROL_CENTER
 	,	GAME_STATE_MENU_SQUAD_SETUP
@@ -240,8 +245,8 @@ namespace klib
 
 	struct SGameState
 	{
-		GAME_STATE_EX State;
-		GAME_SUBSTATE Substate;
+		GAME_STATE		State;
+		GAME_SUBSTATE	Substate;
 	};
 
 	// 1
@@ -323,6 +328,7 @@ namespace klib
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_CHARACTER	}, "Hire agents"					}
 	};
 
+	// ? This isn't used yet but the idea would be to allow different grades of potions and probably we could expand this menu from the option selected by the user. This way we could save some space as the list of items available for buying is huge already.
 	static const klib::SMenuItem<SGameState> optionsBuySize[] =
 	{	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ITEM		}, "Small"							}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ITEM		}, "Regular"						}
