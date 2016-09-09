@@ -86,17 +86,11 @@ namespace klib
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
 		SPlayer						Player, Enemy;
-
 		STacticalBoard				TacticalBoard		= {};
 
 		std::string					StateMessage		= "";
 		std::string					UserMessage			= "";
 		std::string					UserError			= "";
-
-		STacticalDisplay			TacticalDisplay		= {};
-		SPostEffectDisplay			PostEffectDisplay	= {};
-		SGlobalDisplay				GlobalDisplay		= {};
-		SMenuDisplay				MenuDisplay			= {};
 
 		SInput						FrameInput			= {};
 		STimer						FrameTimer			= {};
@@ -104,6 +98,19 @@ namespace klib
 		char						SlowMessage[256]	= {'_',};
 
 		int16_t						Seed				= 0;
+
+		STacticalDisplay			TacticalDisplay		= {};
+		SPostEffectDisplay			PostEffectDisplay	= {};
+		SGlobalDisplay				GlobalDisplay		= {};
+		SMenuDisplay				MenuDisplay			= {};
+
+		void ClearDisplays()
+		{
+			TacticalDisplay		.Clear();	
+			GlobalDisplay		.Clear();	
+			PostEffectDisplay	.Clear();	
+			clearGrid(MenuDisplay);
+		}
 	};
 
 	void initGame(SGame& instanceGame);

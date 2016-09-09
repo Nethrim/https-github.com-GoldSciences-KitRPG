@@ -56,7 +56,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_EQUIPMENT: 
 		break;
 	default:
-		drawDisplay(instanceGame.PostEffectDisplay.Screen, 5, instanceGame.GlobalDisplay.Screen.Width/2-instanceGame.PostEffectDisplay.Width/2);
+		drawDisplay(instanceGame.PostEffectDisplay.Screen, 5, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.PostEffectDisplay.Width>>1));
 	}
 
 	memcpy(getASCIIColorBackBuffer(), &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], instanceGame.GlobalDisplay.TextAttributes.Width*instanceGame.GlobalDisplay.TextAttributes.Depth*sizeof(uint16_t));
@@ -72,7 +72,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 		break;
 	default:
 		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
-			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+(bbWidth/2-instanceGame.PostEffectDisplay.TextAttributes.Width/2)], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.PostEffectDisplay.TextAttributes.Width>>1))], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
 	}
 
 	// Frame timer
@@ -99,8 +99,8 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {
 		lineToScreen(bbHeight-3, 1, CENTER, "%s", instanceGame.UserMessage.c_str());
 		lineToScreen(bbHeight-2, 1, CENTER, "%s", instanceGame.UserError.c_str());
-		offset = (bbHeight-3)*bbWidth+bbWidth/2-instanceGame.UserMessage	.size()/2;	for(size_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
-		offset = (bbHeight-2)*bbWidth+bbWidth/2-instanceGame.UserError		.size()/2;	for(size_t i=0, count = instanceGame.UserError	.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_RED;
+		offset = (bbHeight-3)*bbWidth+(bbWidth>>1)-(instanceGame.UserMessage	.size()>>1);	for(size_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
+		offset = (bbHeight-2)*bbWidth+(bbWidth>>1)-(instanceGame.UserError		.size()>>1);	for(size_t i=0, count = instanceGame.UserError	.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_RED;
 		// Draw cursor
 		lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
 		getASCIIColorBackBuffer()[instanceGame.FrameInput.MouseY*bbWidth+instanceGame.FrameInput.MouseX] = COLOR_MAGENTA;
@@ -120,7 +120,7 @@ void drawIntro( SGame& instanceGame )
 
 	static std::string words[] = {"Vulgar", "Display", "of", "Power"};
 	for( uint32_t i=0; i<klib::size(words); ++i) {
-		uint32_t offsetY = (uint32_t)((displayDepth/2)-(klib::size(words)/2)+i*2);
+		uint32_t offsetY = (uint32_t)((displayDepth>>1)-(klib::size(words)>>1)+i*2);
 		uint32_t offsetX = printfToGrid(instanceGame.PostEffectDisplay.Screen, offsetY, 0, CENTER, "%s", words[i].c_str());
 		for( size_t j=0, wordLen = words[i].size(); j<wordLen; j++ )
 			instanceGame.PostEffectDisplay.TextAttributes.Cells[offsetY][offsetX+j] = COLOR_ORANGE;

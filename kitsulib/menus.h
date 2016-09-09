@@ -14,8 +14,6 @@
 
 #pragma pack(push, 1)
 
-#define MENU_ROFFSET 8
-
 struct SDrawMenuGlobals
 {
 	klib::STimer				Timer;
@@ -31,13 +29,21 @@ struct SDrawMenuLocalStatics
 	size_t	CurrentPage			= 0;
 };
 
+#define MENU_ROFFSET 8
 
 namespace klib
 {
-	static void printMultipageHelp(char* targetASCII, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset=0) {
+	static void printMultipageHelp(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset) {
 		if(currentPage == 0)					klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page down: Next page.");	
 		else if(currentPage == (pageCount-1))	klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page.");	
 		else									klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page. Page down: Next page");	
+	}
+
+	template <size_t _FormatLen>
+	static void drawExitOption(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset, uint32_t rowWidth, const char (&formatString)[_FormatLen], const std::string& exitText ) {
+		int32_t actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, "0", exitText.c_str());	
+		for(uint32_t i=0; i<rowWidth+1; i++)
+			targetAttributes[(targetHeight-MENU_ROFFSET)*targetWidth+actualOffsetX+i] = COLOR_GREEN;
 	}
 
 	template <size_t _ArraySize, typename _ReturnType>
@@ -75,8 +81,8 @@ namespace klib
 
 		// Print menu options
 		uint32_t numberCharsAvailable = rowWidth-4;	// 4 is for "%2.2s: "
-		char numberKey[4] = {};
 		char formatString[24] = {};
+		char numberKey[4] = {};
 		sprintf_s(formatString, "%%2.2s: %%-%u.%us", numberCharsAvailable, numberCharsAvailable);
 
 		// Draw options
@@ -92,16 +98,12 @@ namespace klib
 		}
 
 		// Print Exit option at the end.
-		if(localPersistentState.MenuItemAccum > actualOptionCount) {
-			sprintf_s(numberKey, "%s", "0");
-			actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, numberKey, exitText.c_str());	
-			for(uint32_t i=0; i<rowWidth+1; i++)
-				targetAttributes[(targetHeight-MENU_ROFFSET)*targetWidth+actualOffsetX+i] = COLOR_GREEN;
-		}
+		if(localPersistentState.MenuItemAccum > actualOptionCount)
+			drawExitOption(targetASCII, targetAttributes, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, rowWidth, formatString, exitText);
 
 		// Print page control help if multipage.
 		if(multipage) 
-			printMultipageHelp(targetASCII, targetWidth, targetHeight, localPersistentState.CurrentPage, pageCount, posXOffset);
+			printMultipageHelp(targetASCII, targetAttributes, targetWidth, targetHeight, localPersistentState.CurrentPage, pageCount, posXOffset);
 		
 		_ReturnType resultVal = noActionValue;
 		bool bResetMenuStuff = false;
