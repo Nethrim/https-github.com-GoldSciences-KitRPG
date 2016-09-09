@@ -14,10 +14,10 @@ void klib::initTacticalMap(SGame& instanceGame)
 					terrainDepth = instanceGame.TacticalBoard.Terrain.Topology.Depth;
 
 	instanceGame.TacticalBoard.Clear();
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {1,0}, (int32_t)instanceGame.Seed, {0, 0});
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,1}, (int32_t)instanceGame.Seed+3, {0, 0});
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0});
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0});
+	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {1,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,1},	(int32_t)instanceGame.Seed+3, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0}, 50);
 	//fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,0}, (int32_t)instanceGame.Seed+5, {0, 0});
 	
 	int8_t*				cellsOcclusion	= &instanceGame.TacticalBoard.Terrain.Occlusion.Cells[0][0];
@@ -31,12 +31,8 @@ void klib::resetGame(SGame& instanceGame)
 {
 	initGame(instanceGame);
 	klib::clearASCIIBackBuffer(' ', 5);
-
-	instanceGame.PostEffectDisplay									.Clear();
-	instanceGame.TacticalDisplay									.Clear();
-	instanceGame.GlobalDisplay										.Clear();
-	instanceGame.TacticalBoard										.Clear();
-	clearGrid(instanceGame.MenuDisplay);
+	instanceGame.ClearDisplays();
+	instanceGame.TacticalBoard.Clear();
 
 	// Set up a nice prompt 
 	uint32_t screenWidth  =	klib::getASCIIBackBufferWidth(),
@@ -47,7 +43,7 @@ void klib::resetGame(SGame& instanceGame)
 	klib::presentASCIIBackBuffer();
 
 	static const HANDLE hConsoleOut	= GetStdHandle( STD_OUTPUT_HANDLE );
-	COORD cursorPos = {(SHORT)screenWidth/2-5, (SHORT)screenHeight/2};
+	COORD cursorPos = {((SHORT)screenWidth>>1)-5, (SHORT)screenHeight>>1};
 	SetConsoleCursorPosition( hConsoleOut, cursorPos );
 	SetConsoleTextAttribute(hConsoleOut, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
 	SetConsoleDisplayMode(hConsoleOut, CONSOLE_FULLSCREEN_MODE, 0);
@@ -56,15 +52,6 @@ void klib::resetGame(SGame& instanceGame)
 	getline(std::cin, instanceGame.Player.Name);
 
 	instanceGame.bStarted = true;
-}
-
-// Sets up initial equipment and items for the player to carry or wear.
-void initPlayer(klib::SPlayer& player)
-{
-	player.CompletedResearch	= SCharacterResearch();
-	player.MaxResearch			= SCharacterEquip();
-	player.Army					.clear();
-	player.Squad				.Clear(-1);
 }
 
 // Sets up initial equipment and items for the player to carry or wear.
@@ -87,8 +74,8 @@ void klib::initGame(SGame& instanceGame)
 	
 	resetCursorString(instanceGame.SlowMessage);
 
-	initPlayer(instanceGame.Player	);
-	initPlayer(instanceGame.Enemy	);
+	instanceGame.Player	= SPlayer();
+	instanceGame.Enemy	= SPlayer();
 
 	instanceGame.Player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 	instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
