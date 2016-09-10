@@ -25,9 +25,10 @@ SEntityPoints klib::calculateFinalPoints(const SCharacter& character)
 	// Currently, SEntityPoints::Coins and SEntityPoints::LifeCurrent values of the equipment are used in a different 
 	// way from the character's points so we avoid adding the character points to the result for these two.
 	SEntityPoints result	= bonusPoints + weaponPoints + accessoryPoints + facilityPoints + armorPoints + vehiclePoints + professionPoints;
-	result.LifeMax			= result.LifeMax	+ character.Points.LifeMax;	// 
-	result.Attack			= result.Attack		+ character.Points.Attack;	// 
-	result.Price			= result.Price		+ character.Points.Price;	// 
+	result.LifeMax			= result.LifeMax			+ character.Points.LifeMax;	// 
+	result.Attack			= result.Attack				+ character.Points.Attack;	// 
+	result.PriceBuy			= result.PriceBuy			+ character.Points.PriceBuy;	// 
+	result.CostMaintenance	= result.CostMaintenance	+ character.Points.CostMaintenance;	// 
 	return result;
 };
 

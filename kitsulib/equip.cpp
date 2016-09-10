@@ -57,13 +57,13 @@ bool equipIfResearched
 	}
 }
 
-bool equipIfResearchedAccessory		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Accessory	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, player.Squad, player.Selection, player.CompletedResearch.Accessory		, definitionsAccessory		, modifiersAccessory	, "Crafting"		, "Accessories"	, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedStageProp		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.StageProp	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, player.Squad, player.Selection, player.CompletedResearch.StageProp		, definitionsStageProp		, modifiersStageProp	, ""				, "Stage Props"	, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedFacility		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Facility	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, player.Squad, player.Selection, player.CompletedResearch.Facility			, definitionsFacility		, modifiersFacility		, "Architectonics"	, "Facilities"	, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedVehicle		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Vehicle	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, player.Squad, player.Selection, player.CompletedResearch.Vehicle			, definitionsVehicle		, modifiersVehicle		, "Transportation"	, "Vehicles"	, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedProfession	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Profession	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession		, player.Squad, player.Selection, player.CompletedResearch.Profession		, definitionsProfession		, modifiersProfession	, "Rank"			, "Licenses"	, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedWeapon		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Weapon		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon			, player.Squad, player.Selection, player.CompletedResearch.Weapon			, definitionsWeapon			, modifiersWeapon		, "Science"			, "Weapons"		, instanceGame.UserMessage, instanceGame.UserError);};
-bool equipIfResearchedArmor			(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Armor		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, player.Squad, player.Selection, player.CompletedResearch.Armor			, definitionsArmor			, modifiersArmor		, "Technology"		, "Armors"		, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedAccessory	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Accessory	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, player.Squad, player.Selection, player.CompletedResearch.Accessory		, definitionsAccessory		, modifiersAccessory	, "Crafting"		, "Accessories"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedStageProp	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.StageProp	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, player.Squad, player.Selection, player.CompletedResearch.StageProp		, definitionsStageProp		, modifiersStageProp	, ""				, "Stage Props"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedFacility	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Facility	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, player.Squad, player.Selection, player.CompletedResearch.Facility			, definitionsFacility		, modifiersFacility		, "Architectonics"	, "Facilities"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedVehicle	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Vehicle	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, player.Squad, player.Selection, player.CompletedResearch.Vehicle			, definitionsVehicle		, modifiersVehicle		, "Transportation"	, "Vehicles"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedProfession	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Profession	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession		, player.Squad, player.Selection, player.CompletedResearch.Profession		, definitionsProfession		, modifiersProfession	, "Rank"			, "Licenses"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedWeapon		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Weapon		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon			, player.Squad, player.Selection, player.CompletedResearch.Weapon			, definitionsWeapon			, modifiersWeapon		, "Science"			, "Weapons"		, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedArmor		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Armor		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, player.Squad, player.Selection, player.CompletedResearch.Armor			, definitionsArmor			, modifiersArmor		, "Technology"		, "Armors"		, instanceGame.UserMessage, instanceGame.UserError);};
 //bool equipIfResearchedItems			(SGame& instanceGame, int16_t selectedChoice){ return false; } //SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Items		, player.CurrentEquip.Items			, player.Squad, player.Selection, player.CompletedResearch.Items			, definitionsItems			, modifiersItems		, ""		, entityTypePlural, messageSuccess, messageError);};
 
 SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
@@ -80,19 +80,24 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	SGlobalDisplay&	display	= instanceGame.GlobalDisplay;
 
 	int16_t selectedChoice=0;
-	std::string menuTitle = "Equip";
+	std::string menuTitle = "Equip ";
+
+	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1 && GAME_SUBSTATE_CHARACTER != instanceGame.State.Substate)
+		menuTitle = player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ": ";
+	else if(player.Selection.PlayerUnit != -1)
+		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": ";
+
 	switch(instanceGame.State.Substate)
 	{
-	case GAME_SUBSTATE_ACCESSORY	:	menuTitle = "Accessory"		;	for(iSlot=0, itemCount=player.Inventory.Accessory	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getAccessoryName		(player.Inventory.Accessory		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_STAGEPROP	:	menuTitle = "Stage Prop"	;	for(iSlot=0, itemCount=player.Inventory.StageProp	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getStagePropName		(player.Inventory.StageProp		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_FACILITY		:	menuTitle = "Facility"		;	for(iSlot=0, itemCount=player.Inventory.Facility	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getFacilityName			(player.Inventory.Facility		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_VEHICLE		:	menuTitle = "Vehicle"		;	for(iSlot=0, itemCount=player.Inventory.Vehicle		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getVehicleName			(player.Inventory.Vehicle		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_PROFESSION	:	menuTitle = "Profession"	;	for(iSlot=0, itemCount=player.Inventory.Profession	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getProfessionName		(player.Inventory.Profession	.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_WEAPON		:	menuTitle = "Weapon"		;	for(iSlot=0, itemCount=player.Inventory.Weapon		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getWeaponName			(player.Inventory.Weapon		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_ARMOR		:	menuTitle = "Armor"			;	for(iSlot=0, itemCount=player.Inventory.Armor		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getArmorName			(player.Inventory.Armor			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_ITEM			:	menuTitle = "Item"			;	for(iSlot=0, itemCount=player.Inventory.Items		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getItemName				(player.Inventory.Items			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_ACCESSORY	:	menuTitle += "Accessory"	;	for(iSlot=0, itemCount=player.Inventory.Accessory	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getAccessoryName		(player.Inventory.Accessory		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_STAGEPROP	:	menuTitle += "Stage Prop"	;	for(iSlot=0, itemCount=player.Inventory.StageProp	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getStagePropName		(player.Inventory.StageProp		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_FACILITY		:	menuTitle += "Facility"		;	for(iSlot=0, itemCount=player.Inventory.Facility	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getFacilityName			(player.Inventory.Facility		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_VEHICLE		:	menuTitle += "Vehicle"		;	for(iSlot=0, itemCount=player.Inventory.Vehicle		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getVehicleName			(player.Inventory.Vehicle		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_PROFESSION	:	menuTitle += "Profession"	;	for(iSlot=0, itemCount=player.Inventory.Profession	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getProfessionName		(player.Inventory.Profession	.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_WEAPON		:	menuTitle += "Weapon"		;	for(iSlot=0, itemCount=player.Inventory.Weapon		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getWeaponName			(player.Inventory.Weapon		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_ARMOR		:	menuTitle += "Armor"		;	for(iSlot=0, itemCount=player.Inventory.Armor		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getArmorName			(player.Inventory.Armor			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_ITEM			:	menuTitle += "Item"			;	for(iSlot=0, itemCount=player.Inventory.Items		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getItemName				(player.Inventory.Items			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_CHARACTER	:	
-		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1);	
 		for(iCharacter=0, count=player.Army.size(); iCharacter<count; ++iCharacter)	
 		{	
 			bAlreadyInSquad = false;
@@ -162,7 +167,7 @@ void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offset
 	std::string nameAndLevelText = getEntityName(entity, definitions, modifiers) + " Lv. " + std::to_string(entity.Level);	
 	printfToGrid(display_.Screen		, ++offsetY, offsetX, LEFT, "%s", nameAndLevelText.c_str() );
 	color = COLOR_YELLOW;
-	valueToGrid(display_.TextAttributes	, offsetY, offsetX, LEFT, &color, 1, 36);
+	valueToGrid(display_.TextAttributes	, offsetY, offsetX, LEFT, &color, 1, 40);
 
 	const SEntityPoints entityPoints = getEntityPoints(entity, definitions, modifiers);
 	offsetY+=2;
@@ -200,37 +205,32 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 	SPlayer& player = instanceGame.Player;
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	uint16_t color = COLOR_GREEN;
+	
+	std::string menuTitle = "Agent Setup";
 	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1) 
 	{
 		static const int32_t slotWidth		= display.Width / MAX_ENTITY_COLUMNS;
 		static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
-		std::string textToPrint = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
-		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds*3);
-		valueToGrid(instanceGame.GlobalDisplay.Screen		 , TACTICAL_DISPLAY_YPOS-3, 0, CENTER, instanceGame.SlowMessage, (int32_t)strlen(instanceGame.SlowMessage), 0);
-		valueToGrid(instanceGame.GlobalDisplay.TextAttributes, TACTICAL_DISPLAY_YPOS-3, 0, CENTER, &color, 1, (int32_t)strlen(instanceGame.SlowMessage));
+		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 
-		//memcpy(&instanceGame.GlobalDisplay.Screen.Cells[TACTICAL_DISPLAY_YPOS][(instanceGame.GlobalDisplay.Width>>1)-((strlen(instanceGame.SlowMessage)+1)>>1)], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
-		if ( !bDonePrinting ) 
-			return returnState;
-		//displayAgentSlot(display, TACTICAL_DISPLAY_YPOS, 1, player.Selection.PlayerUnit+1, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]], true);
-		int32_t offsetY = TACTICAL_DISPLAY_YPOS+1, offsetX;
+		int32_t offsetY = TACTICAL_DISPLAY_YPOS-2, offsetX;
 		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Profession"	);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon		, definitionsWeapon		, modifiersWeapon		, "Weapon"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, definitionsArmor		, modifiersArmor		, "Armor"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, definitionsAccessory	, modifiersAccessory	, "Accessory"	);
 		drawEntityDetail(display, offsetY+=28	, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, definitionsVehicle	, modifiersVehicle		, "Vehicle"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, definitionsFacility	, modifiersFacility		, "Facility"	);
-		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, definitionsStageProp	, modifiersStageProp	, "StageProp"	);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, definitionsStageProp	, modifiersStageProp	, "Stage Prop"	);
 		displayAgentSlot(display, offsetY		, offsetX+=48, player.Selection.PlayerUnit+1, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]], false);
 	}
 	else if(player.Selection.PlayerUnit != -1)
 	{
-	
+		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": Open position.";
 	}
 
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
-		static const SMenu<SGameState, size(optionsEquip)> menuEquip(optionsEquip, {GAME_STATE_MENU_SQUAD_SETUP}, "Agent Setup", 26);
+		const SMenu<SGameState, size(optionsEquip)> menuEquip(optionsEquip, {GAME_STATE_MENU_SQUAD_SETUP}, menuTitle, std::max(26, (int32_t)menuTitle.size()));
 		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuEquip, instanceGame.FrameInput, instanceGame.State);
 	}
 	else 

@@ -10,14 +10,15 @@ namespace klib
 
 	struct SEntityPointsMultiplier 
 	{
-		SLifePointsMultiplier		LifeMax		;
-		SLifePointsMultiplier		LifeCurrent	;
-		SAttackPointsMultiplier		Attack		;
-		double						Coins		;
-		double						Price		;
+		SLifePointsMultiplier		LifeMax				;
+		SLifePointsMultiplier		LifeCurrent			;
+		SAttackPointsMultiplier		Attack				;
+		double						Coins				;
+		double						PriceBuy			;
+		double						CostMaintenance		;
 
 		inline constexpr SEntityPointsMultiplier	operator *	(const int32_t level)	const	{ 
-			return { LifeMax*level, LifeCurrent*level, Attack*level, Coins*level, Price*level }; 
+			return { LifeMax*level, LifeCurrent*level, Attack*level, Coins*level, PriceBuy*level, CostMaintenance*level }; 
 		}
 
 		void Print() const
@@ -28,18 +29,20 @@ namespace klib
 			LifeCurrent.Print();
 			printf("- Attack Points:\n");
 			Attack.Print();
-			printf("- Coins.....: %f.\n", Coins);
-			printf("- Price.....: %f.\n", Price);
+			printf("- Coins...........: %f.\n", Coins);
+			printf("- Buy Price.......: %f.\n", PriceBuy);
+			printf("- Maintenace Cost.: %f.\n", CostMaintenance);
 		}
 	};
 
 	struct SEntityPoints 
 	{
-		SLifePoints		LifeMax		;
-		SLifePoints		LifeCurrent	;
-		SAttackPoints	Attack		;
-		int32_t			Coins		;
-		int32_t			Price		;
+		SLifePoints		LifeMax			;
+		SLifePoints		LifeCurrent		;
+		SAttackPoints	Attack			;
+		int32_t			Coins			;
+		int32_t			PriceBuy		;
+		int32_t			CostMaintenance	;
 	
 		void Print() const
 		{
@@ -49,24 +52,26 @@ namespace klib
 			LifeCurrent.Print();
 			printf("- Attack Points:\n");
 			Attack.Print();
-			printf("- Coins.....: %i.\n", (int32_t)Coins);
-			printf("- Price.....: %i.\n", (int32_t)Price);
+			printf("- Coins.............: %i.\n", (int32_t)Coins);
+			printf("- Buy Price.........: %i.\n", (int32_t)PriceBuy);
+			printf("- Maintenance Cost..: %i.\n", (int32_t)CostMaintenance);
 		}
 
 		inline constexpr SEntityPoints	operator +	(const SEntityPoints& other)				const	{ 
-			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, Price+other.Price };
+			return { LifeMax+other.LifeMax, LifeCurrent+other.LifeCurrent, Attack+other.Attack, Coins+other.Coins, PriceBuy+other.PriceBuy, CostMaintenance+other.CostMaintenance };
 		}
 
 		inline constexpr SEntityPoints	operator -	(const SEntityPoints& other)				const	{ 
-			return { LifeMax-other.LifeMax, LifeCurrent-other.LifeCurrent, Attack-other.Attack, Coins-other.Coins, Price-other.Price };
+			return { LifeMax-other.LifeMax, LifeCurrent-other.LifeCurrent, Attack-other.Attack, Coins-other.Coins, PriceBuy-other.PriceBuy, CostMaintenance-other.CostMaintenance };
 		}
 
 		inline constexpr SEntityPoints		operator *	(const SEntityPointsMultiplier& other)	const	{ 
-			return	{ LifeMax			*	other.LifeMax		
-					, LifeCurrent		*	other.LifeCurrent	
-					, Attack			*	other.Attack	
-					, (int32_t)(Coins	*	other.Coins)	
-					, (int32_t)(Price	*	other.Price)
+			return	{ LifeMax					*	other.LifeMax		
+					, LifeCurrent				*	other.LifeCurrent	
+					, Attack					*	other.Attack	
+					, (int32_t)(Coins			*	other.Coins)	
+					, (int32_t)(PriceBuy		*	other.PriceBuy)
+					, (int32_t)(CostMaintenance	*	other.CostMaintenance)
 					};
 		}
 	};

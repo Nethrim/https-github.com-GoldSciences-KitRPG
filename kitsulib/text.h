@@ -47,7 +47,7 @@ namespace klib
 				message[cursorIndex+2]	= 0;
 				nextTick = 0.0f;
 			}
-			else if(0 == (tickCount % 100))
+			else if(0 == (tickCount % 20))
 				message[cursorIndex] = (message[cursorIndex] == ' ') ? '_' : ' ';
 		}
 

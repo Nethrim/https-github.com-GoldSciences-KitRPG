@@ -10,7 +10,7 @@
 #include "Facility.h"
 #include "StageProp.h"
 
-void klib::setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType)
+void klib::setupAgent(const CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType, int32_t teamId)
 {
 	currentEnemy.Inventory.Items.AddElement({1, 1, 1});
 
@@ -47,4 +47,5 @@ void klib::setupEnemy(const CCharacter& adventurer, CCharacter& currentEnemy, in
 
 	SEntityPoints finalEnemyPoints			= calculateFinalPoints(currentEnemy);
 	currentEnemy.Points.LifeCurrent			= finalEnemyPoints.LifeMax;
+	currentEnemy.Team						= teamId;
 }

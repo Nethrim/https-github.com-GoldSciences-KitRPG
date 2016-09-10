@@ -81,6 +81,13 @@ static const CRecordItem	itemModifiers[] =
 ,	{	{{},{},{},0,15	},{},	"%s	of Rejuvenation"	}
 ,	{	{{},{},{},0,5	},{},	"%s	of Focus"			}
 ,	{	{{},{},{},0,10	},{},	"Strength %s"			}
+,	{	{{},{},{},0,10	},{},	"Speed %s"				}
+,	{	{{},{},{},0,10	},{},	"Sprint %s"				}
+,	{	{{},{},{},0,10	},{},	"%s of Reflexes"		}
+,	{	{{},{},{},0,10	},{},	"%s of Shielding"		}
+,	{	{{},{},{},0,10	},{},	"Epidemic %s"			}
+,	{	{{},{},{},0,10	},{},	"%s of Damnation"		}
+,	{	{{},{},{},0,10	},{},	"%s of Corrosion"		}
 ,	{	{{},{},{},0,0	},{},	"Smoke %s"				}
 ,	{	{{},{},{},0,0	},{},	"Sleep %s"				}
 ,	{	{{},{},{},0,5	},{},	"Stun %s"				}
@@ -91,6 +98,7 @@ static const CRecordItem	itemModifiers[] =
 ,	{	{{},{},{},0,5	},{},	"Cold %s"				}
 ,	{	{{},{},{},0,5	},{},	"Freeze %s"				}
 ,	{	{{},{},{},0,5	},{},	"Shock %s"				}
+,	{	{{},{},{},0,5	},{},	"EMP %s"				}
 };
 
 static const CItemV2 itemDefinitions[] = 

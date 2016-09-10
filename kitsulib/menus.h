@@ -314,10 +314,10 @@ namespace klib
 
 	// 7
 	static const klib::SMenuItem<SGameState> optionsEquip[] =
-	{	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_WEAPON		}, "Equip weapon"					}
+	{	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign job"						}
+	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_WEAPON		}, "Equip weapon"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ARMOR		}, "Equip armor"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ACCESSORY	}, "Equip accessory"				}
-	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign job"						}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_VEHICLE		}, "Equip vehicle"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_FACILITY	}, "Assign facility"				}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ITEM		}, "Equip items"					}

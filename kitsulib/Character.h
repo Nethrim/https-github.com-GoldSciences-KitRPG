@@ -33,15 +33,6 @@ namespace klib
 		SResearchGroup<SStageProp	>	StageProp	= {};
 	};
 
-	// We don't need to create complex classes from SItem
-	class CWeapon;
-	class CAccessory;
-	class CArmor;
-	class CProfession;
-	class CVehicle;
-	class CFacility;
-	class CStageProp;
-
 	struct SCharacterInventory
 	{
 		SInventoryProfession	Profession		= {};
@@ -78,6 +69,7 @@ namespace klib
 	struct SCharacter	//: public SEquip<_EntityType>
 	{
 		CHARACTER_TYPE			Type			= CHARACTER_TYPE_UNKNOWN;
+		int32_t					Team			= 0;
 		//_EntityType				Entity			= {0,0,1};
 
 		SEntityPoints			Points			= SEntityPoints();	

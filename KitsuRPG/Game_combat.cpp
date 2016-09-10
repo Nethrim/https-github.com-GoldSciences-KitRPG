@@ -421,7 +421,7 @@ void combat(klib::CCharacter& adventurer, int32_t enemyType)
 
 	klib::CCharacter* pEnemy = new klib::CCharacter(klib::enemyDefinitions[enemyType]);
 	klib::CCharacter& currentEnemy = *pEnemy;	// Request the enemy data.
-	klib::setupEnemy(adventurer, currentEnemy, enemyType);
+	klib::setupAgent(adventurer, currentEnemy, enemyType, 1);
 
 	adventurer.ActiveBonus.Status.Count	= 0;	// We need to clear the combat status before starting the combat.
 
