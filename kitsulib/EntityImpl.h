@@ -10,128 +10,112 @@ namespace klib
 	struct SItem		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers =						//	x1:	0.85 		
-				{ {.125, .125, .125}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
-				, {.125, .125, .125}												//	x2:	 .1, , .1, } 		
-				, {.125, .125, {.125, .125, .125}, .125, {.125, .125, .125} }		//	x2:	.25, .25,
-				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.125, .125, .125}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+					, {.125, .125, .125}												//	x2:	 .1, , .1, } 		
+					, {.125, .125, {.125, .125, .125}, .125, {.125, .125, .125} }		//	x2:	.25, .25,
+					, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																//	x1:	0.85 
+					};
 		}
 	};
 
 	struct SWeapon		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers =						//	x1:	0.85 		
-				{ {.125, .1, .0625}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
-				, {.125, .0625, .0625}												//	x2:	 .1, , .1, } 		
-				, {.125, .25, {.125, .1, .125}, .0625, {.125, .125, .125} }			//	x2:	.25, .25,
-				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.125, .1, .0625}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+					, {.125, .0625, .0625}												//	x2:	 .1, , .1, } 		
+					, {.125, .25, {.125, .1, .125}, .0625, {.125, .125, .125} }			//	x2:	.25, .25,
+					, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																//	x1:	0.85 
+					};
 		}
 	};
 
 	struct SArmor		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		static SEntityPointsMultiplier getMultipliers()										
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{																					 
-			static const SEntityPointsMultiplier multipliers = 						//	x1:	0.85 		
-				{ {.125, .1, .25}													//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
-				, {.125, .1, .25}													//	x2:	 .1, , .1, } 		
-				, {.0625, .0625, {.125, .0625, .125}, .125, {.125, .0625, .125} }	//	x2:	.25, .25,
-				, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.125, .1, .25}														//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+					, {.125, .1, .25}														//	x2:	 .1, , .1, } 		
+					, {.0625, .0625, {.125, .0625, .125}, .125, {.125, .0625, .125} }		//	x2:	.25, .25,
+					, 0.125																	//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																	//	x1:	0.85 
+					};
 		}
 	};
 
 	struct SProfession		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
-				{ {.25, .125, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
-				, {.25, .125, .0625}											//	x2:	 .1, , .1, } 
-				, {.125, .125, {.0625, .125, .0625}, .125, {.125, .1, .1} }		//	x2:	.25, .25,
-				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.25, .125, .0625}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	
+					, {.25, .125, .0625}												//	x2:	 .1, , .1, } 
+					, {.125, .125, {.0625, .125, .0625}, .125, {.125, .1, .1} }			//	x2:	.25, .25,
+					, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																//	x1:	0.85 
+					};
 		}
 	};
 
 	struct SAccessory		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
-				{ {.125, .25, .0625}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
-				, {.125, .25, .0625}											//	x2:	 .1, , .1, } 
-				, {.125, .1, {.0625, .0625, .125}, .1, {.125, .125, .125} }		//	x2:	.25, .25,
-				, 0.125															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85															
-				};																
-			return multipliers;													
+			return	{ {.125, .25, .0625}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
+					, {.125, .25, .0625}												//	x2:	 .1, , .1, } 
+					, {.125, .1, {.0625, .0625, .125}, .1, {.125, .125, .125} }			//	x2:	.25, .25,
+					, 0.125																//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																//	x1:	0.85 
+					};																
 		}																		
 	};																			
 																				
 	struct SVehicle		: public SEntity										
 	{ 																			
 		using SEntity::SEntity; 												
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers =					//	x1:	0.85 
-				{ {.0625, .0625, .25}											//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
-				, {.0625, .0625, .25}											//	x2:	 .1, , .1, } 
-				, {.125, .125, {.125, .125, .125}, .125, {.125, .1, .125} }		//	x2:	.25, .25,
-				, 0.1															//	x4:	.0625}	{.0625,	.0625}	.0625, 
-				, 0.85															
-				};																
-			return multipliers;													
+			return	{ {.0625, .0625, .25}												//	x8:	{.125, .125, .125}{.125, {.125,  {.125, .125} 0.125	 
+					, {.0625, .0625, .25}												//	x2:	 .1, , .1, } 
+					, {.125, .125, {.125, .125, .125}, .125, {.125, .1, .125} }			//	x2:	.25, .25,
+					, 0.1																//	x4:	.0625}	{.0625,	.0625}	.0625, 
+					, 0.85																//	x1:	0.85 
+					};																
 		}
 	};
 
 	struct SStageProp		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.25, .25, .25}
-				, {.25, .25, .25}
-				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
-				, 0.125
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.25, .25, .25}
+					, {.25, .25, .25}
+					, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
+					, 0.125
+					, 0.85																//	x1:	0.85 
+					};
 		}
 	};
 
 	struct SFacility		: public SEntity	
 	{ 
 		using SEntity::SEntity; 
-		SEntityPointsMultiplier getMultipliers() const 
+		static constexpr SEntityPointsMultiplier getMultipliers()
 		{
-			static const SEntityPointsMultiplier multipliers = 
-				{ {.25, .25, .25}
-				, {.25, .25, .25}
-				, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
-				, 0.125
-				, 0.85
-				};
-			return multipliers;
+			return	{ {.25, .25, .25}
+					, {.25, .25, .25}
+					, {.25, .25, {.25, .25, .25}, .25, {.25, .25, .25} }
+					, 0.125
+					, 0.85																//	x1:	0.85 
+					};
 		}
 	};
 

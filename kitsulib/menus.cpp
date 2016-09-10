@@ -34,7 +34,11 @@ SGameState drawEquip			(SGame& instanceGame, const SGameState& returnState);
 void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState) 
 {
 	clearASCIIBackBuffer(' ');
-	instanceGame.ClearDisplays();
+	instanceGame.GlobalDisplay		.Clear();
+	instanceGame.TacticalDisplay	.Clear();	
+	//instanceGame.PostEffectDisplay	.Clear();	
+	clearGrid(instanceGame.MenuDisplay);
+
 	//resetCursorString(instanceGame.SlowMessage);	we shuold leave this out unless it becomes a need. This is because it turns screen transitions into an annoyance.
 }
 
@@ -66,13 +70,8 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		else
 			instanceGame.StateMessage = "Welcome back commander";
 
-	case GAME_STATE_MENU_SQUAD_SETUP:	
-		instanceGame.StateMessage = "Squad Setup";	break;
-		//instanceGame.GlobalDisplay.Clear();
-	case GAME_STATE_CREDITS:			
-		instanceGame.StateMessage = "Credits";		
-		//instanceGame.GlobalDisplay.Clear();
-		break;
+	case GAME_STATE_MENU_SQUAD_SETUP:	instanceGame.StateMessage = "Squad Setup";	break;
+	case GAME_STATE_CREDITS:			instanceGame.StateMessage = "Credits";		break;
 	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";		break;
 	default:
 		break;
@@ -101,11 +100,11 @@ void klib::showMenu(SGame& instanceGame) {
 
 	SGameState newAction=instanceGame.State;
 
-	static const SMenu<SGameState, size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"			, 20, true, "Exit game");
-	static const SMenu<SGameState, size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"			, 20, true, "Exit game");
-	static const SMenu<SGameState, size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"			, 26);
-	static const SMenu<SGameState, size(optionsMainInGame	)> menuStartMission	(optionsMainInGame	,  {GAME_STATE_WELCOME_COMMANDER	},	"Start mission"		);
-	static const SMenu<SGameState, size(optionsSell			)> menuSell			(optionsSell		,  {GAME_STATE_WELCOME_COMMANDER	},	"Sell"				);
+	static const SMenu<SGameState, size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
+	static const SMenu<SGameState, size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
+	static const SMenu<SGameState, size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"		, 26);
+	static const SMenu<SGameState, size(optionsMainInGame	)> menuStartMission	(optionsMainInGame	,  {GAME_STATE_WELCOME_COMMANDER	},	"Start mission"	);
+	static const SMenu<SGameState, size(optionsSell			)> menuSell			(optionsSell		,  {GAME_STATE_WELCOME_COMMANDER	},	"Sell"			);
 
 	klib::SGlobalDisplay& globalDisplay = instanceGame.GlobalDisplay;
 
@@ -130,8 +129,6 @@ void klib::showMenu(SGame& instanceGame) {
 	case GAME_STATE_CREDITS				:	
 		if(instanceGame.FrameInput.Keys[VK_ESCAPE]) 
 			newAction={GAME_STATE_MENU_MAIN}; 
-		//else
-		//	newAction = drawCredits(instanceGame.FrameTimer.LastTimeSeconds, namesSpecialThanks, instanceGame.State); 
 
 		break;
 	case GAME_STATE_EXIT				:	

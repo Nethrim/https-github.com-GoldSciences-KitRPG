@@ -27,7 +27,7 @@ namespace klib
 	{
 		if(align & RIGHT) {	// testing for RIGHT bit would tell us that this might be aligned to either RIGHT or CENTER.
 			int32_t offsetX = (int32_t) ((align == CENTER) ? (width>>1)-(valueCount>>1)+offsetColumn : (int32_t)(width)-(valueCount)-offsetColumn); 
-			return valueToRect(rectangleTopLeft, width, height, offsetLine, offsetX, LEFT, values, valueCount);
+			return valueToRect(rectangleTopLeft, width, height, offsetLine, offsetX, LEFT, values, valueCount, repeat);
 		}
 		else if(offsetLine < (int32_t)height) 
 		{

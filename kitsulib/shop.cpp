@@ -47,9 +47,7 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 	default:
 		break;
 	}
-	//menuTitle += " a la carte";
-	//
-	//selectedChoice = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");
+
 	if(selectedChoice.Definition == SHOP_EXIT_VALUE)
 		return {GAME_STATE_MENU_BUY};
 	else if( selectedChoice.Definition == -1 )

@@ -17,10 +17,12 @@ namespace klib
 {
 	template <size_t _Width, size_t _Depth>
 	void displayEmptySlot(SWeightedDisplay<_Width, _Depth>& display, int32_t offsetY, int32_t offsetX, int32_t agentIndex) {
-		static const size_t LINE_SIZE = 35;
-		printfToGrid(display.Screen, offsetY, offsetX, LEFT, "-- Agent #%u: %-36.36s", agentIndex, "Open position");
-		uint16_t color = COLOR_DARKCYAN;
-		valueToGrid(display.TextAttributes, offsetY, offsetX, LEFT, &color, 1, LINE_SIZE);
+		static const size_t LINE_SIZE = 30;
+		printfToGrid(display.Screen, offsetY, offsetX, LEFT, "-- Agent #%u: %-14.14s", agentIndex, "Open position");
+		uint16_t color = COLOR_GREEN;
+		valueToGrid(display.TextAttributes, offsetY, offsetX, LEFT, &color, 1, 12);
+		color = COLOR_DARKCYAN;
+		valueToGrid(display.TextAttributes, offsetY, offsetX+13, LEFT, &color, 1, LINE_SIZE-14);
 	}
 
 	template <size_t _Width, size_t _Depth>
@@ -33,8 +35,10 @@ namespace klib
 		if( bAddFieldNames ) {
 			static const size_t LINE_SIZE = 56;
 			uint16_t color = COLOR_GREEN;
-			nameAndLevelText = character.Name												;	printfToGrid(display, offsetY	, offsetX, LEFT, "-- Agent #%u: %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
-			valueToGrid(display_.TextAttributes, offsetY, offsetX, LEFT, &color, 1, LINE_SIZE);
+			nameAndLevelText = character.Name												;	printfToGrid(display, offsetY	, offsetX, LEFT, "-- Agent #%u:" " %-34.34s (Lv. %i)", agentIndex			, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
+			valueToGrid(display_.TextAttributes, offsetY, offsetX, LEFT, &color, 1, 12);
+			//color = COLOR_GREEN;
+			valueToGrid(display_.TextAttributes, offsetY, offsetX+13, LEFT, &color, 1, LINE_SIZE-14);
 
 			offsetY += 2;
 			nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	printfToGrid(display, offsetY++	, offsetX, LEFT, "%-10.10s: %-35.35s (Lv. %i)"	, "Class"				, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
@@ -67,7 +71,8 @@ namespace klib
 			nameAndLevelText = std::to_string		(agentBasePoints.Coins							);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-10.10s: %-11.11s"	, "- Coins"		, nameAndLevelText.c_str());
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+11, LEFT, &(color = COLOR_ORANGE), 1, 11);
 		}
-		else {
+		else 
+		{
 			nameAndLevelText = character.Name												;	printfToGrid(display, offsetY++	, offsetX, LEFT, "-- %-21.21s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
 			nameAndLevelText = getProfessionName	(character.CurrentEquip.Profession		);	printfToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Profession	.Level);
 			nameAndLevelText = getWeaponName		(character.CurrentEquip.Weapon			);	printfToGrid(display, offsetY++	, offsetX, LEFT, "%-34.34s (Lv. %i)"	, nameAndLevelText.c_str(), character.CurrentEquip.Weapon		.Level);

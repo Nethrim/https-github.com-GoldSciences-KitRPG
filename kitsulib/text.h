@@ -33,20 +33,22 @@ namespace klib
 		static uint32_t tickCount=0;
 
 		int32_t mesLen = (int32_t)strlen(message);
-		nextTick	+= (float)lastFrameSeconds;
+		mesLen = ((mesLen+1) > (_Size-1)) ? _Size-2 : mesLen;
 
+		nextTick	+= (float)lastFrameSeconds;
 		if(nextTick > 0.025f)
 		{
 			tickCount++;
-			if(mesLen-1 < (int32_t)sizeToPrint)
+			int32_t cursorIndex = mesLen-1;
+			if(cursorIndex < (int32_t)sizeToPrint)
 			{
-				message[mesLen-1]	= textToPrint[mesLen-1];
-				message[mesLen]		= '_';
-				message[mesLen+1]	= 0;
+				message[cursorIndex]	= textToPrint[cursorIndex];
+				message[mesLen]			= '_';
+				message[cursorIndex+2]	= 0;
 				nextTick = 0.0f;
 			}
 			else if(0 == (tickCount % 100))
-				message[mesLen-1] = (message[mesLen-1] == ' ') ? '_' : ' ';
+				message[cursorIndex] = (message[cursorIndex] == ' ') ? '_' : ' ';
 		}
 
 		return ( mesLen-1 == sizeToPrint );

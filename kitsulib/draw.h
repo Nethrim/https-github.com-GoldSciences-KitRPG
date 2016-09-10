@@ -94,7 +94,7 @@ namespace klib
 					display.DisplayWeights	.Cells[firstRow][x] = .00001f;
 					display.Speed			.Cells[firstRow][x] = rand()*.001f+0.001f;
 					display.SpeedTarget		.Cells[firstRow][x] = rand()*.0009f+0.001f;
-					display.TextAttributes	.Cells[firstRow][x] = bReverse ? ((noise1D(randBase+321+x, seed+91423) > 0.0)?COLOR_CYAN:COLOR_BLUE) :  (noise1D(randBase+32+x, seed) > 0.0) ? COLOR_ORANGE : (noise1D(randBase+987429654+x, seed+98234) > 0.0) ? COLOR_RED : COLOR_YELLOW;
+					display.TextAttributes	.Cells[firstRow][x] = bReverse ? ((noise1D(randBase+321+x, seed+91423) > 0.0)?COLOR_CYAN:COLOR_BLUE) :  (noise1D(randBase+32+x, seed<<1) > 0.0) ? COLOR_RED : (noise1D(randBase+987429654+x, seed+98234) > 0.0) ? COLOR_ORANGE : COLOR_DARKYELLOW;
 				}
 			}
 		for(uint32_t z = bReverse ? 0 : 1, maxZ = bReverse ? display.Depth-1 : display.Depth; z < maxZ; z ++) 
@@ -142,7 +142,7 @@ namespace klib
 						{ 
 							if(('|' == display.Screen	.Cells[z][x]) && z < (display.Depth/5*4)) {
 								display.Screen			.Cells[zpos][xpos] = '.';
-								display.TextAttributes	.Cells[zpos][xpos] = COLOR_GRAY; 
+								display.TextAttributes	.Cells[zpos][xpos] = (noiseNormal(x, seed<<2) < 0.0) ? COLOR_GRAY : COLOR_YELLOW; 
 							}
 							else if( bReverse && z > (display.Depth/5)) {
 								display.Screen			.Cells[zpos][xpos] = '|';

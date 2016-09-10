@@ -32,7 +32,7 @@ namespace klib
 		};
 	};
 
-#define GAME_MAP_DEPTH	48
+#define GAME_MAP_DEPTH	36
 #define GAME_MAP_WIDTH	(GAME_MAP_DEPTH*2)
 
 	typedef SGameTiles<GAME_MAP_WIDTH, GAME_MAP_DEPTH>									STacticalBoard		;

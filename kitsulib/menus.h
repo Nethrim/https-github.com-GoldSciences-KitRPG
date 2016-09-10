@@ -34,16 +34,19 @@ struct SDrawMenuLocalStatics
 namespace klib
 {
 	static void printMultipageHelp(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset) {
-		if(currentPage == 0)					klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page down: Next page.");	
-		else if(currentPage == (pageCount-1))	klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page.");	
-		else									klib::lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page. Page down: Next page");	
+		if(currentPage == 0)					lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page down: Next page.");	
+		else if(currentPage == (pageCount-1))	lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page.");	
+		else									lineToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET+2, posXOffset, klib::CENTER, "Page up: Previous page. Page down: Next page");	
 	}
 
 	template <size_t _FormatLen>
 	static void drawExitOption(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset, uint32_t rowWidth, const char (&formatString)[_FormatLen], const std::string& exitText ) {
-		int32_t actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, formatString, "0", exitText.c_str());	
-		for(uint32_t i=0; i<rowWidth+1; i++)
-			targetAttributes[(targetHeight-MENU_ROFFSET)*targetWidth+actualOffsetX+i] = COLOR_GREEN;
+
+		int32_t offsetY = (int32_t)targetHeight-MENU_ROFFSET;
+		int32_t actualOffsetX = printfToRect(targetASCII, targetWidth, targetHeight, offsetY, posXOffset, klib::CENTER, formatString, "0", exitText.c_str());	
+
+		uint16_t colorBkg = COLOR_GREEN; 
+		valueToRect(targetAttributes, targetWidth, targetHeight,  offsetY, actualOffsetX, LEFT, &colorBkg, 1, (int32_t)exitText.size()+3);
 	}
 
 	template <size_t _ArraySize, typename _ReturnType>
@@ -95,6 +98,7 @@ namespace klib
 			actualOffsetX = klib::printfToRect(targetASCII, targetWidth, targetHeight, lineOffset, posXOffset, klib::CENTER, formatString, numberKey, menuItems[itemOffset+i].Text.c_str());
 			for(uint32_t i=0; i<rowWidth+1; i++)
 				targetAttributes[lineOffset*targetWidth+actualOffsetX+i] = COLOR_YELLOW;
+
 			lineOffset++;
 		}
 
@@ -130,9 +134,12 @@ namespace klib
 			else if(frameInput.Keys['0'] || frameInput.Keys[VK_NUMPAD0] || (frameInput.Keys[VK_ESCAPE] && !disableEscKeyClose)) 
 			{
 				bResetMenuStuff = true;
+
+				localPersistentState.CurrentPage = 0;
 				resultVal = exitValue;
 			}
 			else 
+			{
 				for(uint32_t i=0, count = (uint32_t)actualOptionCount; i < count; i++) 
 					if(frameInput.Keys['1'+i] || frameInput.Keys[VK_NUMPAD1+i]) 
 					{
@@ -140,6 +147,7 @@ namespace klib
 						resultVal = menuItems[i+itemOffset].ReturnValue;
 						break;
 					}
+			}
 		}
 
 		if(bResetMenuStuff)
