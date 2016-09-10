@@ -152,20 +152,80 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 }
 
 
+template <typename _TEntity, size_t _Width, size_t _Depth, size_t _SizeDefinitions, size_t _SizeModifiers> 
+void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offsetY, int32_t offsetX, const _TEntity& entity, const SEntityRecord<_TEntity> (&definitions)[_SizeDefinitions], const SEntityRecord<_TEntity> (&modifiers)[_SizeModifiers], const std::string& entityType)
+{
+	printfToGrid(display_.Screen		, offsetY++, offsetX, LEFT, "-- %s:", entityType.c_str());
+	uint16_t color = COLOR_GREEN;
+	valueToGrid(display_.TextAttributes	, offsetY-1, offsetX, LEFT, &color, 1, 13);
+
+	std::string nameAndLevelText = getEntityName(entity, definitions, modifiers) + " Lv. " + std::to_string(entity.Level);	
+	printfToGrid(display_.Screen		, ++offsetY, offsetX, LEFT, "%s", nameAndLevelText.c_str() );
+	color = COLOR_YELLOW;
+	valueToGrid(display_.TextAttributes	, offsetY, offsetX, LEFT, &color, 1, 36);
+
+	const SEntityPoints entityPoints = getEntityPoints(entity, definitions, modifiers);
+	offsetY+=2;
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Health				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Health"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Shield				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Shield"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Mana					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Mana"				, nameAndLevelText.c_str());
+	offsetY+=1;
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Health			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Health per turn"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Shield			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Shield per turn"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Mana				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Mana per turn"			, nameAndLevelText.c_str());
+	offsetY+=1;
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Hit					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Hit Chance"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Damage					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Damage"					, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Health	);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Health"	, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Shield	);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Shield"	, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Mana		);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Mana"		, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Absorption				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Absorption"				, nameAndLevelText.c_str());
+	offsetY+=1;
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Attack			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Attack Speed"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Movement			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Movement Speed"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Reflexes			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Reflexes"				, nameAndLevelText.c_str());
+
+	nameAndLevelText = std::to_string		(entityPoints.Coins							);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Coins per turn"			, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+}
+
+
 void drawCharacterDetail(SGame& instanceGame)
 {
-
 }
+#define MAX_ENTITY_COLUMNS	4
 
 SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 {
 	SPlayer& player = instanceGame.Player;
-	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1) {
+	SGlobalDisplay& display = instanceGame.GlobalDisplay;
+	uint16_t color = COLOR_GREEN;
+	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1) 
+	{
+		static const int32_t slotWidth		= display.Width / MAX_ENTITY_COLUMNS;
+		static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
 		std::string textToPrint = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 		bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds*3);
-		memcpy(&instanceGame.GlobalDisplay.Screen.Cells[TACTICAL_DISPLAY_YPOS][(instanceGame.GlobalDisplay.Width>>1)-((strlen(instanceGame.SlowMessage)+1)>>1)], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
+		valueToGrid(instanceGame.GlobalDisplay.Screen		 , TACTICAL_DISPLAY_YPOS-3, 0, CENTER, instanceGame.SlowMessage, (int32_t)strlen(instanceGame.SlowMessage), 0);
+		valueToGrid(instanceGame.GlobalDisplay.TextAttributes, TACTICAL_DISPLAY_YPOS-3, 0, CENTER, &color, 1, (int32_t)strlen(instanceGame.SlowMessage));
+
+		//memcpy(&instanceGame.GlobalDisplay.Screen.Cells[TACTICAL_DISPLAY_YPOS][(instanceGame.GlobalDisplay.Width>>1)-((strlen(instanceGame.SlowMessage)+1)>>1)], instanceGame.SlowMessage, strlen(instanceGame.SlowMessage));
 		if ( !bDonePrinting ) 
 			return returnState;
+		//displayAgentSlot(display, TACTICAL_DISPLAY_YPOS, 1, player.Selection.PlayerUnit+1, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]], true);
+		int32_t offsetY = TACTICAL_DISPLAY_YPOS+1, offsetX;
+		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Profession"	);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon		, definitionsWeapon		, modifiersWeapon		, "Weapon"		);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, definitionsArmor		, modifiersArmor		, "Armor"		);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, definitionsAccessory	, modifiersAccessory	, "Accessory"	);
+		drawEntityDetail(display, offsetY+=28	, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, definitionsVehicle	, modifiersVehicle		, "Vehicle"		);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, definitionsFacility	, modifiersFacility		, "Facility"	);
+		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, definitionsStageProp	, modifiersStageProp	, "StageProp"	);
+		displayAgentSlot(display, offsetY		, offsetX+=48, player.Selection.PlayerUnit+1, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]], false);
+	}
+	else if(player.Selection.PlayerUnit != -1)
+	{
+	
 	}
 
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 

@@ -281,8 +281,8 @@ namespace klib
 	// 4
 	static const klib::SMenuItem<SGameState> optionsResearch[] =
 	{	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_WEAPON		}, "Research new weapons"			}
-	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_ACCESSORY	}, "Research new accessories"		}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_ARMOR		}, "Research new armors"			}
+	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_ACCESSORY	}, "Research new accessories"		}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_PROFESSION	}, "Learn new jobs"					}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_VEHICLE		}, "Research new vehicles"			}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_FACILITY	}, "Research new buildings"			}
@@ -291,8 +291,8 @@ namespace klib
 	// 5
 	static const klib::SMenuItem<SGameState> optionsInspect[] =
 	{	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_WEAPON		}, "Inspect weapon"					}
-	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ACCESSORY	}, "Inspect accessory"				}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ARMOR		}, "Inspect armor"					}
+	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ACCESSORY	}, "Inspect accessory"				}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_PROFESSION	}, "Inspect job license"			}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_VEHICLE		}, "Inspect vehicle"				}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_FACILITY	}, "Inspect building"				}
@@ -303,8 +303,8 @@ namespace klib
 	// 6
 	static const klib::SMenuItem<SGameState> optionsSense[] =
 	{	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_WEAPON		}, "Sense weapon"					}
-	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ACCESSORY	}, "Sense accessory"				}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ARMOR		}, "Sense armor"					}
+	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ACCESSORY	}, "Sense accessory"				}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_PROFESSION	}, "Sense job license"				}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_VEHICLE		}, "Sense vehicle"					}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_FACILITY	}, "Sense building"					}
@@ -315,9 +315,9 @@ namespace klib
 	// 7
 	static const klib::SMenuItem<SGameState> optionsEquip[] =
 	{	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_WEAPON		}, "Equip weapon"					}
-	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ACCESSORY	}, "Equip accessories"				}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ARMOR		}, "Equip armor"					}
-	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign task"					}
+	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ACCESSORY	}, "Equip accessory"				}
+	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign job"						}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_VEHICLE		}, "Equip vehicle"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_FACILITY	}, "Assign facility"				}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ITEM		}, "Equip items"					}
@@ -327,8 +327,8 @@ namespace klib
 	// 8
 	static const klib::SMenuItem<SGameState> optionsBuy[] =
 	{	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_WEAPON		}, "Buy weapons"					}
-	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ACCESSORY	}, "Buy accessories"				}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ARMOR		}, "Buy armors"						}
+	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ACCESSORY	}, "Buy accessories"				}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_PROFESSION	}, "Buy job license"				}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_VEHICLE		}, "Buy vehicles"					}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_FACILITY	}, "Build facilities"				}
@@ -347,8 +347,8 @@ namespace klib
 	// 9
 	static const klib::SMenuItem<SGameState> optionsSell[] =	
 	{	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_WEAPON		}, "Sell weapons"					}
-	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ACCESSORY	}, "Sell accessories"				}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ARMOR		}, "Sell armors"					}
+	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ACCESSORY	}, "Sell accessories"				}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_PROFESSION	}, "Sell job license"				}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_VEHICLE		}, "Sell vehicles"					}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_FACILITY	}, "Dismantle facilities"			}

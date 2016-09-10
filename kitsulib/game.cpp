@@ -81,12 +81,12 @@ void klib::initGame(SGame& instanceGame)
 	instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 	
 	klib::CCharacter& adventurer		= instanceGame.Player.Army[0];
-	adventurer.CurrentEquip.Weapon		= {rand()%20	, rand()%11	, rand()%20};
-	adventurer.CurrentEquip.Accessory	= {rand()%5		, rand()%10	, rand()%20};
-	adventurer.CurrentEquip.Armor		= {rand()%10	, rand()%2	, rand()%20};
-	adventurer.CurrentEquip.Profession	= {rand()%10	, rand()%8	, rand()%20};
-	adventurer.CurrentEquip.Vehicle		= {rand()%10	, rand()%5	, rand()%20};
-	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, rand()%20};
+	adventurer.CurrentEquip.Weapon		= {rand()%20	, rand()%11	, rand()%10};
+	adventurer.CurrentEquip.Accessory	= {rand()%5		, rand()%10	, rand()%10};
+	adventurer.CurrentEquip.Armor		= {rand()%10	, rand()%2	, rand()%10};
+	adventurer.CurrentEquip.Profession	= {rand()%10	, rand()%8	, rand()%10};
+	adventurer.CurrentEquip.Vehicle		= {rand()%10	, rand()%5	, rand()%10};
+	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, rand()%10};
 	adventurer.CurrentEquip.StageProp	= {0, 0, 0};
 
 	for(uint32_t i=1; i<8; i++) {
@@ -96,13 +96,13 @@ void klib::initGame(SGame& instanceGame)
 		klib::setupEnemy(instanceGame.Player.Army[i-1]	, instanceGame.Player	.Army[i]	, rand()%klib::size(klib::enemyDefinitions));
 		klib::setupEnemy(instanceGame.Player.Army[i]	, instanceGame.Enemy	.Army[i]	, rand()%klib::size(klib::enemyDefinitions));
 
-		instanceGame.Player.Army[i].CurrentEquip.Accessory	.Level	= rand()%50;
-		instanceGame.Player.Army[i].CurrentEquip.Armor		.Level	= rand()%50; 
-		instanceGame.Player.Army[i].CurrentEquip.Weapon		.Level	= rand()%50; 
-		instanceGame.Player.Army[i].CurrentEquip.Vehicle	.Level	= rand()%50; 
-		instanceGame.Player.Army[i].CurrentEquip.Facility	.Level	= rand()%50; 
-		instanceGame.Player.Army[i].CurrentEquip.Profession	.Level	= rand()%50; 
-		instanceGame.Player.Army[i].CurrentEquip.StageProp	.Level	= rand()%50; 
+		instanceGame.Player.Army[i].CurrentEquip.Accessory	.Level	= rand()%10;
+		instanceGame.Player.Army[i].CurrentEquip.Armor		.Level	= rand()%10; 
+		instanceGame.Player.Army[i].CurrentEquip.Weapon		.Level	= rand()%10; 
+		instanceGame.Player.Army[i].CurrentEquip.Vehicle	.Level	= rand()%10; 
+		instanceGame.Player.Army[i].CurrentEquip.Facility	.Level	= rand()%10; 
+		instanceGame.Player.Army[i].CurrentEquip.Profession	.Level	= rand()%10; 
+		instanceGame.Player.Army[i].CurrentEquip.StageProp	.Level	= rand()%10; 
 	}
 
 	for(uint32_t i=0; i<4; i++) {

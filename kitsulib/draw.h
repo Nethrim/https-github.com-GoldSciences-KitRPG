@@ -119,7 +119,7 @@ namespace klib
 			
 				if(display.DisplayWeights.Cells[z][x] > 1.0) 
 				{
-					int randX = ((noise1D(randBase+x+z+randBase), seed+544) > 0.0) ? rand()%(1+disturbance*2)-disturbance : 0;
+					int randX = ((noise1D(randBase+x+z*display.Width), seed+544) > 0.0) ? rand()%(1+disturbance*2)-disturbance : 0;
 					if((bReverse ? display.Width-2 : 1) == z)
 					{
 						display.Screen			.Cells[lastRow][x]	= ' ';
@@ -142,7 +142,7 @@ namespace klib
 						{ 
 							if(('|' == display.Screen	.Cells[z][x]) && z < (display.Depth/5*4)) {
 								display.Screen			.Cells[zpos][xpos] = '.';
-								display.TextAttributes	.Cells[zpos][xpos] = (noiseNormal(x, seed<<2) < 0.0) ? COLOR_GRAY : COLOR_YELLOW; 
+								display.TextAttributes	.Cells[zpos][xpos] = ((bReverse) || (noiseNormal(x, seed<<2) < 0.0)) ? COLOR_GRAY : COLOR_YELLOW; 
 							}
 							else if( bReverse && z > (display.Depth/5)) {
 								display.Screen			.Cells[zpos][xpos] = '|';

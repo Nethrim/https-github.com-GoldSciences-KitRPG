@@ -16,6 +16,7 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 	static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
 
 	static const int32_t offsetYBase = TACTICAL_DISPLAY_YPOS-2;
+	static const int32_t offsetXBase = 5;
 
 	SPlayer& player = instanceGame.Player;
 
@@ -30,9 +31,9 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 			
 			if(agentIndexOffset < SGameSquad::Size) {
 				if( player.Squad.Agents[agentIndexOffset] != -1 )
-					displayAgentSlot(display, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1, player.Army[player.Squad.Agents[agentIndexOffset]], true);
+					displayAgentSlot(display, offsetYBase+slotRowSpace*y, offsetXBase+slotWidth*x, agentIndexOffset+1, player.Army[player.Squad.Agents[agentIndexOffset]], true);
 				else											 
-					displayEmptySlot(display, TACTICAL_DISPLAY_YPOS+slotRowSpace*y, 1+slotWidth*x, agentIndexOffset+1);
+					displayEmptySlot(display, offsetYBase+slotRowSpace*y, offsetXBase+slotWidth*x, agentIndexOffset+1);
 			}
 		}
 	}

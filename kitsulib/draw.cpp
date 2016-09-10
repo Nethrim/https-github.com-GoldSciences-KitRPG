@@ -82,17 +82,17 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	size_t	offset;
 
 	// Print some debugging information 
-	lineToScreen(1, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
-	lineToScreen(2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
+	lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
+	lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
 	lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());
-	lineToScreen(bbHeight-3, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
-	lineToScreen(bbHeight-2, 1, LEFT, "sizeof(CCharacter): %u.", sizeof(CCharacter));
+	//lineToScreen(bbHeight-3, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
+	//lineToScreen(bbHeight-2, 1, LEFT, "sizeof(CCharacter): %u.", sizeof(CCharacter));
 	for(uint32_t i=0, count = 32U; i<count; i++) {
-		offset = 1*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
-		offset = 2*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;
+		//offset = 1*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
+		//offset = 2*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;
 		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+(bbWidth-1-i)] = COLOR_DARKYELLOW;
-		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_DARKGREEN;
-		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_DARKMAGENTA;
+		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;	//COLOR_DARKGREEN;
+		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;	//COLOR_DARKMAGENTA;
 	}
 
 	// Print user error messages and draw cursor.
