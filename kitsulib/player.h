@@ -30,11 +30,11 @@ namespace klib
 
 	struct SPlayer	// can be AI or human.
 	{
-		int32_t						Money				= 5000;//0x6FFFFFFF;
+		int32_t						Money				= 5000;
 		SCharacterResearch			CompletedResearch	= {};
 		SCharacterEquip				MaxResearch			= {};
 		SCharacterInventory			Inventory			= {};
-		SSquad					Squad				= SSquad();
+		SSquad						Squad				= SSquad();
 		std::vector<CCharacter>		Army				= {};
 		int32_t						Team				= 0;
 

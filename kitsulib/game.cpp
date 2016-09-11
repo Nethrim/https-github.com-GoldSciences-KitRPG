@@ -10,20 +10,20 @@ using namespace klib;
 
 void klib::initTacticalMap(SGame& instanceGame)
 {
-	const uint32_t	terrainWidth = instanceGame.TacticalBoard.Terrain.Topology.Width, 
-					terrainDepth = instanceGame.TacticalBoard.Terrain.Topology.Depth;
+	const uint32_t	terrainWidth = instanceGame.TacticalInfo.Board.Terrain.Topology.Width, 
+					terrainDepth = instanceGame.TacticalInfo.Board.Terrain.Topology.Depth;
 
-	instanceGame.TacticalBoard.Clear();
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {1,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,1},	(int32_t)instanceGame.Seed+3, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0}, 50);
+	instanceGame.TacticalInfo.Board.Clear();
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {1,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,1},	(int32_t)instanceGame.Seed+3, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0}, 50);
 	//fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,0}, (int32_t)instanceGame.Seed+5, {0, 0});
 	
-	int8_t*				cellsOcclusion	= &instanceGame.TacticalBoard.Terrain.Occlusion.Cells[0][0];
-	STopologyHeight*	cellsHeight		= &instanceGame.TacticalBoard.Terrain.Topology.Cells[0][0];
+	int8_t*				cellsCollision	= &instanceGame.TacticalInfo.Board.Terrain.Collision.Cells[0][0];
+	STopologyHeight*	cellsHeight		= &instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[0][0];
 	for(uint32_t i=0, count = terrainDepth*terrainWidth; i<count; i++) {
-		cellsOcclusion[i] = cellsHeight[i].Sharp + cellsHeight[i].Smooth;
+		cellsCollision[i] = cellsHeight[i].Sharp + cellsHeight[i].Smooth;
 	};
 }
 
@@ -32,7 +32,7 @@ void klib::resetGame(SGame& instanceGame)
 	initGame(instanceGame);
 	klib::clearASCIIBackBuffer(' ', 5);
 	instanceGame.ClearDisplays();
-	instanceGame.TacticalBoard.Clear();
+	instanceGame.TacticalInfo.Board.Clear();
 
 	// Set up a nice prompt 
 	uint32_t screenWidth  =	klib::getASCIIBackBufferWidth(),
@@ -89,7 +89,8 @@ void klib::initGame(SGame& instanceGame)
 	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, 1+rand()%10};
 	adventurer.CurrentEquip.StageProp	= {0, 0, 0};
 
-	for(uint32_t i=1; i<8; i++) {
+	for(uint32_t i=1; i<8; i++) 
+	{
 		instanceGame.Player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 		instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 

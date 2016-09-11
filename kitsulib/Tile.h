@@ -44,10 +44,10 @@ namespace klib
 	struct STerrainTiles
 	{
 		SGrid<STopologyHeight	, _Width, _Depth>	Topology	;
-		SGrid<int8_t			, _Width, _Depth>	Occlusion	;	//	This value defines wether the terrain blocks the sight up to a given height.
+		SGrid<int8_t			, _Width, _Depth>	Collision	;	//	This value defines wether the terrain blocks the sight up to a given height.
 		void Clear() {
 			clearGrid(Topology	, STopologyHeight({0, 0}));
-			clearGrid(Occlusion	, (int8_t)0);
+			clearGrid(Collision	, (int8_t)0);
 		}
 	};
 

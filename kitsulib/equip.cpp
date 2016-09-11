@@ -85,7 +85,7 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1 && GAME_SUBSTATE_CHARACTER != instanceGame.State.Substate)
 		menuTitle = player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ": ";
 	else if(player.Selection.PlayerUnit != -1)
-		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": ";
+		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1);
 
 	switch(instanceGame.State.Substate)
 	{
@@ -93,7 +93,7 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	case GAME_SUBSTATE_STAGEPROP	:	menuTitle += "Stage Prop"	;	for(iSlot=0, itemCount=player.Inventory.StageProp	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getStagePropName		(player.Inventory.StageProp		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_FACILITY		:	menuTitle += "Facility"		;	for(iSlot=0, itemCount=player.Inventory.Facility	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getFacilityName			(player.Inventory.Facility		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_VEHICLE		:	menuTitle += "Vehicle"		;	for(iSlot=0, itemCount=player.Inventory.Vehicle		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getVehicleName			(player.Inventory.Vehicle		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
-	case GAME_SUBSTATE_PROFESSION	:	menuTitle += "Profession"	;	for(iSlot=0, itemCount=player.Inventory.Profession	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getProfessionName		(player.Inventory.Profession	.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
+	case GAME_SUBSTATE_PROFESSION	:	menuTitle += "Job License"	;	for(iSlot=0, itemCount=player.Inventory.Profession	.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getProfessionName		(player.Inventory.Profession	.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_WEAPON		:	menuTitle += "Weapon"		;	for(iSlot=0, itemCount=player.Inventory.Weapon		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getWeaponName			(player.Inventory.Weapon		.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_ARMOR		:	menuTitle += "Armor"		;	for(iSlot=0, itemCount=player.Inventory.Armor		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getArmorName			(player.Inventory.Armor			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
 	case GAME_SUBSTATE_ITEM			:	menuTitle += "Item"			;	for(iSlot=0, itemCount=player.Inventory.Items		.Count; iSlot<itemCount; ++iSlot)	menuItems[iSlot] = { (int32_t)iSlot,	getItemName				(player.Inventory.Items			.Slots[iSlot].Entity)	}; selectedChoice = drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], (size_t)itemCount, menuTitle, menuItems, instanceGame.FrameInput, SHOP_EXIT_VALUE, -1, 40U, false, "Exit this menu");	break;
@@ -162,12 +162,11 @@ void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offset
 {
 	printfToGrid(display_.Screen		, offsetY++, offsetX, LEFT, "-- %s:", entityType.c_str());
 	uint16_t color = COLOR_GREEN;
-	valueToGrid(display_.TextAttributes	, offsetY-1, offsetX, LEFT, &color, 1, 13);
+	valueToGrid(display_.TextAttributes	, offsetY-1, offsetX, LEFT, &color, 1, (int32_t)entityType.size()+4);
 
 	std::string nameAndLevelText = getEntityName(entity, definitions, modifiers) + " Lv. " + std::to_string(entity.Level);	
-	printfToGrid(display_.Screen		, ++offsetY, offsetX, LEFT, "%s", nameAndLevelText.c_str() );
-	color = COLOR_YELLOW;
-	valueToGrid(display_.TextAttributes	, offsetY, offsetX, LEFT, &color, 1, 40);
+	lineToGrid(display_.Screen			, ++offsetY	, offsetX, LEFT, nameAndLevelText.c_str() );
+	valueToGrid(display_.TextAttributes	, offsetY	, offsetX, LEFT, &(color = COLOR_YELLOW), 1, (int32_t)nameAndLevelText.size());
 
 	const SEntityPoints entityPoints = getEntityPoints(entity, definitions, modifiers);
 	offsetY+=2;
@@ -218,7 +217,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 
 		int32_t offsetY = TACTICAL_DISPLAY_YPOS-3, offsetX;
-		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Profession"	);
+		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Job License"	);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon		, definitionsWeapon		, modifiersWeapon		, "Weapon"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, definitionsArmor		, modifiersArmor		, "Armor"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, definitionsAccessory	, modifiersAccessory	, "Accessory"	);
@@ -234,8 +233,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
-		const SMenu<SGameState, size(optionsEquip)> menuEquip(optionsEquip, {GAME_STATE_MENU_SQUAD_SETUP}, menuTitle, std::max(26, (int32_t)menuTitle.size()));
-		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuEquip, instanceGame.FrameInput, instanceGame.State);
+		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsEquip, instanceGame.FrameInput, {GAME_STATE_MENU_SQUAD_SETUP}, instanceGame.State, 30);
 	}
 	else 
 	{

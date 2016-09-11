@@ -182,5 +182,8 @@
     <ClCompile Include="equip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tactical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

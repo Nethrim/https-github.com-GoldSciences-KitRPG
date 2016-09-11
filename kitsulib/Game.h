@@ -67,7 +67,7 @@ namespace klib
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
 		SPlayer						Player, Enemy;
-		STacticalBoard				TacticalBoard		= {};
+		STacticalInfo				TacticalInfo		= {};
 
 		std::string					StateMessage		= "";
 		std::string					UserMessage			= "";

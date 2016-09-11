@@ -39,7 +39,7 @@ void drawStateBackground( SGame& instanceGame )
 
 template <typename... _Args>
 void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-	printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args... );
+	printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args...);
 }
 
 void klib::drawAndPresentGame( SGame& instanceGame )
@@ -56,6 +56,10 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 			, bbHeight	= getASCIIBackBufferHeight();
 	//drawDisplay(instanceGame.MenuDisplay, 0);
 	switch(instanceGame.State.State) { 
+	case GAME_STATE_MENU_ACTION:
+	case GAME_STATE_START_MISSION:
+		drawDisplay(instanceGame.TacticalDisplay.Screen, TACTICAL_DISPLAY_YPOS, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.TacticalDisplay.Width>>1));
+		break;
 	case GAME_STATE_CREDITS:
 		drawCredits(getASCIIBackBuffer(), bbWidth, bbHeight, instanceGame.FrameTimer.LastTimeSeconds, namesSpecialThanks, instanceGame.State);
 	case GAME_STATE_WELCOME_COMMANDER: 
@@ -63,13 +67,18 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_EQUIPMENT: 
 		break;
 	default:
-		drawDisplay(instanceGame.PostEffectDisplay.Screen, 5, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.PostEffectDisplay.Width>>1));
+		drawDisplay(instanceGame.PostEffectDisplay.Screen, TACTICAL_DISPLAY_YPOS, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.PostEffectDisplay.Width>>1));
 	}
 
 	memcpy(getASCIIColorBackBuffer(), &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], instanceGame.GlobalDisplay.TextAttributes.Width*instanceGame.GlobalDisplay.TextAttributes.Depth*sizeof(uint16_t));
 	uint32_t y=0;
 
 	switch(instanceGame.State.State) { 
+	case GAME_STATE_MENU_ACTION:
+	case GAME_STATE_START_MISSION:
+		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.PostEffectDisplay.TextAttributes.Width>>1))], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
+		break;
 	case GAME_STATE_CREDITS:
 	case GAME_STATE_WELCOME_COMMANDER: 
 	case GAME_STATE_MENU_SQUAD_SETUP: 

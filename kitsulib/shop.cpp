@@ -39,7 +39,7 @@ static klib::SMenu<SBuyable, size(menuItemsAccessory	)> menuAccessory	(menuItems
 static klib::SMenu<SBuyable, size(menuItemsStageProp	)> menuStageProp	(menuItemsStageProp		,  {SHOP_EXIT_VALUE},	"Stage Prop"	" a la carte"	, 26);
 static klib::SMenu<SBuyable, size(menuItemsFacility		)> menuFacility		(menuItemsFacility		,  {SHOP_EXIT_VALUE},	"Facility"		" a la carte"	, 26);
 static klib::SMenu<SBuyable, size(menuItemsVehicle		)> menuVehicle		(menuItemsVehicle		,  {SHOP_EXIT_VALUE},	"Vehicle"		" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsProfession	)> menuProfession	(menuItemsProfession	,  {SHOP_EXIT_VALUE},	"Profession"	" a la carte"	, 26);
+static klib::SMenu<SBuyable, size(menuItemsProfession	)> menuProfession	(menuItemsProfession	,  {SHOP_EXIT_VALUE},	"Job License"	" a la carte"	, 26);
 static klib::SMenu<SBuyable, size(menuItemsWeapon		)> menuWeapon		(menuItemsWeapon		,  {SHOP_EXIT_VALUE},	"Weapon"		" a la carte"	, 26);
 static klib::SMenu<SBuyable, size(menuItemsArmor		)> menuArmor		(menuItemsArmor			,  {SHOP_EXIT_VALUE},	"Armor"			" a la carte"	, 26);
 static klib::SMenu<SBuyable, size(menuItemsItem			)> menuItem			(menuItemsItem			,  {SHOP_EXIT_VALUE},	"Item"			" a la carte"	, 26);
@@ -142,7 +142,6 @@ SGameState drawBuy(SGame& instanceGame, const SGameState& returnState)
 	if ( !bDonePrinting ) 
 		return returnState;
 
-	drawBubblesBackground(instanceGame.PostEffectDisplay, instanceGame.FrameTimer.LastTimeSeconds);
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
 		static const SMenu<SGameState, size(optionsBuy)> menuBuy(optionsBuy, {GAME_STATE_WELCOME_COMMANDER}, "Order Menu", 26);

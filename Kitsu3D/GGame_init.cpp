@@ -106,14 +106,14 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 
 	// - Create tile list
 
-	uint32_t gridWidth = m_pGame->TacticalBoard.Width, gridDepth = m_pGame->TacticalBoard.Depth;
+	uint32_t gridWidth = m_pGame->TacticalInfo.Board.Width, gridDepth = m_pGame->TacticalInfo.Board.Depth;
 
 	GGrid2DPOD(STileGeometry) MazeGeometryData(gridWidth, gridDepth);//(m_TerrainBitmaps[0]->nColumnCount, m_TerrainBitmaps[0]->nElementCount/m_TerrainBitmaps[0]->nColumnCount);
 	//if( 0 > buildGeometryMapFromImage( m_TerrainBitmaps[0].get_address(), 0.05f, MazeGeometryData[0] ) ){
 	GPNCO(god, SBuffer) tacticalMap;
 	gcreateBuffer(GDATA_TYPE_UINT8_4, GUSAGE_TEXEL, gridWidth*gridDepth, gridWidth, &tacticalMap);
 
-	const klib::STopologyHeight* topologyCells = &m_pGame->TacticalBoard.Terrain.Topology.Cells[0][0];
+	const klib::STopologyHeight* topologyCells = &m_pGame->TacticalInfo.Board.Terrain.Topology.Cells[0][0];
 	for(uint32_t i=0, count=gridWidth*gridDepth; i<count; ++i)
 		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].Sharp, 0, topologyCells[i].Smooth, 0xFFU);
 

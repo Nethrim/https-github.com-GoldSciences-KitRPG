@@ -86,41 +86,41 @@ namespace klib
 
 	// 4
 	static const klib::SMenuItem<SGameState> optionsResearch[] =
-	{	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_WEAPON		}, "Research new weapons"			}
+	{	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_PROFESSION	}, "Research new jobs"				}
+	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_WEAPON		}, "Research new weapons"			}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_ARMOR		}, "Research new armors"			}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_ACCESSORY	}, "Research new accessories"		}
-	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_PROFESSION	}, "Learn new jobs"					}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_VEHICLE		}, "Research new vehicles"			}
 	,	{ { GAME_STATE_MENU_RESEARCH		, GAME_SUBSTATE_FACILITY	}, "Research new buildings"			}
 	};
 
 	// 5
 	static const klib::SMenuItem<SGameState> optionsInspect[] =
-	{	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_WEAPON		}, "Inspect weapon"					}
+	{	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_PROFESSION	}, "Inspect job license"			}
+	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_WEAPON		}, "Inspect weapon"					}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ARMOR		}, "Inspect armor"					}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ACCESSORY	}, "Inspect accessory"				}
-	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_PROFESSION	}, "Inspect job license"			}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_VEHICLE		}, "Inspect vehicle"				}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_FACILITY	}, "Inspect building"				}
-	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_CHARACTER	}, "Inspect general information"	}
 	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_ITEM		}, "View items"						}
+	,	{ { GAME_STATE_MENU_INSPECT			, GAME_SUBSTATE_CHARACTER	}, "Inspect general information"	}
 	};
 
 	// 6
 	static const klib::SMenuItem<SGameState> optionsSense[] =
-	{	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_WEAPON		}, "Sense weapon"					}
+	{	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_PROFESSION	}, "Sense job license"				}
+	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_WEAPON		}, "Sense weapon"					}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ARMOR		}, "Sense armor"					}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ACCESSORY	}, "Sense accessory"				}
-	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_PROFESSION	}, "Sense job license"				}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_VEHICLE		}, "Sense vehicle"					}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_FACILITY	}, "Sense building"					}
-	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_CHARACTER	}, "Sense general information"		}
 	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_ITEM		}, "Peek items"						}
+	,	{ { GAME_STATE_MENU_SENSE			, GAME_SUBSTATE_CHARACTER	}, "Sense general information"		}
 	};
 
 	// 7
 	static const klib::SMenuItem<SGameState> optionsEquip[] =
-	{	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign job"						}
+	{	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_PROFESSION	}, "Assign job license"				}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_WEAPON		}, "Equip weapon"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ARMOR		}, "Equip armor"					}
 	,	{ { GAME_STATE_MENU_EQUIPMENT		, GAME_SUBSTATE_ACCESSORY	}, "Equip accessory"				}
@@ -132,10 +132,10 @@ namespace klib
 
 	// 8
 	static const klib::SMenuItem<SGameState> optionsBuy[] =
-	{	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_WEAPON		}, "Buy weapons"					}
+	{	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_PROFESSION	}, "Buy job license"				}
+	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_WEAPON		}, "Buy weapons"					}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ARMOR		}, "Buy armors"						}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ACCESSORY	}, "Buy accessories"				}
-	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_PROFESSION	}, "Buy job license"				}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_VEHICLE		}, "Buy vehicles"					}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_FACILITY	}, "Build facilities"				}
 	,	{ { GAME_STATE_MENU_BUY				, GAME_SUBSTATE_ITEM		}, "Buy items"						}
@@ -152,10 +152,10 @@ namespace klib
 
 	// 9
 	static const klib::SMenuItem<SGameState> optionsSell[] =	
-	{	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_WEAPON		}, "Sell weapons"					}
+	{	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_PROFESSION	}, "Sell job license"				}
+	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_WEAPON		}, "Sell weapons"					}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ARMOR		}, "Sell armors"					}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ACCESSORY	}, "Sell accessories"				}
-	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_PROFESSION	}, "Sell job license"				}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_VEHICLE		}, "Sell vehicles"					}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_FACILITY	}, "Dismantle facilities"			}
 	,	{ { GAME_STATE_MENU_SELL			, GAME_SUBSTATE_ITEM		}, "Sell items"						}
@@ -171,6 +171,15 @@ namespace klib
 	,	{ { GAME_STATE_MENU_SELL			}, "Sell items and equipment"	}
 	};
 
+	// 10
+	static const klib::SMenuItem<SGameState> optionsControlCenterMissionInCourse[] = 
+	{	{ { GAME_STATE_START_MISSION		}, "Continue Mission"			}
+	,	{ { GAME_STATE_MENU_SQUAD_SETUP		}, "Set up Squad"				}
+	,	{ { GAME_STATE_MENU_RESEARCH		}, "Visit Labs"					}
+	,	{ { GAME_STATE_MENU_BUY				}, "Buy items and equipment"	}
+	,	{ { GAME_STATE_MENU_SELL			}, "Sell items and equipment"	}
+	};
+
 	enum TURN_ACTION
 	{	TURN_ACTION_ATTACK
 	,	TURN_ACTION_INVENTORY
@@ -179,13 +188,14 @@ namespace klib
 	,	TURN_ACTION_RUN
 	,	TURN_ACTION_CANCEL
 	,	TURN_ACTION_CONTINUE
+	,	TURN_ACTION_MENUS
 	};
 
 	// 11
 	static const klib::SMenuItem<TURN_ACTION> optionsCombatTurn[] =
 	{ { TURN_ACTION_ATTACK		, "Attack"			}
-	, { TURN_ACTION_INVENTORY	, "Inventory"		}
 	, { TURN_ACTION_SKILL		, "Skills"			}
+	, { TURN_ACTION_INVENTORY	, "Inventory"		}
 	, { TURN_ACTION_SENSE		, "Sense"			}
 	, { TURN_ACTION_CANCEL		, "Cancel turn"		}
 	, { TURN_ACTION_RUN			, "Run"				}

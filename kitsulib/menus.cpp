@@ -25,11 +25,12 @@ SGameState processMenuReturn(SGame& instanceGame, TURN_ACTION returnValue)
 	}
 };
 
-SGameState drawSquadSetupMenu	(SGame& instanceGame, const SGameState& returnValue);
+SGameState drawSquadSetupMenu	(SGame& instanceGame, const SGameState& returnState);
 SGameState drawResearch			(SGame& instanceGame, const SGameState& returnState);
-SGameState drawWelcome			(SGame& instanceGame, const SGameState& returnValue);
+SGameState drawWelcome			(SGame& instanceGame, const SGameState& returnState);
 SGameState drawBuy				(SGame& instanceGame, const SGameState& returnState);
 SGameState drawEquip			(SGame& instanceGame, const SGameState& returnState);
+SGameState drawTacticalScreen	(SGame& instanceGame, const SGameState& returnState);
 
 void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState) 
 {
@@ -101,7 +102,6 @@ void updateState(SGame& instanceGame, const SGameState& newState)
 		instanceGame.State.Substate	= newState.Substate;
 		handleSubstateChange(instanceGame, instanceGame.State, instanceGame.PreviousState);
 	}
-
 }
 
 void klib::showMenu(SGame& instanceGame) {
@@ -126,8 +126,8 @@ void klib::showMenu(SGame& instanceGame) {
 		break;
 
 	case GAME_STATE_MENU_OPTIONS		:	instanceGame.StateMessage	= menuConfig		.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuConfig		, instanceGame.FrameInput, instanceGame.State ));	break;
-	case GAME_STATE_START_MISSION		:	instanceGame.StateMessage	= menuMainInGame	.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuMainInGame	, instanceGame.FrameInput, instanceGame.State ));	break;
 	case GAME_STATE_MENU_SELL			:	instanceGame.StateMessage	= menuSell			.Title	;	newAction = processMenuReturn(instanceGame, drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuSell			, instanceGame.FrameInput, instanceGame.State ));	break;
+	case GAME_STATE_START_MISSION		:	instanceGame.StateMessage	= "Tactical Turn"			;	newAction = processMenuReturn(instanceGame, drawTacticalScreen	(instanceGame, instanceGame.State));	break;
 	case GAME_STATE_MENU_EQUIPMENT		:	instanceGame.StateMessage	= "Equipment Setup"			;	newAction = processMenuReturn(instanceGame, drawEquip			(instanceGame, instanceGame.State));	break;
 	case GAME_STATE_MENU_SQUAD_SETUP	:	instanceGame.StateMessage	= "Squad Setup"				;	newAction = processMenuReturn(instanceGame, drawSquadSetupMenu	(instanceGame, instanceGame.State));	break;
 	case GAME_STATE_WELCOME_COMMANDER	:	instanceGame.StateMessage	= "Welcome Commander"		;	newAction = processMenuReturn(instanceGame, drawWelcome			(instanceGame, instanceGame.State));	break;

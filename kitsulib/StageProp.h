@@ -10,7 +10,6 @@ namespace klib
 #pragma pack(push, 1)
 static const CRecordStageProp modifiersStageProp	[]	= 
 {	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"%s"			}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Light %s"		}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Reinforced %s"	}
 };															
 															

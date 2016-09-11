@@ -25,6 +25,11 @@ namespace klib
 		return valueToRect(rectangleTopLeft, width, height, offsetLine, offsetColumn, align, precookStr, precookLen);
 	}
 
+	template <size_t _ArraySize>
+	void resetCursorString(char (&textContainer)[_ArraySize]) {
+		textContainer[textContainer[1] = 0] = '_';
+	}
+
 	// returns true if done printing all the text.
 	template <size_t _Size> 
 	bool getMessageSlow(char (&message)[_Size], const char* textToPrint, size_t sizeToPrint, double lastFrameSeconds)
@@ -33,6 +38,11 @@ namespace klib
 		static uint32_t tickCount=0;
 
 		int32_t mesLen = (int32_t)strlen(message);
+		if(memcmp(message, textToPrint, std::max((size_t)0, std::min(sizeToPrint, (size_t)mesLen-1)))) {
+			resetCursorString(message);
+			mesLen = (int32_t)strlen(message);
+		}
+
 		mesLen = ((mesLen+1) > (_Size-1)) ? _Size-2 : mesLen;
 
 		nextTick	+= (float)lastFrameSeconds;
@@ -59,10 +69,6 @@ namespace klib
 		return getMessageSlow(message, textToPrint.c_str(), textToPrint.size(), lastFrameSeconds);
 	}
 
-	template <size_t _ArraySize>
-	void resetCursorString(char (&textContainer)[_ArraySize]) {
-		textContainer[textContainer[1] = 0] = '_';
-	}
 
 } // namespace
 

@@ -217,6 +217,7 @@
     <ClCompile Include="research.cpp" />
     <ClCompile Include="shop.cpp" />
     <ClCompile Include="squad.cpp" />
+    <ClCompile Include="tactical.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
