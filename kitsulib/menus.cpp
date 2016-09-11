@@ -39,6 +39,16 @@ void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const
 	//instanceGame.PostEffectDisplay	.Clear();	
 	clearGrid(instanceGame.MenuDisplay);
 
+	switch(newState.State)
+	{
+	case GAME_STATE_MENU_OPTIONS:
+		switch(newState.Substate)
+		{
+		case GAME_SUBSTATE_HOTKEY:		instanceGame.UserError = "This function isn't available!";
+		case GAME_SUBSTATE_SCREEN:		instanceGame.UserError = "This function isn't available!";
+		}
+	}
+
 	//resetCursorString(instanceGame.SlowMessage);	we shuold leave this out unless it becomes a need. This is because it turns screen transitions into an annoyance.
 }
 
@@ -70,6 +80,7 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		else
 			instanceGame.StateMessage = "Welcome back commander";
 
+	case GAME_STATE_MENU_OPTIONS:		instanceGame.StateMessage = "Options";		
 	case GAME_STATE_MENU_SQUAD_SETUP:	instanceGame.StateMessage = "Squad Setup";	break;
 	case GAME_STATE_CREDITS:			instanceGame.StateMessage = "Credits";		break;
 	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";		break;

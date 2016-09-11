@@ -85,30 +85,30 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
 	lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
 	lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());
-	//lineToScreen(bbHeight-3, 1, LEFT, "sizeof(SGame): %u.", sizeof(SGame));
-	//lineToScreen(bbHeight-2, 1, LEFT, "sizeof(CCharacter): %u.", sizeof(CCharacter));
 	for(uint32_t i=0, count = 32U; i<count; i++) {
-		//offset = 1*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
-		//offset = 2*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;
 		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+(bbWidth-1-i)] = COLOR_DARKYELLOW;
 		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;	//COLOR_DARKGREEN;
 		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;	//COLOR_DARKMAGENTA;
 	}
 
-	uint16_t color = COLOR_YELLOW;
 	// Print user error messages and draw cursor.
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {
+		uint16_t color = COLOR_YELLOW;
 		lineToScreen(bbHeight-4, 1, RIGHT, "Funds: %i.", instanceGame.Player.Money);
 		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, 21, RIGHT, &color, 1, 20);
-		lineToScreen(bbHeight-3, 0, CENTER, "%s", instanceGame.UserMessage.c_str());
-		lineToScreen(bbHeight-2, 0, CENTER, "%s", instanceGame.UserError.c_str());
-		offset = (bbHeight-3)*bbWidth+(bbWidth>>1)-(instanceGame.UserMessage	.size()>>1);	for(size_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
-		offset = (bbHeight-2)*bbWidth+(bbWidth>>1)-(instanceGame.UserError		.size()>>1);	for(size_t i=0, count = instanceGame.UserError	.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_RED;
-		// Draw cursor
-		lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x8");
-		getASCIIColorBackBuffer()[instanceGame.FrameInput.MouseY*bbWidth+instanceGame.FrameInput.MouseX] = COLOR_MAGENTA;
-	}
 
+		lineToScreen(bbHeight-3, 0, CENTER, "%s", instanceGame.UserMessage.c_str());
+		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, -((int32_t)instanceGame.UserMessage.size()/2), CENTER, &(color = COLOR_GREEN), 1, (int32_t)instanceGame.UserMessage.size());
+
+		lineToScreen(bbHeight-2, 0, CENTER, "%s", instanceGame.UserError.c_str());
+		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, -((int32_t)instanceGame.UserError.size()/2), CENTER, &(color = COLOR_RED), 1, (int32_t)instanceGame.UserError.size());
+
+		// Draw cursor
+		int32_t mouseX = instanceGame.FrameInput.MouseX, mouseY = instanceGame.FrameInput.MouseY;
+		lineToScreen(mouseY, mouseX, LEFT, "\x8");
+		//valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, mouseY, mouseX, LEFT, &(color = COLOR_MAGENTA), 1);
+		getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] = COLOR_MAGENTA;
+	}
 	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
 	presentASCIIBackBuffer();
 }; 	// 
@@ -134,15 +134,16 @@ void drawIntro( SGame& instanceGame )
 SGameState drawWelcome(SGame& instanceGame, const SGameState& returnValue)
 {
 	const std::string textToPrint = "Welcome back commander " + instanceGame.Player.Name + ".";
-	int32_t lineOffset		= (instanceGame.GlobalDisplay.Screen.Depth>>1)-1;
-	int32_t columnOffset	= instanceGame.GlobalDisplay.Screen.Width/2-(int32_t)textToPrint.size()/2;
+	SGlobalDisplay& display = instanceGame.GlobalDisplay;
+	int32_t lineOffset		= (display.Screen.Depth>>1)-1;
+	int32_t columnOffset	=  display.Screen.Width/2-(int32_t)textToPrint.size()/2;
 
 	bool bDonePrinting = getMessageSlow(instanceGame.SlowMessage, textToPrint, instanceGame.FrameTimer.LastTimeSeconds);
-	columnOffset = printfToGrid(instanceGame.GlobalDisplay.Screen, lineOffset, columnOffset, klib::LEFT, "%s", instanceGame.SlowMessage);
-	for(size_t i=0, charCount = textToPrint.size()+2; i<charCount; i++) instanceGame.GlobalDisplay.TextAttributes.Cells[lineOffset][columnOffset+i] = COLOR_GREEN;
+	columnOffset = printfToGrid(display.Screen, lineOffset, columnOffset, klib::LEFT, "%s", instanceGame.SlowMessage);
+	for(size_t i=0, charCount = textToPrint.size()+2; i<charCount; i++) display.TextAttributes.Cells[lineOffset][columnOffset+i] = COLOR_GREEN;
 	if ( bDonePrinting ) {
-		static SMenu<SGameState, size(optionsControlCenter)> menuControlCenter(optionsControlCenter, {GAME_STATE_MENU_MAIN}, "Options", 28);
-		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuControlCenter, instanceGame.FrameInput, returnValue);
+		static SMenu<SGameState, size(optionsControlCenter)> menuControlCenter(optionsControlCenter, {GAME_STATE_MENU_MAIN}, "Control Center", 28);
+		return drawMenu(display.Screen, &display.TextAttributes.Cells[0][0], menuControlCenter, instanceGame.FrameInput, returnValue);
 	}
 	return returnValue;
 };
