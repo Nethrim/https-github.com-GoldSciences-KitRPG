@@ -176,6 +176,7 @@
     <ClInclude Include="CombatStatus.h" />
     <ClInclude Include="credits.h" />
     <ClInclude Include="draw.h" />
+    <ClInclude Include="drawMenu.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityHelper.h" />

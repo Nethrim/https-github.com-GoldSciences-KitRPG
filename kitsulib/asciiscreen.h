@@ -1,6 +1,4 @@
-#include "text.h"
-
-#include <algorithm>
+#include <cstdint>
 
 #ifndef __ASCIISCREEN_H__20983472903740928374234__
 #define __ASCIISCREEN_H__20983472903740928374234__
@@ -29,10 +27,7 @@ namespace klib
 	void presentASCIIFrontBuffer( void );
 	void presentASCIIBackBuffer( void );
 
-	template <typename... _Args>
-	void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-		printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args... );
-	}
+
 };
 
 #endif // __ASCIISCREEN_H__20983472903740928374234__

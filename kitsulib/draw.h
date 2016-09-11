@@ -304,11 +304,6 @@ namespace klib
 		return drawCredits(&display.Cells[0][0], _Width, _Depth, lastFrameTime, namesCredits, returnValue);
 	}
 
-	template<size_t _LineCount>
-	SGameState drawCredits(double lastFrameTime, const std::string (&namesCredits)[_LineCount], const SGameState& returnValue) {
-		return drawCredits(getASCIIBackBuffer(), getASCIIBackBufferWidth(), getASCIIBackBufferHeight(), lastFrameTime, namesCredits, returnValue);
-	}
-
 	void drawAndPresentGame( SGame& instanceGame );
 
 } // namespace

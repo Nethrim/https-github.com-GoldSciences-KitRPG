@@ -37,6 +37,11 @@ void drawStateBackground( SGame& instanceGame )
 	}
 }
 
+template <typename... _Args>
+void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
+	printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args... );
+}
+
 void klib::drawAndPresentGame( SGame& instanceGame )
 {
 	static STimer frameMeasure;
@@ -47,10 +52,12 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	showMenu(instanceGame);
 
 	drawDisplay(instanceGame.GlobalDisplay.Screen, 0, 0);
+	uint32_t  bbWidth	= getASCIIBackBufferWidth()
+			, bbHeight	= getASCIIBackBufferHeight();
 	//drawDisplay(instanceGame.MenuDisplay, 0);
 	switch(instanceGame.State.State) { 
 	case GAME_STATE_CREDITS:
-		drawCredits(instanceGame.FrameTimer.LastTimeSeconds, namesSpecialThanks, instanceGame.State);
+		drawCredits(getASCIIBackBuffer(), bbWidth, bbHeight, instanceGame.FrameTimer.LastTimeSeconds, namesSpecialThanks, instanceGame.State);
 	case GAME_STATE_WELCOME_COMMANDER: 
 	case GAME_STATE_MENU_SQUAD_SETUP: 
 	case GAME_STATE_MENU_EQUIPMENT: 
@@ -61,8 +68,6 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 
 	memcpy(getASCIIColorBackBuffer(), &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], instanceGame.GlobalDisplay.TextAttributes.Width*instanceGame.GlobalDisplay.TextAttributes.Depth*sizeof(uint16_t));
 	uint32_t y=0;
-	uint32_t  bbWidth	= getASCIIBackBufferWidth()
-			, bbHeight	= getASCIIBackBufferHeight();
 
 	switch(instanceGame.State.State) { 
 	case GAME_STATE_CREDITS:

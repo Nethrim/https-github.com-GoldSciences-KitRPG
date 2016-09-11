@@ -42,11 +42,8 @@ void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const
 	switch(newState.State)
 	{
 	case GAME_STATE_MENU_OPTIONS:
-		switch(newState.Substate)
-		{
-		case GAME_SUBSTATE_HOTKEY:		instanceGame.UserError = "This function isn't available!";
-		case GAME_SUBSTATE_SCREEN:		instanceGame.UserError = "This function isn't available!";
-		}
+	case GAME_STATE_MENU_SELL:
+		instanceGame.UserError = "This function isn't available!";
 	}
 
 	//resetCursorString(instanceGame.SlowMessage);	we shuold leave this out unless it becomes a need. This is because it turns screen transitions into an annoyance.
@@ -150,7 +147,7 @@ void klib::showMenu(SGame& instanceGame) {
 
 	default:
 		newAction.State = (GAME_STATE)-1;
-		klib::lineToScreen(klib::getASCIIBackBufferHeight()-2, 1, klib::RIGHT, "%s.", "Unrecognized game state!!");
+		instanceGame.StateMessage = "Unrecognized game state!!";
 	}			
 
 	updateState(instanceGame, newAction);
