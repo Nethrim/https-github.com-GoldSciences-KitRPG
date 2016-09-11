@@ -95,10 +95,13 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;	//COLOR_DARKMAGENTA;
 	}
 
+	uint16_t color = COLOR_YELLOW;
 	// Print user error messages and draw cursor.
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {
-		lineToScreen(bbHeight-3, 1, CENTER, "%s", instanceGame.UserMessage.c_str());
-		lineToScreen(bbHeight-2, 1, CENTER, "%s", instanceGame.UserError.c_str());
+		lineToScreen(bbHeight-4, 1, RIGHT, "Funds: %i.", instanceGame.Player.Money);
+		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, 21, RIGHT, &color, 1, 20);
+		lineToScreen(bbHeight-3, 0, CENTER, "%s", instanceGame.UserMessage.c_str());
+		lineToScreen(bbHeight-2, 0, CENTER, "%s", instanceGame.UserError.c_str());
 		offset = (bbHeight-3)*bbWidth+(bbWidth>>1)-(instanceGame.UserMessage	.size()>>1);	for(size_t i=0, count = instanceGame.UserMessage.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;
 		offset = (bbHeight-2)*bbWidth+(bbWidth>>1)-(instanceGame.UserError		.size()>>1);	for(size_t i=0, count = instanceGame.UserError	.size()+1; i<count; i++)	getASCIIColorBackBuffer()[offset+i] = COLOR_RED;
 		// Draw cursor

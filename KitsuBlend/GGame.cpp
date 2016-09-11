@@ -24,7 +24,7 @@ error_t	CGGame::UpdateChessStuff( float fElapsedTime )
 	const uint32_t width = klib::STacticalBoard::Width, depth = klib::STacticalBoard::Depth;
 	for( uint32_t iPlayer=0; iPlayer < MAX_PLAYERS; iPlayer++ )
 	{
-		for( uint32_t iUnit=0; iUnit < klib::SGameSquad::Size; iUnit++ )
+		for( uint32_t iUnit=0; iUnit < klib::SSquad::Size; iUnit++ )
 		{
 			SChessPiece* pUnit = &m_CurrentGameFrame.PlayerInfo[iPlayer].Pieces[iUnit];
 			SPointL pos = pUnit->Position;
@@ -153,7 +153,7 @@ void CGGame::ResetBoard( void )
 		m_CurrentGameFrame.PlayerInfo[iPlayer].bKingMoved = m_CurrentGameFrame.PlayerInfo[iPlayer].bRooksMoved[0] = m_CurrentGameFrame.PlayerInfo[iPlayer].bRooksMoved[1] = false;
 		m_CurrentGameFrame.PlayerInfo[iPlayer].TeamID = iPlayer;
 		SChessPiece* p = m_CurrentGameFrame.PlayerInfo[iPlayer].Pieces;
-		for( uint32_t iPiece=0; iPiece<klib::SGameSquad::Size; iPiece++ )
+		for( uint32_t iPiece=0; iPiece<klib::SSquad::Size; iPiece++ )
 		{
 			x = 4;
 			z = iPlayer ? (depth-1) : 0;
@@ -194,7 +194,7 @@ void CGGame::NextUnit( bool bReverse )
 	bool bValidUnitAvailable = false;
 	int32_t nFirstValidUnitAvailable = -1;
 
-	for( uint32_t i=0; i<klib::SGameSquad::Size; i++ )
+	for( uint32_t i=0; i<klib::SSquad::Size; i++ )
 		if( m_ActivePlayer->Pieces[i].Alive )
 		{
 			bValidUnitAvailable = true;
@@ -340,7 +340,7 @@ error_t CGGame::MoveUnitCursor( SPointL& cursorDeltas )
 		memset( &m_FutureGameFrameFromCursor.Board.Units.Cells[0][0], 0, sizeof(m_FutureGameFrameFromCursor.Board.Units) );
 		for( uint32_t iPlayer=0; iPlayer<MAX_PLAYERS; iPlayer++ )
 		{
-			for( uint32_t iPiece=0; iPiece<klib::SGameSquad::Size; iPiece++ )
+			for( uint32_t iPiece=0; iPiece<klib::SSquad::Size; iPiece++ )
 			{
 				SChessPiece* pPiece = &m_FutureGameFrameFromCursor.PlayerInfo[iPlayer].Pieces[iPiece];
 				if( !pPiece->Alive )

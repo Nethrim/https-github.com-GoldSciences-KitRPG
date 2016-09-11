@@ -23,7 +23,7 @@ bool equipIfResearched
 ,	std::vector<CCharacter>& playerArmy
 ,	SEntityContainer<_EntityType, _MaxSlots>& playerInventory
 ,	_EntityType& agentEquippedEntity
-,	const SGameSquad& playerSquad
+,	const SSquad& playerSquad
 ,	const SPlayerSelection& playerSelection
 ,	const SResearchGroup<_EntityType>& playerCompletedResearch
 ,	const SEntityRecord<_EntityType> (&entityDefinitions)	[_SizeDefinitions]
@@ -192,6 +192,10 @@ void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offset
 
 	nameAndLevelText = std::to_string		(entityPoints.Coins							);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Coins per turn"			, nameAndLevelText.c_str());
 	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+	nameAndLevelText = std::to_string		(entityPoints.PriceBuy/2					);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Sell Price"				, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+	nameAndLevelText = std::to_string		(entityPoints.CostMaintenance				);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Maintenance Cost"		, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 }
 
 
@@ -213,7 +217,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 		static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
 		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 
-		int32_t offsetY = TACTICAL_DISPLAY_YPOS-2, offsetX;
+		int32_t offsetY = TACTICAL_DISPLAY_YPOS-3, offsetX;
 		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Profession"	);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon		, definitionsWeapon		, modifiersWeapon		, "Weapon"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, definitionsArmor		, modifiersArmor		, "Armor"		);

@@ -336,7 +336,7 @@ god::error_t god::CGGame::InitChessPlayerUnits()
 		GPtrPODX(SEntity) edata(onCreateDefaultSEntity,0,0);
 		edata.create();
 		GPtrNCO(IGVideoProgram) shader;
-		for( uint32_t iPiece=0; iPiece < klib::SGameSquad::Size; iPiece++ )
+		for( uint32_t iPiece=0; iPiece < klib::SSquad::Size; iPiece++ )
 		{
 			PIECECLASS_TYPE pieceClass = KING;
 			if( iPiece < 8 )

@@ -113,6 +113,8 @@ namespace klib
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 			nameAndLevelText = std::to_string		(agentFinalPoints.Coins							);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Coins per turn"		, nameAndLevelText.c_str());
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+			nameAndLevelText = std::to_string		(agentFinalPoints.CostMaintenance				);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Maintenance Cost"		, nameAndLevelText.c_str());
+			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 		}
 	}
 }

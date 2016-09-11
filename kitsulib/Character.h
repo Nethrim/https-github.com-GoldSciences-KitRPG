@@ -69,7 +69,6 @@ namespace klib
 	struct SCharacter	//: public SEquip<_EntityType>
 	{
 		CHARACTER_TYPE			Type			= CHARACTER_TYPE_UNKNOWN;
-		int32_t					Team			= 0;
 		//_EntityType				Entity			= {0,0,1};
 
 		SEntityPoints			Points			= SEntityPoints();	

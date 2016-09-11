@@ -21,7 +21,7 @@ namespace klib
 
 	// The difference between SItemTile and SEntity is that SEntity member values must be always valid whereas these can be -1.
 	// Setting IndexDefinition to -1 will effectively disable the tile whereas setting only Modifier or Level to -1 must default to 0 when converting to an SEntity.
-	struct SItemTile {
+	struct SPropTile {
 		int16_t		Definition	;
 		int16_t		Modifier	;
 		int16_t		Level		;
@@ -54,12 +54,14 @@ namespace klib
 	template <size_t _Width, size_t _Depth> 
 	struct SEntityTiles
 	{
-		SGrid<SCharacterTile, _Width, _Depth>		Agents;
-		SGrid<SItemTile		, _Width, _Depth>		Items;
+		SGrid<SCharacterTile, _Width, _Depth>		Agents;	
+		SGrid<SPropTile		, _Width, _Depth>		Props;	
+		SGrid<int32_t		, _Width, _Depth>		Coins;	
 
 		void Clear() {
 			clearGrid(	Agents	, {-1, -1, -1} );
-			clearGrid(	Items	, {-1, 0, 0, 0} );
+			clearGrid(	Props	, {-1, -1, -1, -1} );
+			clearGrid(	Coins	, 0 );
 		}
 	};
 

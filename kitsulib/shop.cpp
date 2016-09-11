@@ -104,6 +104,17 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 
 	SPlayer& player = instanceGame.Player;
 
+	if(selectedChoice.Price > player.Money)
+	{
+		instanceGame.UserMessage	= "";
+		instanceGame.UserError		= "You don't have enough money for " + selectedChoice.Name + "!!";
+		return retVal;
+	}
+	else
+		instanceGame.UserError		= "";
+
+	player.Money -= selectedChoice.Price;
+
 	switch(instanceGame.State.Substate)
 	{
 	case GAME_SUBSTATE_ACCESSORY	:	player.Inventory.Accessory	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;

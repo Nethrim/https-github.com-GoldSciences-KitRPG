@@ -57,10 +57,10 @@ struct SPlayer
 {
 	bool			bRooksMoved[2];
 	bool			bKingMoved;
-	SChessPiece		Pieces[klib::SGameSquad::Size];
+	SChessPiece		Pieces[klib::SSquad::Size];
 	god::id_t		TeamID;
 	god::GCOLOR		Color;
-	god::gelementaryex2_old<god::SPointL, god::GDATA_TYPE_INT32_2, god::GUSAGE_POSITION>	AvailablePositions[klib::SGameSquad::Size];	// hold for each piece, the list of valid positions to move to
+	god::gelementaryex2_old<god::SPointL, god::GDATA_TYPE_INT32_2, god::GUSAGE_POSITION>	AvailablePositions[klib::SSquad::Size];	// hold for each piece, the list of valid positions to move to
 };
 
 struct SGameFrame

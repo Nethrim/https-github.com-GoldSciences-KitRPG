@@ -1,12 +1,33 @@
 #include "Player.h"
 #include "Tile.h"
 #include "menus.h"
+#include <vector>
 
 #ifndef __GAME_H__91827309126391263192312312354__
 #define __GAME_H__91827309126391263192312312354__
 
 namespace klib
 {
+
+#define GAME_MAP_DEPTH	36
+#define GAME_MAP_WIDTH	(GAME_MAP_DEPTH*2)
+
+	typedef SGameTiles<GAME_MAP_WIDTH, GAME_MAP_DEPTH>		STacticalBoard;
+	
+	struct STacticalInfo
+	{
+		STacticalBoard								Board;
+
+		std::vector<SProfession	>					Profession	;
+		std::vector<SAccessory	>					Accessory	;
+		std::vector<SArmor		>					Armor		;
+		std::vector<SWeapon		>					Weapon		;
+		std::vector<SVehicle	>					Vehicle		;
+		std::vector<SFacility	>					Facility	;
+		std::vector<SStageProp	>					StageProp	;
+		std::vector<SItem		>					Items		;
+	};
+
 	template<size_t _Width, size_t _Depth>	struct SGridConsoleAttribute	: public SGrid<uint16_t	, _Width, _Depth>	{};
 	template<size_t _Width, size_t _Depth>	struct SGridConsoleText			: public SGrid<char		, _Width, _Depth>	{};
 	
@@ -32,10 +53,6 @@ namespace klib
 		};
 	};
 
-#define GAME_MAP_DEPTH	36
-#define GAME_MAP_WIDTH	(GAME_MAP_DEPTH*2)
-
-	typedef SGameTiles<GAME_MAP_WIDTH, GAME_MAP_DEPTH>									STacticalBoard		;
 	typedef	SWeightedDisplay<DEFAULT_ASCII_SCREEN_WIDTH, DEFAULT_ASCII_SCREEN_HEIGHT>	SGlobalDisplay		;
 	typedef SWeightedDisplay<STacticalBoard::Width, STacticalBoard::Depth>				STacticalDisplay	;
 	typedef SWeightedDisplay<STacticalBoard::Width, STacticalBoard::Depth>				SPostEffectDisplay	;

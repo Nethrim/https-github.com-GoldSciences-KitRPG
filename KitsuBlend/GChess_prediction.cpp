@@ -310,7 +310,7 @@ gepos2i	calculateAvailablePositionsKing	( const SChessPiece* pawnPiece, uint32_t
 template<typename _CellType, size_t _Width, size_t _Depth>
 error_t calculateAvailablePositionsForPlayer( const SPlayer* playerInfo, const klib::SGrid<_CellType, _Width, _Depth>& unitMap, gepos2i* out_AvailablePositions )
 { 
-	const uint32_t agentCount = klib::SGameSquad::Size;
+	const uint32_t agentCount = klib::SSquad::Size;
 	for( uint32_t iUnit=0; iUnit<agentCount; iUnit++ )
 	{
 		const SChessPiece* playerUnit = &playerInfo->Pieces[iUnit];
@@ -350,7 +350,7 @@ bool isThreatenedPosition( id_t ThreatenedTeamID, const SPlayer* FuturePlayers, 
 	{
 		if( iPlayer == ThreatenedTeamID )
 			continue;
-		for( uint32_t iPiece =0; iPiece<klib::SGameSquad::Size; iPiece++ )
+		for( uint32_t iPiece =0; iPiece<klib::SSquad::Size; iPiece++ )
 		{
 			if( !FuturePlayers[iPlayer].Pieces[iPiece].Alive )
 				continue;

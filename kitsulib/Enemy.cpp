@@ -45,7 +45,6 @@ void klib::setupAgent(const CCharacter& adventurer, CCharacter& currentEnemy, in
 	// 
 	currentEnemy.MaxEquip = currentEnemy.CurrentEquip;
 
-	SEntityPoints finalEnemyPoints			= calculateFinalPoints(currentEnemy);
+	const SEntityPoints finalEnemyPoints	= calculateFinalPoints(currentEnemy);
 	currentEnemy.Points.LifeCurrent			= finalEnemyPoints.LifeMax;
-	currentEnemy.Team						= teamId;
 }

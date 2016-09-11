@@ -20,7 +20,7 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 
 	SPlayer& player = instanceGame.Player;
 
-	int32_t playerOffset = (player.Selection.PlayerUnit != -1) ? std::min(std::max(0, player.Selection.PlayerUnit-1), SGameSquad::Size-6) : 0;
+	int32_t playerOffset = (player.Selection.PlayerUnit != -1) ? std::min(std::max(0, player.Selection.PlayerUnit-1), SSquad::Size-6) : 0;
 
 	for(int32_t y=0, countY=MAX_AGENT_ROWS; y<countY; ++y)
 	{
@@ -29,7 +29,7 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 			int32_t linearIndex			= y*countX+x;
 			int32_t agentIndexOffset	= linearIndex+playerOffset;
 			
-			if(agentIndexOffset < SGameSquad::Size) {
+			if(agentIndexOffset < SSquad::Size) {
 				if( player.Squad.Agents[agentIndexOffset] != -1 )
 					displayAgentSlot(display, offsetYBase+slotRowSpace*y, offsetXBase+slotWidth*x, agentIndexOffset+1, player.Army[player.Squad.Agents[agentIndexOffset]], true);
 				else											 
@@ -45,7 +45,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 
 	SPlayer& player = instanceGame.Player;
 
-	static SMenuItem<int32_t> menuItems[SGameSquad::Size] = {};
+	static SMenuItem<int32_t> menuItems[SSquad::Size] = {};
 	static int32_t maxNameLen = 0;
 	for(uint32_t i=0, count=(uint32_t)size(menuItems); i<count; i++) 
 	{
@@ -62,11 +62,11 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 		}
 	}
 
-	int32_t result = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], "Squad setup", menuItems, instanceGame.FrameInput, SGameSquad::Size, -1, std::max(24, maxNameLen+4));
-	if(SGameSquad::Size == result)
+	int32_t result = drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], "Squad setup", menuItems, instanceGame.FrameInput, SSquad::Size, -1, std::max(24, maxNameLen+4));
+	if(SSquad::Size == result)
 		return {GAME_STATE_WELCOME_COMMANDER};
 
-	if( result < 0 || result >= SGameSquad::Size )
+	if( result < 0 || result >= SSquad::Size )
 		return {GAME_STATE_MENU_SQUAD_SETUP};
 
 	player.Selection.PlayerUnit = result;
