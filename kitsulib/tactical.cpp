@@ -214,7 +214,7 @@ void deployAgents
 					|| terrainEntities.Props	.Cells	[agentPosition.z][agentPosition.x].Definition	!= -1 
 					)
 				{
-					agentPosition.x = 1+(int32_t)(rangeX * noiseNormal((1+iAgent)*agentPosition.z, seed)	);
+					agentPosition.x = 1+(int32_t)(rangeX * noiseNormal((1+iAgent)*agentPosition.z, seed+rangeZ)	);
 					agentPosition.z = 1+(int32_t)(rangeZ * noiseNormal(((1+iAgent)<<16)*agentPosition.x, seed<<8)	);
 					if(playerIndex == PLAYER_ENEMY) 
 					{
@@ -301,4 +301,11 @@ void klib::initTacticalMap(SGame& instanceGame)
 
 	deployAgents(instanceGame.Players[PLAYER_USER]	, 0, terrainTopology, terrainEntities, seed);
 	deployAgents(instanceGame.Players[PLAYER_ENEMY]	, 1, terrainTopology, terrainEntities, seed*seed);
+	drawTacticalInfo(instanceGame.TacticalInfo, instanceGame.PostEffectDisplay, instanceGame.Players[PLAYER_NEUTRAL].Selection);
 }
+
+void klib::drawTacticalMap(SGame& instanceGame, SPostEffectDisplay& target)
+{
+	drawTacticalInfo(instanceGame.TacticalInfo, target, instanceGame.Players[PLAYER_NEUTRAL].Selection);
+}
+

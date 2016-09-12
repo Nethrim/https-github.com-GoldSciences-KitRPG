@@ -26,6 +26,20 @@ namespace klib
 		std::vector<SFacility	>					Facility	;
 		std::vector<SStageProp	>					StageProp	;
 		std::vector<SItem		>					Items		;
+
+		void Clear()
+		{
+			Board.Clear();
+
+			Profession	.clear();
+			Accessory	.clear();
+			Armor		.clear();
+			Weapon		.clear();
+			Vehicle		.clear();
+			Facility	.clear();
+			StageProp	.clear();
+			Items		.clear();
+		}
 	};
 
 	template<size_t _Width, size_t _Depth>	struct SGridConsoleAttribute	: public SGrid<uint16_t	, _Width, _Depth>	{};
@@ -105,6 +119,7 @@ namespace klib
 	void resetGame(SGame& instanceGame);
 	void showMenu(SGame& instanceGame);
 	void initTacticalMap(SGame& instanceGame);
+	void drawTacticalMap(SGame& instanceGame, SPostEffectDisplay& target);
 
 
 } // namespace 

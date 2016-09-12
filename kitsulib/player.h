@@ -10,7 +10,7 @@ namespace klib
 #define MAX_AGENT_SLOTS 8
 		static const int32_t		Size = MAX_AGENT_SLOTS;
 
-		int16_t						Agents[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
+		int16_t						Agents[MAX_AGENT_SLOTS] = {0, 1, 2, 3, -1, -1, -1, -1};
 	
 		inline void					Clear(int32_t index) {
 			if(index == -1)
@@ -38,7 +38,7 @@ namespace klib
 		std::vector<CCharacter>		Army				= {};
 		int32_t						Team				= 0;
 
-		SPlayerSelection			Selection			= {-1, -1, -1, -1};
+		SPlayerSelection			Selection			= {0, 0, -1, -1};
 		std::string					Name				= "Kasparov";
 	};
 } // namespace

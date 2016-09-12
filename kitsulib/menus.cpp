@@ -59,8 +59,7 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 	switch(newState.State)
 	{
 	case GAME_STATE_MENU_MAIN:
-		fillCellsFromNoise(instanceGame.PostEffectDisplay.Screen, (char)19, (int32_t)(instanceGame.FrameTimer.FramesLastSecond*10));
-		drawGridBorders(instanceGame.PostEffectDisplay.Screen, '@'); 
+		drawTacticalMap(instanceGame, instanceGame.PostEffectDisplay);
 		instanceGame.StateMessage = "Main Menu";
 		break;
 

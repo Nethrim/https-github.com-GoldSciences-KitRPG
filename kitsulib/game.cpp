@@ -13,7 +13,7 @@ void klib::resetGame(SGame& instanceGame)
 	initGame(instanceGame);
 	klib::clearASCIIBackBuffer(' ', 5);
 	instanceGame.ClearDisplays();
-	instanceGame.TacticalInfo.Board.Clear();
+	instanceGame.TacticalInfo.Clear();
 
 	// Set up a nice prompt 
 	uint32_t screenWidth  =	klib::getASCIIBackBufferWidth(),
@@ -44,15 +44,6 @@ void klib::initGame(SGame& instanceGame)
 
 	instanceGame.Seed = rand();
 
-	initTacticalMap(instanceGame);
-
-	instanceGame.TacticalDisplay	.Clear();
-	instanceGame.PostEffectDisplay	.Clear();
-	instanceGame.GlobalDisplay		.Clear();
-
-	fillCellsFromNoise(instanceGame.PostEffectDisplay.Screen, (char)19, instanceGame.Seed);
-	drawGridBorders(instanceGame.PostEffectDisplay.Screen, '@');
-	
 	resetCursorString(instanceGame.SlowMessage);
 
 	SPlayer& player	= instanceGame.Players[PLAYER_USER ]	= SPlayer();
@@ -92,4 +83,10 @@ void klib::initGame(SGame& instanceGame)
 		enemy	.Squad.Agents[i] = i;
 	}
 
+	instanceGame.TacticalDisplay	.Clear();
+	instanceGame.PostEffectDisplay	.Clear();
+	instanceGame.GlobalDisplay		.Clear();
+	instanceGame.TacticalInfo		.Clear();
+
+	initTacticalMap(instanceGame);
 };
