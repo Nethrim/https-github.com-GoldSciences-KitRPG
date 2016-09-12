@@ -64,10 +64,6 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		instanceGame.StateMessage = "Main Menu";
 		break;
 
-	case GAME_STATE_START_MISSION:
-		instanceGame.StateMessage = "Start mission";
-		klib::initTacticalMap(instanceGame);
-		break;
 
 	case GAME_STATE_WELCOME_COMMANDER:
 		if(newState.Substate == GAME_SUBSTATE_RESET) {
@@ -78,10 +74,11 @@ void handleStateChange(SGame& instanceGame, const SGameState& newState, const SG
 		else
 			instanceGame.StateMessage = "Welcome back commander";
 
-	case GAME_STATE_MENU_OPTIONS:		instanceGame.StateMessage = "Options";		
-	case GAME_STATE_MENU_SQUAD_SETUP:	instanceGame.StateMessage = "Squad Setup";	break;
-	case GAME_STATE_CREDITS:			instanceGame.StateMessage = "Credits";		break;
-	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";		break;
+	case GAME_STATE_START_MISSION:		instanceGame.StateMessage = "Start mission";	break;
+	case GAME_STATE_MENU_OPTIONS:		instanceGame.StateMessage = "Options";			break;
+	case GAME_STATE_MENU_SQUAD_SETUP:	instanceGame.StateMessage = "Squad Setup";		break;
+	case GAME_STATE_CREDITS:			instanceGame.StateMessage = "Credits";			break;
+	case GAME_STATE_MENU_RESEARCH:		instanceGame.StateMessage = "Research";			break;
 	default:
 		break;
 	}
@@ -107,7 +104,7 @@ void updateState(SGame& instanceGame, const SGameState& newState)
 void klib::showMenu(SGame& instanceGame) {
 
 	SGameState newAction=instanceGame.State;
-
+	
 	static const SMenu<SGameState, size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
 	static const SMenu<SGameState, size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
 	static const SMenu<SGameState, size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"		, 26);

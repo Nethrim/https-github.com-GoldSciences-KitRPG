@@ -77,7 +77,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_ACTION:
 	case GAME_STATE_START_MISSION:
 		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
-			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.PostEffectDisplay.TextAttributes.Width>>1))], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.TacticalDisplay.TextAttributes.Width>>1))], &instanceGame.TacticalDisplay.TextAttributes.Cells[y][0], instanceGame.TacticalDisplay.TextAttributes.Width*sizeof(uint16_t));
 		break;
 	case GAME_STATE_CREDITS:
 	case GAME_STATE_WELCOME_COMMANDER: 

@@ -14,11 +14,9 @@ void klib::initTacticalMap(SGame& instanceGame)
 					terrainDepth = instanceGame.TacticalInfo.Board.Terrain.Topology.Depth;
 
 	instanceGame.TacticalInfo.Board.Clear();
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {1,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {2,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
 	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,1},	(int32_t)instanceGame.Seed+3, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,10}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,25}, (int32_t)instanceGame.Seed+9, {0, 0}, 50);
-	//fillCellsFromNoise(instanceGame.TacticalBoard.Terrain.Topology, {0,0}, (int32_t)instanceGame.Seed+5, {0, 0});
+	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,5}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
 	
 	int8_t*				cellsCollision	= &instanceGame.TacticalInfo.Board.Terrain.Collision.Cells[0][0];
 	STopologyHeight*	cellsHeight		= &instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[0][0];
