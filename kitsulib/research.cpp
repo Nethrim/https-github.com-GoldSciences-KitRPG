@@ -95,9 +95,9 @@ void completeResearch(const SResearchable& selectedChoice, _EntityType& maxResea
 
 SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 {
-	klib::SCharacterResearch& researchCompleted = instanceGame.Player.CompletedResearch;
+	SPlayer& player = instanceGame.Players[PLAYER_USER];
+	klib::SCharacterResearch& researchCompleted = player.CompletedResearch;
 	klib::SCharacterResearch  researchableItems;
-	SPlayer& player = instanceGame.Player;
 
 
 #define GET_AVAILABLE_RESEARCH_FOR_ENTITY(EntityToken_, ProgressiveDefinitions_, ProgressiveModifiers_)																\
@@ -130,11 +130,26 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		break;
 	}
 
-#define MAX_RESEARCH_ITEMS	64
+#define MAX_RESEARCH_ITEMS		\
+	size(definitionsAccessory)	\
+	+size(definitionsWeapon)	\
+	+size(definitionsArmor)		\
+	+size(definitionsProfession)\
+	+size(definitionsVehicle)	\
+	+size(definitionsFacility)	\
+	+size(definitionsStageProp)	\
+	+size(modifiersAccessory)	\
+	+size(modifiersWeapon)		\
+	+size(modifiersArmor)		\
+	+size(modifiersProfession)	\
+	+size(modifiersVehicle)		\
+	+size(modifiersFacility)	\
+	+size(modifiersStageProp)
+
 	static klib::SMenuItem<SResearchable> menuItems[MAX_RESEARCH_ITEMS] = {};
 
 	uint32_t researchableCount=0;
-	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS, (int32_t)researchableDefinitions); i<count; ++i) 
+	for(uint32_t i=0, count=(uint32_t)std::min(MAX_RESEARCH_ITEMS, (size_t)researchableDefinitions); i<count; ++i) 
 	{
 		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
 		menuItems[researchableCount].ReturnValue.IsModifier		= false;
@@ -153,7 +168,7 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		researchableCount++;
 	}
 	
-	for(uint32_t i=0, count=std::min(MAX_RESEARCH_ITEMS-researchableCount, researchableModifiers); i<count; ++i) 
+	for(uint32_t i=0, count=(uint32_t)std::min(MAX_RESEARCH_ITEMS-researchableCount, (size_t)researchableModifiers); i<count; ++i) 
 	{
 		menuItems[researchableCount].ReturnValue.ResearchIndex	= i;
 		menuItems[researchableCount].ReturnValue.IsModifier		= true;

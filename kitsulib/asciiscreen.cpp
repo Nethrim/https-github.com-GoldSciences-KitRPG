@@ -83,8 +83,8 @@ void klib::presentASCIIFrontBuffer( void )
     COORD    Home = { 0, 0 };
 	//static WORD curColor = 0;
 	if( _frontBuffer ) {
-		WriteConsoleOutputCharacterA( hConsoleOut, _frontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
 		WriteConsoleOutputAttribute( hConsoleOut, _colorFrontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
+		WriteConsoleOutputCharacterA( hConsoleOut, _frontBuffer, _backBufferWidth*_backBufferHeight, Coords, &dummy );
 	}
 #else
 	if( _frontBuffer )

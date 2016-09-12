@@ -46,6 +46,32 @@ void klib::setupAgent(const CCharacter& adventurer, CCharacter& currentEnemy, in
 
 	// 
 	currentEnemy.MaxEquip = currentEnemy.CurrentEquip;
+	currentEnemy.Researched = SCharacterResearch();
+	currentEnemy.Researched.Weapon		.Definitions.AddElement(currentEnemy.CurrentEquip.Weapon		.Definition);
+	currentEnemy.Researched.Armor		.Definitions.AddElement(currentEnemy.CurrentEquip.Armor			.Definition);	
+	currentEnemy.Researched.Accessory	.Definitions.AddElement(currentEnemy.CurrentEquip.Accessory		.Definition);	
+	currentEnemy.Researched.Vehicle		.Definitions.AddElement(currentEnemy.CurrentEquip.Vehicle		.Definition);
+	currentEnemy.Researched.Facility	.Definitions.AddElement(currentEnemy.CurrentEquip.Facility		.Definition);	
+	currentEnemy.Researched.Profession	.Definitions.AddElement(currentEnemy.CurrentEquip.Profession	.Definition);
+	currentEnemy.Researched.StageProp	.Definitions.AddElement(currentEnemy.CurrentEquip.StageProp		.Definition);	
+
+	currentEnemy.Researched.Weapon		.Modifiers.AddElement(currentEnemy.CurrentEquip.Weapon		.Modifier);
+	currentEnemy.Researched.Armor		.Modifiers.AddElement(currentEnemy.CurrentEquip.Armor		.Modifier);	
+	currentEnemy.Researched.Accessory	.Modifiers.AddElement(currentEnemy.CurrentEquip.Accessory	.Modifier);	
+	currentEnemy.Researched.Vehicle		.Modifiers.AddElement(currentEnemy.CurrentEquip.Vehicle		.Modifier);
+	currentEnemy.Researched.Facility	.Modifiers.AddElement(currentEnemy.CurrentEquip.Facility	.Modifier);	
+	currentEnemy.Researched.Profession	.Modifiers.AddElement(currentEnemy.CurrentEquip.Profession	.Modifier);
+	currentEnemy.Researched.StageProp	.Modifiers.AddElement(currentEnemy.CurrentEquip.StageProp	.Modifier);	
+
+	currentEnemy.Researched.Weapon		.MaxResearch = currentEnemy.CurrentEquip.Weapon		;
+	currentEnemy.Researched.Armor		.MaxResearch = currentEnemy.CurrentEquip.Armor		;	
+	currentEnemy.Researched.Accessory	.MaxResearch = currentEnemy.CurrentEquip.Accessory	;	
+	currentEnemy.Researched.Vehicle		.MaxResearch = currentEnemy.CurrentEquip.Vehicle	;
+	currentEnemy.Researched.Facility	.MaxResearch = currentEnemy.CurrentEquip.Facility	;	
+	currentEnemy.Researched.Profession	.MaxResearch = currentEnemy.CurrentEquip.Profession	;
+	currentEnemy.Researched.StageProp	.MaxResearch = currentEnemy.CurrentEquip.StageProp	;	
+
+	currentEnemy.Points.CostMaintenance		= twoEnemyType;
 
 	const SEntityPoints finalEnemyPoints	= calculateFinalPoints(currentEnemy);
 	currentEnemy.Points.LifeCurrent			= finalEnemyPoints.LifeMax;

@@ -8,23 +8,6 @@
 
 using namespace klib;
 
-void klib::initTacticalMap(SGame& instanceGame)
-{
-	const uint32_t	terrainWidth = instanceGame.TacticalInfo.Board.Terrain.Topology.Width, 
-					terrainDepth = instanceGame.TacticalInfo.Board.Terrain.Topology.Depth;
-
-	instanceGame.TacticalInfo.Board.Clear();
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {2,0},	(int32_t)instanceGame.Seed+0, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,1},	(int32_t)instanceGame.Seed+3, {0, 0}, 50);
-	fillCellsFromNoise(instanceGame.TacticalInfo.Board.Terrain.Topology, {0,5}, (int32_t)instanceGame.Seed+6, {0, 0}, 50);
-	
-	int8_t*				cellsCollision	= &instanceGame.TacticalInfo.Board.Terrain.Collision.Cells[0][0];
-	STopologyHeight*	cellsHeight		= &instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[0][0];
-	for(uint32_t i=0, count = terrainDepth*terrainWidth; i<count; i++) {
-		cellsCollision[i] = cellsHeight[i].Sharp + cellsHeight[i].Smooth;
-	};
-}
-
 void klib::resetGame(SGame& instanceGame)
 {
 	initGame(instanceGame);
@@ -47,7 +30,7 @@ void klib::resetGame(SGame& instanceGame)
 	SetConsoleDisplayMode(hConsoleOut, CONSOLE_FULLSCREEN_MODE, 0);
 	static const HANDLE hConsoleIn	= GetStdHandle( STD_INPUT_HANDLE );
 	FlushConsoleInputBuffer(hConsoleIn);
-	getline(std::cin, instanceGame.Player.Name);
+	getline(std::cin, instanceGame.Players[PLAYER_USER].Name);
 
 	instanceGame.bStarted = true;
 }
@@ -72,41 +55,41 @@ void klib::initGame(SGame& instanceGame)
 	
 	resetCursorString(instanceGame.SlowMessage);
 
-	instanceGame.Player	= SPlayer();
-	instanceGame.Enemy	= SPlayer();
+	SPlayer& player	= instanceGame.Players[PLAYER_USER ]	= SPlayer();
+	SPlayer& enemy	= instanceGame.Players[PLAYER_ENEMY]	= SPlayer();
 
-	instanceGame.Player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
-	instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+	player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+	enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 	
-	klib::CCharacter& adventurer		= instanceGame.Player.Army[0];
+	klib::CCharacter& adventurer		= player.Army[0];
 	adventurer.CurrentEquip.Weapon		= {rand()%20	, rand()%11	, 1+rand()%10};
 	adventurer.CurrentEquip.Accessory	= {rand()%5		, rand()%10	, 1+rand()%10};
 	adventurer.CurrentEquip.Armor		= {rand()%10	, rand()%2	, 1+rand()%10};
 	adventurer.CurrentEquip.Profession	= {rand()%10	, rand()%8	, 1+rand()%10};
 	adventurer.CurrentEquip.Vehicle		= {rand()%10	, rand()%5	, 1+rand()%10};
 	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, 1+rand()%10};
-	adventurer.CurrentEquip.StageProp	= {0, 0, 0};
+	adventurer.CurrentEquip.StageProp	= {0, 0, 1};
 
 	for(uint32_t i=1; i<8; i++) 
 	{
-		instanceGame.Player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
-		instanceGame.Enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+		player	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
+		enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 
-		klib::setupAgent(instanceGame.Player.Army[i-1]	, instanceGame.Player	.Army[i]	, rand()%klib::size(klib::enemyDefinitions), 0);
-		klib::setupAgent(instanceGame.Player.Army[i]	, instanceGame.Enemy	.Army[i]	, rand()%klib::size(klib::enemyDefinitions), 1);
+		klib::setupAgent(player.Army[i-1]	, player	.Army[i]	, rand()%klib::size(klib::enemyDefinitions), 0);
+		klib::setupAgent(player.Army[i]		, enemy		.Army[i]	, rand()%klib::size(klib::enemyDefinitions), 1);
 
-		instanceGame.Player.Army[i].CurrentEquip.Accessory	.Level	= 1+rand()%10;
-		instanceGame.Player.Army[i].CurrentEquip.Armor		.Level	= 1+rand()%10; 
-		instanceGame.Player.Army[i].CurrentEquip.Weapon		.Level	= 1+rand()%10; 
-		instanceGame.Player.Army[i].CurrentEquip.Vehicle	.Level	= 1+rand()%10; 
-		instanceGame.Player.Army[i].CurrentEquip.Facility	.Level	= 1+rand()%10; 
-		instanceGame.Player.Army[i].CurrentEquip.Profession	.Level	= 1+rand()%10; 
-		instanceGame.Player.Army[i].CurrentEquip.StageProp	.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.Accessory	.Level	= 1+rand()%10;
+		player.Army[i].CurrentEquip.Armor		.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.Weapon		.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.Vehicle		.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.Facility	.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.Profession	.Level	= 1+rand()%10; 
+		player.Army[i].CurrentEquip.StageProp	.Level	= 1+rand()%10; 
 	}
 
 	for(uint32_t i=0; i<4; i++) {
-		instanceGame.Player	.Squad.Agents[i] = 3-i;
-		instanceGame.Enemy	.Squad.Agents[i] = i;
+		player	.Squad.Agents[i] = 3-i;
+		enemy	.Squad.Agents[i] = i;
 	}
 
 };

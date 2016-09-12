@@ -29,10 +29,10 @@ void klib::pollInput(SInput& input)
 
 	switch (recordIn.EventType)
 	{
-	//case KEY_EVENT:
-	//			// Do stuff
-	//	break;
-
+	case KEY_EVENT:
+		// Do stuff
+		//input.Keys[recordIn.Event.KeyEvent.wVirtualKeyCode] = recordIn.Event.KeyEvent.bKeyDown ? 1 : 0;
+		break;
 	case MOUSE_EVENT:
 		input.MouseX = recordIn.Event.MouseEvent.dwMousePosition.X;
 		input.MouseY = recordIn.Event.MouseEvent.dwMousePosition.Y;
@@ -43,13 +43,9 @@ void klib::pollInput(SInput& input)
 		input.MouseButtons[4] = (recordIn.Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED		);
 		break;
 	}
+
 	for(uint32_t i=0; i<klib::size(input.MouseButtons); ++i)
 		if( input.MouseButtons[i] != input.PreviousMouseButtons[i] )
 			Beep(220+220*i, 35);
-
-
-
-	//for(uint32_t i=0; i<8; i++)
-	//	input.MouseButtons[i] = 
 };
 

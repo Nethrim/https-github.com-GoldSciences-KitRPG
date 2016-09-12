@@ -58,6 +58,13 @@ namespace klib
 	typedef SWeightedDisplay<STacticalBoard::Width, STacticalBoard::Depth>				SPostEffectDisplay	;
 	typedef SGrid<char, SGlobalDisplay::Width, SGlobalDisplay::Depth>					SMenuDisplay		;
 
+	enum PLAYER_INDEX
+	{
+		PLAYER_USER		,
+		PLAYER_ENEMY	,
+		PLAYER_NEUTRAL	,
+	}; 
+
 	struct SGame
 	{
 		bool						bRunning			= true;
@@ -66,7 +73,7 @@ namespace klib
 		SGameState					State				= {GAME_STATE_MENU_MAIN,};
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
-		SPlayer						Player, Enemy;
+		SPlayer						Players[4]			= {};
 		STacticalInfo				TacticalInfo		= {};
 
 		std::string					StateMessage		= "";

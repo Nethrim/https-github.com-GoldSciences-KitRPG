@@ -15,10 +15,10 @@ void drawSquadSlots(SGame& instanceGame, const SGameState& returnValue)
 	static const int32_t slotWidth		= display.Width / MAX_AGENT_COLUMNS;
 	static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
 
-	static const int32_t offsetYBase = TACTICAL_DISPLAY_YPOS-2;
+	static const int32_t offsetYBase = TACTICAL_DISPLAY_POSY-2;
 	static const int32_t offsetXBase = 5;
 
-	SPlayer& player = instanceGame.Player;
+	SPlayer& player = instanceGame.Players[PLAYER_USER];
 
 	int32_t playerOffset = (player.Selection.PlayerUnit != -1) ? std::min(std::max(0, player.Selection.PlayerUnit-1), SSquad::Size-6) : 0;
 
@@ -43,7 +43,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 {
 	drawSquadSlots(instanceGame, returnValue);
 
-	SPlayer& player = instanceGame.Player;
+	SPlayer& player = instanceGame.Players[PLAYER_USER];
 
 	static SMenuItem<int32_t> menuItems[SSquad::Size] = {};
 	static int32_t maxNameLen = 0;
@@ -53,7 +53,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 
 		char buffer[128];
 		if(player.Squad.Agents[i] != -1) {
-			maxNameLen = std::max(maxNameLen, sprintf_s(buffer, "Agent #%u: %s", i+1, instanceGame.Player.Army[player.Squad.Agents[i]].Name.c_str()));
+			maxNameLen = std::max(maxNameLen, sprintf_s(buffer, "Agent #%u: %s", i+1, player.Army[player.Squad.Agents[i]].Name.c_str()));
 			menuItems[i].Text = buffer;
 		}
 		else {

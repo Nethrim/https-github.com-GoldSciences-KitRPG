@@ -50,20 +50,20 @@ bool equipIfResearched
 	else 
 	{	
 		playerInventory.AddElement(agentEquippedEntity);	
-		agentEquippedEntity	= selectedChoice; 
+		agentEquippedEntity	= selectedItem; 
 		playerInventory.DecreaseEntity(selectedChoice); 
 		messageSuccess = "You equipped " + getEntityName(selectedItem, entityDefinitions, entityModifiers) + " to " + playerArmy[playerSquad.Agents[playerSelection.PlayerUnit]].Name; 
 		return true;
 	}
 }
 
-static bool equipIfResearchedAccessory	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Accessory	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, player.Squad, player.Selection, player.CompletedResearch.Accessory		, definitionsAccessory		, modifiersAccessory	, "Crafting"		, "Accessories"	, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedStageProp	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.StageProp	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, player.Squad, player.Selection, player.CompletedResearch.StageProp		, definitionsStageProp		, modifiersStageProp	, ""				, "Stage Props"	, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedFacility	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Facility	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, player.Squad, player.Selection, player.CompletedResearch.Facility			, definitionsFacility		, modifiersFacility		, "Architectonics"	, "Facilities"	, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedVehicle	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Vehicle	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, player.Squad, player.Selection, player.CompletedResearch.Vehicle			, definitionsVehicle		, modifiersVehicle		, "Transportation"	, "Vehicles"	, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedProfession	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Profession	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession		, player.Squad, player.Selection, player.CompletedResearch.Profession		, definitionsProfession		, modifiersProfession	, "Rank"			, "Licenses"	, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedWeapon		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Weapon		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon			, player.Squad, player.Selection, player.CompletedResearch.Weapon			, definitionsWeapon			, modifiersWeapon		, "Science"			, "Weapons"		, instanceGame.UserMessage, instanceGame.UserError);};
-static bool equipIfResearchedArmor		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Armor		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, player.Squad, player.Selection, player.CompletedResearch.Armor			, definitionsArmor			, modifiersArmor		, "Technology"		, "Armors"		, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedAccessory	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Accessory	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Accessory		, player.Squad, player.Selection, player.CompletedResearch.Accessory		, definitionsAccessory		, modifiersAccessory	, "Crafting"		, "Accessories"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedStageProp	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.StageProp	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.StageProp		, player.Squad, player.Selection, player.CompletedResearch.StageProp		, definitionsStageProp		, modifiersStageProp	, ""				, "Stage Props"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedFacility	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Facility		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Facility		, player.Squad, player.Selection, player.CompletedResearch.Facility			, definitionsFacility		, modifiersFacility		, "Architectonics"	, "Facilities"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedVehicle	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Vehicle		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Vehicle		, player.Squad, player.Selection, player.CompletedResearch.Vehicle			, definitionsVehicle		, modifiersVehicle		, "Transportation"	, "Vehicles"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedProfession	(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Profession	, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession		, player.Squad, player.Selection, player.CompletedResearch.Profession		, definitionsProfession		, modifiersProfession	, "Rank"			, "Licenses"	, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedWeapon		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Weapon		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon			, player.Squad, player.Selection, player.CompletedResearch.Weapon			, definitionsWeapon			, modifiersWeapon		, "Science"			, "Weapons"		, instanceGame.UserMessage, instanceGame.UserError);};
+static bool equipIfResearchedArmor		(SGame& instanceGame, int16_t selectedChoice){ SPlayer& player = instanceGame.Players[PLAYER_USER]; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Armor		, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, player.Squad, player.Selection, player.CompletedResearch.Armor			, definitionsArmor			, modifiersArmor		, "Technology"		, "Armors"		, instanceGame.UserMessage, instanceGame.UserError);};
 //bool equipIfResearchedItems			(SGame& instanceGame, int16_t selectedChoice){ return false; } //SPlayer& player = instanceGame.Player; return equipIfResearched(selectedChoice, player.Army, player.Inventory.Items		, player.CurrentEquip.Items			, player.Squad, player.Selection, player.CompletedResearch.Items			, definitionsItems			, modifiersItems		, ""		, entityTypePlural, messageSuccess, messageError);};
 
 SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
@@ -76,7 +76,7 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	size_t itemCount=0, iCharacter, iSlot, count;
 	bool bAlreadyInSquad;
 
-	SPlayer&		player	= instanceGame.Player;
+	SPlayer&		player	= instanceGame.Players[PLAYER_USER];
 	SGlobalDisplay&	display	= instanceGame.GlobalDisplay;
 
 	int16_t selectedChoice=0;
@@ -205,7 +205,7 @@ void drawCharacterDetail(SGame& instanceGame)
 
 SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 {
-	SPlayer& player = instanceGame.Player;
+	SPlayer& player = instanceGame.Players[PLAYER_USER];
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	uint16_t color = COLOR_GREEN;
 	
@@ -216,7 +216,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 		static const int32_t slotRowSpace	= 28;// display.Depth / (MAX_AGENT_ROWS);
 		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": "+ player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name + ".";
 
-		int32_t offsetY = TACTICAL_DISPLAY_YPOS-3, offsetX;
+		int32_t offsetY = TACTICAL_DISPLAY_POSY-3, offsetX;
 		drawEntityDetail(display, offsetY		, offsetX = 3, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Profession	, definitionsProfession	, modifiersProfession	, "Job License"	);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Weapon		, definitionsWeapon		, modifiersWeapon		, "Weapon"		);
 		drawEntityDetail(display, offsetY		, offsetX+=48, player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].CurrentEquip.Armor			, definitionsArmor		, modifiersArmor		, "Armor"		);

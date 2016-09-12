@@ -58,7 +58,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	switch(instanceGame.State.State) { 
 	case GAME_STATE_MENU_ACTION:
 	case GAME_STATE_START_MISSION:
-		drawDisplay(instanceGame.TacticalDisplay.Screen, TACTICAL_DISPLAY_YPOS, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.TacticalDisplay.Width>>1));
+		drawDisplay(instanceGame.TacticalDisplay.Screen, TACTICAL_DISPLAY_POSY, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.TacticalDisplay.Width>>1));
 		break;
 	case GAME_STATE_CREDITS:
 		drawCredits(getASCIIBackBuffer(), bbWidth, bbHeight, instanceGame.FrameTimer.LastTimeSeconds, namesSpecialThanks, instanceGame.State);
@@ -67,7 +67,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_EQUIPMENT: 
 		break;
 	default:
-		drawDisplay(instanceGame.PostEffectDisplay.Screen, TACTICAL_DISPLAY_YPOS, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.PostEffectDisplay.Width>>1));
+		drawDisplay(instanceGame.PostEffectDisplay.Screen, TACTICAL_DISPLAY_POSY, (instanceGame.GlobalDisplay.Screen.Width>>1)-(instanceGame.PostEffectDisplay.Width>>1));
 	}
 
 	memcpy(getASCIIColorBackBuffer(), &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], instanceGame.GlobalDisplay.TextAttributes.Width*instanceGame.GlobalDisplay.TextAttributes.Depth*sizeof(uint16_t));
@@ -77,7 +77,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	case GAME_STATE_MENU_ACTION:
 	case GAME_STATE_START_MISSION:
 		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
-			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.TacticalDisplay.TextAttributes.Width>>1))], &instanceGame.TacticalDisplay.TextAttributes.Cells[y][0], instanceGame.TacticalDisplay.TextAttributes.Width*sizeof(uint16_t));
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_POSY+y)*bbWidth+((bbWidth>>1)-(instanceGame.TacticalDisplay.TextAttributes.Width>>1))], &instanceGame.TacticalDisplay.TextAttributes.Cells[y][0], instanceGame.TacticalDisplay.TextAttributes.Width*sizeof(uint16_t));
 		break;
 	case GAME_STATE_CREDITS:
 	case GAME_STATE_WELCOME_COMMANDER: 
@@ -86,7 +86,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 		break;
 	default:
 		for(y=0; y<instanceGame.PostEffectDisplay.TextAttributes.Depth; ++y)
-			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_YPOS+y)*bbWidth+((bbWidth>>1)-(instanceGame.PostEffectDisplay.TextAttributes.Width>>1))], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
+			memcpy(&getASCIIColorBackBuffer()[(TACTICAL_DISPLAY_POSY+y)*bbWidth+((bbWidth>>1)-(instanceGame.PostEffectDisplay.TextAttributes.Width>>1))], &instanceGame.PostEffectDisplay.TextAttributes.Cells[y][0], instanceGame.PostEffectDisplay.TextAttributes.Width*sizeof(uint16_t));
 	}
 
 	// Frame timer
@@ -108,7 +108,7 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	// Print user error messages and draw cursor.
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {
 		uint16_t color = COLOR_YELLOW;
-		lineToScreen(bbHeight-4, 1, RIGHT, "Funds: %i.", instanceGame.Player.Money);
+		lineToScreen(bbHeight-4, 1, RIGHT, "Funds: %i.", instanceGame.Players[PLAYER_USER].Money);
 		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, 21, RIGHT, &color, 1, 20);
 
 		lineToScreen(bbHeight-3, 0, CENTER, "%s", instanceGame.UserMessage.c_str());
@@ -119,9 +119,12 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 
 		// Draw cursor
 		int32_t mouseX = instanceGame.FrameInput.MouseX, mouseY = instanceGame.FrameInput.MouseY;
-		lineToScreen(mouseY, mouseX, LEFT, "\x8");
+		//lineToScreen(mouseY, mouseX, LEFT, "\x8");
 		//valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, mouseY, mouseX, LEFT, &(color = COLOR_MAGENTA), 1);
-		getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] = COLOR_MAGENTA;
+		getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] = 
+			( ((getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] & 0xF0) >> 4)
+			| ((getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] & 0x0F) << 4)
+			);
 	}
 	//lineToScreen(instanceGame.FrameInput.MouseY, instanceGame.FrameInput.MouseX, LEFT, "\x21");
 	presentASCIIBackBuffer();
@@ -147,7 +150,7 @@ void drawIntro( SGame& instanceGame )
 
 SGameState drawWelcome(SGame& instanceGame, const SGameState& returnValue)
 {
-	const std::string textToPrint = "Welcome back commander " + instanceGame.Player.Name + ".";
+	const std::string textToPrint = "Welcome back commander " + instanceGame.Players[PLAYER_USER].Name + ".";
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	int32_t lineOffset		= (display.Screen.Depth>>1)-1;
 	int32_t columnOffset	=  display.Screen.Width/2-(int32_t)textToPrint.size()/2;

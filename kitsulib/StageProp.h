@@ -14,17 +14,17 @@ static const CRecordStageProp modifiersStageProp	[]	=
 };															
 															
 static const CRecordStageProp definitionsStageProp	[]	= 	
-{	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Pot"			}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Lamp"			}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Mailbox"		}
+{	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Mailbox"		}
+//,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Pot"			}
+//,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Lamp"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Chest"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Semaphore"		}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Door"			}
+//,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Door"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Table"			}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Streetlight"	}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Chair"			}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Glass"			}
-,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Screen"		}
+//,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Glass"			}
+//,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Screen"		}
 ,	{{{0,0,0},	{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}}	,0,0	, 1},{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}},	"Wall"			}
 };
 

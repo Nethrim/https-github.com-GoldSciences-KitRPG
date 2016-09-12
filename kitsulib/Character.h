@@ -87,7 +87,7 @@ namespace klib
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{maxHP}, {maxHP}, {hitChance, attack}, coins})
+			,Points				({{maxHP}, {maxHP}, {hitChance, attack}, coins, coins, coins/10})
 			,Flags				({characterEffect, characterStatus})
 			,ActiveBonus		(SCharacterTurnBonus	())
 			,Score				(SCharacterScore		())

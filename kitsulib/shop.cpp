@@ -20,6 +20,7 @@ struct SBuyable
 	int16_t			Definition; 
 	int16_t			Grade; 
 	int32_t			Price; 
+	int32_t			MaintenanceCost; 
 	std::string		Name;
 } selectedChoice;
 
@@ -48,15 +49,15 @@ static klib::SMenu<SBuyable, size(menuItemsAgent		)> menuAgent		(menuItemsAgent	
 
 static int32_t initBuyMenus()
 {
-	for(size_t i=0, itemCount=size(	definitionsAccessory	); i<itemCount; ++i)	menuItemsAccessory	[i] = { { (int16_t)i, 1, definitionsAccessory	[i].Points.PriceBuy	, definitionsAccessory	[i].Name},	definitionsAccessory	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsStageProp	); i<itemCount; ++i)	menuItemsStageProp	[i] = { { (int16_t)i, 1, definitionsStageProp	[i].Points.PriceBuy	, definitionsStageProp	[i].Name},	definitionsStageProp	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsFacility		); i<itemCount; ++i)	menuItemsFacility	[i] = { { (int16_t)i, 1, definitionsFacility	[i].Points.PriceBuy	, definitionsFacility	[i].Name},	definitionsFacility		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsVehicle		); i<itemCount; ++i)	menuItemsVehicle	[i] = { { (int16_t)i, 1, definitionsVehicle		[i].Points.PriceBuy	, definitionsVehicle	[i].Name},	definitionsVehicle		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsProfession	); i<itemCount; ++i)	menuItemsProfession	[i] = { { (int16_t)i, 1, definitionsProfession	[i].Points.PriceBuy	, definitionsProfession	[i].Name},	definitionsProfession	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsWeapon		); i<itemCount; ++i)	menuItemsWeapon		[i] = { { (int16_t)i, 1, definitionsWeapon		[i].Points.PriceBuy	, definitionsWeapon		[i].Name},	definitionsWeapon		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsArmor		); i<itemCount; ++i)	menuItemsArmor		[i] = { { (int16_t)i, 1, definitionsArmor		[i].Points.PriceBuy	, definitionsArmor		[i].Name},	definitionsArmor		[i].Name };	
-	for(size_t i=0, itemCount=size(	itemDescriptions		); i<itemCount; ++i)	menuItemsItem		[i] = { { (int16_t)i, 1, itemDescriptions		[i].Price			, itemDescriptions		[i].Name},	itemDescriptions		[i].Name };	
-	for(size_t i=0, itemCount=size(	enemyDefinitions		); i<itemCount; ++i)	menuItemsAgent		[i] = { { (int16_t)i, 1, enemyDefinitions		[i].Points.PriceBuy	, enemyDefinitions		[i].Name},	enemyDefinitions		[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsAccessory	); i<itemCount; ++i)	menuItemsAccessory	[i] = { { (int16_t)i, 1, definitionsAccessory	[i].Points.PriceBuy	, definitionsAccessory	[i].Points.CostMaintenance	, definitionsAccessory	[i].Name},	definitionsAccessory	[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsStageProp	); i<itemCount; ++i)	menuItemsStageProp	[i] = { { (int16_t)i, 1, definitionsStageProp	[i].Points.PriceBuy	, definitionsStageProp	[i].Points.CostMaintenance	, definitionsStageProp	[i].Name},	definitionsStageProp	[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsFacility		); i<itemCount; ++i)	menuItemsFacility	[i] = { { (int16_t)i, 1, definitionsFacility	[i].Points.PriceBuy	, definitionsFacility	[i].Points.CostMaintenance	, definitionsFacility	[i].Name},	definitionsFacility		[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsVehicle		); i<itemCount; ++i)	menuItemsVehicle	[i] = { { (int16_t)i, 1, definitionsVehicle		[i].Points.PriceBuy	, definitionsVehicle	[i].Points.CostMaintenance	, definitionsVehicle	[i].Name},	definitionsVehicle		[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsProfession	); i<itemCount; ++i)	menuItemsProfession	[i] = { { (int16_t)i, 1, definitionsProfession	[i].Points.PriceBuy	, definitionsProfession	[i].Points.CostMaintenance	, definitionsProfession	[i].Name},	definitionsProfession	[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsWeapon		); i<itemCount; ++i)	menuItemsWeapon		[i] = { { (int16_t)i, 1, definitionsWeapon		[i].Points.PriceBuy	, definitionsWeapon		[i].Points.CostMaintenance	, definitionsWeapon		[i].Name},	definitionsWeapon		[i].Name };	
+	for(size_t i=0, itemCount=size(	definitionsArmor		); i<itemCount; ++i)	menuItemsArmor		[i] = { { (int16_t)i, 1, definitionsArmor		[i].Points.PriceBuy	, definitionsArmor		[i].Points.CostMaintenance	, definitionsArmor		[i].Name},	definitionsArmor		[i].Name };	
+	for(size_t i=0, itemCount=size(	itemDescriptions		); i<itemCount; ++i)	menuItemsItem		[i] = { { (int16_t)i, 1, itemDescriptions		[i].Price			, 0													, itemDescriptions		[i].Name},	itemDescriptions		[i].Name };	
+	for(size_t i=0, itemCount=size(	enemyDefinitions		); i<itemCount; ++i)	menuItemsAgent		[i] = { { (int16_t)i, 1, enemyDefinitions		[i].Points.PriceBuy	, enemyDefinitions		[i].Points.CostMaintenance	, enemyDefinitions		[i].Name},	enemyDefinitions		[i].Name };	
 
 	for(size_t i=0, itemCount=size(	definitionsAccessory	); i<itemCount; ++i)	menuAccessory	.Items[i] = menuItemsAccessory	[i] ;	
 	for(size_t i=0, itemCount=size(	definitionsStageProp	); i<itemCount; ++i)	menuStageProp	.Items[i] = menuItemsStageProp	[i] ;	
@@ -102,7 +103,7 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 
 	SGameState retVal = returnState;
 
-	SPlayer& player = instanceGame.Player;
+	SPlayer& player = instanceGame.Players[PLAYER_USER];
 
 	if(selectedChoice.Price > player.Money)
 	{
@@ -125,7 +126,7 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 	case GAME_SUBSTATE_WEAPON		:	player.Inventory.Weapon		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
 	case GAME_SUBSTATE_ARMOR		:	player.Inventory.Armor		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
 	case GAME_SUBSTATE_ITEM			:	player.Inventory.Items		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_CHARACTER	:	player.Army.push_back(enemyDefinitions[selectedChoice.Definition]);	instanceGame.UserMessage = "You have successfully hired " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins/Month."; break;
+	case GAME_SUBSTATE_CHARACTER	:	player.Army.push_back(enemyDefinitions[selectedChoice.Definition]);	instanceGame.UserMessage = "You have successfully hired " + selectedChoice.Name + " for " + std::to_string(selectedChoice.MaintenanceCost) + " Coins/Month."; break;
 	default:
 		break;
 	}
