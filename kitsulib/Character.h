@@ -118,6 +118,9 @@ namespace klib
 		int32_t x;
 		int32_t y;
 		int32_t z;
+
+		constexpr bool			operator == (const SCellCoord& other) const { return x == other.x && y == other.y && z == other.z; }
+		inline constexpr bool	operator != (const SCellCoord& other) const { return !operator==(other); }
 	};
 
 	class CCharacter : public SCharacter

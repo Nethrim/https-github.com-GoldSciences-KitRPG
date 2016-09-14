@@ -40,7 +40,8 @@ void klib::resetGame(SGame& instanceGame)
 	FlushConsoleInputBuffer(hConsoleIn);
 	getline(std::cin, instanceGame.Players[PLAYER_USER].Name);
 
-	instanceGame.bStarted = true;
+	instanceGame.bStarted	= true;
+	instanceGame.bTactical	= false;
 }
 
 // Sets up initial equipment and items for the player to carry or wear.
