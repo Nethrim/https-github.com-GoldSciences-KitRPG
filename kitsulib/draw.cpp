@@ -96,13 +96,15 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	size_t	offset;
 
 	// Print some debugging information 
+	lineToScreen(bbHeight-4, 1, LEFT, "Mouse: %i, %i.", instanceGame.FrameInput.MouseX, instanceGame.FrameInput.MouseY);
 	lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
 	lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
 	lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());
 	for(uint32_t i=0, count = 32U; i<count; i++) {
-		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+(bbWidth-1-i)] = COLOR_DARKYELLOW;
-		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_GREEN;	//COLOR_DARKGREEN;
-		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i] = COLOR_CYAN;	//COLOR_DARKMAGENTA;
+		offset = (bbHeight-4)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_DARKGREEN;
+		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_GREEN;		
+		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_CYAN;		
+		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+(bbWidth-1-i)]	= COLOR_DARKYELLOW;
 	}
 
 	// Print user error messages and draw cursor.

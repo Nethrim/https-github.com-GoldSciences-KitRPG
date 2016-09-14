@@ -28,9 +28,6 @@ void boardToDisplay(const STacticalBoard& board, SWeightedDisplay<_Width, _Depth
 			else if(board.Entities.Coins	.Cells[z][x] != 0)					{ target.Screen.Cells[z][x] = '$'; target.TextAttributes.Cells[z][x] |= COLOR_ORANGE	; } 
 			else if(board.Entities.Props	.Cells[z][x].Definition  != -1)		{ target.Screen.Cells[z][x] = definitionsStageProp[board.Entities.Props	.Cells[z][x].Definition].Name[0]; target.TextAttributes.Cells[z][x] |= COLOR_BLACK; } 
 			else if(board.Terrain.Topology	.Cells[z][x].Sharp > 1)				{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] |= COLOR_GRAY; } 
-			//else if(target.Screen.Cells[z][x] == ' ' || target.Screen.Cells[z][x] == -78) 
-			//{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] |= COLOR_DARKGREEN	; } 
-
 		}
 }
 
@@ -127,8 +124,8 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 		int32_t agentIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].AgentIndex;
 		if(	playerIndex	!= -1 && agentIndex != -1 )
 		{
-			SPlayer& player	= instanceGame.Players[playerIndex];
-			selectedTile	= player.Army[player.Squad.Agents[agentIndex]].Name;
+			SPlayer& boardPlayer	= instanceGame.Players[playerIndex];
+			selectedTile	= boardPlayer.Army[boardPlayer.Squad.Agents[agentIndex]].Name;
 			messageColor	= (playerIndex == PLAYER_USER) ? COLOR_CYAN : COLOR_RED;
 			if(0 != instanceGame.FrameInput.MouseButtons[0]) 
 			{
@@ -167,6 +164,14 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	}
 	else {
 		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, CENTER, "                                  ");
+	}
+	printfToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX	+1, LEFT, "%i, %i", mouseX-tacticalDisplayX, mouseY-TACTICAL_DISPLAY_POSY);
+
+	const SPlayer& enemy = instanceGame.Players[PLAYER_ENEMY];
+	if(player.Selection.TargetUnit != -1 && enemy.Squad.Agents[player.Selection.TargetUnit] != -1 && enemy.Army[enemy.Squad.Agents[player.Selection.TargetUnit]].Points.LifeCurrent.Health > 0) {
+		selectedTile = "Target: " + enemy.Army[enemy.Squad.Agents[player.Selection.TargetUnit]].Name;
+		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
+		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &(messageColor = COLOR_RED), 1, (int32_t)selectedTile.size());
 	}
 
  	TURN_ACTION selectedAction = drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsCombatTurn, instanceGame.FrameInput, TURN_ACTION_MENUS, TURN_ACTION_CONTINUE);

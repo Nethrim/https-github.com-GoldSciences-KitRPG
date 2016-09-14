@@ -3,6 +3,14 @@
 #include "Game.h"
 
 #include "Enemy.h"
+#include "Accessory.h"
+#include "Armor.h"
+#include "Weapon.h"
+#include "Profession.h"
+#include "Vehicle.h"
+#include "Facility.h"
+#include "StageProp.h"
+#include "Item.h"
 
 #include <ctime>
 
@@ -53,13 +61,13 @@ void klib::initGame(SGame& instanceGame)
 	enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(klib::size(klib::enemyDefinitions)-1)]);
 	
 	klib::CCharacter& adventurer		= player.Army[0];
-	adventurer.CurrentEquip.Weapon		= {rand()%20	, rand()%11	, 1+rand()%10};
-	adventurer.CurrentEquip.Accessory	= {rand()%5		, rand()%10	, 1+rand()%10};
-	adventurer.CurrentEquip.Armor		= {rand()%10	, rand()%2	, 1+rand()%10};
-	adventurer.CurrentEquip.Profession	= {rand()%10	, rand()%8	, 1+rand()%10};
-	adventurer.CurrentEquip.Vehicle		= {rand()%10	, rand()%5	, 1+rand()%10};
-	adventurer.CurrentEquip.Facility	= {rand()%5		, rand()%2	, 1+rand()%10};
-	adventurer.CurrentEquip.StageProp	= {0, 0, 1};
+	adventurer.CurrentEquip.Weapon		= {25, (int16_t)(rand()%klib::size(klib::modifiersWeapon	)), 20};
+	adventurer.CurrentEquip.Accessory	= {(int16_t)(rand()%klib::size(klib::definitionsAccessory	)), (int16_t)(rand()%klib::size(klib::modifiersAccessory	)), 1+rand()%10};
+	adventurer.CurrentEquip.Armor		= {(int16_t)(rand()%klib::size(klib::definitionsArmor		)), (int16_t)(rand()%klib::size(klib::modifiersArmor		)), 1+rand()%10};
+	adventurer.CurrentEquip.Profession	= {(int16_t)(rand()%klib::size(klib::definitionsProfession	)), (int16_t)(rand()%klib::size(klib::modifiersProfession	)), 1+rand()%10};
+	adventurer.CurrentEquip.Vehicle		= {(int16_t)(rand()%klib::size(klib::definitionsVehicle		)), (int16_t)(rand()%klib::size(klib::modifiersVehicle		)), 1+rand()%10};
+	adventurer.CurrentEquip.Facility	= {(int16_t)(rand()%klib::size(klib::definitionsFacility	)), (int16_t)(rand()%klib::size(klib::modifiersFacility		)), 1+rand()%10};
+	adventurer.CurrentEquip.StageProp	= {(int16_t)(rand()%klib::size(klib::definitionsStageProp	)), (int16_t)(rand()%klib::size(klib::modifiersStageProp	)), 1+rand()%10};
 
 	for(uint32_t i=1; i<8; i++) 
 	{

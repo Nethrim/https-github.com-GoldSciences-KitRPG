@@ -109,11 +109,13 @@ namespace klib
 			nameAndLevelText = std::to_string		(agentFinalPoints.Attack.Speed.Reflexes			);	printfToGrid(display, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Reflexes"				, nameAndLevelText.c_str());
 
 			const SEntityPoints& agentBasePoints = character.Points;
-			nameAndLevelText = std::to_string		(agentBasePoints.Coins							);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Coins"					, nameAndLevelText.c_str());
+			nameAndLevelText = std::to_string		(agentBasePoints.Coins							);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Coins in wallet"		, nameAndLevelText.c_str());
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 			nameAndLevelText = std::to_string		(agentFinalPoints.Coins							);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Coins per turn"		, nameAndLevelText.c_str());
+			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = (agentFinalPoints.Coins >= 0) ? COLOR_ORANGE : COLOR_RED), 1, 11);
+			nameAndLevelText = std::to_string		(agentBasePoints.CostMaintenance				);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Salary"				, nameAndLevelText.c_str());
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
-			nameAndLevelText = std::to_string		(agentFinalPoints.CostMaintenance				);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Maintenance Cost"		, nameAndLevelText.c_str());
+			nameAndLevelText = std::to_string		(agentFinalPoints.CostMaintenance				);	printfToGrid(display, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "- Total Cost"			, nameAndLevelText.c_str());
 			valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 		}
 	}

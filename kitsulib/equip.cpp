@@ -190,7 +190,7 @@ void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offset
 	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Reflexes			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Reflexes"				, nameAndLevelText.c_str());
 
 	nameAndLevelText = std::to_string		(entityPoints.Coins							);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Coins per turn"			, nameAndLevelText.c_str());
-	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = (entityPoints.Coins >= 0) ? COLOR_ORANGE : COLOR_RED), 1, 11);
 	nameAndLevelText = std::to_string		(entityPoints.PriceBuy/2					);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Sell Price"				, nameAndLevelText.c_str());
 	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
 	nameAndLevelText = std::to_string		(entityPoints.CostMaintenance				);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Maintenance Cost"		, nameAndLevelText.c_str());
