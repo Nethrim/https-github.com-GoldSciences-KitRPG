@@ -9,8 +9,8 @@ namespace klib
 #pragma pack(push, 1)
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordAccessory modifiersAccessory[] = 
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,10 }	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s"				}
-,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,50 }	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Reinforced %s"		}
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,  0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "%s"				}
+,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0, 50}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Reinforced %s"		}
 ,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Iron %s"			}
 ,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},1,150}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Gold %s"			}
 ,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},1,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Steel %s"			}
@@ -35,16 +35,16 @@ static const CRecordAccessory modifiersAccessory[] =
 // Currently the amount of points available for a single character is 14.	
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordAccessory definitionsAccessory[] =
-{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,10 }	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Bracelet"	}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,50 }	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hairband"	}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,50 }	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hat"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Ring"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,150}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Gauntlet"	}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Monocle"	}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Scope"		}
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glasses"	}
+{	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{1,1,0}},0, 10}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Bracelet"	}
+,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,1,0}},0, 50}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hairband"	}
+,	{{{1,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},1,100}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Hat"		}
+,	{{{0,0,0},{0,1,0}	,{1,0,{0,0,0},0,{0,0,0}},0,150}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Ring"		}
+,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Gauntlet"	}
+,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},1,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Monocle"	}
+,	{{{0,0,0},{0,0,0}	,{2,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Scope"		}
+,	{{{0,1,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glasses"	}
 //- Update
-,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Watch"		}
+,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Watch"		}
 };
 
 	static std::string getAccessoryName(const SAccessory& accessory) {
