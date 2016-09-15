@@ -18,27 +18,9 @@ namespace klib
 	{
 		STacticalBoard								Board;
 
-		std::vector<SProfession	>					Profession	;
-		std::vector<SAccessory	>					Accessory	;
-		std::vector<SArmor		>					Armor		;
-		std::vector<SWeapon		>					Weapon		;
-		std::vector<SVehicle	>					Vehicle		;
-		std::vector<SFacility	>					Facility	;
-		std::vector<SStageProp	>					StageProp	;
-		std::vector<SItem		>					Items		;
-
 		void Clear()
 		{
 			Board.Clear();
-
-			Profession	.clear();
-			Accessory	.clear();
-			Armor		.clear();
-			Weapon		.clear();
-			Vehicle		.clear();
-			Facility	.clear();
-			StageProp	.clear();
-			Items		.clear();
 		}
 	};
 

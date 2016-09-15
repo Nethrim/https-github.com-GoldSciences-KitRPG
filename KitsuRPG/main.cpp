@@ -40,7 +40,7 @@ void main()
 	std::string adventurerName;
 	getline(std::cin, adventurerName);
 
-	klib::CCharacter* pAdventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, adventurerName);
+	klib::CCharacter* pAdventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {1,4}, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, adventurerName);
 	klib::CCharacter& adventurer = *pAdventurer;
 
 	static const klib::SMenuItem<int32_t> playAgainMenu[]
@@ -70,7 +70,7 @@ void main()
 //
 void createPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 {
-	klib::CCharacter* tempadventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER,	4, 50, 1, 100, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, name);
+	klib::CCharacter* tempadventurer = new klib::CCharacter(klib::CHARACTER_TYPE_PLAYER, 4, 50, 1, 100, {1,4}, {}, {klib::COMBAT_STATUS_NONE, klib::COMBAT_STATUS_STUN}, name);
 	adventurer = *tempadventurer;
 	delete(tempadventurer);
 }
