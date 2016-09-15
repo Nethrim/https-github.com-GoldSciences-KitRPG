@@ -35,8 +35,8 @@ static const CRecordArmor modifiersArmor[] =
 
 //	{SEntityPoints, SEntityFlags, Name}
 static const CRecordArmor definitionsArmor[] = 	
-{	{{{0,0,0},	{0,0,0}	,{1,0,{1,1,1},0	,{0,0,0}}	,0,10	,  1},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Underwear"				}
-,	{{{0,0,1},	{0,0,0}	,{1,0,{0,1,1},1	,{0,0,0}}	,0,100	,  2},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Robe"					}
+{	{{{0,0,0},	{0,0,0}	,{1,0,{0,0,0},0	,{1,1,1}}	,0,10	,  1},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Underwear"				}
+,	{{{0,0,1},	{0,0,0}	,{1,0,{0,0,0},1	,{0,1,1}}	,0,100	,  2},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Robe"					}
 ,	{{{0,0,2},	{0,0,0}	,{0,0,{0,0,0},2	,{0,0,0}}	,0,200	,  3},	{{},{COMBAT_STATUS_NONE, COMBAT_STATUS_FREEZING}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_LIGHT	}},	"Leather Armor"			}
 ,	{{{0,0,3},	{0,0,0}	,{0,0,{0,0,0},3	,{0,0,0}}	,0,300	,  4},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Wooden Armor"			}
 ,	{{{0,0,4},	{0,0,0}	,{0,0,{0,0,0},4	,{0,0,0}}	,0,400	,  5},	{{},{}												,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Chainmail Armor"		}
@@ -49,7 +49,7 @@ static const CRecordArmor definitionsArmor[] =
 //--------------------------------------- Update 2			  
 ,	{{{0,0,10},	{0,0,0}	,{0,1,{0,0,0},9 ,{0,0,0}}	,0,1000	, 11},	{MECH_ARMOR_EFFECTS	,{COMBAT_STATUS_SHOCK}			,{MECH_ARMOR_TECHNOLOGY		, ENTITY_GRADE_HEAVY	}},	"Mech Armor"			}
 ,	{{{0,0,9},	{1,0,0}	,{0,1,{0,0,0},9 ,{0,0,0}}	,0,1200	, 12},	{MECH_ARMOR_EFFECTS	,{COMBAT_STATUS_SHOCK}			,{BIOMECH_ARMOR_TECHNOLOGY	, ENTITY_GRADE_MEDIUM	}},	"Biomech Armor"			}
-,	{{{0,0,9},	{0,0,0}	,{1,0,{1,1,1},10 ,{0,0,0}}	,0,1500	, 13},	{FORCE_FIELD_EFFECTS,{}								,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Force Field"			}
+,	{{{0,0,9},	{0,0,0}	,{1,0,{0,0,0},10,{1,1,1}}	,0,1500	, 13},	{FORCE_FIELD_EFFECTS,{}								,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_LIGHT	}},	"Force Field"			}
 };
 
 	static std::string getArmorName(const SArmor& armor) {

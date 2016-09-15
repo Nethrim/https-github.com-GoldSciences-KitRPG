@@ -13,6 +13,7 @@ namespace klib
 		int16_t						Agents			[MAX_AGENT_SLOTS] = {0, 1, 2, 3, -1, -1, -1, -1};
 		SCellCoord					TargetAgents	[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
 		SCellCoord					TargetPositions	[MAX_AGENT_SLOTS] = {0, 1, 2, 3, -1, -1, -1, -1};
+		int32_t						MovesLeft		[MAX_AGENT_SLOTS] = {0, 0, 0, 0, 0, 0, 0, 0};
 	
 		inline void					Clear(int32_t index) {
 			if(index == -1)
@@ -37,11 +38,54 @@ namespace klib
 		SCharacterEquip				MaxResearch			= {};
 		SCharacterInventory			Inventory			= {};
 		SSquad						Squad				= SSquad();
-		std::vector<CCharacter>		Army				= {};
+		::std::vector<CCharacter>	Army				= {};
 		int32_t						Team				= 0;
 
 		SPlayerSelection			Selection			= {0, 0, -1, -1};
-		std::string					Name				= "Kasparov";
+		::std::string				Name				= "Kasparov";
+
+		bool						IsAlive()	const
+		{
+			for(size_t iAgent = 0; iAgent < size(Squad.Agents); iAgent++)
+				if(Squad.Agents[iAgent] != -1 && Army[Squad.Agents[iAgent]].Points.LifeCurrent.Health > 0)
+					return true;
+
+			return false;
+		}
+
+		bool						SelectNextAgent()
+		{
+			uint32_t count = 0;
+			Selection.PlayerUnit = (Selection.PlayerUnit + 1) % size(Squad.Agents);
+			while(Squad.Agents[Selection.PlayerUnit] == -1 || Army[Squad.Agents[Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0) 
+			{
+				Selection.PlayerUnit = (Selection.PlayerUnit + 1) % size(Squad.Agents);
+				if(++count == size(Squad.Agents))
+					return false;
+			}
+			return true;
+		};
+
+
+		bool						SelectPreviousAgent()
+		{
+			uint32_t count = 0;
+
+			--Selection.PlayerUnit;
+			if(Selection.PlayerUnit < 0) 
+				Selection.PlayerUnit = ((int32_t)size(Squad.Agents))-1;
+
+			while(Squad.Agents[Selection.PlayerUnit] == -1 || Army[Squad.Agents[Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
+			{
+				--Selection.PlayerUnit;
+				if(Selection.PlayerUnit < 0) 
+					Selection.PlayerUnit = ((int32_t)size(Squad.Agents))-1;
+
+				if(++count == size(Squad.Agents))
+					return false;
+			}
+			return true;
+		}
 	};
 } // namespace
 

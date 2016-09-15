@@ -30,7 +30,7 @@ void boardToDisplay(const STacticalBoard& board, SWeightedDisplay<_Width, _Depth
 			else if(board.Entities.Coins	.Cells[z][x] != 0)					{ target.Screen.Cells[z][x] = '$'; target.TextAttributes.Cells[z][x] |= bSwap ? COLOR_DARKYELLOW : COLOR_ORANGE; } 
 			else if(board.Entities.Props	.Cells[z][x].Definition  != -1)		{ target.Screen.Cells[z][x] = definitionsStageProp[board.Entities.Props	.Cells[z][x].Definition].Name[0]; target.TextAttributes.Cells[z][x] |= COLOR_BLACK; } 
 			else if(board.Terrain.Topology	.Cells[z][x].Sharp >= 2)			{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] |= COLOR_BLACK; } 
-			else if(board.Terrain.Topology	.Cells[z][x].Sharp >= 1)				{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] = COLOR_DARKGREEN; } 
+			else if(board.Terrain.Topology	.Cells[z][x].Sharp >= 1)			{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] = COLOR_DARKGREEN; } 
 			bSwap = !bSwap;
 		}
 	static STimer animationTimer;
@@ -57,128 +57,287 @@ void drawTacticalInfo(STacticalInfo& tacticalInfo, SWeightedDisplay<_Width, _Dep
 	boardToDisplay(tacticalInfo.Board, target, selection);
 }
 
-SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState)
+void initTacticalGame(SGame& instanceGame)
 {
 	SPlayer&		player	= instanceGame.Players[PLAYER_USER];
 
+	klib::initTacticalMap(instanceGame);
+	instanceGame.bTactical		= true;
+	player.Selection.PlayerUnit	= player.Selection.PlayerSquad = 0;
+	player.Selection.TargetUnit	= player.Selection.TargetSquad = -1;
+	instanceGame.CurrentPlayer	= PLAYER_USER;
+}
+
+void getTileInfoFromMouse(int32_t mouseX, int32_t mouseY, int32_t tacticalDisplayX)
+{
+//	int32_t boardX	= mouseX-tacticalDisplayX;
+//	int32_t boardZ	= mouseY-TACTICAL_DISPLAY_POSY;
+//	int32_t playerIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].PlayerIndex;
+//	int32_t agentIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].AgentIndex;
+//	if(	playerIndex	!= -1 && agentIndex != -1 )
+//	{
+//		SPlayer& boardPlayer	= instanceGame.Players[playerIndex];
+//		selectedTile	= boardPlayer.Army[boardPlayer.Squad.Agents[agentIndex]].Name;
+//		messageColor	= (playerIndex == PLAYER_USER) ? COLOR_CYAN : COLOR_RED;
+//		if(0 != instanceGame.FrameInput.MouseButtons[0]) 
+//		{
+//			if(playerIndex == PLAYER_USER) 
+//				player.Selection.PlayerUnit = agentIndex;
+//			else
+//				player.Selection.TargetUnit = agentIndex;
+//		}
+//		bDrawText		= true;
+//	}
+//	else if(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX])
+//	{
+//		selectedTile	= "Coins: " + std::to_string(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX]);
+//		messageColor	= COLOR_ORANGE;
+//		bDrawText		= true;
+//	}
+//	else if(tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition != -1)
+//	{
+//		selectedTile	= definitionsStageProp[tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition].Name;
+//		messageColor	= COLOR_GRAY;
+//		bDrawText		= true;
+//	}
+//	else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 2)
+//	{
+//		selectedTile	= "Full cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
+//		messageColor	= COLOR_GRAY;
+//		bDrawText		= true;
+//	}
+//	else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 1)
+//	{
+//		selectedTile	= "Partial cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
+//		messageColor	= COLOR_GRAY;
+//		bDrawText		= true;
+//	}
+//
+//	getMessageSlow(messageSlow, selectedTile, instanceGame.FrameTimer.LastTimeSeconds*4);
+}
+
+
+bool moveStep(SPlayer& player, PLAYER_INDEX playerIndex, int32_t agentIndex, STacticalBoard& board, SCellCoord& agentPosition)
+{
+	SGrid<SCharacterTile, STacticalBoard::Width, STacticalBoard::Depth>& terrainAgents = board.Entities.Agents;
+	SCharacterTile cellValue = terrainAgents.Cells[agentPosition.z][agentPosition.x];
+
+	SCellCoord initialPosition = agentPosition;
+
+	if( player.Squad.TargetPositions[player.Selection.PlayerUnit].z > agentPosition.z 
+		&&	board.IsTileAvailable( agentPosition.x, agentPosition.z+1 )
+		&&	player.Squad.MovesLeft[agentIndex]
+	)
+	{
+		agentPosition.z++;
+		player.Squad.MovesLeft[agentIndex]--;
+	}
+	else if( player.Squad.TargetPositions[player.Selection.PlayerUnit].z < agentPosition.z 
+		&&	board.IsTileAvailable( agentPosition.x, agentPosition.z-1 )
+		&&	player.Squad.MovesLeft[agentIndex]
+	)
+	{
+		agentPosition.z--;
+		player.Squad.MovesLeft[agentIndex]--;
+	}
+
+	if( player.Squad.TargetPositions[player.Selection.PlayerUnit].x > agentPosition.x 
+		&&	board.IsTileAvailable( agentPosition.x+1, agentPosition.z )
+		&&	player.Squad.MovesLeft[agentIndex]
+	)
+	{
+		agentPosition.x++;
+		player.Squad.MovesLeft[agentIndex]--;
+	}
+	else if( player.Squad.TargetPositions[player.Selection.PlayerUnit].x < agentPosition.x 
+		&&	board.IsTileAvailable( agentPosition.x-1, agentPosition.z )
+		&&	player.Squad.MovesLeft[agentIndex]
+	)
+	{
+		agentPosition.x--;
+		player.Squad.MovesLeft[agentIndex]--;
+	}
+
+	bool bArrived = true;
+	if( initialPosition == agentPosition ) {
+		bArrived = false;
+		if(rand()%2)
+			agentPosition.x += rand()%3 - 1;
+		else
+			agentPosition.z += rand()%3 - 1;
+	}
+
+	if( terrainAgents.Cells[initialPosition.z][initialPosition.x].AgentIndex == player.Selection.PlayerUnit 
+		&& terrainAgents.Cells[initialPosition.z][initialPosition.x].PlayerIndex == playerIndex )
+		terrainAgents.Cells[initialPosition.z][initialPosition.x] = {-1, -1, -1};
+	if(terrainAgents.Cells[agentPosition.z][agentPosition.x].AgentIndex == -1 && terrainAgents.Cells[agentPosition.z][agentPosition.x].PlayerIndex == -1 )
+		terrainAgents.Cells[agentPosition.z][agentPosition.x] = {(int8_t)playerIndex, (int8_t)player.Selection.PlayerSquad, (int8_t)player.Selection.PlayerUnit};
+
+	return (bArrived && agentPosition == player.Squad.TargetPositions[player.Selection.PlayerUnit]) || player.Squad.MovesLeft[agentIndex];
+}
+
+SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState)
+{
+	SPlayer&		playerUser	= instanceGame.Players[PLAYER_USER];
 	
 	static SAccumulator<double>	keyAccum = {0.0, 0.4};
 
 	if(false == instanceGame.bTactical)
 	{
-		klib::initTacticalMap(instanceGame);
-		instanceGame.bTactical = true;
-		player.Selection.PlayerUnit = player.Selection.PlayerSquad = 0;
-		player.Selection.TargetUnit = player.Selection.TargetSquad = -1;
+		initTacticalGame(instanceGame);
 	}
-	else if(0 > player.Selection.PlayerUnit || player.Selection.PlayerUnit >= size(player.Squad.Agents)) 
+	else if(-1 == playerUser.Selection.PlayerUnit || playerUser.Squad.Agents[playerUser.Selection.PlayerUnit] == -1 || playerUser.Army[playerUser.Squad.Agents[playerUser.Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0) 
 	{
-		player.Selection.PlayerUnit		= 0;
-		player.Selection.PlayerSquad	= 0;
-		while(player.Squad.Agents[player.Selection.PlayerUnit] == -1 || player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
-			player.Selection.PlayerUnit = (player.Selection.PlayerUnit + 1) % size(player.Squad.Agents);
+		if(!playerUser.SelectNextAgent())
+			return {GAME_STATE_WELCOME_COMMANDER};
 	}
 	else
 	{
 		bool bDoneWaiting = keyAccum.Accumulate(instanceGame.FrameTimer.LastTimeSeconds) > 0.0;
 		if(instanceGame.FrameInput.Keys[VK_TAB] && bDoneWaiting)
 		{
-			if(instanceGame.FrameInput.Keys[VK_SHIFT]) 
+			if(instanceGame.FrameInput.Keys[VK_SHIFT])
 			{
-				--player.Selection.PlayerUnit;
-				if(player.Selection.PlayerUnit < 0) 
-					player.Selection.PlayerUnit = ((int32_t)size(player.Squad.Agents))-1;
-				while(player.Squad.Agents[player.Selection.PlayerUnit] == -1 || player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
-				{
-					--player.Selection.PlayerUnit;
-					if(player.Selection.PlayerUnit < 0) 
-						player.Selection.PlayerUnit = ((int32_t)size(player.Squad.Agents))-1;
-				}
+				if(!playerUser.SelectPreviousAgent())
+					return {GAME_STATE_WELCOME_COMMANDER};
 			}
-			else 
-			{
-				player.Selection.PlayerUnit = (player.Selection.PlayerUnit + 1) % size(player.Squad.Agents);
-				while(player.Squad.Agents[player.Selection.PlayerUnit] == -1 || player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
-					player.Selection.PlayerUnit = (player.Selection.PlayerUnit + 1) % size(player.Squad.Agents);
-			}
+			else if(!playerUser.SelectNextAgent())
+				return {GAME_STATE_WELCOME_COMMANDER};
+
 			keyAccum.Value = 0.0;
 		}
 	}
 
-	STacticalInfo& tacticalInfo = instanceGame.TacticalInfo;
-	STacticalDisplay& tacticalDisplay = instanceGame.TacticalDisplay;
-	drawTacticalInfo(tacticalInfo, tacticalDisplay, player.Selection);
-
-	// Need to construct menu title
-
-	std::string menuTitle = "Mission Over";
-	if( player.Selection.PlayerUnit != -1 && player.Squad.Agents[player.Selection.PlayerUnit] != -1 && GAME_SUBSTATE_CHARACTER != instanceGame.State.Substate)
-		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1) + ": " + player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Name;
-	else if(player.Selection.PlayerUnit != -1)
-		menuTitle = "Agent #" + std::to_string(player.Selection.PlayerUnit+1);
-
+	int32_t mouseX = instanceGame.FrameInput.MouseX;
+	int32_t mouseY = instanceGame.FrameInput.MouseY;
 	klib::SGlobalDisplay& globalDisplay = instanceGame.GlobalDisplay;
+	STacticalDisplay& tacticalDisplay = instanceGame.TacticalDisplay;
+	int32_t tacticalDisplayX	= (globalDisplay.Width>>1)	- (tacticalDisplay.Width>>1);
+
+	SPlayer& currentPlayer = instanceGame.Players[instanceGame.CurrentPlayer];
+	SCellCoord& currentAgentPosition = currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position;
+
+	SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>& terrainEntities = instanceGame.TacticalInfo.Board.Entities;
+	if( currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] == currentAgentPosition )
+	{
+		if(instanceGame.CurrentPlayer == PLAYER_USER) 
+		{
+			if(0 != instanceGame.FrameInput.MouseButtons[4]) 
+			{
+				int32_t tacticalMouseX = mouseX-tacticalDisplayX;
+				int32_t tacticalMouseY = mouseY-TACTICAL_DISPLAY_POSY;
+				if( tacticalMouseX >= 0 && tacticalMouseX < STacticalBoard::Width
+				 &&	tacticalMouseY >= 0 && tacticalMouseY < STacticalBoard::Depth
+				 &&	terrainEntities.Agents.Cells[tacticalMouseY][tacticalMouseX].AgentIndex == -1
+				 &&	terrainEntities.Props .Cells[tacticalMouseY][tacticalMouseX].Definition	== -1
+				 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[tacticalMouseY][tacticalMouseX].Sharp	< 1
+				 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[tacticalMouseY][tacticalMouseX].Smooth	< 1
+				)
+					currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] = {tacticalMouseX, currentAgentPosition.y, tacticalMouseY};
+			}
+		}
+		else
+		{
+			currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] = playerUser.Army[playerUser.Squad.Agents[playerUser.Selection.PlayerUnit]].Position; 
+
+			while(!instanceGame.TacticalInfo.Board.IsTileAvailable(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x, currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z)) 
+			{
+				if( rand()%2 )
+					currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x += (rand()%2) ? 1 : -1;
+				else
+					currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z += (rand()%2) ? 1 : -1;
+			}
+		}
+	}
+	else
+	{
+		if( moveStep(currentPlayer, instanceGame.CurrentPlayer, currentPlayer.Selection.PlayerUnit, instanceGame.TacticalInfo.Board, currentAgentPosition) ) 
+		{
+			if (instanceGame.CurrentPlayer == PLAYER_ENEMY)
+			{
+				if(currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position == currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit])
+					currentPlayer.SelectNextAgent();
+				currentPlayer.Selection.TargetSquad	= instanceGame.Players[PLAYER_USER].Selection.PlayerSquad;
+				currentPlayer.Selection.TargetUnit	= instanceGame.Players[PLAYER_USER].Selection.PlayerUnit;
+			}
+						
+			instanceGame.bTurnBusy		= false;
+		}
+		if(0 >= currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit]) 
+		{
+			instanceGame.CurrentPlayer	= (instanceGame.CurrentPlayer == PLAYER_USER) ? PLAYER_ENEMY : PLAYER_USER;
+			currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit] = currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Points.Attack.Speed.Movement;
+		}
+	}
+
+	STacticalInfo& tacticalInfo = instanceGame.TacticalInfo;
+	drawTacticalInfo(tacticalInfo, tacticalDisplay, currentPlayer.Selection);
+
 	clearGrid(globalDisplay.Screen, ' ');
 
 	static std::string selectedTile = "";
 	static char messageSlow[256] = {'_',};
 	static uint16_t messageColor = COLOR_DARKGREEN;
-	int32_t tacticalDisplayX	= (globalDisplay.Width>>1)	- (tacticalDisplay.Width>>1);
 	int32_t tacticalDisplayStop = TACTICAL_DISPLAY_POSY		+ (tacticalDisplay.Depth);
 
-	int32_t mouseX = instanceGame.FrameInput.MouseX;
-	int32_t mouseY = instanceGame.FrameInput.MouseY;
 	bool bDrawText = false;
-	if( mouseX >= tacticalDisplayX		&& mouseX < (int32_t)(tacticalDisplayX+tacticalDisplay.Width)
-	 && mouseY >= TACTICAL_DISPLAY_POSY && mouseY < tacticalDisplayStop
-	)
+	if(instanceGame.CurrentPlayer == PLAYER_USER)
 	{
-		int32_t boardX	= mouseX-tacticalDisplayX;
-		int32_t boardZ	= mouseY-TACTICAL_DISPLAY_POSY;
-		int32_t playerIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].PlayerIndex;
-		int32_t agentIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].AgentIndex;
-		if(	playerIndex	!= -1 && agentIndex != -1 )
+
+		if( mouseX >= tacticalDisplayX		&& mouseX < (int32_t)(tacticalDisplayX+tacticalDisplay.Width)
+		 && mouseY >= TACTICAL_DISPLAY_POSY && mouseY < tacticalDisplayStop
+		)
 		{
-			SPlayer& boardPlayer	= instanceGame.Players[playerIndex];
-			selectedTile	= boardPlayer.Army[boardPlayer.Squad.Agents[agentIndex]].Name;
-			messageColor	= (playerIndex == PLAYER_USER) ? COLOR_CYAN : COLOR_RED;
-			if(0 != instanceGame.FrameInput.MouseButtons[0]) 
+			int32_t boardX	= mouseX-tacticalDisplayX;
+			int32_t boardZ	= mouseY-TACTICAL_DISPLAY_POSY;
+			int32_t playerIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].PlayerIndex;
+			int32_t agentIndex	= tacticalInfo.Board.Entities.Agents.Cells[boardZ][boardX].AgentIndex;
+			if(	playerIndex	!= -1 && agentIndex != -1 )
 			{
-				if(playerIndex == PLAYER_USER) 
-					player.Selection.PlayerUnit = agentIndex;
-				else
-					player.Selection.TargetUnit = agentIndex;
+				SPlayer& boardPlayer	= instanceGame.Players[playerIndex];
+				selectedTile	= boardPlayer.Army[boardPlayer.Squad.Agents[agentIndex]].Name;
+				messageColor	= (playerIndex == PLAYER_USER) ? COLOR_CYAN : COLOR_RED;
+				if(0 != instanceGame.FrameInput.MouseButtons[0]) 
+				{
+					if(playerIndex == PLAYER_USER) 
+						currentPlayer.Selection.PlayerUnit = agentIndex;
+					else
+						currentPlayer.Selection.TargetUnit = agentIndex;
+				}
+
+				bDrawText		= true;
 			}
-			bDrawText		= true;
-		}
-		else if(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX])
-		{
-			selectedTile	= "Coins: " + std::to_string(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX]);
-			messageColor	= COLOR_ORANGE;
-			bDrawText		= true;
-		}
-		else if(tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition != -1)
-		{
-			selectedTile	= definitionsStageProp[tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition].Name;
-			messageColor	= COLOR_GRAY;
-			bDrawText		= true;
-		}
-		else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 2)
-		{
-			selectedTile	= "Full cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
-			messageColor	= COLOR_GRAY;
-			bDrawText		= true;
-		}
-		else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 1)
-		{
-			selectedTile	= "Partial cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
-			messageColor	= COLOR_GRAY;
-			bDrawText		= true;
-		}
+			else if(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX])
+			{
+				selectedTile	= "Coins: " + std::to_string(tacticalInfo.Board.Entities.Coins.Cells[boardZ][boardX]);
+				messageColor	= COLOR_ORANGE;
+				bDrawText		= true;
+			}
+			else if(tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition != -1)
+			{
+				selectedTile	= definitionsStageProp[tacticalInfo.Board.Entities.Props.Cells[boardZ][boardX].Definition].Name;
+				messageColor	= COLOR_GRAY;
+				bDrawText		= true;
+			}
+			else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 2)
+			{
+				selectedTile	= "Full cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
+				messageColor	= COLOR_GRAY;
+				bDrawText		= true;
+			}
+			else if(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp >= 1)
+			{
+				selectedTile	= "Partial cover terrain height: " + std::to_string(tacticalInfo.Board.Terrain.Topology.Cells[boardZ][boardX].Sharp);
+				messageColor	= COLOR_GRAY;
+				bDrawText		= true;
+			}
 
-		getMessageSlow(messageSlow, selectedTile, instanceGame.FrameTimer.LastTimeSeconds*4);
+			getMessageSlow(messageSlow, selectedTile, instanceGame.FrameTimer.LastTimeSeconds*4);
+		}
 	}
-
+	else // not user, AI
+	{
+	}
 	if(bDrawText) {
 		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, CENTER, messageSlow);
 		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &messageColor, 1, (int32_t)selectedTile.size() );
@@ -188,120 +347,39 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	}
 	printfToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX	+1, LEFT, "%i, %i", mouseX-tacticalDisplayX, mouseY-TACTICAL_DISPLAY_POSY);
 
-	const SPlayer& enemy = instanceGame.Players[PLAYER_ENEMY];
-	if(player.Selection.TargetUnit != -1 && enemy.Squad.Agents[player.Selection.TargetUnit] != -1 && enemy.Army[enemy.Squad.Agents[player.Selection.TargetUnit]].Points.LifeCurrent.Health > 0) {
-		selectedTile = "Target: " + enemy.Army[enemy.Squad.Agents[player.Selection.TargetUnit]].Name;
+	const SPlayer& currentEnemy = (instanceGame.CurrentPlayer == PLAYER_USER)? instanceGame.Players[PLAYER_ENEMY] : instanceGame.Players[PLAYER_USER];
+	if(currentPlayer.Selection.TargetUnit != -1 && currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit] != -1 && currentEnemy.Army[currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit]].Points.LifeCurrent.Health > 0) {
+		selectedTile = "Target: " + currentEnemy.Army[currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit]].Name;
 		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
 		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &(messageColor = COLOR_RED), 1, (int32_t)selectedTile.size());
 	}
 
-	SCellCoord& agentPosition = player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Position;
-	SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>& terrainEntities = instanceGame.TacticalInfo.Board.Entities;
-	if( player.Squad.TargetPositions[player.Selection.PlayerUnit] == agentPosition )
-	{
-		if(0 != instanceGame.FrameInput.MouseButtons[4]) 
-		{
-			int32_t tacticalMouseX = mouseX-tacticalDisplayX;
-			int32_t tacticalMouseY = mouseY-TACTICAL_DISPLAY_POSY;
-			if( tacticalMouseX >= 0 && tacticalMouseX < STacticalBoard::Width
-			 &&	tacticalMouseY >= 0 && tacticalMouseY < STacticalBoard::Depth
-			 &&	terrainEntities.Agents.Cells[tacticalMouseY][tacticalMouseX].AgentIndex == -1
-			 &&	terrainEntities.Props .Cells[tacticalMouseY][tacticalMouseX].Definition	== -1
-			 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[tacticalMouseY][tacticalMouseX].Sharp	< 1
-			 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[tacticalMouseY][tacticalMouseX].Smooth	< 1
-			)
-				player.Squad.TargetPositions[player.Selection.PlayerUnit] = {tacticalMouseX, agentPosition.y, tacticalMouseY};
-		}
-	}
-	else
-	{
-		SGrid<SCharacterTile, STacticalBoard::Width, STacticalBoard::Depth>& terrainAgents = terrainEntities.Agents;
-		SCharacterTile cellValue = terrainAgents.Cells[agentPosition.z][agentPosition.x];
-		//terrainAgents.Cells[agentPosition.z][agentPosition.x].PlayerIndex	= -1;
-		//terrainAgents.Cells[agentPosition.z][agentPosition.x].SquadIndex	= 0;
-		//terrainAgents.Cells[agentPosition.z][agentPosition.x].AgentIndex	= -1;
-
-		SCellCoord initialPosition = agentPosition;
-
-		if( player.Squad.TargetPositions[player.Selection.PlayerUnit].z > agentPosition.z 
-		 && terrainEntities.Agents.Cells[agentPosition.z+1][agentPosition.x].AgentIndex == -1 
-		 &&	terrainEntities.Props .Cells[agentPosition.z+1][agentPosition.x].Definition	== -1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z+1][agentPosition.x].Sharp	< 1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z+1][agentPosition.x].Smooth	< 1
-		)
-			agentPosition.z++;
-		else if( player.Squad.TargetPositions[player.Selection.PlayerUnit].z < agentPosition.z 
-		 && terrainEntities.Agents.Cells[agentPosition.z-1][agentPosition.x].AgentIndex == -1 
-		 &&	terrainEntities.Props .Cells[agentPosition.z-1][agentPosition.x].Definition	== -1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z-1][agentPosition.x].Sharp	< 1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z-1][agentPosition.x].Smooth	< 1
-		)
-			agentPosition.z--;
-
-		if( player.Squad.TargetPositions[player.Selection.PlayerUnit].x > agentPosition.x 
-		 && terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x+1].AgentIndex == -1 
-		 &&	terrainEntities.Props .Cells[agentPosition.z][agentPosition.x+1].Definition	== -1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z][agentPosition.x+1].Sharp	< 1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z][agentPosition.x+1].Smooth	< 1
-		)
-			agentPosition.x++;
-		else if( player.Squad.TargetPositions[player.Selection.PlayerUnit].x < agentPosition.x 
-		 && terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x-1].AgentIndex == -1 
-		 &&	terrainEntities.Props .Cells[agentPosition.z][agentPosition.x-1].Definition	== -1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z][agentPosition.x-1].Sharp	< 1
-		 &&	instanceGame.TacticalInfo.Board.Terrain.Topology.Cells[agentPosition.z][agentPosition.x-1].Smooth	< 1
-		)
-			agentPosition.x--;
-
-		if( initialPosition == agentPosition ) {
-			if(rand()%2)
-				agentPosition.x += rand()%3 - 1;
-			else
-				agentPosition.z += rand()%3 - 1;
-		}
-
-		if( terrainAgents.Cells[initialPosition.z][initialPosition.x].AgentIndex == player.Selection.PlayerUnit 
-		 && terrainAgents.Cells[initialPosition.z][initialPosition.x].PlayerIndex == PLAYER_USER )
-			terrainAgents.Cells[initialPosition.z][initialPosition.x] = {-1, -1, -1};
-		if(terrainAgents.Cells[agentPosition.z][agentPosition.x].AgentIndex == -1 && terrainAgents.Cells[agentPosition.z][agentPosition.x].PlayerIndex == -1 )
-			terrainAgents.Cells[agentPosition.z][agentPosition.x] = {PLAYER_USER, (int8_t)player.Selection.PlayerSquad, (int8_t)player.Selection.PlayerUnit};
-	}
-
-
-	if( player.Selection.PlayerUnit != -1 
-	 && player.Squad.Agents[player.Selection.PlayerUnit] != -1 
-	 && player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Points.LifeCurrent.Health > 0
-	 && player.Squad.TargetPositions[player.Selection.PlayerUnit] != player.Army[player.Squad.Agents[player.Selection.PlayerUnit]].Position
+	if( currentPlayer.Selection.PlayerUnit != -1 
+	 && currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit] != -1 
+	 && currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Points.LifeCurrent.Health > 0
+	 && currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] != currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position
 	) 
 	{
-		selectedTile = "Target Position: " + std::to_string(player.Squad.TargetPositions[player.Selection.PlayerUnit].x) + ", " + std::to_string(player.Squad.TargetPositions[player.Selection.PlayerUnit].z);
+		selectedTile = "Target Position: " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x) + ", " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z);
 		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+2, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
 		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+2, actualX, LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
 	}
 
- 	TURN_ACTION selectedAction = drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsCombatTurn, instanceGame.FrameInput, TURN_ACTION_MENUS, TURN_ACTION_CONTINUE);
+ 	// Need to construct menu title
+	std::string menuTitle = "Mission Over";
+	if( currentPlayer.Selection.PlayerUnit != -1 && currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit] != -1 && GAME_SUBSTATE_CHARACTER != instanceGame.State.Substate)
+		menuTitle = "Agent #" + std::to_string(currentPlayer.Selection.PlayerUnit+1) + ": " + currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Name;
+	else if(currentPlayer.Selection.PlayerUnit != -1)
+		menuTitle = "Agent #" + std::to_string(currentPlayer.Selection.PlayerUnit+1);
+
+	TURN_ACTION selectedAction = drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsCombatTurn, instanceGame.FrameInput, TURN_ACTION_MENUS, TURN_ACTION_CONTINUE);
 	
 	if(selectedAction == TURN_ACTION_MENUS)
 		return {GAME_STATE_WELCOME_COMMANDER};
 	else if(selectedAction != TURN_ACTION_CONTINUE)
 		instanceGame.UserError = "This function isn't available!";
 
-	bool bIsAliveUser = false, bIsAliveEnemy = false;
-	for(size_t iAgent = 0; iAgent < size(player.Squad.Agents); iAgent++)
-		if(player.Squad.Agents[iAgent] != -1 && player.Army[player.Squad.Agents[iAgent]].Points.LifeCurrent.Health > 0)
-		{	
-			bIsAliveUser = true;
-			break;
-		}
-
-	for(size_t iAgent = 0; iAgent < size(player.Squad.Agents); iAgent++)
-		if(enemy.Squad.Agents[iAgent] != -1 && enemy.Army[enemy.Squad.Agents[iAgent]].Points.LifeCurrent.Health > 0)
-		{	
-			bIsAliveEnemy = true;
-			break;
-		}
-
-	if(bIsAliveUser && bIsAliveEnemy) // If players have agents still alive we just continue in the tactical screen. Otherwise go back to main screen.
+	if(currentPlayer.IsAlive() && currentEnemy.IsAlive()) // If players have agents still alive we just continue in the tactical screen. Otherwise go back to main screen.
 		return returnState;
 
 	instanceGame.bTactical = false;
@@ -357,6 +435,9 @@ void deployAgents
 				terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x].PlayerIndex	= playerIndex;
 				terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x].SquadIndex	= 0;
 				terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x].AgentIndex	= iAgent;
+
+
+				player.Squad.MovesLeft[iAgent] = player.Army[player.Squad.Agents[iAgent]].Points.Attack.Speed.Movement;
 			}
 		};
 	}
@@ -432,6 +513,7 @@ void klib::initTacticalMap(SGame& instanceGame)
 
 	deployAgents(instanceGame.Players[PLAYER_USER]	, 0, terrainTopology, terrainEntities, seed);
 	deployAgents(instanceGame.Players[PLAYER_ENEMY]	, 1, terrainTopology, terrainEntities, seed*seed);
+
 	drawTacticalInfo(instanceGame.TacticalInfo, instanceGame.PostEffectDisplay, instanceGame.Players[PLAYER_NEUTRAL].Selection);
 }
 

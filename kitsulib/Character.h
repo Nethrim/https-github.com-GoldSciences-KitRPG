@@ -85,9 +85,9 @@ namespace klib
 		SCharacterResearch		Researched		= SCharacterResearch();
 
 		constexpr SCharacter() = default;
-		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
+		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SSpeedPoints speed, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
 			:Type				(characterType)
-			,Points				({{maxHP}, {maxHP}, {hitChance, attack}, coins, coins, coins/10})
+			,Points				({{maxHP}, {maxHP}, {hitChance, attack, {}, 0, speed}, coins, coins, coins/10})
 			,Flags				({characterEffect, characterStatus})
 			,ActiveBonus		(SCharacterTurnBonus	())
 			,Score				(SCharacterScore		())
@@ -130,8 +130,8 @@ namespace klib
 		std::string				Name		= "Unnamed";
 
 		CCharacter() = default;
-		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SEntityEffect characterEffect, SEntityStatus characterStatus, const std::string& name)
-			:SCharacter	(characterType, maxHP, hitChance, attack, coins, characterEffect, characterStatus)
+		CCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SSpeedPoints speed, SEntityEffect characterEffect, SEntityStatus characterStatus, const std::string& name)
+			:SCharacter	(characterType, maxHP, hitChance, attack, coins, speed, characterEffect, characterStatus)
 			,Position	({0,0})
 			,Name		(name)
 			{};

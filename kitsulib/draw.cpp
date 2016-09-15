@@ -14,7 +14,7 @@ void blitGrid(SGrid<_TCell, _Width, _Depth>& source, int32_t offsetY, uint32_t o
 	if(rowPitch < 0)
 		rowPitch = (int32_t)targetWidth;
 
-	for(int32_t z = 0, maxZ = (int32_t)std::min(_Depth-1, targetHeight-offsetY); z < maxZ; ++z) 
+	for(int32_t z = 0, maxZ = (int32_t)std::min(_Depth, targetHeight-offsetY); z < maxZ; ++z) 
 	{
 		if( (offsetY+z) < 0 )
 			continue;

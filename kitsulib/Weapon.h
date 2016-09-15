@@ -47,7 +47,7 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},4,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Stalker's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{COMBAT_STATUS_BURN}				, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Plasma %s"				}
 ,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Radiactive %s"			}
-,	{{{0,0,0},{0,0,0}	,{0,1,{0,0,0},0,{1,0,1}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Neutron %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,1,{1,0,1},0,{0,0,0}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Neutron %s"			}
 ,	{{{0,0,0},{4,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Angel's %s"			}
 ,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{VAMPIRE_FLAGS																	},	"Vampire's %s"			}

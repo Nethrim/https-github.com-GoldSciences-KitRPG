@@ -71,6 +71,15 @@ namespace klib
 		STerrainTiles<_Width, _Depth>				Terrain;
 		SEntityTiles<_Width, _Depth>				Entities;
 
+		bool	IsTileAvailable( int32_t x, int32_t z )
+		{
+			return	Entities.Agents		.Cells[z][x].AgentIndex == -1 
+				&&	Entities.Props		.Cells[z][x].Definition	== -1
+				&&	Terrain.Topology	.Cells[z][x].Sharp	< 1
+				&&	Terrain.Topology	.Cells[z][x].Smooth	< 1
+				;
+		}
+
 		void Clear() {
 			Entities.Clear();
 			Terrain.Clear();

@@ -83,11 +83,13 @@ namespace klib
 	{
 		bool						bRunning			= true;
 		bool						bStarted			= false;
-		bool						bTactical			= false;
 
 		SGameState					State				= {GAME_STATE_MENU_MAIN,};
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
+		bool						bTactical			= false;
+		bool						bTurnBusy			= false;
+		PLAYER_INDEX				CurrentPlayer		= (PLAYER_INDEX)-1;
 		SPlayer						Players[4]			= {};
 		STacticalInfo				TacticalInfo		= {};
 

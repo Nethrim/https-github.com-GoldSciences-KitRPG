@@ -145,32 +145,32 @@ namespace klib
 	{
 		int32_t			Hit				;
 		int32_t			Damage			;
-		SSpeedPoints	Speed			;
-		int32_t			Absorption		;
 		SLifePoints		DirectDamage	;
+		int32_t			Absorption		;
+		SSpeedPoints	Speed			;
 
 		constexpr SAttackPoints	operator +	(const SAttackPoints& other)			const	{ 
-			return { Hit+other.Hit, Damage+other.Damage, Speed+other.Speed, Absorption+other.Absorption, DirectDamage+other.DirectDamage };
+			return { Hit+other.Hit, Damage+other.Damage, DirectDamage+other.DirectDamage, Absorption+other.Absorption, Speed+other.Speed };
 		}
 		constexpr SAttackPoints	operator -	(const SAttackPoints& other)			const	{ 
-			return { Hit-other.Hit, Damage-other.Damage, Speed-other.Speed, Absorption-other.Absorption, DirectDamage-other.DirectDamage };
+			return { Hit-other.Hit, Damage-other.Damage, DirectDamage-other.DirectDamage, Absorption-other.Absorption, Speed-other.Speed };
 		}
 
 		constexpr SAttackPoints	operator *	(const SAttackPointsMultiplier& other)	const	{ 
 			return	{ Hit			? ((1 < (Hit		*	other.Hit			)) ?	(int32_t)(Hit			*	other.Hit			): 1) : 0
 					, Damage		? ((1 < (Damage		*	other.Damage		)) ?	(int32_t)(Damage		*	other.Damage		): 1) : 0
-					, Speed*other.Speed
-					, Absorption	? ((1 < (Absorption	*	other.Absorption	)) ?	(int32_t)(Absorption	*	other.Absorption	): 1) : 0
 					, DirectDamage*other.DirectDamage
+					, Absorption	? ((1 < (Absorption	*	other.Absorption	)) ?	(int32_t)(Absorption	*	other.Absorption	): 1) : 0
+					, Speed*other.Speed
 				}; 
 		}
 
 		SAttackPoints&					operator +=	(const SAttackPoints& other) { 
 			Hit			+= other.Hit; 
 			Damage		+= other.Damage; 
-			Speed		+= other.Speed; 
-			Absorption	+= other.Absorption; 
 			DirectDamage += other.DirectDamage; 
+			Absorption	+= other.Absorption; 
+			Speed		+= other.Speed; 
 			return *this; 
 		}
 
