@@ -407,8 +407,7 @@ void deployAgents
 				terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x].SquadIndex	= 0;
 				terrainEntities.Agents.Cells[agentPosition.z][agentPosition.x].AgentIndex	= iAgent;
 
-
-				player.Squad.MovesLeft[iAgent] = player.Army[player.Squad.Agents[iAgent]].Points.Attack.Speed.Movement;
+				player.Squad.MovesLeft[iAgent] = calculateFinalPoints(player.Army[player.Squad.Agents[iAgent]]).Attack.Speed.Movement;
 			}
 		};
 	}
