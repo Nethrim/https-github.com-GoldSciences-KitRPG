@@ -3,6 +3,7 @@
 #include "draw.h"
 #include "menus.h"
 #include "StageProp.h"
+#include "Combat.h"
 
 #include <algorithm>
 #include <time.h>
@@ -159,8 +160,11 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	}
 	else if(-1 == playerUser.Selection.PlayerUnit || playerUser.Squad.Agents[playerUser.Selection.PlayerUnit] == -1 || playerUser.Army[playerUser.Squad.Agents[playerUser.Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0) 
 	{
-		if(!playerUser.SelectNextAgent())
+		if(!playerUser.SelectNextAgent()) 
+		{
+			instanceGame.bTactical = false;
 			return {GAME_STATE_WELCOME_COMMANDER};
+		}
 	}
 	else
 	{
@@ -235,7 +239,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 			if(0 >= currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit]) 
 			{
 				instanceGame.CurrentPlayer	= (instanceGame.CurrentPlayer == PLAYER_USER) ? PLAYER_ENEMY : PLAYER_USER;
-				currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit] = currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Points.Attack.Speed.Movement;
+				currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit] = calculateFinalPoints(currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]]).Attack.Speed.Movement;
 			}
 		}
 	}
@@ -328,12 +332,17 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	if( currentPlayer.Selection.PlayerUnit != -1 
 	 && currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit] != -1 
 	 && currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Points.LifeCurrent.Health > 0
-	 && currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] != currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position
 	) 
 	{
-		selectedTile = "Target Position: " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x) + ", " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z);
+		selectedTile = "Moves left: " + std::to_string(currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit]);
 		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+2, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
 		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+2, actualX, LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
+		if(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] != currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position) 
+		{
+			selectedTile = "Target Position: " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x) + ", " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z);
+			int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
+			valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
+		}
 	}
 
  	// Need to construct menu title
@@ -347,6 +356,18 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	
 	if(selectedAction == TURN_ACTION_MENUS)
 		return {GAME_STATE_WELCOME_COMMANDER};
+	else if(selectedAction == TURN_ACTION_ATTACK) 
+	{
+		SPlayer&	targetPlayer	= instanceGame.Players[(instanceGame.CurrentPlayer == PLAYER_ENEMY) ? PLAYER_USER : PLAYER_ENEMY];
+		CCharacter&	targetAgent		= targetPlayer.Army[targetPlayer.Squad.Agents[currentPlayer.Selection.TargetUnit]];
+		static const HANDLE hConsoleOut	= GetStdHandle( STD_OUTPUT_HANDLE );
+		COORD cursorPos = {0, ((SHORT)globalDisplay.Depth>>1)+7};
+		SetConsoleCursorPosition( hConsoleOut, cursorPos );
+
+		attack(instanceGame.Players[instanceGame.CurrentPlayer].Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]], targetAgent);
+		getchar();
+		//instanceGame.UserError = "This function isn't available!";
+	}
 	else if(selectedAction != TURN_ACTION_CONTINUE)
 		instanceGame.UserError = "This function isn't available!";
 

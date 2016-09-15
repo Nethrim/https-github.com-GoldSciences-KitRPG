@@ -313,9 +313,9 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	// Apply combat bonuses from weapon for successful hits.
 	const SEntityPoints attackerWeaponPoints = getWeaponPoints(attacker.CurrentEquip.Weapon);
 	applyCombatBonus(attacker, attackerWeaponPoints, sourceName);
-	attackerPoints			= calculateFinalPoints(attacker);
-	attackerFlags			= calculateFinalFlags(attacker);
-	printf("\n");
+	//attackerPoints			= calculateFinalPoints(attacker);
+	//attackerFlags			= calculateFinalFlags(attacker);
+	//printf("\n");
 
 	// Apply weapon effects for successful hits.
 	applyWeaponLeechEffects(attacker, targetReflecting, finalDamage, sourceName);
@@ -395,13 +395,13 @@ void klib::applyCombatBonus(CCharacter& character, const SEntityPoints& combatBo
 
 	SEntityPoints characterPoints = calculateFinalPoints(character);
 
-	int finalHPAdded = std::min(combatBonus.LifeCurrent.Health, characterPoints.LifeMax.Health-character.Points.LifeCurrent.Health);
+	int finalHPAdded = std::min(combatBonus.LifeCurrent.Health, std::max(0, characterPoints.LifeMax.Health-character.Points.LifeCurrent.Health));
 	applyTurnBonus(character.Points.LifeCurrent.Health, characterPoints.LifeMax.Health, finalHPAdded, character.Name, "Health", sourceName);
 	
-	finalHPAdded = std::min(combatBonus.LifeCurrent.Mana, characterPoints.LifeMax.Mana-character.Points.LifeCurrent.Mana);
+	finalHPAdded = std::min(combatBonus.LifeCurrent.Mana, std::max(0, characterPoints.LifeMax.Mana-character.Points.LifeCurrent.Mana));
 	applyTurnBonus(character.Points.LifeCurrent.Mana, characterPoints.LifeMax.Mana, finalHPAdded, character.Name, "Mana", sourceName);
 	
-	finalHPAdded = std::min(combatBonus.LifeCurrent.Shield, characterPoints.LifeMax.Shield-character.Points.LifeCurrent.Shield);
+	finalHPAdded = std::min(combatBonus.LifeCurrent.Shield, std::max(0, characterPoints.LifeMax.Shield-character.Points.LifeCurrent.Shield));
 	applyTurnBonus(character.Points.LifeCurrent.Shield, characterPoints.LifeMax.Shield, finalHPAdded, character.Name, "Shield", sourceName);
 
 	if(combatBonus.Coins > 0)
