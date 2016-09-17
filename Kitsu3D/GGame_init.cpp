@@ -66,7 +66,6 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 	// We initialize the game before initializing any asset so we make sure the game is not dependant on the graphical representation.
 	KLIB_INIT_GAME(m_pGame);
 
-
 #ifdef CreateFont
 #undef  CreateFont
 #endif
@@ -115,7 +114,7 @@ error_t CGGame::InitGame( IGFramework* pFramework )
 
 	const klib::STopologyHeight* topologyCells = &m_pGame->TacticalInfo.Board.Terrain.Topology.Cells[0][0];
 	for(uint32_t i=0, count=gridWidth*gridDepth; i<count; ++i)
-		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].Sharp, 0, topologyCells[i].Smooth, 0xFFU);
+		((GCOLOR32*)tacticalMap->pByteArray)[i] = GCOLOR32(topologyCells[i].Sharp*8, 0, topologyCells[i].Smooth*5, 0xFFU);
 
 	if( 0 > buildGeometryMapFromImage( tacticalMap.get_address(), 0.05f, MazeGeometryData[0] ) ){
 		error_printf("buildGeometryMapFromImage() FAILED!");

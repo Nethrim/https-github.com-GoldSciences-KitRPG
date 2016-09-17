@@ -19,33 +19,33 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{807A0340-D283-41B6-9301-0182863E91C1}</ProjectGuid>
+    <ProjectGuid>{B18EB504-48CD-47EC-AB45-570E91A19993}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>KitsuGUI</RootNamespace>
+    <RootNamespace>kitsutools</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -70,22 +70,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\$(Platform).$(Configuration)\</OutDir>
-    <IntDir>..\..\obj\$(Platform).$(Configuration)\$(ProjectName)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\$(Platform).$(Configuration)\</OutDir>
     <IntDir>..\..\obj\$(Platform).$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\$(Platform).$(Configuration)\</OutDir>
+    <IntDir>..\..\obj\$(Platform).$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\$(Platform).$(Configuration)\</OutDir>
     <IntDir>..\..\obj\$(Platform).$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\$(Platform).$(Configuration)\</OutDir>
     <IntDir>..\..\obj\$(Platform).$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -95,18 +91,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;_DEBUG;_WINDOWS;_USRDLL;KITSUGUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GTerrain; ..\..\GODS\GEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; ..\..\GODS\GFont; ..\..\GODS\GGUI;   </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\GODS\GSystem; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GEntity.lib; GFramework.lib; GModel.lib; GBaseGame.lib; GGameEntity.lib; GFont.lib; GGUI.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,18 +106,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; _DEBUG;_WINDOWS;_USRDLL;KITSUGUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GTerrain; ..\..\GODS\GEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; ..\..\GODS\GFont; ..\..\GODS\GGUI;   </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\GODS\GSystem; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GEntity.lib; GFramework.lib; GModel.lib; GBaseGame.lib; GGameEntity.lib; GFont.lib; GGUI.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,20 +123,15 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;NDEBUG;_WINDOWS;_USRDLL;KITSUGUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GTerrain; ..\..\GODS\GEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; ..\..\GODS\GFont; ..\..\GODS\GGUI;   </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\GODS\GSystem; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GEntity.lib; GFramework.lib; GModel.lib; GBaseGame.lib; GGameEntity.lib; GFont.lib; GGUI.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,34 +142,36 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; NDEBUG;_WINDOWS;_USRDLL;KITSUGUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GTerrain; ..\..\GODS\GEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; ..\..\GODS\GFont; ..\..\GODS\GGUI;   </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\GODS\GSystem; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GEntity.lib; GFramework.lib; GModel.lib; GBaseGame.lib; GGameEntity.lib; GFont.lib; GGUI.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GGame.cpp" />
-    <ClCompile Include="GGame_exports.cpp" />
-    <ClCompile Include="GGame_init.cpp" />
-    <ClCompile Include="GGame_rendertarget.cpp" />
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GGame.def" />
+    <ClInclude Include="asciiscreen.h" />
+    <ClInclude Include="color.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="misc.h" />
+    <ClInclude Include="netlib.h" />
+    <ClInclude Include="netlib_server.h" />
+    <ClInclude Include="noise.h" />
+    <ClInclude Include="timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GGame.h" />
-    <ClInclude Include="GGame_exports.h" />
+    <ClCompile Include="asciiscreen.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="netlib.cpp" />
+    <ClCompile Include="netlib_server.cpp" />
+    <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;_DEBUG;_WINDOWS;_USRDLL;KITSUBLEND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -105,7 +105,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -117,7 +117,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; _DEBUG;_WINDOWS;_USRDLL;KITSUBLEND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -125,7 +125,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;NDEBUG;_WINDOWS;_USRDLL;KITSUBLEND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -163,7 +163,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; NDEBUG;_WINDOWS;_USRDLL;KITSUBLEND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\kitsutools; ..\kitsulib; ..\..\GODS\GSystem; ..\..\GODS\GMath; ..\..\GODS\GCore; ..\..\GODS\GRuntime; ..\..\GODS\GeX; ..\..\GODS\GGraphics; ..\..\GODS\GPhysics; ..\..\GODS\GEvent; ..\..\GODS\GEntity; ..\..\GODS\GTerrain; ..\..\GODS\GModel; ..\..\GODS\GGameEntity; ..\..\GODS\GFramework; ..\..\GODS\GBaseGame; </AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -173,7 +173,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kitsutools.lib; kitsulib.lib; GSystem.lib; GMath.lib; GCore.lib; GRuntime.lib; GeX.lib; GPhysics.lib; GGraphics.lib; GEvent.lib; GTerrain.lib; GModel.lib; GEntity.lib; GGameEntity.lib; GFramework.lib; GBaseGame.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>GGame.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>

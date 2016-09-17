@@ -151,15 +151,15 @@ god::error_t	god::CGGame::InitChessMaterials( void )
 	m_UnitCursor.Danger->Diffuse			=  0xAA000000 | (0xFFFFFF & (uint32_t)GYELLOW);
 
 	m_MaterialWhite.clone(m_UnitCursor.Empty);
-	m_UnitCursor.Empty->Ambient				= GWHITE*.5f;
-	m_UnitCursor.Empty->Diffuse				=  0xAAFFFFFF;
+	m_UnitCursor.Empty->Ambient				= 0xAA808080;
+	m_UnitCursor.Empty->Diffuse				= 0xAAFFFFFF;
 
 	m_MaterialWhite.clone(m_UnitCursor.Select);
 	m_UnitCursor.Select->Ambient			= GCYAN*.5f;
 	m_UnitCursor.Select->Diffuse			=  0xAA000000 | (0xFFFFFF & (uint32_t)GCYAN);
 
 	m_MaterialWhite.clone(m_MaterialSelectedPiece);
-	m_MaterialSelectedPiece->Ambient	= GCOLOR(0xFF0000FF)*.5f;
+	m_MaterialSelectedPiece->Ambient	= GCOLOR(0xAA0000FF)*.5f;
 	m_MaterialSelectedPiece->Diffuse	= 0xAA0000FF;//GBLACK;
 
 	return 0;
@@ -436,8 +436,19 @@ god::error_t	god::CGGame::InitChessUnitCursorMesh( void )
 		error_printf("CreateEntity FAILED!");
 		return -1;
 	}
+
+	GPtrPOD(SRenderState) rsData;
+	rsData->fTime		= 0.0f;
+	rsData->AlphaBlend	= true;
+	rsData->AlphaTest	= true;
+	rsData->AlphaValue	= 0.5f;
+	rsData->ApplyLights	= GLIGHT_TYPE_NONE;
+	rsData->CullMode	= GCULL_MODE_CCW;
+	rsData->FillMode	= GFILL_MODE_SOLID;
+
 	newEntity->SetProgram( m_UnitCursor.Shader );
 	newEntity->BuildBox( gget(m_pVideoContext), 1.0f, 2.0f, 1.0f );
+	newEntity->SetRenderStateData(rsData);
 	GPtrPODX(SEntity) asd(onCreateDefaultSEntity,0,0);
 	asd->Visible = true;
 	newEntity->InitEntity(asd, &m_GameWorld);
@@ -508,15 +519,6 @@ god::error_t	god::CGGame::InitChessUnitCursorSprite( void )
 	GPtrPODX(STexture) texData(onCreateDefaultSTexture,0,0);
 	texData->ImageAlpha		= true;
 
-	GPtrPOD(SRenderState) rsData;
-	rsData->fTime		= 0.0f;
-	rsData->AlphaBlend	= false;
-	rsData->AlphaTest	= false;
-	rsData->AlphaValue	= 1.0f;
-	rsData->ApplyLights	= GLIGHT_TYPE_NONE;
-	rsData->CullMode	= GCULL_MODE_CCW;
-	rsData->FillMode	= GFILL_MODE_SOLID;
-
 	GPtrNCO(IGVideoProgram) pProgram(m_SpriteShader);
 
 	//uint32_t nWidth=24, nHeight=24, nOffsetX=m_pVideoManager->GetWidth(0)-128-8, nOffsetY=0;
@@ -545,6 +547,7 @@ god::error_t	god::CGGame::InitChessUnitCursorSprite( void )
 	m_UnitCursor.Sprite.SetColor( GCYAN );
 	m_UnitCursor.Sprite.SetProgram( pProgram );
 	m_UnitCursor.Sprite.SetAlphaTestEnabled( true );
+	m_UnitCursor.Sprite.SetAlphaBlendEnabled( true );
 	m_UnitCursor.Sprite.UpdateAnimation(0);
 
 	m_UnitCursor.GlowActive = true;

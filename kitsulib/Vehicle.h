@@ -50,7 +50,7 @@ static const CRecordVehicle definitionsVehicle[] =
 ,	{{{0,0,6},{0,0,0}	,{0,5,{0,0,0},0,{0,1,0}},0,900	, 7}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Submarine"				}
 ,	{{{0,0,2},{0,0,0}	,{0,2,{0,0,0},0,{0,4,0}},0,900	, 6}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	, ENTITY_GRADE_MEDIUM	}},	"Helicopter"			}
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,0,0},0,{0,8,0}},0,1000	, 7}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_MEDIUM	}},	"Jet"					}
-,	{{{0,0,4},{0,0,0}	,{0,4,{0,0,0},0,{0,4,0}},0,700	, 6}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Kurata"				}
+,	{{{0,0,4},{0,0,0}	,{0,4,{0,0,0},0,{0,4,0}},0,700	, 6}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Giant Robot"			}
 // ------------------------------0------- U-date 2		, 1
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,0,0},0,{0,8,0}},0,1200	, 10}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Spaceship"				}
 ,	{{{0,0,4},{0,0,0}	,{0,4,{0,0,0},0,{0,8,0}},0,1400	, 30}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	, ENTITY_GRADE_HEAVY	}},	"Mothership"			}

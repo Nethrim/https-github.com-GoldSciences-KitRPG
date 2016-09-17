@@ -37,10 +37,10 @@ namespace klib
 	}
 
 	template <size_t _FormatLen>
-	static void drawExitOption(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, size_t currentPage, uint32_t pageCount, uint32_t posXOffset, uint32_t rowWidth, const char (&formatString)[_FormatLen], const std::string& exitText ) {
+	static void drawExitOption(char* targetASCII, uint16_t* targetAttributes, size_t targetWidth, size_t targetHeight, uint32_t posXOffset, klib::ALIGN align, uint32_t rowWidth, const char (&formatString)[_FormatLen], const std::string& exitText ) {
 
 		int32_t offsetY = (int32_t)targetHeight-MENU_ROFFSET;
-		int32_t actualOffsetX = printfToRect(targetASCII, targetWidth, targetHeight, offsetY, posXOffset, klib::CENTER, formatString, "0", exitText.c_str());	
+		int32_t actualOffsetX = printfToRect(targetASCII, targetWidth, targetHeight, offsetY, posXOffset, align, formatString, "0", exitText.c_str());	
 
 		uint16_t colorBkg = COLOR_GREEN; 
 		valueToRect(targetAttributes, targetWidth, targetHeight,  offsetY, actualOffsetX, LEFT, &colorBkg, 1, (int32_t)exitText.size()+3);
@@ -67,6 +67,7 @@ namespace klib
 			localPersistentState.CurrentPage = 0;
 
 		const std::string textToPrint = "-- " + title + " --";
+		rowWidth = std::max((uint32_t)textToPrint.size(), std::max((uint32_t)exitText.size()+3, rowWidth));
 		const bool bDonePrinting = getMessageSlow(localPersistentState.SlowMessage, textToPrint, drawMenu_globals.Timer.LastTimeSeconds*4);
 		int32_t actualOffsetX = klib::lineToRect(targetASCII, targetWidth, targetHeight, lineOffset, 0, klib::CENTER, localPersistentState.SlowMessage);		//"-- %s --", title.c_str() );	// Print menu title
 		for(uint32_t i=0; i<rowWidth+1; i++)
@@ -101,7 +102,7 @@ namespace klib
 
 		// Print Exit option at the end.
 		if(localPersistentState.MenuItemAccum > actualOptionCount)
-			drawExitOption(targetASCII, targetAttributes, targetWidth, targetHeight, (int32_t)targetHeight-MENU_ROFFSET, posXOffset, klib::CENTER, rowWidth, formatString, exitText);
+			drawExitOption(targetASCII, targetAttributes, targetWidth, targetHeight, posXOffset, klib::CENTER, rowWidth, formatString, exitText);
 
 		// Print page control help if multipage.
 		if(multipage) 

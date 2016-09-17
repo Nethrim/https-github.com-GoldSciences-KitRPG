@@ -78,12 +78,6 @@
     <ClInclude Include="EntityPoints.h">
       <Filter>Entity</Filter>
     </ClInclude>
-    <ClInclude Include="asciiscreen.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>Tables</Filter>
     </ClInclude>
@@ -107,21 +101,6 @@
     </ClInclude>
     <ClInclude Include="Accessory.h">
       <Filter>Tables</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="misc.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="text.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="noise.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Agent_helper.h">
       <Filter>Header Files</Filter>
@@ -170,20 +149,11 @@
     <ClCompile Include="shop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="asciiscreen.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="equip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tactical.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

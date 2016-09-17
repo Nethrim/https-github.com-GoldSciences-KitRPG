@@ -42,9 +42,9 @@ static const CRecordAccessory definitionsAccessory[] =
 ,	{{{0,0,0},{0,0,0}	,{0,2,{0,0,0},0,{0,0,0}},0,200}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Gauntlet"	}
 ,	{{{0,0,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},1,250}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Monocle"	}
 ,	{{{0,0,0},{0,0,0}	,{2,0,{0,0,0},0,{0,0,0}},0,300}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Scope"		}
-,	{{{0,1,0},{0,0,0}	,{1,0,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glasses"	}
 //- Update
-,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Watch"		}
+,	{{{0,1,0},{0,1,0}	,{1,0,{0,0,0},0,{0,0,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Glasses"	}
+,	{{{0,0,0},{0,0,0}	,{1,1,{0,0,0},0,{0,1,0}},0,350}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Watch"		}
 };
 
 	static std::string getAccessoryName(const SAccessory& accessory) {

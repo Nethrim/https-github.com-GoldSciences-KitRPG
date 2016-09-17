@@ -157,15 +157,13 @@ COMBAT_STATUS klib::applyAttackStatus(CCharacter& target, COMBAT_STATUS weaponSt
 
 	const int32_t		targetArmorAbsorption	= getArmorAbsorption(target.CurrentEquip.Armor);
 	const std::string	targetArmorName			= getArmorName(target.CurrentEquip.Armor);
-	const SEntityPoints		targetFinalPoints		= calculateFinalPoints(target);
+	const SEntityPoints	targetFinalPoints		= calculateFinalPoints(target);
 	const int32_t		targetArmorShield		= targetFinalPoints.LifeMax.Shield;
 
 	COMBAT_STATUS appliedStatus = COMBAT_STATUS_NONE;
-	
-	int32_t absorbChance;
 
 	double absorptionRatio = std::max(0.0, (target.Points.LifeCurrent.Shield/(double)targetArmorShield))/2.0;
-	absorbChance = 50+(int32_t)(absorptionRatio*targetArmorAbsorption);
+	int32_t absorbChance = 50+(int32_t)(absorptionRatio*targetArmorAbsorption);
 	absorbChance = std::min(absorbChance, 100);
 
 	printf("%s status absorb chance after absorption calculation is %%%u.\n", target.Name.c_str(), absorbChance);
@@ -189,9 +187,9 @@ int32_t klib::applyArmorReflect(CCharacter& attacker, CCharacter& targetReflecti
 	const std::string	targetArmorName			= getArmorName	(targetReflecting.CurrentEquip.Armor);
 
 	if(damageDealt > 0)
-		printf("%s reflects %u damage from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
+		printf("%s reflects %i damage from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
 	else if(damageDealt < 0)
-		printf("%s reflects %u health from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
+		printf("%s reflects %i health from %s with %s.\n", targetReflecting.Name.c_str(), damageDealt, sourceName.c_str(), targetArmorName.c_str());
 
 	SLifePoints finalDamage	= applyShieldableDamage(attacker, damageDealt, targetArmorName);
 	// If the attacker was killed by the reflect we need to avoid reflecting from her armor.
@@ -215,26 +213,35 @@ void applyWeaponLeech(ATTACK_EFFECT testEffectBit, ATTACK_EFFECT attackerWeaponE
 {
 	if(attackerWeaponEffect & testEffectBit)
 	{
-		int32_t actualHPGained = std::min((int32_t)finalPassthroughDamage, maxPoints-std::max(0, currentPoints));
+		int32_t actualHPGained = std::min((int32_t)finalPassthroughDamage, std::max(0, maxPoints-std::max(0, currentPoints)));
 		if(actualHPGained > 0)
-			printf("%s %s %u %s from %s with %s.\n", attackerName.c_str(), gainVerb.c_str(), actualHPGained, pointName.c_str(), targetName.c_str(), attackerWeaponName.c_str());
+			printf("%s %s %i %s from %s with %s.\n", attackerName.c_str(), gainVerb.c_str(), actualHPGained, pointName.c_str(), targetName.c_str(), attackerWeaponName.c_str());
 		else if(actualHPGained < 0)
-			printf("%s %s %u %s to %s with %s.\n", attackerName.c_str(), loseVerb.c_str(),   actualHPGained, pointName.c_str(), targetName.c_str(), attackerWeaponName.c_str());
+			printf("%s %s %i %s to %s with %s.\n", attackerName.c_str(), loseVerb.c_str(),   actualHPGained, pointName.c_str(), targetName.c_str(), attackerWeaponName.c_str());
 		currentPoints		+= actualHPGained;
 	}
 }
 
 SLifePoints applyUnshieldableDamage(CCharacter& attacker, CCharacter& target, const SLifePoints& damageDealt)
 {
-	const SLifePoints finalDamage = 
-	{	(	target.Points.LifeCurrent.Health	< damageDealt.Health	) ? target.Points.LifeCurrent.Health	: damageDealt.Health
-	,	(	target.Points.LifeCurrent.Mana		< damageDealt.Mana		) ? target.Points.LifeCurrent.Mana		: damageDealt.Mana
-	,	(	target.Points.LifeCurrent.Shield	< damageDealt.Shield	) ? target.Points.LifeCurrent.Shield	: damageDealt.Shield
+	const SLifePoints maxPossibleDamage = 
+	{	(0 > target.Points.LifeCurrent.Health	) ? 0 : target.Points.LifeCurrent.Health	
+	,	(0 > target.Points.LifeCurrent.Mana		) ? 0 : target.Points.LifeCurrent.Mana		
+	,	(0 > target.Points.LifeCurrent.Shield	) ? 0 : target.Points.LifeCurrent.Shield	
 	};
 
-	if( finalDamage.Health	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Health	, target.Name.c_str(), "Health"	);
-	if( finalDamage.Mana	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Mana	, target.Name.c_str(), "Mana"	);
-	if( finalDamage.Shield	)	printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Shield	, target.Name.c_str(), "Shield"	);
+	const SLifePoints finalDamage = 
+	{	(	maxPossibleDamage.Health	< damageDealt.Health	) ? maxPossibleDamage.Health	: damageDealt.Health
+	,	(	maxPossibleDamage.Mana		< damageDealt.Mana		) ? maxPossibleDamage.Mana		: damageDealt.Mana
+	,	(	maxPossibleDamage.Shield	< damageDealt.Shield	) ? maxPossibleDamage.Shield	: damageDealt.Shield
+	};
+
+	if( finalDamage.Health	)	
+		printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Health	, target.Name.c_str(), "Health"	);
+	if( finalDamage.Mana	)	
+		printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Mana	, target.Name.c_str(), "Mana"	);
+	if( finalDamage.Shield	)	
+		printf("%s does %i direct damage to %s's %s.\n", attacker.Name.c_str(), finalDamage.Shield	, target.Name.c_str(), "Shield"	);
 
 	target.Points.LifeCurrent.Health	-= finalDamage.Health	;
 	target.Points.LifeCurrent.Mana		-= finalDamage.Mana		;
@@ -263,7 +270,8 @@ SLifePoints klib::applySuccessfulHit(CCharacter& attacker, CCharacter& target, i
 					printf("Sweet Dreams, %s!\n", target.Name.c_str());
 				else
 					printf("%s awakes from his induced nap!\n", target.Name.c_str());
-				target.ActiveBonus.Status.TurnsLeft[i] = 0;
+				target.ActiveBonus.Status.TurnsLeft[i]	= target.ActiveBonus.Status.TurnsLeft	[--target.ActiveBonus.Status.Count]	;
+				target.ActiveBonus.Status.Status[i]		= target.ActiveBonus.Status.Status		[target.ActiveBonus.Status.Count]	;
 			}
 	}
 
@@ -294,7 +302,7 @@ void klib::applyWeaponLeechEffects(CCharacter& attacker, CCharacter& targetRefle
 
 	attackerPoints			= calculateFinalPoints(attacker);
 	attackerFlags			= calculateFinalFlags(attacker);
-	applyWeaponLeech(ATTACK_EFFECT_STEAL		, attackerFlags.Effect.Attack, finalDamage.Health+finalDamage.Shield+finalDamage.Mana	
+	applyWeaponLeech(ATTACK_EFFECT_STEAL		, attackerFlags.Effect.Attack, finalDamage.Health+finalDamage.Shield+finalDamage.Mana
 		, 0x7FFFFFFF, attacker.Points.Coins, attacker.Name	, targetReflecting.Name	, sourceName, "Coins", "steals", "drops" );
 }
 
@@ -313,9 +321,6 @@ void klib::applySuccessfulWeaponHit(CCharacter& attacker, CCharacter& targetRefl
 	// Apply combat bonuses from weapon for successful hits.
 	const SEntityPoints attackerWeaponPoints = getWeaponPoints(attacker.CurrentEquip.Weapon);
 	applyCombatBonus(attacker, attackerWeaponPoints, sourceName);
-	//attackerPoints			= calculateFinalPoints(attacker);
-	//attackerFlags			= calculateFinalFlags(attacker);
-	//printf("\n");
 
 	// Apply weapon effects for successful hits.
 	applyWeaponLeechEffects(attacker, targetReflecting, finalDamage, sourceName);
@@ -463,10 +468,10 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 	
 	applyCombatBonus	(character, character.ActiveBonus.Points.Points, "Turn Combat Bonus");
 	applyCombatBonus	(character, getProfessionPoints	(character.CurrentEquip.Profession	), getProfessionName(character.CurrentEquip.Profession).c_str());
-	applyCombatBonus	(character, getArmorPoints		(character.CurrentEquip.Armor			), getArmorName		(character.CurrentEquip.Armor));
+	applyCombatBonus	(character, getArmorPoints		(character.CurrentEquip.Armor		), getArmorName		(character.CurrentEquip.Armor));
 	applyCombatBonus	(character, getVehiclePoints	(character.CurrentEquip.Vehicle		), getVehicleName	(character.CurrentEquip.Vehicle));
 
-	applyPassive		(character, getArmorFlags		(character.CurrentEquip.Armor			).Effect.Passive	, getArmorName		(character.CurrentEquip.Armor			));
+	applyPassive		(character, getArmorFlags		(character.CurrentEquip.Armor		).Effect.Passive	, getArmorName		(character.CurrentEquip.Armor		));
 	applyPassive		(character, getProfessionFlags	(character.CurrentEquip.Profession	).Effect.Passive	, getProfessionName	(character.CurrentEquip.Profession	));
 	applyPassive		(character, getWeaponFlags		(character.CurrentEquip.Weapon		).Effect.Passive	, getWeaponName		(character.CurrentEquip.Weapon		));
 	applyPassive		(character, getVehicleFlags		(character.CurrentEquip.Vehicle		).Effect.Passive	, getVehicleName	(character.CurrentEquip.Vehicle		));

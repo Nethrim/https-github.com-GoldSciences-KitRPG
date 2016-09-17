@@ -7,13 +7,13 @@ namespace klib
 {
 	// Squads should be indices to the army
 	struct SSquad {
-#define MAX_AGENT_SLOTS 8
+#define MAX_AGENT_SLOTS 12
 		static const int32_t		Size = MAX_AGENT_SLOTS;
 
-		int16_t						Agents			[MAX_AGENT_SLOTS] = {0, 1, 2, 3, -1, -1, -1, -1};
-		SCellCoord					TargetAgents	[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
-		SCellCoord					TargetPositions	[MAX_AGENT_SLOTS] = {0, 1, 2, 3, -1, -1, -1, -1};
-		int32_t						MovesLeft		[MAX_AGENT_SLOTS] = {0, 0, 0, 0, 0, 0, 0, 0};
+		int16_t						Agents			[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
+		int16_t						TargetAgents	[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
+		SCellCoord					TargetPositions	[MAX_AGENT_SLOTS] = {};
+		int32_t						MovesLeft		[MAX_AGENT_SLOTS] = {};
 	
 		inline void					Clear(int32_t index) {
 			if(index == -1)
@@ -73,13 +73,13 @@ namespace klib
 
 			--Selection.PlayerUnit;
 			if(Selection.PlayerUnit < 0) 
-				Selection.PlayerUnit = ((int32_t)size(Squad.Agents))-1;
+				Selection.PlayerUnit = ((int16_t)size(Squad.Agents))-1;
 
 			while(Squad.Agents[Selection.PlayerUnit] == -1 || Army[Squad.Agents[Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
 			{
 				--Selection.PlayerUnit;
 				if(Selection.PlayerUnit < 0) 
-					Selection.PlayerUnit = ((int32_t)size(Squad.Agents))-1;
+					Selection.PlayerUnit = ((int16_t)size(Squad.Agents))-1;
 
 				if(++count == size(Squad.Agents))
 					return false;

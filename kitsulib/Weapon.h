@@ -46,14 +46,14 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{4,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Executioner's %s"		}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},4,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Stalker's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{COMBAT_STATUS_BURN}				, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Plasma %s"				}
-,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Radiactive %s"			}
+,	{{{0,0,0},{0,0,0}	,{0,3,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Radioactive %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,1,{1,0,1},0,{0,0,0}},0,400,7}	,{{},{RADIACTIVE_STATUS_INFLICT}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Neutron %s"			}
 ,	{{{0,0,0},{4,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,7}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Angel's %s"			}
 ,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{VAMPIRE_FLAGS																	},	"Vampire's %s"			}
 //												   100,1
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Intercontinental %s"	}
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}		, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellital %s"			}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}			, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Intercontinental %s"	}
+,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}			, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellite %s"			}
 };
 
 #define DEATH_SCYTHE_STATUS_INFLICT		((klib::COMBAT_STATUS)(klib::COMBAT_STATUS_BLEEDING|klib::COMBAT_STATUS_BURN|klib::COMBAT_STATUS_POISON|klib::COMBAT_STATUS_FROZEN|klib::COMBAT_STATUS_PETRIFY))
@@ -102,7 +102,7 @@ static const CRecordWeapon definitionsWeapon[] =
 ,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	, 20},{{},{COMBAT_STATUS_BLEEDING			},	{ENTITY_TECHNOLOGY_BASIC		}},	"Anhur's Spear"				}
 ,	{{{1,0,0},{1,0,0}	,{-1,7,{0,0,0},0,{0,0,0}},0	,800	, 20},{{},{DEATH_SCYTHE_STATUS_INFLICT		},	{ENTITY_TECHNOLOGY_BASIC		}},	"Death Scythe"				}
 // 1st grade ten		,							 800	, 1
-,	{{{1,0,0},{0,0,0}	,{1,8, {0,0,0},0,{0,0,0}},0	,800	, 25},{{},{BFG9000_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_DIGITAL		}},	"BFG-9000"					}
+,	{{{1,0,0},{0,0,0}	,{1,8, {0,0,0},0,{0,0,0}},0	,800	, 25},{{},{BFG9000_STATUS_INFLICT			},	{ENTITY_TECHNOLOGY_DIGITAL		}},	"FBG-666"					}
 };
 
 	static std::string getWeaponName(const SWeapon& weapon) {

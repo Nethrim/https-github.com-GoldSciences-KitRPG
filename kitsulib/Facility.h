@@ -32,18 +32,18 @@ static const CRecordFacility definitionsFacility[] =
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Chemical Labs"		}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,600	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Mechanics Labs"	}
 ,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,700	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Airport"			}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,800	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Digital Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,800	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Digital Labs"		}
 // ----------- Update 2									,1
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,900	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Launch Base"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Quantum Labs"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Genetic Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,900	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Launch Base"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1000	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Quantum Labs"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Genetic Labs"		}
 ,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Space Academy"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Planetgate"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Stargate"			}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Galaxygate"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Univergate"		}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Darkgate"			}
-,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Nothingate"		}
+,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,1000 ,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Landing Drone"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Planetgate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Galaxygate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Univergate"		}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Darkgate"			}
+,	{{{10,0,10},{1,0,1}	,{0,0,{0,0,0},0,{0,0,0}},0,1500	,1}	,{{},{}	,{ENTITY_TECHNOLOGY_DIGITAL	}}, "Nothingate"		}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Shack"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Barn"				}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Wall"				}
@@ -68,7 +68,6 @@ static const CRecordFacility definitionsFacility[] =
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Seaport"			}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Space Academy"		}
 //,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Lanch Platform"	}
-//,	{{{10,0,10},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,0}	,{{},{}	,{ENTITY_TECHNOLOGY_BASIC	}}, "Landing Drone"		}
 };
 
 	static std::string getFacilityName(const SFacility& facility) {

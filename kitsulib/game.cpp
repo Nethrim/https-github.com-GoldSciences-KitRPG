@@ -87,6 +87,9 @@ void klib::initGame(SGame& instanceGame)
 		player.Army[i].CurrentEquip.StageProp	.Level	= 1+rand()%10; 
 	}
 
+	player	.Squad.Clear(-1);
+	enemy	.Squad.Clear(-1);
+
 	for(uint32_t i=0; i<4; i++) {
 		player	.Squad.Agents[i] = 3-i;
 		enemy	.Squad.Agents[i] = i;

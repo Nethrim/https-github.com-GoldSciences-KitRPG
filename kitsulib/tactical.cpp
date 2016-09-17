@@ -352,7 +352,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	else if(currentPlayer.Selection.PlayerUnit != -1)
 		menuTitle = "Agent #" + std::to_string(currentPlayer.Selection.PlayerUnit+1);
 
-	TURN_ACTION selectedAction = drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsCombatTurn, instanceGame.FrameInput, TURN_ACTION_MENUS, TURN_ACTION_CONTINUE);
+	TURN_ACTION selectedAction = drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuTitle, optionsCombatTurn, instanceGame.FrameInput, TURN_ACTION_MENUS, TURN_ACTION_CONTINUE, 10);
 	
 	if(selectedAction == TURN_ACTION_MENUS)
 		return {GAME_STATE_WELCOME_COMMANDER};
@@ -487,7 +487,8 @@ void klib::initTacticalMap(SGame& instanceGame)
 	SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>				& terrainEntities	= instanceGame.TacticalInfo.Board.Entities;
 	int32_t seed = instanceGame.Seed;
 
-	const SPlayer& enemy = instanceGame.Players[PLAYER_ENEMY];
+	SPlayer& enemy = instanceGame.Players[PLAYER_ENEMY];
+	SPlayer& player = instanceGame.Players[PLAYER_ENEMY];
 
 	int32_t maxCoins = 0;
 	for(uint32_t iAgent=0, count=(uint32_t)size(enemy.Squad.Agents); iAgent<count; ++iAgent)
@@ -495,7 +496,13 @@ void klib::initTacticalMap(SGame& instanceGame)
 		if(enemy.Squad.Agents[iAgent] != -1)
 		{
 			const SEntityPoints agentPoints = calculateFinalPoints(enemy.Army[enemy.Squad.Agents[iAgent]]);
+			enemy.Army[enemy.Squad.Agents[iAgent]].Points.LifeCurrent = agentPoints.LifeMax;
 			maxCoins += agentPoints.CostMaintenance;
+		}
+		if(player.Squad.Agents[iAgent] != -1)
+		{
+			const SEntityPoints agentPoints = calculateFinalPoints(player.Army[player.Squad.Agents[iAgent]]);
+			player.Army[player.Squad.Agents[iAgent]].Points.LifeCurrent = agentPoints.LifeMax;
 		}
 	}
 

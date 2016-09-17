@@ -23,23 +23,15 @@ namespace klib
 	,	{CHARACTER_TYPE_ENEMY,	 3,		52,		 3,	 30	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_BURN		},	"Raider"			}
 	,	{CHARACTER_TYPE_ENEMY,	 4,		53,		 4,	 40	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_STUN		},	"Soldier"			}
 	,	{CHARACTER_TYPE_ENEMY,	 5,		54,		 5,	 50	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_BLEEDING	},	"Knight"			}
-	,	{CHARACTER_TYPE_ENEMY,	 6,		55,		 6,	 60	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_POISON	},	"Neo"				}
-	,	{CHARACTER_TYPE_ENEMY,	 7,		56,		 7,	 70	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_POISON	},	"Indiana Jones"		}
-	,	{CHARACTER_TYPE_ENEMY,	 8,		57,		 8,	 80	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_POISON	},	"Carnby"			}
 	,	{CHARACTER_TYPE_ENEMY,	 9,		58,		 9,	 90	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_POISON	},	"T-Rex"				}
 	,	{CHARACTER_TYPE_ENEMY,	10,		59,		10,	100 ,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_POISON	},	"Dragon"			}
-	,	{CHARACTER_TYPE_ENEMY,	11,		60,		11,	110 ,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	BEHEMOT_STATUS_INFLICT	},	"Behemot"			}
-	,	{CHARACTER_TYPE_ENEMY,	12,		61,		12,	120 ,	{1, 4, }, {}	,	{BEHEMOT_STATUS_INFLICT	,	COMBAT_STATUS_NONE		},	"Cloud"				}
-	,	{CHARACTER_TYPE_ENEMY,	13,		62,		13,	130	,	{1, 4, }, {}	,	{COMBAT_STATUS_SLEEP	,	COMBAT_STATUS_NONE		},	"Jean Grey"			}
-	,	{CHARACTER_TYPE_ENEMY,	14,		63,		14,	140	,	{1, 4, }, {}	,	{COMBAT_STATUS_SLEEP	,	COMBAT_STATUS_NONE		},	"Superman"			}
-	,	{CHARACTER_TYPE_ENEMY,	15,		63,		15,	150	,	{1, 4, }, {}	,	{COMBAT_STATUS_SLEEP	,	COMBAT_STATUS_NONE		},	"Sauron"			}
+	,	{CHARACTER_TYPE_ENEMY,	11,		60,		11,	110 ,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	BEHEMOT_STATUS_INFLICT	},	"Behemoth"			}
 	,	{CHARACTER_TYPE_ENEMY,	16,		64,		16,	160	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_SLEEP		},	"Cthulhu"			}
 	,	{CHARACTER_TYPE_ENEMY,	17,		65,		17,	170	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	ZEUS_STATUS_INFLICT		},	"Zeus"				}
 	,	{CHARACTER_TYPE_ENEMY,	18,		66,		18,	180	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_STUN		},	"Thor"				}
 	,	{CHARACTER_TYPE_ENEMY,	19,		67,		19,	190	,	{1, 4, }, {}	,	{COMBAT_STATUS_NONE		,	COMBAT_STATUS_BLEEDING	},	"Anhur"				}
 	,	{CHARACTER_TYPE_ENEMY,	20,		68,		20,	200	,	{1, 4, }, {}	,	{TIAMAT_STATUS_INFLICT	,	TIAMAT_STATUS_IMMUNITY	},	"Tiamat"			}
 	,	{CHARACTER_TYPE_ENEMY,	21,		69,		21,	210	,	{1, 4, }, {}	,	{DEATH_STATUS_INFLICT	,	DEATH_STATUS_IMMUNITY	},	"Death"				}
-	,	{CHARACTER_TYPE_ENEMY,	25,		70,		25,	250	,	{1, 4, }, {}	,	{SELDON_STATUS_INFLICT	,	SELDON_STATUS_IMMUNITY	},	"Hari Seldon"		}
 	};
 
 	void setupAgent(const CCharacter& adventurer, CCharacter& currentEnemy, int32_t enemyType, int32_t teamId);

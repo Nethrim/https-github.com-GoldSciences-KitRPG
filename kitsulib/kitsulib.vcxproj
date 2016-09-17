@@ -94,6 +94,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>..\kitsutools; </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -111,6 +112,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>..\kitsutools; </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,6 +132,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>..\kitsutools; </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +154,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>..\kitsutools; </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,9 +172,7 @@
     <ClInclude Include="Accessory.h" />
     <ClInclude Include="Agent_helper.h" />
     <ClInclude Include="Armor.h" />
-    <ClInclude Include="asciiscreen.h" />
     <ClInclude Include="CharacterPoints.h" />
-    <ClInclude Include="color.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="CombatPoints.h" />
     <ClInclude Include="CombatStatus.h" />
@@ -186,23 +188,17 @@
     <ClInclude Include="Facility.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="helper_macros.h" />
-    <ClInclude Include="input.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="menus.h" />
-    <ClInclude Include="misc.h" />
-    <ClInclude Include="noise.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Profession.h" />
     <ClInclude Include="StageProp.h" />
-    <ClInclude Include="text.h" />
     <ClInclude Include="Tile.h" />
-    <ClInclude Include="timer.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="asciiscreen.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="CombatStatus.cpp" />
@@ -212,13 +208,11 @@
     <ClCompile Include="Combat_potion.cpp" />
     <ClCompile Include="equip.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="input.cpp" />
     <ClCompile Include="menus.cpp" />
     <ClCompile Include="research.cpp" />
     <ClCompile Include="shop.cpp" />
     <ClCompile Include="squad.cpp" />
     <ClCompile Include="tactical.cpp" />
-    <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
