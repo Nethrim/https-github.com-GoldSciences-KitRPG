@@ -74,7 +74,7 @@ namespace klib
 				}
 			}
 
-			if(Count >= size(Slots))
+			if(Count >= ktools::size(Slots))
 				return false;
 			else
 			{

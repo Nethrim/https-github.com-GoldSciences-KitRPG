@@ -3,6 +3,10 @@
 /* Last modified: September 20, 2005 */
 /* http://www.gomorgan89.com */
 /* Link with library file wsock32.lib */
+
+#include "charserv.h"
+
+
 #include "netlib_server.h"
 
 #include "Game.h"
@@ -18,6 +22,7 @@
 
 void usage(void);
 
+
 void WriteTitle( int ThreadNum )
 {
     static const int32_t sizeOfNThreadMsg = 80;
@@ -28,9 +33,8 @@ void WriteTitle( int ThreadNum )
 }
 
 bool bListenFailure = false;
-void serverListen( void* server )
+void serverListen( ktools::CServer* pServer )
 {
-	klib::CServer* pServer = (klib::CServer*)server;
 	while( !bListenFailure )
 	{
 		if( pServer->Listen() )
@@ -46,6 +50,11 @@ void serverListen( void* server )
 		Sleep(100);
 		WriteTitle( pServer->ClientConnections.size() );
 	};
+}
+
+void serverListen( void* server )
+{
+	serverListen((ktools::CServer*)server);
 }
 
 // Use this function to draw our game data
@@ -66,12 +75,11 @@ int main(int argc, char **argv)// Thread 1: main
 #endif
 
 	int port_number;		// Port number to use
-	klib::CServer server;
+	ktools::CServer server;
 
-	/* Interpret command line */
+	// Only run if port is provided
 	if (argc == 2)
 	{
-		/* Use local address */
 		if (sscanf_s(argv[1], "%u", &port_number) != 1)
 		{
 			usage();
@@ -88,7 +96,7 @@ int main(int argc, char **argv)// Thread 1: main
     WriteTitle( 0 );
 
 	// Open windows connection 
-	if (initNetwork())
+	if (ktools::initNetwork())
 	{
 		error_print("Failed to initialize network.");
 		return -1;
@@ -99,14 +107,14 @@ int main(int argc, char **argv)// Thread 1: main
 		error_print("Failed to initialize connection server.");
 		return -1;
 	};
-	// Print out server information
 
+	// Print out server information
 	_beginthread( serverListen, 0, &server );
 
 	debug_print("Press CTRL + Q to quit");
 
 	// Check for exit request while the server is running.
-	klib::initASCIIScreen();
+	ktools::initASCIIScreen();
 
 	klib::SGame* pInstancedGame = new klib::SGame;
 	klib::SGame& instanceGame = *pInstancedGame;
@@ -125,7 +133,7 @@ int main(int argc, char **argv)// Thread 1: main
 
 	server.ShutdownServer();
 
-	shutdownNetwork();
+	ktools::shutdownNetwork();
 	return 0;
 }
 
@@ -134,14 +142,14 @@ void usage(void)
 	fprintf(stderr, "timeserv [server_address] port\n");
 }
 
-int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
+int32_t executeCommand(ktools::CClient* client, const char* buffer)
 {
+	// Get current time
+	time_t current_time = time(0);
+
 	// Check for time request 
 	if (strcmp(buffer, "GET TIME\r\n") == 0)
 	{
-		// Get current time
-		time_t current_time = time(NULL);
-			
 		// Send data back
 		int32_t sentBytes = 0;
 		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
@@ -170,12 +178,9 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 			(int)port_number
 		);
 	}
-	else if (strcmp(buffer, "GET PLAYER\r\n") == 0)
+	else if (strcmp(buffer, "GET PLAYER:") == 0)
 	{
-		// Get current time
-		time_t current_time = time(NULL);
-		
-		SPlayer player;
+		klib::SPlayer player;
 
 		// Send data back
 		int32_t sentBytes = 0;
@@ -207,14 +212,15 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 	}
 	else
 	{
-		// Get current time
 		const char* mypong = "INVALIDMSG\r\n";
-			
-		// Send data back
+
 		int32_t sentBytes = 0, bytesTosEnd = (int32_t)(sizeof(char)*(strlen(mypong)+1));
 
 		if( 0 > sendToConnection( client->m_ClientListener, mypong, bytesTosEnd, &sentBytes, client->m_ClientTarget ) )
+		{
+			error_print("Error sending datagram.");
 			return -1;
+		}
 		else if( sentBytes != bytesTosEnd )
 		{
 			error_print("Error sending datagram.");

@@ -45,6 +45,9 @@
     <ClInclude Include="netlib_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="netlib_private.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asciiscreen.cpp">

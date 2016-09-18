@@ -535,7 +535,7 @@ int32_t selectItemsAI(klib::CCharacter& user, klib::CCharacter& target)
 bool useItems(klib::CCharacter& user, klib::CCharacter& target)
 {
 	uint32_t indexInventory = ~0U;
-	static const size_t inventorySize = size(user.Inventory.Items.Slots);
+	static const size_t inventorySize = ktools::size(user.Inventory.Items.Slots);
 	if(0 == user.Inventory.Items.Count)
 	{
 		printf("%s has no items in the inventory.\n", user.Name.c_str());

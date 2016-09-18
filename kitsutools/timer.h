@@ -4,7 +4,7 @@
 #define __TIMER_H__2390847012398470912837409812734__
 
 #pragma pack(push, 1)
-namespace klib
+namespace ktools
 {
 	template<typename _ValueType>
 	struct SAccumulator

@@ -25,49 +25,49 @@ struct SBuyable
 } selectedChoice;
 
 
-static klib::SMenuItem<SBuyable> menuItemsAccessory		[size(definitionsAccessory	)] = {};
-static klib::SMenuItem<SBuyable> menuItemsStageProp		[size(definitionsStageProp	)] = {};
-static klib::SMenuItem<SBuyable> menuItemsFacility		[size(definitionsFacility	)] = {};
-static klib::SMenuItem<SBuyable> menuItemsVehicle		[size(definitionsVehicle	)] = {};
-static klib::SMenuItem<SBuyable> menuItemsProfession	[size(definitionsProfession	)] = {};
-static klib::SMenuItem<SBuyable> menuItemsWeapon		[size(definitionsWeapon		)] = {};
-static klib::SMenuItem<SBuyable> menuItemsArmor			[size(definitionsArmor		)] = {};
-static klib::SMenuItem<SBuyable> menuItemsItem			[size(itemDescriptions		)] = {};
-static klib::SMenuItem<SBuyable> menuItemsAgent			[size(enemyDefinitions		)] = {};
+static klib::SMenuItem<SBuyable> menuItemsAccessory		[ktools::size(definitionsAccessory	)] = {};
+static klib::SMenuItem<SBuyable> menuItemsStageProp		[ktools::size(definitionsStageProp	)] = {};
+static klib::SMenuItem<SBuyable> menuItemsFacility		[ktools::size(definitionsFacility	)] = {};
+static klib::SMenuItem<SBuyable> menuItemsVehicle		[ktools::size(definitionsVehicle	)] = {};
+static klib::SMenuItem<SBuyable> menuItemsProfession	[ktools::size(definitionsProfession	)] = {};
+static klib::SMenuItem<SBuyable> menuItemsWeapon		[ktools::size(definitionsWeapon		)] = {};
+static klib::SMenuItem<SBuyable> menuItemsArmor			[ktools::size(definitionsArmor		)] = {};
+static klib::SMenuItem<SBuyable> menuItemsItem			[ktools::size(itemDescriptions		)] = {};
+static klib::SMenuItem<SBuyable> menuItemsAgent			[ktools::size(enemyDefinitions		)] = {};
 
 #define SHOP_EXIT_VALUE 0x7FFF
-static klib::SMenu<SBuyable, size(menuItemsAccessory	)> menuAccessory	(menuItemsAccessory		,  {SHOP_EXIT_VALUE},	"Accessory"		" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsStageProp	)> menuStageProp	(menuItemsStageProp		,  {SHOP_EXIT_VALUE},	"Stage Prop"	" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsFacility		)> menuFacility		(menuItemsFacility		,  {SHOP_EXIT_VALUE},	"Facility"		" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsVehicle		)> menuVehicle		(menuItemsVehicle		,  {SHOP_EXIT_VALUE},	"Vehicle"		" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsProfession	)> menuProfession	(menuItemsProfession	,  {SHOP_EXIT_VALUE},	"Job License"	" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsWeapon		)> menuWeapon		(menuItemsWeapon		,  {SHOP_EXIT_VALUE},	"Weapon"		" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsArmor		)> menuArmor		(menuItemsArmor			,  {SHOP_EXIT_VALUE},	"Armor"			" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsItem			)> menuItem			(menuItemsItem			,  {SHOP_EXIT_VALUE},	"Item"			" a la carte"	, 26);
-static klib::SMenu<SBuyable, size(menuItemsAgent		)> menuAgent		(menuItemsAgent			,  {SHOP_EXIT_VALUE},	"Agent"			" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsAccessory	)> menuAccessory	(menuItemsAccessory		,  {SHOP_EXIT_VALUE},	"Accessory"		" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsStageProp	)> menuStageProp	(menuItemsStageProp		,  {SHOP_EXIT_VALUE},	"Stage Prop"	" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsFacility		)> menuFacility		(menuItemsFacility		,  {SHOP_EXIT_VALUE},	"Facility"		" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsVehicle		)> menuVehicle		(menuItemsVehicle		,  {SHOP_EXIT_VALUE},	"Vehicle"		" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsProfession	)> menuProfession	(menuItemsProfession	,  {SHOP_EXIT_VALUE},	"Job License"	" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsWeapon		)> menuWeapon		(menuItemsWeapon		,  {SHOP_EXIT_VALUE},	"Weapon"		" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsArmor		)> menuArmor		(menuItemsArmor			,  {SHOP_EXIT_VALUE},	"Armor"			" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsItem			)> menuItem			(menuItemsItem			,  {SHOP_EXIT_VALUE},	"Item"			" a la carte"	, 26);
+static klib::SMenu<SBuyable, ktools::size(menuItemsAgent		)> menuAgent		(menuItemsAgent			,  {SHOP_EXIT_VALUE},	"Agent"			" a la carte"	, 26);
 
 
 static int32_t initBuyMenus()
 {
-	for(size_t i=0, itemCount=size(	definitionsAccessory	); i<itemCount; ++i)	menuItemsAccessory	[i] = { { (int16_t)i, 1, definitionsAccessory	[i].Points.PriceBuy	, definitionsAccessory	[i].Points.CostMaintenance	, definitionsAccessory	[i].Name},	definitionsAccessory	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsStageProp	); i<itemCount; ++i)	menuItemsStageProp	[i] = { { (int16_t)i, 1, definitionsStageProp	[i].Points.PriceBuy	, definitionsStageProp	[i].Points.CostMaintenance	, definitionsStageProp	[i].Name},	definitionsStageProp	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsFacility		); i<itemCount; ++i)	menuItemsFacility	[i] = { { (int16_t)i, 1, definitionsFacility	[i].Points.PriceBuy	, definitionsFacility	[i].Points.CostMaintenance	, definitionsFacility	[i].Name},	definitionsFacility		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsVehicle		); i<itemCount; ++i)	menuItemsVehicle	[i] = { { (int16_t)i, 1, definitionsVehicle		[i].Points.PriceBuy	, definitionsVehicle	[i].Points.CostMaintenance	, definitionsVehicle	[i].Name},	definitionsVehicle		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsProfession	); i<itemCount; ++i)	menuItemsProfession	[i] = { { (int16_t)i, 1, definitionsProfession	[i].Points.PriceBuy	, definitionsProfession	[i].Points.CostMaintenance	, definitionsProfession	[i].Name},	definitionsProfession	[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsWeapon		); i<itemCount; ++i)	menuItemsWeapon		[i] = { { (int16_t)i, 1, definitionsWeapon		[i].Points.PriceBuy	, definitionsWeapon		[i].Points.CostMaintenance	, definitionsWeapon		[i].Name},	definitionsWeapon		[i].Name };	
-	for(size_t i=0, itemCount=size(	definitionsArmor		); i<itemCount; ++i)	menuItemsArmor		[i] = { { (int16_t)i, 1, definitionsArmor		[i].Points.PriceBuy	, definitionsArmor		[i].Points.CostMaintenance	, definitionsArmor		[i].Name},	definitionsArmor		[i].Name };	
-	for(size_t i=0, itemCount=size(	itemDescriptions		); i<itemCount; ++i)	menuItemsItem		[i] = { { (int16_t)i, 1, itemDescriptions		[i].Price			, 0													, itemDescriptions		[i].Name},	itemDescriptions		[i].Name };	
-	for(size_t i=0, itemCount=size(	enemyDefinitions		); i<itemCount; ++i)	menuItemsAgent		[i] = { { (int16_t)i, 1, enemyDefinitions		[i].Points.PriceBuy	, enemyDefinitions		[i].Points.CostMaintenance	, enemyDefinitions		[i].Name},	enemyDefinitions		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsAccessory	); i<itemCount; ++i)	menuItemsAccessory	[i] = { { (int16_t)i, 1, definitionsAccessory	[i].Points.PriceBuy	, definitionsAccessory	[i].Points.CostMaintenance	, definitionsAccessory	[i].Name},	definitionsAccessory	[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsStageProp	); i<itemCount; ++i)	menuItemsStageProp	[i] = { { (int16_t)i, 1, definitionsStageProp	[i].Points.PriceBuy	, definitionsStageProp	[i].Points.CostMaintenance	, definitionsStageProp	[i].Name},	definitionsStageProp	[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsFacility		); i<itemCount; ++i)	menuItemsFacility	[i] = { { (int16_t)i, 1, definitionsFacility	[i].Points.PriceBuy	, definitionsFacility	[i].Points.CostMaintenance	, definitionsFacility	[i].Name},	definitionsFacility		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsVehicle		); i<itemCount; ++i)	menuItemsVehicle	[i] = { { (int16_t)i, 1, definitionsVehicle		[i].Points.PriceBuy	, definitionsVehicle	[i].Points.CostMaintenance	, definitionsVehicle	[i].Name},	definitionsVehicle		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsProfession	); i<itemCount; ++i)	menuItemsProfession	[i] = { { (int16_t)i, 1, definitionsProfession	[i].Points.PriceBuy	, definitionsProfession	[i].Points.CostMaintenance	, definitionsProfession	[i].Name},	definitionsProfession	[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsWeapon		); i<itemCount; ++i)	menuItemsWeapon		[i] = { { (int16_t)i, 1, definitionsWeapon		[i].Points.PriceBuy	, definitionsWeapon		[i].Points.CostMaintenance	, definitionsWeapon		[i].Name},	definitionsWeapon		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	definitionsArmor		); i<itemCount; ++i)	menuItemsArmor		[i] = { { (int16_t)i, 1, definitionsArmor		[i].Points.PriceBuy	, definitionsArmor		[i].Points.CostMaintenance	, definitionsArmor		[i].Name},	definitionsArmor		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	itemDescriptions		); i<itemCount; ++i)	menuItemsItem		[i] = { { (int16_t)i, 1, itemDescriptions		[i].Price			, 0													, itemDescriptions		[i].Name},	itemDescriptions		[i].Name };	
+	for(size_t i=0, itemCount=ktools::size(	enemyDefinitions		); i<itemCount; ++i)	menuItemsAgent		[i] = { { (int16_t)i, 1, enemyDefinitions		[i].Points.PriceBuy	, enemyDefinitions		[i].Points.CostMaintenance	, enemyDefinitions		[i].Name},	enemyDefinitions		[i].Name };	
 
-	for(size_t i=0, itemCount=size(	definitionsAccessory	); i<itemCount; ++i)	menuAccessory	.Items[i] = menuItemsAccessory	[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsStageProp	); i<itemCount; ++i)	menuStageProp	.Items[i] = menuItemsStageProp	[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsFacility		); i<itemCount; ++i)	menuFacility	.Items[i] = menuItemsFacility	[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsVehicle		); i<itemCount; ++i)	menuVehicle		.Items[i] = menuItemsVehicle	[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsProfession	); i<itemCount; ++i)	menuProfession	.Items[i] = menuItemsProfession	[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsWeapon		); i<itemCount; ++i)	menuWeapon		.Items[i] = menuItemsWeapon		[i] ;	
-	for(size_t i=0, itemCount=size(	definitionsArmor		); i<itemCount; ++i)	menuArmor		.Items[i] = menuItemsArmor		[i] ;	
-	for(size_t i=0, itemCount=size( itemDescriptions		); i<itemCount; ++i)	menuItem		.Items[i] = menuItemsItem		[i] ;	
-	for(size_t i=0, itemCount=size( enemyDefinitions		); i<itemCount; ++i)	menuAgent		.Items[i] = menuItemsAgent		[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsAccessory	); i<itemCount; ++i)	menuAccessory	.Items[i] = menuItemsAccessory	[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsStageProp	); i<itemCount; ++i)	menuStageProp	.Items[i] = menuItemsStageProp	[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsFacility		); i<itemCount; ++i)	menuFacility	.Items[i] = menuItemsFacility	[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsVehicle		); i<itemCount; ++i)	menuVehicle		.Items[i] = menuItemsVehicle	[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsProfession	); i<itemCount; ++i)	menuProfession	.Items[i] = menuItemsProfession	[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsWeapon		); i<itemCount; ++i)	menuWeapon		.Items[i] = menuItemsWeapon		[i] ;	
+	for(size_t i=0, itemCount=ktools::size(	definitionsArmor		); i<itemCount; ++i)	menuArmor		.Items[i] = menuItemsArmor		[i] ;	
+	for(size_t i=0, itemCount=ktools::size( itemDescriptions		); i<itemCount; ++i)	menuItem		.Items[i] = menuItemsItem		[i] ;	
+	for(size_t i=0, itemCount=ktools::size( enemyDefinitions		); i<itemCount; ++i)	menuAgent		.Items[i] = menuItemsAgent		[i] ;	
 
 	return 0;
 }
@@ -145,7 +145,7 @@ SGameState drawBuy(SGame& instanceGame, const SGameState& returnState)
 
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
-		static const SMenu<SGameState, size(optionsBuy)> menuBuy(optionsBuy, {GAME_STATE_WELCOME_COMMANDER}, "Order Menu", 26);
+		static const SMenu<SGameState, ktools::size(optionsBuy)> menuBuy(optionsBuy, {GAME_STATE_WELCOME_COMMANDER}, "Order Menu", 26);
 		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuBuy, instanceGame.FrameInput, instanceGame.State);
 	}
 	else 

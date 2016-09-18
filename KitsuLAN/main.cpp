@@ -34,9 +34,9 @@ int main(void)
 	_CrtSetDbgFlag(tmp);
 #endif
 
-	klib::initASCIIScreen();
+	ktools::initASCIIScreen();
 	
-	if( initNetwork() )
+	if( ktools::initNetwork() )
 	{
 		error_printf("Failed to initialize network.");
 		return -1;
@@ -55,7 +55,7 @@ int main(void)
 		draw(instanceGame);
 	}
 
-	shutdownNetwork();
+	ktools::shutdownNetwork();
 
 	if(pInstancedGame)
 		delete(pInstancedGame);
@@ -66,7 +66,7 @@ int main(void)
 
 int runCommunications(klib::SGame& instanceGame)
 {
-	klib::SNetworkClient instanceClient;
+	ktools::SNetworkClient instanceClient;
 	int32_t bytesTransmitted=-1;
 	if(initClientConnection(instanceClient))
 	{
@@ -80,8 +80,6 @@ int runCommunications(klib::SGame& instanceGame)
 		return -1;
 	}
 
-	char send_buffer[MAX_SEND_SIZE] = {};
-	sprintf_s(send_buffer, "%s", "GET TIME\r\n");
 	god::error_t result = 0;
 	while(instanceGame.bRunning)
 	{
@@ -95,7 +93,7 @@ int runCommunications(klib::SGame& instanceGame)
 
 		// get server time
 		time_t current_time;
-		if(0 > klib::serverTime(instanceClient, current_time) )
+		if(0 > ktools::serverTime(instanceClient, current_time) )
 		{
 			error_print("Failed to get server time.");
 			result = -1;
@@ -109,7 +107,7 @@ int runCommunications(klib::SGame& instanceGame)
 		// Disconnect if the game was closed.
 		if( false == instanceGame.bRunning )
 		{
-			sprintf_s(send_buffer,"%s", "DISCONNECT\r\n");
+			static const char send_buffer[] = "DISCONNECT\r\n";
 			bytesTransmitted=-1;
 			sendToConnection( instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer );
 			if (bytesTransmitted == -1)

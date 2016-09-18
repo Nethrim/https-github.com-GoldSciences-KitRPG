@@ -30,7 +30,7 @@ void WriteTitle( int ThreadNum )
 bool bListenFailure = false;
 void serverListen( void* server )
 {
-	klib::CServer* pServer = (klib::CServer*)server;
+	ktools::CServer* pServer = (ktools::CServer*)server;
 	while( !bListenFailure )
 	{
 		if( pServer->Listen() )
@@ -66,7 +66,7 @@ int main(int argc, char **argv)// Thread 1: main
 #endif
 
 	int port_number;		// Port number to use
-	klib::CServer server;
+	ktools::CServer server;
 
 	/* Interpret command line */
 	if (argc == 2)
@@ -88,7 +88,7 @@ int main(int argc, char **argv)// Thread 1: main
     WriteTitle( 0 );
 
 	// Open windows connection 
-	if (initNetwork())
+	if (ktools::initNetwork())
 	{
 		error_print("Failed to initialize network.");
 		return -1;
@@ -106,7 +106,7 @@ int main(int argc, char **argv)// Thread 1: main
 	debug_print("Press CTRL + Q to quit");
 
 	// Check for exit request while the server is running.
-	klib::initASCIIScreen();
+	ktools::initASCIIScreen();
 
 	klib::SGame* pInstancedGame = new klib::SGame;
 	klib::SGame& instanceGame = *pInstancedGame;
@@ -125,7 +125,7 @@ int main(int argc, char **argv)// Thread 1: main
 
 	server.ShutdownServer();
 
-	shutdownNetwork();
+	ktools::shutdownNetwork();
 	return 0;
 }
 
@@ -134,7 +134,7 @@ void usage(void)
 	fprintf(stderr, "timeserv [server_address] port\n");
 }
 
-int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
+int32_t executeCommand(ktools::CClient* client, const char* buffer)
 {
 	// Check for time request 
 	if (strcmp(buffer, "GET TIME\r\n") == 0)
@@ -175,7 +175,7 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 		// Get current time
 		time_t current_time = time(NULL);
 		
-		SPlayer player;
+		klib::SPlayer player;
 
 		// Send data back
 		int32_t sentBytes = 0;

@@ -27,33 +27,33 @@ public:
 	}
 } bbDeleter;
 
-char* klib::getASCIIBackBuffer( void ) {
+char* ktools::getASCIIBackBuffer( void ) {
 	if( 0 == _backBuffer )
 		clearASCIIBackBuffer(' ', COLOR_WHITE);
 	return _backBuffer;
 };
 
-const char* klib::getASCIIFrontBuffer( void ) {
+const char* ktools::getASCIIFrontBuffer( void ) {
 	return _frontBuffer;
 };
 
-uint16_t* klib::getASCIIColorBackBuffer( void ) {
+uint16_t* ktools::getASCIIColorBackBuffer( void ) {
 	return _colorBackBuffer;
 };
 
-const uint16_t* klib::getASCIIColorFrontBuffer( void ) {
+const uint16_t* ktools::getASCIIColorFrontBuffer( void ) {
 	return _colorFrontBuffer;
 };
 
-uint32_t klib::getASCIIBackBufferWidth( void ) {
+uint32_t ktools::getASCIIBackBufferWidth( void ) {
 	return _backBufferWidth;
 };
 
-uint32_t klib::getASCIIBackBufferHeight( void ) {
+uint32_t ktools::getASCIIBackBufferHeight( void ) {
 	return _backBufferHeight;
 };
 
-void klib::swapASCIIBuffers( void ) {
+void ktools::swapASCIIBuffers( void ) {
 	char* bB			= _backBuffer;
 	_backBuffer			= _frontBuffer;
 	_frontBuffer		= bB;
@@ -64,13 +64,13 @@ void klib::swapASCIIBuffers( void ) {
 };
 
 
-void klib::presentASCIIBackBuffer( void )
+void ktools::presentASCIIBackBuffer( void )
 {
 	swapASCIIBuffers();
 	presentASCIIFrontBuffer();
 };
 
-void klib::presentASCIIFrontBuffer( void )
+void ktools::presentASCIIFrontBuffer( void )
 {
 #if defined( WIN32 )
 	const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -95,7 +95,7 @@ void klib::presentASCIIFrontBuffer( void )
 #endif
 };
 
-void klib::clearASCIIBackBuffer( int value, uint16_t colorValue )
+void ktools::clearASCIIBackBuffer( int value, uint16_t colorValue )
 {
 	if( 0 == _backBuffer )
 	{
@@ -123,7 +123,7 @@ void klib::clearASCIIBackBuffer( int value, uint16_t colorValue )
 
 };
 
-void klib::initASCIIScreen()
+void ktools::initASCIIScreen()
 {
 	static const HANDLE hConsoleOut = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_SCREEN_BUFFER_INFOEX csbiInfo = {};

@@ -1,7 +1,7 @@
 #include "timer.h"
 #include <windows.h>
 
-using namespace klib;
+using namespace ktools;
 
 STimer::STimer()
 { 

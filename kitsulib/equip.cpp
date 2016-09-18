@@ -101,7 +101,7 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 		for(iCharacter=0, count=player.Army.size(); iCharacter<count; ++iCharacter)	
 		{	
 			bAlreadyInSquad = false;
-			for(iSlot=0; iSlot<klib::size(player.Squad.Agents); ++iSlot )
+			for(iSlot=0; iSlot<ktools::size(player.Squad.Agents); ++iSlot )
 				if(player.Squad.Agents[iSlot] == iCharacter)
 				{
 					bAlreadyInSquad = true;
@@ -160,41 +160,41 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 template <typename _TEntity, size_t _Width, size_t _Depth, size_t _SizeDefinitions, size_t _SizeModifiers> 
 void drawEntityDetail(SWeightedDisplay<_Width, _Depth>& display_, int32_t offsetY, int32_t offsetX, const _TEntity& entity, const SEntityRecord<_TEntity> (&definitions)[_SizeDefinitions], const SEntityRecord<_TEntity> (&modifiers)[_SizeModifiers], const std::string& entityType)
 {
-	printfToGrid(display_.Screen		, offsetY++, offsetX, LEFT, "-- %s:", entityType.c_str());
+	printfToGrid(display_.Screen		, offsetY++, offsetX, ktools::LEFT, "-- %s:", entityType.c_str());
 	uint16_t color = COLOR_GREEN;
-	valueToGrid(display_.TextAttributes	, offsetY-1, offsetX, LEFT, &color, 1, (int32_t)entityType.size()+4);
+	valueToGrid(display_.TextAttributes	, offsetY-1, offsetX, ktools::LEFT, &color, 1, (int32_t)entityType.size()+4);
 
 	std::string nameAndLevelText = getEntityName(entity, definitions, modifiers) + " Lv. " + std::to_string(entity.Level);	
-	lineToGrid(display_.Screen			, ++offsetY	, offsetX, LEFT, nameAndLevelText.c_str() );
-	valueToGrid(display_.TextAttributes	, offsetY	, offsetX, LEFT, &(color = COLOR_YELLOW), 1, (int32_t)nameAndLevelText.size());
+	lineToGrid(display_.Screen			, ++offsetY	, offsetX, ktools::LEFT, nameAndLevelText.c_str() );
+	valueToGrid(display_.TextAttributes	, offsetY	, offsetX, ktools::LEFT, &(color = COLOR_YELLOW), 1, (int32_t)nameAndLevelText.size());
 
 	const SEntityPoints entityPoints = getEntityPoints(entity, definitions, modifiers);
 	offsetY+=2;
-	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Health				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Health"				, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Shield				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Shield"				, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Mana					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Max Mana"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Health				);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Max Health"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Shield				);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Max Shield"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeMax.Mana					);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Max Mana"				, nameAndLevelText.c_str());
 	offsetY+=1;
-	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Health			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Health per turn"			, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Shield			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Shield per turn"			, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Mana				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Mana per turn"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Health			);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Health per turn"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Shield			);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Shield per turn"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.LifeCurrent.Mana				);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Mana per turn"			, nameAndLevelText.c_str());
 	offsetY+=1;
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Hit					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Hit Chance"				, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Damage					);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Damage"					, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Health	);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Health"	, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Shield	);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Shield"	, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Mana		);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Mana"		, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Absorption				);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Absorption"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Hit					);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Hit Chance"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Damage					);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Damage"					, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Health	);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Health"	, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Shield	);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Shield"	, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.DirectDamage.Mana		);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Direct Damage Mana"		, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Absorption				);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Absorption"				, nameAndLevelText.c_str());
 	offsetY+=1;
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Attack			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Attack Speed"			, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Movement			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Movement Speed"			, nameAndLevelText.c_str());
-	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Reflexes			);	printfToGrid(display_.Screen, offsetY++	, offsetX, LEFT, "%-21.21s: %-10.10s"	, "Reflexes"				, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Attack			);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Attack Speed"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Movement			);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Movement Speed"			, nameAndLevelText.c_str());
+	nameAndLevelText = std::to_string		(entityPoints.Attack.Speed.Reflexes			);	printfToGrid(display_.Screen, offsetY++	, offsetX, ktools::LEFT, "%-21.21s: %-10.10s"	, "Reflexes"				, nameAndLevelText.c_str());
 
-	nameAndLevelText = std::to_string		(entityPoints.Coins							);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Coins per turn"			, nameAndLevelText.c_str());
-	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = (entityPoints.Coins >= 0) ? COLOR_ORANGE : COLOR_RED), 1, 11);
-	nameAndLevelText = std::to_string		(entityPoints.PriceBuy/2					);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Sell Price"				, nameAndLevelText.c_str());
-	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
-	nameAndLevelText = std::to_string		(entityPoints.CostMaintenance				);	printfToGrid(display_.Screen, ++offsetY	, offsetX, LEFT, "%-21.21s: %-11.11s"	, "Maintenance Cost"		, nameAndLevelText.c_str());
-	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, LEFT, &(color = COLOR_ORANGE), 1, 11);
+	nameAndLevelText = std::to_string		(entityPoints.Coins							);	printfToGrid(display_.Screen, ++offsetY	, offsetX, ktools::LEFT, "%-21.21s: %-11.11s"	, "Coins per turn"			, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, ktools::LEFT, &(color = (entityPoints.Coins >= 0) ? COLOR_ORANGE : COLOR_RED), 1, 11);
+	nameAndLevelText = std::to_string		(entityPoints.PriceBuy/2					);	printfToGrid(display_.Screen, ++offsetY	, offsetX, ktools::LEFT, "%-21.21s: %-11.11s"	, "Sell Price"				, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, ktools::LEFT, &(color = COLOR_ORANGE), 1, 11);
+	nameAndLevelText = std::to_string		(entityPoints.CostMaintenance				);	printfToGrid(display_.Screen, ++offsetY	, offsetX, ktools::LEFT, "%-21.21s: %-11.11s"	, "Maintenance Cost"		, nameAndLevelText.c_str());
+	valueToGrid(display_.TextAttributes, offsetY, offsetX+23, ktools::LEFT, &(color = COLOR_ORANGE), 1, 11);
 }
 
 
@@ -237,7 +237,7 @@ SGameState drawEquip(SGame& instanceGame, const SGameState& returnState)
 	}
 	else 
 	{
-		if( player.Selection.PlayerUnit >= (int16_t)klib::size(player.Squad.Agents))
+		if( player.Selection.PlayerUnit >= (int16_t)ktools::size(player.Squad.Agents))
 			player.Selection.PlayerUnit = -1;
 
 		return drawEquipMenu(instanceGame, returnState);

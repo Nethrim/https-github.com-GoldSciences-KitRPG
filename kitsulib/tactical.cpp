@@ -34,8 +34,9 @@ void boardToDisplay(const STacticalBoard& board, SWeightedDisplay<_Width, _Depth
 			else if(board.Terrain.Topology	.Cells[z][x].Sharp >= 1)			{ target.Screen.Cells[z][x] = -78; target.TextAttributes.Cells[z][x] = COLOR_DARKGREEN; } 
 			bSwap = !bSwap;
 		}
-	static STimer animationTimer;
-	static SAccumulator<double> animationAccum = {0.0, 1.0};
+
+	static ktools::STimer animationTimer;
+	static ktools::SAccumulator<double> animationAccum = {0.0, 1.0};
 
 	animationTimer.Frame();
 	if( animationAccum.Accumulate(animationTimer.LastTimeSeconds) )
@@ -51,8 +52,8 @@ void drawTacticalInfo(STacticalInfo& tacticalInfo, SWeightedDisplay<_Width, _Dep
 	uint16_t gridColor = COLOR_DARKGREEN << 4;
 	char empty = ' ';
 	for(uint32_t z=0; z<_Depth; ++z) {
-		valueToGrid(target.TextAttributes, z, 0, LEFT, &gridColor, 1, _Width);
-		valueToGrid(target.Screen, z, 0, LEFT, &empty, 1, _Width);
+		valueToGrid(target.TextAttributes, z, 0, ktools::LEFT, &gridColor, 1, _Width);
+		valueToGrid(target.Screen, z, 0, ktools::LEFT, &empty, 1, _Width);
 	}
 
 	boardToDisplay(tacticalInfo.Board, target, playerIndex, selection);
@@ -152,7 +153,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 {
 	SPlayer&		playerUser	= instanceGame.Players[PLAYER_USER];
 	
-	static SAccumulator<double>	keyAccum = {0.0, 0.4};
+	static ktools::SAccumulator<double>	keyAccum = {0.0, 0.4};
 
 	if(false == instanceGame.bTactical)
 	{
@@ -313,20 +314,20 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	}
 
 	if(bDrawText) {
-		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, CENTER, messageSlow);
-		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &messageColor, 1, (int32_t)selectedTile.size() );
+		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, ktools::CENTER, messageSlow);
+		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, ktools::LEFT, &messageColor, 1, (int32_t)selectedTile.size() );
 	}
 	else {
-		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, CENTER, "                                  ");
+		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, 0, ktools::CENTER, "                                  ");
 	}
-	printfToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX	+1, LEFT, "%i, %i", mouseX-tacticalDisplayX, mouseY-TACTICAL_DISPLAY_POSY);
+	printfToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX	+1, ktools::LEFT, "%i, %i", mouseX-tacticalDisplayX, mouseY-TACTICAL_DISPLAY_POSY);
 
 	const SPlayer& currentEnemy		= (instanceGame.CurrentPlayer == PLAYER_USER) ? instanceGame.Players[PLAYER_ENEMY] : instanceGame.Players[PLAYER_USER];
 	const SPlayer& currentPlayer	= instanceGame.Players[instanceGame.CurrentPlayer];
 	if(currentPlayer.Selection.TargetUnit != -1 && currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit] != -1 && currentEnemy.Army[currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit]].Points.LifeCurrent.Health > 0) {
 		selectedTile = "Target: " + currentEnemy.Army[currentEnemy.Squad.Agents[currentPlayer.Selection.TargetUnit]].Name;
-		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
-		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &(messageColor = COLOR_RED), 1, (int32_t)selectedTile.size());
+		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, ktools::RIGHT, selectedTile.c_str());
+		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, ktools::LEFT, &(messageColor = COLOR_RED), 1, (int32_t)selectedTile.size());
 	}
 
 	if( currentPlayer.Selection.PlayerUnit != -1 
@@ -335,13 +336,13 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	) 
 	{
 		selectedTile = "Moves left: " + std::to_string(currentPlayer.Squad.MovesLeft[currentPlayer.Selection.PlayerUnit]);
-		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+2, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
-		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+2, actualX, LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
+		int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+2, tacticalDisplayX+1, ktools::RIGHT, selectedTile.c_str());
+		valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+2, actualX, ktools::LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
 		if(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit] != currentPlayer.Army[currentPlayer.Squad.Agents[currentPlayer.Selection.PlayerUnit]].Position) 
 		{
 			selectedTile = "Target Position: " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].x) + ", " + std::to_string(currentPlayer.Squad.TargetPositions[currentPlayer.Selection.PlayerUnit].z);
-			int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, RIGHT, selectedTile.c_str());
-			valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
+			int32_t actualX = lineToGrid(globalDisplay.Screen, tacticalDisplayStop+3, tacticalDisplayX+1, ktools::RIGHT, selectedTile.c_str());
+			valueToGrid(globalDisplay.TextAttributes, tacticalDisplayStop+3, actualX, ktools::LEFT, &(messageColor = COLOR_CYAN), 1, (int32_t)selectedTile.size());
 		}
 	}
 
@@ -384,7 +385,7 @@ void deployAgents
 	, const int32_t	playerIndex
 	, const SGrid<STopologyHeight, STacticalBoard::Width, STacticalBoard::Depth>	& terrainTopology	 
 	, SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>					& terrainEntities	
-	, int32_t seed
+	, int64_t seed
 	)
 {
 	const uint32_t	terrainWidth = terrainTopology.Width, 
@@ -393,15 +394,15 @@ void deployAgents
 	int32_t rangeX	= terrainWidth / 5;
 	int32_t rangeZ	= terrainDepth / 5;
 
-	for(uint32_t iAgent=0, agentCount = (uint32_t)klib::size(player.Squad.Agents); iAgent<agentCount; iAgent++)
+	for(uint32_t iAgent=0, agentCount = (uint32_t)ktools::size(player.Squad.Agents); iAgent<agentCount; iAgent++)
 	{
 		if(player.Squad.Agents[iAgent] != -1)
 		{
 			if(player.Army[player.Squad.Agents[iAgent]].Points.LifeCurrent.Health > 0)
 			{
 				SCellCoord agentPosition;
-				agentPosition.x = 1+(int32_t)(rangeX * noiseNormal(iAgent, seed)	);
-				agentPosition.z = 1+(int32_t)(rangeZ * noiseNormal(iAgent, seed<<8)	);
+				agentPosition.x = 1+(int32_t)(rangeX * ktools::noiseNormal(iAgent, seed)	);
+				agentPosition.z = 1+(int32_t)(rangeZ * ktools::noiseNormal(iAgent, seed<<8)	);
 				if(playerIndex == PLAYER_ENEMY) 
 				{
 					agentPosition.x += terrainWidth-rangeX-2;
@@ -413,8 +414,8 @@ void deployAgents
 					|| terrainEntities.Props	.Cells	[agentPosition.z][agentPosition.x].Definition	!= -1 
 					)
 				{
-					agentPosition.x = 1+(int32_t)(rangeX * noiseNormal((1+iAgent)*agentPosition.z*(iAgent+agentPosition.x), seed+rangeZ)	);
-					agentPosition.z = 1+(int32_t)(rangeZ * noiseNormal(((1+iAgent)<<16)*agentPosition.x, seed = (int32_t)time(0))	);
+					agentPosition.x = 1+(int32_t)(rangeX * ktools::noiseNormal((1+iAgent)*agentPosition.z*(iAgent+agentPosition.x), seed+rangeZ)	);
+					agentPosition.z = 1+(int32_t)(rangeZ * ktools::noiseNormal(((1+iAgent)<<16)*agentPosition.x, seed = (int32_t)time(0))	);
 					if(playerIndex == PLAYER_ENEMY) 
 					{
 						agentPosition.x += terrainWidth-rangeX-2;
@@ -437,7 +438,7 @@ void deployAgents
 void generateTopology
 	( SGrid<STopologyHeight, STacticalBoard::Width, STacticalBoard::Depth>	& terrainTopology	 
 	, SGrid<int8_t, STacticalBoard::Width, STacticalBoard::Depth>			& terrainCollision
-	, int32_t seed
+	, int64_t seed
 	)
 {
 	const uint32_t	terrainWidth = terrainTopology.Width, 
@@ -459,7 +460,7 @@ void generateTopology
 void populateProps
 	( SGrid<STopologyHeight, STacticalBoard::Width, STacticalBoard::Depth>	& terrainTopology	 
 	, SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>			& terrainEntities	
-	, int32_t seed
+	, int64_t seed
 	, int32_t maxCoins
 	)
 {
@@ -469,10 +470,10 @@ void populateProps
 	for(uint32_t z=0; z<terrainDepth; ++z)
 		for(uint32_t x=0; x<terrainWidth; ++x)
 		{
-			double noise1 = noiseNormal(z*terrainDepth+x, seed);
-			double noise2 = noiseNormal(z*terrainDepth+x, seed<<8);
+			double noise1 = ktools::noiseNormal(z*terrainDepth+x, seed);
+			double noise2 = ktools::noiseNormal(z*terrainDepth+x, seed<<8);
 			if(terrainTopology.Cells[z][x].Sharp < 1 && terrainTopology.Cells[z][x].Smooth < 1 && noise1 > 0.99)
-				terrainEntities.Props.Cells[z][x].Definition = 1+(int16_t)(rand()%(size(definitionsStageProp)-1));
+				terrainEntities.Props.Cells[z][x].Definition = 1+(int16_t)(rand()%(ktools::size(definitionsStageProp)-1));
 			else if(terrainTopology.Cells[z][x].Sharp < 1 && terrainTopology.Cells[z][x].Smooth < 1 && terrainEntities.Props.Cells[z][x].Definition == -1 && noise2 > 0.99)
 				terrainEntities.Coins.Cells[z][x] = rand()%(1+maxCoins);
 		}
@@ -485,13 +486,13 @@ void klib::initTacticalMap(SGame& instanceGame)
 	SGrid<STopologyHeight, STacticalBoard::Width, STacticalBoard::Depth>	& terrainTopology	= instanceGame.TacticalInfo.Board.Terrain.Topology;
 	SGrid<int8_t, STacticalBoard::Width, STacticalBoard::Depth>				& terrainCollision	= instanceGame.TacticalInfo.Board.Terrain.Collision;
 	SEntityTiles<STacticalBoard::Width, STacticalBoard::Depth>				& terrainEntities	= instanceGame.TacticalInfo.Board.Entities;
-	int32_t seed = instanceGame.Seed;
+	int64_t seed = instanceGame.Seed;
 
 	SPlayer& enemy = instanceGame.Players[PLAYER_ENEMY];
 	SPlayer& player = instanceGame.Players[PLAYER_ENEMY];
 
 	int32_t maxCoins = 0;
-	for(uint32_t iAgent=0, count=(uint32_t)size(enemy.Squad.Agents); iAgent<count; ++iAgent)
+	for(uint32_t iAgent=0, count=(uint32_t)ktools::size(enemy.Squad.Agents); iAgent<count; ++iAgent)
 	{
 		if(enemy.Squad.Agents[iAgent] != -1)
 		{

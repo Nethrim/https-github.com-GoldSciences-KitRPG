@@ -18,7 +18,7 @@ int main(void)
 	_CrtSetDbgFlag(tmp);
 #endif
 
-	klib::initASCIIScreen();
+	ktools::initASCIIScreen();
 	
 	klib::SGame* pInstancedGame = new klib::SGame;
 	klib::SGame& instanceGame = *pInstancedGame;
@@ -27,7 +27,7 @@ int main(void)
 
 	while(instanceGame.bRunning)
 	{
-		pollInput(instanceGame.FrameInput);
+		ktools::pollInput(instanceGame.FrameInput);
 		draw(instanceGame);
 	}
 

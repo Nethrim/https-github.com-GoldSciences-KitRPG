@@ -47,7 +47,7 @@ SGameState drawSquadSetupMenu(SGame& instanceGame, const SGameState& returnValue
 
 	static SMenuItem<int32_t> menuItems[SSquad::Size] = {};
 	static int32_t maxNameLen = 0;
-	for(uint32_t i=0, count=(uint32_t)size(menuItems); i<count; i++) 
+	for(uint32_t i=0, count=(uint32_t)ktools::size(menuItems); i<count; i++) 
 	{
 		menuItems[i].ReturnValue = i;
 

@@ -68,7 +68,7 @@ bool klib::addStatus(SCombatStatus& characterStatus, COMBAT_STATUS statusType, i
 		if(bFound)
 			continue;
 
-		if(characterStatus.Count >= size(characterStatus.Status))
+		if(characterStatus.Count >= ktools::size(characterStatus.Status))
 			return false;
 		else
 		{

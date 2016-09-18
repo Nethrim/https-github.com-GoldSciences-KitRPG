@@ -1,4 +1,6 @@
 #include "netlib_server.h"
+#include "netlib_private.h"
+
 #include "GCore_function_macros.h"
 
 #include <cstdio>
@@ -6,15 +8,15 @@
 
 #include <WinSock2.h>
 
-GDEFINE_OBJ(klib, CClient);
+GDEFINE_OBJ(ktools, CClient);
 
 #define BUFFER_SIZE 4096
 
-using namespace klib;
+using namespace ktools;
 
 int32_t CServer::InitServer(int32_t port_number)
 {
-	/* Get host name of this computer */
+	// Get host name of this computer
 	gethostname(host_name, sizeof(host_name));
 	if( createConnectionByHostName( host_name, port_number, &m_serverConnection ) )
 	{

@@ -8,7 +8,7 @@
 namespace klib
 {
 	template<typename... _Args>
-	int32_t lineToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* text, int32_t charCount = -1 )
+	int32_t lineToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ktools::ALIGN align, const char* text, int32_t charCount = -1 )
 	{
 		int32_t textLen = (int32_t)strlen(text);
 		if( textLen > charCount && charCount >= 0 )
@@ -18,7 +18,7 @@ namespace klib
 	}
 
 	template<typename... _Args>
-	int32_t printfToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args )
+	int32_t printfToRect( char* rectangleTopLeft, size_t width, size_t height, int32_t offsetLine, int32_t offsetColumn, ktools::ALIGN align, const char* format, _Args... args )
 	{
 		char precookStr[1024] = {};
 		int32_t precookLen = sprintf_s(precookStr, format, args...);

@@ -34,7 +34,7 @@ SGameState drawTacticalScreen	(SGame& instanceGame, const SGameState& returnStat
 
 void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState) 
 {
-	clearASCIIBackBuffer(' ');
+	ktools::clearASCIIBackBuffer(' ');
 	instanceGame.GlobalDisplay		.Clear();
 	instanceGame.TacticalDisplay	.Clear();	
 	//instanceGame.PostEffectDisplay	.Clear();	
@@ -52,7 +52,7 @@ void handleSubstateChange(SGame& instanceGame, const SGameState& newState, const
 
 void handleStateChange(SGame& instanceGame, const SGameState& newState, const SGameState& prevState)
 {
-	clearASCIIBackBuffer(' ');
+	ktools::clearASCIIBackBuffer(' ');
 	instanceGame.ClearDisplays();
 	resetCursorString(instanceGame.SlowMessage);
 
@@ -104,11 +104,11 @@ void klib::showMenu(SGame& instanceGame) {
 
 	SGameState newAction=instanceGame.State;
 	
-	static const SMenu<SGameState, size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
-	static const SMenu<SGameState, size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
-	static const SMenu<SGameState, size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"		, 26);
-	static const SMenu<SGameState, size(optionsMainInGame	)> menuStartMission	(optionsMainInGame	,  {GAME_STATE_WELCOME_COMMANDER	},	"Start mission"	);
-	static const SMenu<SGameState, size(optionsSell			)> menuSell			(optionsSell		,  {GAME_STATE_WELCOME_COMMANDER	},	"Sell"			);
+	static const SMenu<SGameState, ktools::size(optionsMain			)> menuMain			(optionsMain		,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
+	static const SMenu<SGameState, ktools::size(optionsMainInGame	)> menuMainInGame	(optionsMainInGame	,  {GAME_STATE_EXIT					},	"Main Menu"		, 20, true, "Exit game");
+	static const SMenu<SGameState, ktools::size(optionsConfig		)> menuConfig		(optionsConfig		,  {GAME_STATE_MENU_MAIN			},	"Options"		, 26);
+	static const SMenu<SGameState, ktools::size(optionsMainInGame	)> menuStartMission	(optionsMainInGame	,  {GAME_STATE_WELCOME_COMMANDER	},	"Start mission"	);
+	static const SMenu<SGameState, ktools::size(optionsSell			)> menuSell			(optionsSell		,  {GAME_STATE_WELCOME_COMMANDER	},	"Sell"			);
 
 	klib::SGlobalDisplay& globalDisplay = instanceGame.GlobalDisplay;
 

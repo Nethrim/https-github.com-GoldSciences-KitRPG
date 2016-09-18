@@ -17,7 +17,7 @@ namespace klib
 	
 		inline void					Clear(int32_t index) {
 			if(index == -1)
-				memset(Agents, -1, sizeof(int16_t)*klib::size(Agents));
+				memset(Agents, -1, sizeof(int16_t)*ktools::size(Agents));
 			else
 				Agents[index] = -1;
 		};
@@ -46,7 +46,7 @@ namespace klib
 
 		bool						IsAlive()	const
 		{
-			for(size_t iAgent = 0; iAgent < size(Squad.Agents); iAgent++)
+			for(size_t iAgent = 0; iAgent < ktools::size(Squad.Agents); iAgent++)
 				if(Squad.Agents[iAgent] != -1 && Army[Squad.Agents[iAgent]].Points.LifeCurrent.Health > 0)
 					return true;
 
@@ -56,11 +56,11 @@ namespace klib
 		bool						SelectNextAgent()
 		{
 			uint32_t count = 0;
-			Selection.PlayerUnit = (Selection.PlayerUnit + 1) % size(Squad.Agents);
+			Selection.PlayerUnit = (Selection.PlayerUnit + 1) % ktools::size(Squad.Agents);
 			while(Squad.Agents[Selection.PlayerUnit] == -1 || Army[Squad.Agents[Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0) 
 			{
-				Selection.PlayerUnit = (Selection.PlayerUnit + 1) % size(Squad.Agents);
-				if(++count == size(Squad.Agents))
+				Selection.PlayerUnit = (Selection.PlayerUnit + 1) % ktools::size(Squad.Agents);
+				if(++count == ktools::size(Squad.Agents))
 					return false;
 			}
 			return true;
@@ -73,15 +73,15 @@ namespace klib
 
 			--Selection.PlayerUnit;
 			if(Selection.PlayerUnit < 0) 
-				Selection.PlayerUnit = ((int16_t)size(Squad.Agents))-1;
+				Selection.PlayerUnit = ((int16_t)ktools::size(Squad.Agents))-1;
 
 			while(Squad.Agents[Selection.PlayerUnit] == -1 || Army[Squad.Agents[Selection.PlayerUnit]].Points.LifeCurrent.Health <= 0)
 			{
 				--Selection.PlayerUnit;
 				if(Selection.PlayerUnit < 0) 
-					Selection.PlayerUnit = ((int16_t)size(Squad.Agents))-1;
+					Selection.PlayerUnit = ((int16_t)ktools::size(Squad.Agents))-1;
 
-				if(++count == size(Squad.Agents))
+				if(++count == ktools::size(Squad.Agents))
 					return false;
 			}
 			return true;

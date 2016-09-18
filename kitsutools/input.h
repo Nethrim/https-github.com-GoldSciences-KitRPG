@@ -3,7 +3,7 @@
 #ifndef __INPUT_H__9263487236498723649213640918273098__
 #define __INPUT_H__9263487236498723649213640918273098__
 
-namespace klib
+namespace ktools
 {
 	struct IInputHandler
 	{

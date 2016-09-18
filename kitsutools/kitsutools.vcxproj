@@ -163,6 +163,7 @@
     <ClInclude Include="misc.h" />
     <ClInclude Include="netlib.h" />
     <ClInclude Include="netlib_client.h" />
+    <ClInclude Include="netlib_private.h" />
     <ClInclude Include="netlib_server.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="timer.h" />

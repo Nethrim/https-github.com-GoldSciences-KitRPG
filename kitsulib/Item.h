@@ -141,7 +141,7 @@ static const CItem itemDescriptions[] =
 };
 
 	static inline constexpr int32_t getFinalItemCount() {
-		return (int32_t)((size(itemDescriptions)-1)*size(itemGrades));
+		return (int32_t)((ktools::size(itemDescriptions)-1)*ktools::size(itemGrades));
 	}
 
 	static std::string getItemName(const SItem& item) {

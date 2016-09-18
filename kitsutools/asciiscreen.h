@@ -6,7 +6,7 @@
 #define DEFAULT_ASCII_SCREEN_HEIGHT	80
 #define DEFAULT_ASCII_SCREEN_WIDTH	((uint32_t)(DEFAULT_ASCII_SCREEN_HEIGHT*2.666666f))
 
-namespace klib
+namespace ktools
 {
 	void initASCIIScreen();
 

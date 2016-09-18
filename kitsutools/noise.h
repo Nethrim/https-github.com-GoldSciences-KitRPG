@@ -3,7 +3,7 @@
 #ifndef __NOISE_H__92374092374021784309287349023874__
 #define __NOISE_H__92374092374021784309287349023874__
 
-namespace klib
+namespace ktools
 {
 	static double noise1D(uint32_t x, uint64_t Seed=15731) {
 		x = (x<<13) ^ x;

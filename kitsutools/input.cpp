@@ -5,14 +5,14 @@
 #include <cstdint>
 #include <Windows.h>
 
-void klib::pollInput(SInput& input)
+void ktools::pollInput(SInput& input)
 {
-	static const size_t keyCount = klib::size(input.Keys);
+	static const size_t keyCount = ktools::size(input.Keys);
 	memcpy(input.PreviousKeys, input.Keys, keyCount);
 	for(uint32_t i=0; i<keyCount; i++)
 		input.Keys[i] = GetAsyncKeyState(i) ? 1 : 0;
 
-	static const size_t buttonCount = klib::size(input.MouseButtons);
+	static const size_t buttonCount = ktools::size(input.MouseButtons);
 	memcpy(input.PreviousMouseButtons, input.MouseButtons, buttonCount);
 
 	INPUT_RECORD recordIn	= {};
@@ -44,7 +44,7 @@ void klib::pollInput(SInput& input)
 		break;
 	}
 
-	for(uint32_t i=0; i<klib::size(input.MouseButtons); ++i)
+	for(uint32_t i=0; i<ktools::size(input.MouseButtons); ++i)
 		if( input.MouseButtons[i] != input.PreviousMouseButtons[i] )
 			Beep(220+220*i, 35);
 };

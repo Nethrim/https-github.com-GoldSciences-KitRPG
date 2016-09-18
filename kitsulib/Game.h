@@ -88,12 +88,12 @@ namespace klib
 		god::CGMutex				ServerTimeMutex		= {};
 		time_t						ServerTime			= 0;
 
-		SInput						FrameInput			= {};
-		STimer						FrameTimer			= {};
+		ktools::SInput				FrameInput			= {};
+		ktools::STimer				FrameTimer			= {};
 
 		char						SlowMessage[256]	= {'_',};
 
-		int16_t						Seed				= 0;
+		int64_t						Seed				= 0;
 
 		STacticalDisplay			TacticalDisplay		= {};
 		SPostEffectDisplay			PostEffectDisplay	= {};

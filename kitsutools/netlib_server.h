@@ -12,7 +12,7 @@
 
 #define INTERLOCKED_INCREMENT(n)	InterlockedIncrement(&n)
 #define INTERLOCKED_DECREMENT(n)	InterlockedDecrement(&n)
-namespace klib
+namespace ktools
 {
 	class CServer;
 	class CClient
@@ -38,8 +38,8 @@ namespace klib
 		bool								m_bListening; 
 		SConnectionEndpoint*				m_serverConnection;
 		char								host_name[256];	/* Name of the server */
-		GLstObj(klib, CClient)				ClientConnections;	
-		GLstObj(klib, CClient)				ClientUnused;	
+		GLstObj(ktools, CClient)				ClientConnections;	
+		GLstObj(ktools, CClient)				ClientUnused;	
 		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS_QUEUE];
 		volatile long						m_nQueuedClientCount;
 
@@ -53,8 +53,9 @@ namespace klib
 		god::CGMutex						ConnectionsMutex;
 	};
 
-	// Define this function for processing your commands.
-	int32_t executeCommand(CClient* client, const char* buffer);
 };
+
+// Define this function for processing your commands.
+int32_t executeCommand(ktools::CClient* client, const char* buffer);
 
 #endif  // __NETLIB_SERVER_H__9823409236498237469827364982734689237__

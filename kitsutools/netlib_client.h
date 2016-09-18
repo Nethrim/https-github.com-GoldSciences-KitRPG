@@ -4,7 +4,7 @@
 #define __NETLIB_CLIENT_H__90237423649827469283746928374698273__
 
 
-namespace klib
+namespace ktools
 {
 
 	struct SNetworkClient

@@ -1,25 +1,13 @@
-#include "netlib.h"
-
-#include "glabel.h"
+#include "netlib_private.h"
 
 #include <stdio.h>
 #include <string>
-#if ( defined( WIN32 )|| defined( _WIN32 ) )
-#include <WinSock2.h>
-#include <Ws2tcpip.h> 
-#endif
-
 
 
 void initSockaddrStruct( int a1, int a2, int a3, int a4, unsigned short port_number, sockaddr_in* out_sockaddr );
 
-struct SConnectionEndpoint
-{
-	SOCKET sd					= 0;								/* The socket descriptor */
-	struct sockaddr_in sockaddr = {};			/* Information about the client */
-};
 
-int32_t initNetwork()
+int32_t ktools::initNetwork()
 {
 	WSADATA w;									/* Used to open Windows connection */
 	/* Open windows connection */
@@ -31,7 +19,7 @@ int32_t initNetwork()
 	return 0;
 }
 
-int32_t shutdownNetwork()
+int32_t ktools::shutdownNetwork()
 {
 	WSACleanup();
 	return 0;
@@ -55,22 +43,22 @@ void initSockaddrStruct( int a1, int a2, int a3, int a4, unsigned short port_num
 	out_sockaddr->sin_addr.S_un.S_un_b.s_b4 = (unsigned char)a4;
 }
 
-int32_t createConnection( int b1, int b2, int b3, int b4, unsigned short port_number, SConnectionEndpoint** out_newClientInfo ) 
+int32_t ktools::createConnection( int b1, int b2, int b3, int b4, unsigned short port_number, ktools::SConnectionEndpoint** out_newClientInfo ) 
 {
-	SConnectionEndpoint* newClientInfo = new SConnectionEndpoint();
+	ktools::SConnectionEndpoint* newClientInfo = new ktools::SConnectionEndpoint();
 	initSockaddrStruct( b1, b2, b3, b4, port_number, &newClientInfo->sockaddr );
 	*out_newClientInfo = newClientInfo;
 	return 0;
 }
 
-int32_t createConnection( unsigned short port_number, SConnectionEndpoint** out_clientInfo ) 
+int32_t ktools::createConnection( unsigned short port_number, ktools::SConnectionEndpoint** out_clientInfo ) 
 {
 	char host_name[256];
 	gethostname(host_name, sizeof(host_name));
-	return createConnectionByHostName( host_name, port_number, out_clientInfo );
+	return ktools::createConnectionByHostName( host_name, port_number, out_clientInfo );
 };
 
-int32_t createConnectionByHostName( char* host_name, unsigned short port_number, SConnectionEndpoint** out_clientInfo ) 
+int32_t ktools::createConnectionByHostName( char* host_name, unsigned short port_number, SConnectionEndpoint** out_clientInfo ) 
 {
 	int b1, b2, b3, b4;							/* Client address components in xxx.xxx.xxx.xxx form */
 
@@ -224,7 +212,7 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 #endif
 };
 
-int32_t initConnection( SConnectionEndpoint* connection ) 
+int32_t ktools::initConnection( SConnectionEndpoint* connection ) 
 {
 	/* Open a datagram socket */
 	SOCKET sd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -238,7 +226,7 @@ int32_t initConnection( SConnectionEndpoint* connection )
 	return 0;
 };
 
-int32_t shutdownConnection( SConnectionEndpoint** out_clientInfo )
+int32_t ktools::shutdownConnection( SConnectionEndpoint** out_clientInfo )
 {
 	if(0 == *out_clientInfo) 
 		return 0;
@@ -254,7 +242,7 @@ int32_t shutdownConnection( SConnectionEndpoint** out_clientInfo )
 }
 
 
-int32_t bindConnection( SConnectionEndpoint* client )
+int32_t ktools::bindConnection( SConnectionEndpoint* client )
 {
 	/* Bind local address to socket */
 	int32_t sockaddr_in_len = (int32_t)_sockaddr_in_len;
@@ -267,7 +255,7 @@ int32_t bindConnection( SConnectionEndpoint* client )
 	return 0;
 }
 
-int32_t connectionListen( SConnectionEndpoint* conn )
+int32_t ktools::connectionListen( SConnectionEndpoint* conn )
 {
 	if (listen(conn->sd, 1) == SOCKET_ERROR) 
 	{
@@ -277,7 +265,7 @@ int32_t connectionListen( SConnectionEndpoint* conn )
 	return 0;
 };
 
-int32_t connectionAccept( SConnectionEndpoint* conn, SConnectionEndpoint** out_newConn )
+int32_t ktools::connectionAccept( SConnectionEndpoint* conn, SConnectionEndpoint** out_newConn )
 {
 	//----------------------
 	// Accept the connection.
@@ -295,7 +283,7 @@ int32_t connectionAccept( SConnectionEndpoint* conn, SConnectionEndpoint** out_n
 	return 0;
 };
 
-int32_t sendToConnection		( SConnectionEndpoint* connection, const char* buffer, uint32_t bytesToSend, int32_t* _bytesSent, SConnectionEndpoint* targetConnection )
+int32_t ktools::sendToConnection		( SConnectionEndpoint* connection, const char* buffer, uint32_t bytesToSend, int32_t* _bytesSent, SConnectionEndpoint* targetConnection )
 {
 	// Tranmsit data to get time
 	if( 0 == connection )
@@ -311,7 +299,7 @@ int32_t sendToConnection		( SConnectionEndpoint* connection, const char* buffer,
 	return 0;
 };
 
-int32_t receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, uint32_t bufLen, int32_t* _bytesReceived, SConnectionEndpoint** newConnection )
+int32_t ktools::receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, uint32_t bufLen, int32_t* _bytesReceived, SConnectionEndpoint** newConnection )
 {
 	int server_length = (int32_t)_sockaddr_in_len;
 	int32_t bytesReceived =-1;
@@ -343,7 +331,7 @@ int32_t receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, u
 	return 0;
 };
 
-int32_t getAddress( SConnectionEndpoint* connection, int* a1, int* a2, int* a3, int* a4, int* port_number )
+int32_t ktools::getAddress( SConnectionEndpoint* connection, int* a1, int* a2, int* a3, int* a4, int* port_number )
 {
 	if( a1 ) *a1 = connection->sockaddr.sin_addr.S_un.S_un_b.s_b1;
 	if( a2 ) *a2 = connection->sockaddr.sin_addr.S_un.S_un_b.s_b2;
@@ -353,11 +341,12 @@ int32_t getAddress( SConnectionEndpoint* connection, int* a1, int* a2, int* a3, 
 	return 0;
 };
 
-bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
+bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 {
 	// send our command
 	int32_t bytesTransmitted=-1;
 	static const god::glabel strPing = "PING\r\n";
+	NETLIB_COMMAND command = NETLIB_COMMAND_PING;
 	god::error_t transmResult = sendToConnection( pClient, strPing.c_str(), (int)strPing.size() + 1, &bytesTransmitted, pServer );
 	if (transmResult < 0 || bytesTransmitted < 0)//strPing.size())
 	{

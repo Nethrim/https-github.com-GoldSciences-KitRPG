@@ -130,21 +130,21 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		break;
 	}
 
-#define MAX_RESEARCH_ITEMS		\
-	size(definitionsAccessory)	\
-	+size(definitionsWeapon)	\
-	+size(definitionsArmor)		\
-	+size(definitionsProfession)\
-	+size(definitionsVehicle)	\
-	+size(definitionsFacility)	\
-	+size(definitionsStageProp)	\
-	+size(modifiersAccessory)	\
-	+size(modifiersWeapon)		\
-	+size(modifiersArmor)		\
-	+size(modifiersProfession)	\
-	+size(modifiersVehicle)		\
-	+size(modifiersFacility)	\
-	+size(modifiersStageProp)
+#define MAX_RESEARCH_ITEMS					\
+	 ktools::size(definitionsAccessory)		\
+	+ktools::size(definitionsWeapon)		\
+	+ktools::size(definitionsArmor)			\
+	+ktools::size(definitionsProfession)	\
+	+ktools::size(definitionsVehicle)		\
+	+ktools::size(definitionsFacility)		\
+	+ktools::size(definitionsStageProp)		\
+	+ktools::size(modifiersAccessory)		\
+	+ktools::size(modifiersWeapon)			\
+	+ktools::size(modifiersArmor)			\
+	+ktools::size(modifiersProfession)		\
+	+ktools::size(modifiersVehicle)			\
+	+ktools::size(modifiersFacility)		\
+	+ktools::size(modifiersStageProp)
 
 	static klib::SMenuItem<SResearchable> menuItems[MAX_RESEARCH_ITEMS] = {};
 
@@ -237,7 +237,7 @@ SGameState drawResearch(SGame& instanceGame, const SGameState& returnState)
 	drawBubblesBackground(instanceGame.PostEffectDisplay, instanceGame.FrameTimer.LastTimeSeconds);
 	if(GAME_SUBSTATE_MAIN == instanceGame.State.Substate) 
 	{
-		static const SMenu<SGameState, size(optionsResearch)> menuResearch(optionsResearch, {GAME_STATE_WELCOME_COMMANDER}, "Research Center", 28);
+		static const SMenu<SGameState, ktools::size(optionsResearch)> menuResearch(optionsResearch, {GAME_STATE_WELCOME_COMMANDER}, "Research Center", 28);
 		return drawMenu(instanceGame.GlobalDisplay.Screen, &instanceGame.GlobalDisplay.TextAttributes.Cells[0][0], menuResearch, instanceGame.FrameInput, instanceGame.State);
 	}
 	else 

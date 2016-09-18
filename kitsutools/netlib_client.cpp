@@ -1,13 +1,14 @@
 #include "netlib_client.h"
+#include "netlib_private.h"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
 #include "GCore_printf.h"
 
-using namespace klib;
+using namespace ktools;
 
-int32_t klib::initClientConnection(SNetworkClient& instanceClient)
+int32_t ktools::initClientConnection(SNetworkClient& instanceClient)
 {
 
 	if( createConnection( instanceClient.b1, instanceClient.b2, instanceClient.b3, instanceClient.b4, 0, &instanceClient.pClient ) )
@@ -19,6 +20,7 @@ int32_t klib::initClientConnection(SNetworkClient& instanceClient)
 	if( initConnection(instanceClient.pClient) )
 	{
 		error_printf("Error initializing client connection.");
+		return -1;
 	}
 
 	if( bindConnection(instanceClient.pClient) )
@@ -38,7 +40,7 @@ int32_t klib::initClientConnection(SNetworkClient& instanceClient)
 }
 
 
-void klib::disconnectClient(SNetworkClient& client)
+void ktools::disconnectClient(SNetworkClient& client)
 {
 	/* Get current time */
 	debug_print("Disconnecting client.");
@@ -46,10 +48,9 @@ void klib::disconnectClient(SNetworkClient& client)
 	shutdownConnection(&client.pServer);
 }
 
-
 #define MAX_SEND_SIZE 128
 
-int klib::connect(SNetworkClient& instanceClient)
+int ktools::connect(SNetworkClient& instanceClient)
 {
 	// Send connection request
 	char send_buffer[] = "CONNECT\r\n";
@@ -94,7 +95,7 @@ int klib::connect(SNetworkClient& instanceClient)
 	return 0;
 }
 
-int klib::serverTime(SNetworkClient& instanceClient, time_t& current_time)
+int ktools::serverTime(SNetworkClient& instanceClient, time_t& current_time)
 {
 	static const char send_buffer[] = "GET TIME\r\n";
 	// send our command
@@ -106,7 +107,7 @@ int klib::serverTime(SNetworkClient& instanceClient, time_t& current_time)
 		return -1;
 	}
 
-	/* Receive answer */
+	// Receive answer
 	bytesTransmitted=-1;
 	char receive_buffer[sizeof(time_t)*2] = {};
 	receiveFromConnection(instanceClient.pClient, receive_buffer, sizeof(receive_buffer), &bytesTransmitted, 0);
