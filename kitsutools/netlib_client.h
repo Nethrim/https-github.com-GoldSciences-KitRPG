@@ -19,6 +19,7 @@ namespace ktools
 
 	int32_t	initClientConnection	(SNetworkClient& instanceClient);
 	int32_t	connect					(SNetworkClient& instanceClient);
+	int32_t	requestDisconnect		(SNetworkClient& client);
 	void	disconnectClient		(SNetworkClient& client);
 	int		serverTime				(SNetworkClient& instanceClient, time_t& current_time);
 

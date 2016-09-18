@@ -17,6 +17,8 @@ void draw( klib::SGame& instanceGame ) //
 
 #define MAX_SEND_SIZE 128
 
+bool bAreCommsRunningInThisDamnStuffCode = false;
+
 int runCommunications(klib::SGame& instanceGame);
 void runCommunications(void* instanceGame)
 {
@@ -49,16 +51,21 @@ int main(void)
 
 	_beginthread(runCommunications, 0, pInstancedGame);
 
+	bAreCommsRunningInThisDamnStuffCode = true;
+
 	while(instanceGame.bRunning)
 	{
 		pollInput(instanceGame.FrameInput);
 		draw(instanceGame);
 	}
 
-	ktools::shutdownNetwork();
+	while(bAreCommsRunningInThisDamnStuffCode)
+		continue;
 
 	if(pInstancedGame)
 		delete(pInstancedGame);
+
+	ktools::shutdownNetwork();
 
 	return 0;
 }
@@ -84,7 +91,7 @@ int runCommunications(klib::SGame& instanceGame)
 	while(instanceGame.bRunning)
 	{
 		// Ping before anything else to make sure everything is more or less in order.
-		if(false == ping(instanceClient.pClient, instanceClient.pServer))
+		if(false == ktools::ping(instanceClient.pClient, instanceClient.pServer))
 		{
 			error_print("Ping timeout.");
 			result = -1;
@@ -106,22 +113,14 @@ int runCommunications(klib::SGame& instanceGame)
 
 		// Disconnect if the game was closed.
 		if( false == instanceGame.bRunning )
-		{
-			static const char send_buffer[] = "DISCONNECT\r\n";
-			bytesTransmitted=-1;
-			sendToConnection( instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer );
-			if (bytesTransmitted == -1)
-			{
-				error_print("Error transmitting data.");
-				result = -1;
-				break;
-			}
 			break;
-		}
+
 		Sleep(100);
 	}
 
+	ktools::requestDisconnect(instanceClient);
 	instanceGame.bRunning = false;
 	disconnectClient(instanceClient);
+	bAreCommsRunningInThisDamnStuffCode = false;
 	return result;
 }

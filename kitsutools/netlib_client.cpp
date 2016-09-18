@@ -39,6 +39,19 @@ int32_t ktools::initClientConnection(SNetworkClient& instanceClient)
 	return 0;
 }
 
+int32_t ktools::requestDisconnect(SNetworkClient& instanceClient)
+{
+	static const NETLIB_COMMAND commandDisconnect = NETLIB_COMMAND_DISCONNECT;
+	int32_t bytesTransmitted=-1;
+	sendToConnection( instanceClient.pClient, (const char*)&commandDisconnect, (int)sizeof(NETLIB_COMMAND) + 1, &bytesTransmitted, instanceClient.pServer );
+	if (bytesTransmitted == -1)
+	{
+		error_print("Error sending disconnect message.");
+		return -1;
+	}
+	debug_print("Disconnect message sent successfully.");
+	return 0;
+}
 
 void ktools::disconnectClient(SNetworkClient& client)
 {
