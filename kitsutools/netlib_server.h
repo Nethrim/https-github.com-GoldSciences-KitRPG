@@ -38,8 +38,8 @@ namespace ktools
 		bool								m_bListening; 
 		SConnectionEndpoint*				m_serverConnection;
 		char								host_name[256];	/* Name of the server */
-		GLstObj(ktools, CClient)				ClientConnections;	
-		GLstObj(ktools, CClient)				ClientUnused;	
+		GLstObj(ktools, CClient)			ClientConnections;	
+		GLstObj(ktools, CClient)			ClientUnused;	
 		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS_QUEUE];
 		volatile long						m_nQueuedClientCount;
 
@@ -48,7 +48,6 @@ namespace ktools
 		int32_t								Accept( void );
 		void								ShutdownServer();
 		void								DisconnectClient(int32_t id);
-
 
 		god::CGMutex						ConnectionsMutex;
 	};

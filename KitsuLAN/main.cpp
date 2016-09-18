@@ -22,8 +22,13 @@ bool bAreCommsRunningInThisDamnStuffCode = false;
 int runCommunications(klib::SGame& instanceGame);
 void runCommunications(void* instanceGame)
 {
+	bAreCommsRunningInThisDamnStuffCode = true;
+
 	if(instanceGame)
 		runCommunications(*(klib::SGame*)instanceGame);
+
+	bAreCommsRunningInThisDamnStuffCode = false;
+
 }
 
 int main(void)
@@ -51,8 +56,6 @@ int main(void)
 
 	_beginthread(runCommunications, 0, pInstancedGame);
 
-	bAreCommsRunningInThisDamnStuffCode = true;
-
 	while(instanceGame.bRunning)
 	{
 		pollInput(instanceGame.FrameInput);
@@ -75,6 +78,7 @@ int runCommunications(klib::SGame& instanceGame)
 {
 	ktools::SNetworkClient instanceClient;
 	int32_t bytesTransmitted=-1;
+
 	if(initClientConnection(instanceClient))
 	{
 		error_print("Failed to connect to server.");
@@ -121,6 +125,5 @@ int runCommunications(klib::SGame& instanceGame)
 	ktools::requestDisconnect(instanceClient);
 	instanceGame.bRunning = false;
 	disconnectClient(instanceClient);
-	bAreCommsRunningInThisDamnStuffCode = false;
 	return result;
 }
