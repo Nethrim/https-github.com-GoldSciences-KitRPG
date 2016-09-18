@@ -25,7 +25,7 @@ int32_t initNetwork()
 	/* Open windows connection */
 	if (WSAStartup(0x0101, &w) != 0)
 	{
-		fprintf(stderr, "Could not open Windows connection.\n");
+		error_print("Could not open Windows connection.");
 		return -1;
 	}
 	return 0;
@@ -100,9 +100,9 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 
 	for(addrinfo* ptr=createdAddrInfo; ptr != NULL ;ptr=ptr->ai_next) {
 
-        printf("getaddrinfo response %d\n", i++);
-        printf("\tFlags: 0x%x\n", ptr->ai_flags);
-        printf("\tFamily: ");
+        debug_printf("getaddrinfo response %d", i++);
+        debug_printf("Flags: 0x%x", ptr->ai_flags);
+        debug_print("Family: ");
 		DWORD ipbufferlength = 46;
 		char ipstringbuffer[46];
 		wchar_t ipwstringbuffer[46];
@@ -113,14 +113,14 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 
 		switch (ptr->ai_family) {
             case AF_UNSPEC:
-                printf("Unspecified\n");
+                debug_print("Unspecified");
                 break;
             case AF_INET:
-                printf("AF_INET (IPv4)\n");
+                debug_print("AF_INET (IPv4)");
                 sockaddr_ipv4 = (sockaddr_in *) ptr->ai_addr;
 	            ipbufferlength = 46;
  				inet_ntop(AF_INET, ptr->ai_addr, ipstringbuffer, ipbufferlength);
-				printf("\tIPv4 address %s\n", ipstringbuffer );
+				debug_printf("IPv4 address %s", ipstringbuffer );
 				/* Copy address */
 				b1		= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b1
 				, b2	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b2
@@ -131,7 +131,7 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
                 //printf("\tIPv4 address %s\n", inet_ntoa(sockaddr_ipv4->sin_addr) );
                 break;
             case AF_INET6:
-                printf("AF_INET6 (IPv6)\n");
+                debug_print("AF_INET6 (IPv6)");
                 // the InetNtop function is available on Windows Vista and later
                 // sockaddr_ipv6 = (struct sockaddr_in6 *) ptr->ai_addr;
                 // printf("\tIPv6 address %s\n",
@@ -143,59 +143,60 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
                 // So we need to set it for each iteration through the loop for safety
                 ipbufferlength = 46;
                 iRetval = WSAAddressToStringW(sockaddr_ip, (DWORD) ptr->ai_addrlen, NULL, ipwstringbuffer, &ipbufferlength );
-                if (iRetval)
-                    printf("WSAAddressToString failed with %u\n", WSAGetLastError() );
+                if (iRetval) {
+                    debug_printf("WSAAddressToString failed with %u", WSAGetLastError() );
+				}
                 else    
-                    wprintf(L"\tIPv6 address %s\n", ipwstringbuffer);
+                    wprintf(L"\tIPv6 address %s", ipwstringbuffer);
                 break;
             case AF_NETBIOS:
-                printf("AF_NETBIOS (NetBIOS)\n");
+                debug_print("AF_NETBIOS (NetBIOS)");
                 break;
             default:
-                printf("Other %ld\n", ptr->ai_family);
+                debug_printf("Other %ld", ptr->ai_family);
                 break;
         }
-        printf("\tSocket type: ");
+        debug_print("Socket type: ");
         switch (ptr->ai_socktype) {
             case 0:
-                printf("Unspecified\n");
+                debug_print("Unspecified");
                 break;
             case SOCK_STREAM:
-                printf("SOCK_STREAM (stream)\n");
+                debug_print("SOCK_STREAM (stream)");
                 break;
             case SOCK_DGRAM:
-                printf("SOCK_DGRAM (datagram) \n");
+                debug_print("SOCK_DGRAM (datagram)");
                 break;
             case SOCK_RAW:
-                printf("SOCK_RAW (raw) \n");
+                debug_print("SOCK_RAW (raw)");
                 break;
             case SOCK_RDM:
-                printf("SOCK_RDM (reliable message datagram)\n");
+                debug_print("SOCK_RDM (reliable message datagram)");
                 break;
             case SOCK_SEQPACKET:
-                printf("SOCK_SEQPACKET (pseudo-stream packet)\n");
+                debug_print("SOCK_SEQPACKET (pseudo-stream packet)");
                 break;
             default:
-                printf("Other %ld\n", ptr->ai_socktype);
+                debug_printf("Other %ld", ptr->ai_socktype);
                 break;
         }
-        printf("\tProtocol: ");
+        debug_print("Protocol: ");
         switch (ptr->ai_protocol) {
             case 0:
-                printf("Unspecified\n");
+                debug_print("Unspecified");
                 break;
             case IPPROTO_TCP:
-                printf("IPPROTO_TCP (TCP)\n");
+                debug_print("IPPROTO_TCP (TCP)");
                 break;
             case IPPROTO_UDP:
-                printf("IPPROTO_UDP (UDP) \n");
+                debug_print("IPPROTO_UDP (UDP)");
                 break;
             default:
-                printf("Other %ld\n", ptr->ai_protocol);
+                debug_printf("Other %ld", ptr->ai_protocol);
                 break;
         }
-        printf("\tLength of this sockaddr: %d\n", (int32_t)ptr->ai_addrlen);
-        printf("\tCanonical name: %s\n", ptr->ai_canonname);
+        debug_printf("Length of this sockaddr: %d", (int32_t)ptr->ai_addrlen);
+        debug_printf("Canonical name: %s", ptr->ai_canonname);
     }
 
 	freeaddrinfo(createdAddrInfo);
@@ -206,7 +207,7 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 	/* Check for NULL pointer */
 	if (hp == NULL)
 	{
-		fprintf(stderr, "Could not get host by name.\n");
+		error_printf("Could not get host by name.");
 		return -1;
 	}	
 	/* Assign the address */
@@ -225,7 +226,7 @@ int32_t initConnection( SConnectionEndpoint* connection )
 	
 	if (sd == INVALID_SOCKET)
 	{
-		fprintf(stderr, "Could not create socket.\n");
+		error_print("Could not create socket.");
 		return -1;
 	}
 	connection->sd = sd;
@@ -254,7 +255,7 @@ int32_t bindConnection( SConnectionEndpoint* client )
 	int sockaddr_in_len = (int32_t)_sockaddr_in_len;
 	if (bind(client->sd, (sockaddr *)&client->sockaddr, (int32_t)_sockaddr_in_len) == -1)
 	{
-		fprintf(stderr, "Cannot bind address to socket.\n");
+		error_printf("Cannot bind address to socket.");
 		return -1;
 	}
 	getsockname(client->sd,(sockaddr *)&client->sockaddr, &sockaddr_in_len);
@@ -265,7 +266,7 @@ int32_t connectionListen( SConnectionEndpoint* conn )
 {
 	if (listen(conn->sd, 1) == SOCKET_ERROR) 
 	{
-		wprintf(L"listen failed with error: %ld\n", WSAGetLastError());
+		error_printf("listen failed with error: %ld", WSAGetLastError());
 		return -1;
 	}
 	return 0;
@@ -280,23 +281,25 @@ int32_t connectionAccept( SConnectionEndpoint* conn, SConnectionEndpoint** out_n
 	if ((newConnection->sd = accept(conn->sd, (struct sockaddr*)&newConnection->sockaddr, NULL)) == INVALID_SOCKET) 
 	{
 		newConnection->sd = 0;
-		printf("accept failed with error: %ld\n", WSAGetLastError());
+		error_printf("accept failed with error: %ld", WSAGetLastError());
 		shutdownConnection(&newConnection);
 		return -1;
 	}
 	*out_newConn = newConnection;
-	printf("Client connected.\n");
+	debug_printf("Client connected.");
 	return 0;
 };
 
 int32_t sendToConnection		( SConnectionEndpoint* connection, const char* buffer, uint32_t bytesToSend, int32_t* _bytesSent, SConnectionEndpoint* targetConnection )
 {
 	/* Tranmsit data to get time */
+	if( 0 == connection )
+		return -1;
 	int server_length = (int32_t)_sockaddr_in_len;
 	int32_t bytesSent = -1;
 	if((bytesSent = sendto(connection->sd, buffer, bytesToSend, 0, (sockaddr *)&targetConnection->sockaddr, server_length)) == -1)
 	{
-		fprintf(stderr, "Error transmitting data.\n");
+		error_printf("Error transmitting data.");
 		return -1;
 	}
 	*_bytesSent = bytesSent;
@@ -315,7 +318,7 @@ int32_t receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, u
 		if ((bytesReceived = recvfrom(connection->sd, buffer, bufLen, 0, (sockaddr *)&client->sockaddr, &server_length)) < 0)
 		{
 			shutdownConnection(&client);
-			fprintf(stderr, "Error receiving data.\n");
+			error_printf("Error receiving data.");
 			*_bytesReceived = bytesReceived;
 			return -1;
 		}
@@ -326,7 +329,7 @@ int32_t receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, u
 		sockaddr_in server = {};
 		if (bytesReceived = recvfrom(connection->sd, buffer, bufLen, 0, (sockaddr *)&server, &server_length) < 0)
 		{
-			fprintf(stderr, "Error receiving data.\n");
+			error_printf("Error receiving data.");
 			*_bytesReceived = bytesReceived;
 			return -1;
 		}
@@ -353,7 +356,7 @@ bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 	god::error_t transmResult = sendToConnection( pClient, strPing.c_str(), (int)strPing.size() + 1, &bytesTransmitted, pServer );
 	if (transmResult < 0 || bytesTransmitted < 0)//strPing.size())
 	{
-		fprintf(stderr, "Error transmitting data.\n");
+		error_print("Error transmitting data.");
 		return false;
 	}
 
@@ -363,10 +366,10 @@ bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 	receiveFromConnection( pClient, buffer, sizeof(buffer), &bytesTransmitted, 0 );
 	if( bytesTransmitted < 0 )
 	{
-		fprintf(stderr, "Error receiving data.\n");
+		error_print("Error receiving data.");
 		return false;
 	}
-	//printf("response: %s", buffer);		
+	debug_printf("response: %s", buffer);		
 
 	return true;
 }
@@ -376,25 +379,25 @@ int32_t initClientConnection(SNetworkClient& instanceClient)
 
 	if( createConnection( instanceClient.b1, instanceClient.b2, instanceClient.b3, instanceClient.b4, 0, &instanceClient.pClient ) )
 	{
-		fprintf(stderr, "Error creating client connection.\n");
+		error_printf("Error creating client connection.");
 		return -1;
 	}
 
 	if( initConnection(instanceClient.pClient) )
 	{
-		fprintf(stderr, "Error initializing client connection.\n");
+		error_printf("Error initializing client connection.");
 	}
 
 	if( bindConnection(instanceClient.pClient) )
 	{
-		fprintf(stderr, "Error binding client connection.\n");
+		error_printf("Error binding client connection.");
 		shutdownConnection(&instanceClient.pClient);
 		return -1;
 	}
 
 	if( createConnection( instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, instanceClient.port_number, &instanceClient.pServer ) )
 	{
-		fprintf(stderr, "Error creating new connection to server.\n");
+		error_printf("Error creating new connection to server.");
 		return -1;
 	}
 
@@ -405,7 +408,7 @@ int32_t initClientConnection(SNetworkClient& instanceClient)
 void disconnectClient(SNetworkClient& client)
 {
 	/* Get current time */
-	fprintf(stderr, "Disconnecting client.\n");
+	debug_print("Disconnecting client.");
 	shutdownConnection(&client.pClient);
 	shutdownConnection(&client.pServer);
 }

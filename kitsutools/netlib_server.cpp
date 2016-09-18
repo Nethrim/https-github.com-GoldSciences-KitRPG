@@ -18,7 +18,7 @@ int32_t CServer::InitServer(int32_t port_number)
 	gethostname(host_name, sizeof(host_name));
 	if( createConnectionByHostName( host_name, port_number, &m_serverConnection ) )
 	{
-		fprintf(stderr, "Failed to initialize connection.\n");
+		error_print("Failed to initialize connection.");
 		return -1;
 	}
 
@@ -26,14 +26,14 @@ int32_t CServer::InitServer(int32_t port_number)
 	m_nQueuedClientCount	= 0;
 	if( initConnection( m_serverConnection ) )
 	{
-		fprintf(stderr, "Failed to initialize server socket.\n");
+		error_print("Failed to initialize server socket.");
 		ShutdownServer();
 		return -1;
 	};
 
 	if( bindConnection( m_serverConnection ) )
 	{
-		fprintf(stderr, "Failed to bind server socket.\n");
+		error_print("Failed to bind server socket.");
 		ShutdownServer();
 		return -1;
 	};
@@ -44,12 +44,13 @@ int32_t CServer::Listen( void )
 {
 	int a1, a2, a3, a4, port_number;	/* Components of address in xxx.xxx.xxx.xxx form */
 	getAddress( m_serverConnection, &a1, &a2, &a3, &a4, &port_number );
-	printf("Server running on %u.%u.%u.%u:%u\n",(unsigned int)a1,
-												(unsigned int)a2,
-												(unsigned int)a3,
-												(unsigned int)a4,
-												(unsigned int)ntohs(port_number)
-												);
+	debug_printf("Server running on %u.%u.%u.%u:%u"
+		,(unsigned int)a1
+		,(unsigned int)a2
+		,(unsigned int)a3
+		,(unsigned int)a4
+		,(unsigned int)ntohs(port_number)
+		);
 	m_bListening = true;
 
 	// Information about the client
@@ -61,12 +62,12 @@ int32_t CServer::Listen( void )
 	receiveFromConnection( m_serverConnection, buffer, BUFFER_SIZE, &bytes_received, &client );
 	if (bytes_received < 0)
 	{
-		fprintf(stderr, "Could not receive datagram.\n");
+		error_print("Could not receive datagram.");
 		return -1;
 	}
 
 	getAddress( client, &a1, &a2, &a3, &a4, &port_number );
-	fprintf(stderr, "Received %u bytes from %u.%u.%u.%u:%u. Message: %s\n", bytes_received, 
+	debug_printf("Received %u bytes from %u.%u.%u.%u:%u. Message: %s", bytes_received, 
 		(int)a1,
 		(int)a2,
 		(int)a3,
@@ -87,7 +88,7 @@ int32_t CServer::Listen( void )
 void disconnectClient(CClient* client)
 {
 	/* Get current time */
-	fprintf(stderr, "Disconnecting client %u.\n", client->m_id);
+	debug_printf("Disconnecting client %u.", client->m_id);
 	shutdownConnection(&client->m_ClientListener);
 	shutdownConnection(&client->m_ClientTarget);
 }
@@ -106,14 +107,14 @@ int32_t processCommandInternal(CClient* client, const char* buffer)
 			return -1;
 		if( sentBytes != bytesTosEnd )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 		/* Display time */
 		int port_number;			/* Port number to use */
 		int a1, a2, a3, a4;					/* Components of address in xxx.xxx.xxx.xxx form */
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		fprintf(stderr, "Sent ping response to %u.%u.%u.%u:%u.\n", 
+		debug_printf("Sent ping response to %u.%u.%u.%u:%u.", 
 			(int)a1,
 			(int)a2,
 			(int)a3,
@@ -123,8 +124,6 @@ int32_t processCommandInternal(CClient* client, const char* buffer)
 	}
 	else if (strcmp(buffer, "DISCONNECT\r\n") == 0)
 	{
-		/* Get current time */
-		fprintf(stderr, "Disconnecting client %u.\n", client->m_id);
 		disconnectClient(client);
 	}
 	else
@@ -134,6 +133,7 @@ int32_t processCommandInternal(CClient* client, const char* buffer)
 	
 	return 0;
 }
+
 void clientProc( void *pvClient )
 {
 	int port_number;			/* Port number to use */
@@ -149,25 +149,25 @@ void clientProc( void *pvClient )
 		int32_t bytes_received=0;	
 		if( 0 == pClient->m_ClientListener )
 		{
-			fprintf(stderr, "Client listener was terminated, exiting thread %u...\n", pClient->m_id);
+			error_printf("Client listener was terminated, exiting thread %u...", pClient->m_id);
 			break;
 		}
 
 		receiveFromConnection( pClient->m_ClientListener, buffer, BUFFER_SIZE, &bytes_received, 0 );
 		if (bytes_received < 0)
 		{
-			fprintf(stderr, "Could not receive datagram.\n");
+			error_print("Could not receive datagram.");
 			break;
 		}
 
 		if( 0 == pClient->m_ClientTarget )
 		{
-			fprintf(stderr, "Client target was null. Exiting thread %u...\n", pClient->m_id);
+			error_printf("Client target was null. Exiting thread %u...", pClient->m_id);
 			break;
 		}
 
 		getAddress( pClient->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		fprintf(stderr, "Received %u bytes from %u.%u.%u.%u:%u.\n", bytes_received, 
+		debug_printf("Received %u bytes from %u.%u.%u.%u:%u.", bytes_received, 
 			(int)a1,
 			(int)a2,
 			(int)a3,
@@ -177,7 +177,7 @@ void clientProc( void *pvClient )
 
 		if( processCommandInternal( pClient, buffer ) )
 		{
-			fprintf(stderr, "Unrecognized command: '%s'.\n", buffer);
+			error_printf("Unrecognized command: '%s'.", buffer);
 		};
     }
     // Repeat while RunMutex is still taken. 
@@ -187,9 +187,7 @@ void clientProc( void *pvClient )
 int32_t CServer::Accept( void )
 {
 	if( 0 == m_nQueuedClientCount )
-	{
-		return -1;
-	}
+		return 1;
 
 	static int32_t connectionsAccepted = 0;
 
@@ -199,19 +197,18 @@ int32_t CServer::Accept( void )
 	//getAddress( targetConn, &a1, &a2, &a3, &a4, &port_number );
 	getAddress( m_serverConnection, &a1, &a2, &a3, &a4, &port_number );
 	if( createConnection( a1, a2, a3, a4, 0, &newClientListener ) )
-	//if( createConnection( 0, &newClientListener ) )
 	{
- 		fprintf(stderr, "Failed to create client listener.\n");
+ 		error_print("Failed to create client listener.");
 		return -1;
 	}
 	if( 0 > initConnection( newClientListener ) )
 	{
-		fprintf(stderr, "Failed to initialize client listener connection.\n");
+		error_print("Failed to initialize client listener connection.");
 		return -1;
 	}				
 	if( 0 > bindConnection( newClientListener ) )
 	{
-		fprintf(stderr, "Failed to initialize client listener connection.\n");
+		error_print("Failed to initialize client listener connection.");
 		return -1;
 	}
 	getAddress( newClientListener, &a1, &a2, &a3, &a4, &port_number );
@@ -245,12 +242,12 @@ int32_t CServer::Accept( void )
 		return -1;
 	if( sentBytes != bytesToSend )
 	{
-		fprintf(stderr, "Error sending datagram.\n");
+		error_print("Error sending datagram.");
 		return -1;
 	}
 	/* Display time */
 	getAddress( targetConn, &a1, &a2, &a3, &a4, &port_number );
-	fprintf(stderr, "Sent connect response to %u.%u.%u.%u:%u.\n", 
+	debug_printf("Sent connect response to %u.%u.%u.%u:%u.", 
 		(int)a1,
 		(int)a2,
 		(int)a3,

@@ -91,7 +91,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>..\kitsutools; ..\..\GODS\GSystem; </AdditionalIncludeDirectories>
@@ -109,7 +109,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; _DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>..\kitsutools; ..\..\GODS\GSystem; </AdditionalIncludeDirectories>
@@ -129,7 +129,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>..\kitsutools; ..\..\GODS\GSystem; </AdditionalIncludeDirectories>
@@ -151,7 +151,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ERROR_PRINTF_ENABLED; WARNING_PRINTF_ENABLED; DEBUG_PRINTF_ENABLED; DATA_PRINTF_ENABLED; RENDER_PRINTF_ENABLED; SOUND_PRINTF_ENABLED; NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>..\kitsutools; ..\..\GODS\GSystem; </AdditionalIncludeDirectories>

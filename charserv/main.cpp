@@ -6,6 +6,7 @@
 #include "netlib_server.h"
 
 #include "Game.h"
+#include "draw.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,25 +16,29 @@
 
 #include <windows.h>
 
-#define BUFFER_SIZE 4096
-
 void usage(void);
 
-void WriteTitle( int ThreadNum );    // Display title bar information 
+void WriteTitle( int ThreadNum )
+{
+    static const int32_t sizeOfNThreadMsg = 80;
+
+	char    NThreadMsg[sizeOfNThreadMsg];
+    sprintf_s( NThreadMsg, sizeOfNThreadMsg, "Threads running: %02d. Ctrl+Q to Quit.", ThreadNum );
+    SetConsoleTitleA( NThreadMsg );
+}
 
 bool bListenFailure = false;
-bool bTerminate = false;
 void serverListen( void* server )
 {
 	klib::CServer* pServer = (klib::CServer*)server;
-	while( !bListenFailure && !bTerminate )
+	while( !bListenFailure )
 	{
 		if( pServer->Listen() )
 		{
 			fprintf(stderr, "Failed to listen on server.\n");
 			bListenFailure = true;
 		}
-		else if( ( !bListenFailure && !bTerminate ) && pServer->Accept() )
+		else if( false == bListenFailure && 0 > pServer->Accept() )
 		{
 			fprintf(stderr, "Failed to accept queued client or no client queued.\n");
 		}
@@ -42,6 +47,13 @@ void serverListen( void* server )
 		WriteTitle( pServer->ClientConnections.size() );
 	};
 }
+
+// Use this function to draw our game data
+void draw( klib::SGame& instanceGame ) // 
+{
+ 	klib::drawAndPresentGame(instanceGame);
+};
+
 
 int main(int argc, char **argv)// Thread 1: main 
 {
@@ -93,31 +105,37 @@ int main(int argc, char **argv)// Thread 1: main
 	// Open windows connection 
 	if (initNetwork())
 	{
-		fprintf(stderr, "Failed to initialize network.\n");
+		error_print("Failed to initialize network.");
 		return -1;
 	}
 
 	if( 0 > server.InitServer(port_number) )
 	{
-		fprintf(stderr, "Failed to initialize connection server.\n");
+		error_print("Failed to initialize connection server.");
 		return -1;
 	};
 	// Print out server information
 
 	_beginthread( serverListen, 0, &server );
 
-	printf("Press CTRL + Q to quit\n");
+	debug_print("Press CTRL + Q to quit");
 
 	// Check for exit request while the server is running.
-	while (!bTerminate && !bListenFailure)
+	klib::initASCIIScreen();
+
+	klib::SGame* pInstancedGame = new klib::SGame;
+	klib::SGame& instanceGame = *pInstancedGame;
+
+	klib::initGame(instanceGame);
+
+	while(instanceGame.bRunning && !bListenFailure)
 	{
-		if( GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('Q') )
-		{
-			bTerminate = true;
-			//Sleep(10);
-		}
+		pollInput(instanceGame.FrameInput);
+		draw(instanceGame);
 	}
 
+	if(pInstancedGame)
+		delete(pInstancedGame);
 
 	server.ShutdownServer();
 
@@ -129,17 +147,6 @@ void usage(void)
 {
 	fprintf(stderr, "timeserv [server_address] port\n");
 }
-
-
-void WriteTitle( int ThreadNum )
-{
-    static const int32_t sizeOfNThreadMsg = 80;
-
-	char    NThreadMsg[sizeOfNThreadMsg];
-    sprintf_s( NThreadMsg, sizeOfNThreadMsg, "Threads running: %02d. Ctrl+Q to Quit.", ThreadNum );
-    SetConsoleTitleA( NThreadMsg );
-}
-
 
 int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 {
@@ -153,22 +160,23 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 		int32_t sentBytes = 0;
 		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 		else if( sentBytes != (int)sizeof(current_time) )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 		// Display time
 		char timestring[256];
 		ctime_s(timestring, sizeof(char)*256, &current_time);
-		printf("Current time: %s", timestring);
+		//printf("Current time: %s", timestring);
 		int port_number;			// Port number to use
 		int a1, a2, a3, a4;			// Components of address in xxx.xxx.xxx.xxx form
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		fprintf(stderr, "Sent time (%s) to %u.%u.%u.%u:%u.\n", timestring, 
+		timestring[strlen(timestring)-1] = 0;
+		debug_printf("Sent time (%s) to %u.%u.%u.%u:%u.", timestring, 
 			(int)a1,
 			(int)a2,
 			(int)a3,
@@ -187,23 +195,23 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 		int32_t sentBytes = 0;
 		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 		else if( sentBytes != (int)sizeof(current_time) )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 		// Display time
 		char timestring[256];
 		ctime_s(timestring, sizeof(char)*256, &current_time);
-		printf("Current time: %s", timestring);
+		//printf("Current time: %s", timestring);
 		
 		int port_number;	
 		int a1, a2, a3, a4;	
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		fprintf(stderr, "Sent player data (%s) to %u.%u.%u.%u:%u.\n", player.Name.c_str(), 
+		debug_printf("Sent player data (%s) to %u.%u.%u.%u:%u.", player.Name.c_str(), 
 			(int)a1,
 			(int)a2,
 			(int)a3,
@@ -223,14 +231,14 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 			return -1;
 		else if( sentBytes != bytesTosEnd )
 		{
-			fprintf(stderr, "Error sending datagram.\n");
+			fprintf(stderr, "Error sending datagram.");
 			return -1;
 		}
 
 		int port_number;
 		int a1, a2, a3, a4;
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		fprintf(stderr, "Sent invalid message response to %u.%u.%u.%u:%u.\n", 
+		debug_printf("Sent invalid message response to %u.%u.%u.%u:%u.", 
 			(int)a1,
 			(int)a2,
 			(int)a3,

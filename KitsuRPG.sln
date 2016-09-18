@@ -41,6 +41,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KitsuGUI", "KitsuGUI\KitsuG
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "charserv", "charserv\charserv.vcxproj", "{0ED6C4BE-F4CF-4FF8-9F44-27AA8F635B25}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B18EB504-48CD-47EC-AB45-570E91A19993} = {B18EB504-48CD-47EC-AB45-570E91A19993}
+		{86AFE1C6-A424-4AC4-9246-DB029CC942D5} = {86AFE1C6-A424-4AC4-9246-DB029CC942D5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KitsuLAN", "KitsuLAN\KitsuLAN.vcxproj", "{6874645F-C7AC-497E-86B2-6EE1CA897031}"
 	ProjectSection(ProjectDependencies) = postProject
