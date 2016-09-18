@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "glabel.h"
 
 #ifndef __PLAYER_H__98213640926348273649827364987234698234__
 #define __PLAYER_H__98213640926348273649827364987234698234__
@@ -42,7 +43,7 @@ namespace klib
 		SPlayerSelection			Selection			= {0, 0, -1, -1};
 
 		::std::vector<CCharacter>	Army				= {};
-		::std::string				Name				= "Kasparov";
+		::god::glabel				Name				= "Kasparov";
 
 		bool						IsAlive()	const
 		{

@@ -46,8 +46,10 @@ void klib::resetGame(SGame& instanceGame)
 	ktools::clearASCIIBackBuffer(' ', 5);
 
 	// Set up a nice prompt 
-	prompt(instanceGame.Players[PLAYER_USER].Name, "Enter your name:");
+	std::string playerName;
+	prompt(playerName, "Enter your name:");
 
+	instanceGame.Players[PLAYER_USER].Name = playerName;
 	instanceGame.bStarted	= true;
 	instanceGame.bTactical	= false;
 }

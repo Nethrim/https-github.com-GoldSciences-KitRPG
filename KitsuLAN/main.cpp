@@ -20,16 +20,21 @@ void draw( klib::SGame& instanceGame ) //
 bool bAreCommsRunningInThisDamnStuffCode = false;
 
 int runCommunications(klib::SGame& instanceGame);
-void runCommunications(void* instanceGame)
+void runCommunications(void* pInstanceGame)
 {
+	if(0 == pInstanceGame)
+		return;
+
+	klib::SGame& instanceGame = *(klib::SGame*)pInstanceGame;
 	bAreCommsRunningInThisDamnStuffCode = true;
 
-	if(instanceGame)
-		runCommunications(*(klib::SGame*)instanceGame);
+	runCommunications(instanceGame);
 
-	Sleep(5000);
+	for(uint32_t i=0; i<10; ++i)
+		if(instanceGame.bRunning)
+			Sleep(1000);
+
 	bAreCommsRunningInThisDamnStuffCode = false;
-
 }
 
 int main(void)

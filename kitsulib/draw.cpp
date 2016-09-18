@@ -154,7 +154,7 @@ void drawIntro( SGame& instanceGame )
 
 SGameState drawWelcome(SGame& instanceGame, const SGameState& returnValue)
 {
-	const std::string textToPrint = "Welcome back commander " + instanceGame.Players[PLAYER_USER].Name + ".";
+	const std::string textToPrint = "Welcome back commander " + std::string(instanceGame.Players[PLAYER_USER].Name) + ".";
 	SGlobalDisplay& display = instanceGame.GlobalDisplay;
 	int32_t lineOffset		= (display.Screen.Depth>>1)-1;
 	int32_t columnOffset	=  display.Screen.Width/2-(int32_t)textToPrint.size()/2;
