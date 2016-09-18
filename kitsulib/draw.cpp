@@ -106,10 +106,10 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 		std::string serverTime = std::string("Server time: ") + send_buffer;
 		serverTime = serverTime.substr(0, serverTime .size()-2);
 		actualOffsetX = lineToScreen(bbHeight-3, 1, ktools::RIGHT, "%s.", serverTime.c_str());	
-		ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, ktools::LEFT, &(color = COLOR_CYAN), 1, serverTime .size());
+		ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, ktools::LEFT, &(color = COLOR_CYAN), 1, (int32_t)serverTime .size());
 	}
 
-	actualOffsetX = lineToScreen(bbHeight-2, 1, ktools::RIGHT, "%s.", instanceGame.StateMessage.c_str());											ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, ktools::LEFT, &(color = COLOR_DARKYELLOW	), 1, instanceGame.StateMessage.size());
+	actualOffsetX = lineToScreen(bbHeight-2, 1, ktools::RIGHT, "%s.", instanceGame.StateMessage.c_str()); ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, ktools::LEFT, &(color = COLOR_DARKYELLOW	), 1, (int32_t)instanceGame.StateMessage.size());
 
 	// Print user error messages and draw cursor.
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {

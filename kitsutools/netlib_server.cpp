@@ -16,7 +16,7 @@ GDEFINE_OBJ(ktools, CClient);
 
 using namespace ktools;
 
-int32_t ktools::sendUserCommand(CClient* pClient, USER_COMMAND requestOrResponse, const char* buffer, size_t bufferSize)
+int32_t ktools::sendUserCommand(CClient* pClient, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize)
 {
 	// Send data back
 	int32_t sentBytes = 0;
@@ -33,7 +33,7 @@ int32_t ktools::sendUserCommand(CClient* pClient, USER_COMMAND requestOrResponse
 	}
 
 	sentBytes = 0;
-	if( 0 > sendToConnection( pClient->m_ClientListener, buffer, bufferSize, &sentBytes, pClient->m_ClientTarget ) )
+	if( 0 > sendToConnection( pClient->m_ClientListener, buffer, (int32_t)bufferSize, &sentBytes, pClient->m_ClientTarget ) )
 	{
 		error_print("Error sending datagram.");
 		return -1;
@@ -183,12 +183,12 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 
 		if( 0 > sendToConnection( client->m_ClientListener, (const char*)&send_buffer, sizeof(NETLIB_COMMAND), &sentBytes, client->m_ClientTarget ) ) 
 		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer));
+			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
 			return -1;
 		}
 		if( sentBytes != sizeof(NETLIB_COMMAND) )
 		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer));
+			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
 			return -1;
 		}
 
@@ -233,12 +233,12 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 
 		if( 0 > sendToConnection( client->m_ClientListener, (const char*)&send_buffer, bytesToSend, &sentBytes, client->m_ClientTarget ) ) 
 		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer));
+			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
 			return -1;
 		}
 		if( sentBytes != bytesToSend )
 		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer));
+			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
 			return -1;
 		}
 
@@ -336,17 +336,31 @@ int32_t CServer::Accept( void )
 	
 	{
 		GPtrObj(CClient) newClient;
-		bool bFound = false;
-		god::CGLock lock(ConnectionsMutex);
-		newClient->InitClient( newClientListener, targetConn, connectionsAccepted++ );
+		bool bFound = false, bFoundEmpty = false;
+		uint32_t indexFound = -1;
 		for(uint32_t i=0; i<ClientConnections.size(); ++i)
 			if(0 == ClientConnections[i])
 			{
-				ClientConnections.set(newClient, i);
+				bFoundEmpty = true;
+				indexFound = i;
+				break;
+			}
+			else if(ClientConnections[i]->m_ClientListener == 0 || ClientConnections[i]->m_ClientTarget == 0)
+			{
+				newClient = ClientConnections.acquire(i);
 				bFound = true;
+				break;
 			}
 
-		if(!bFound)
+		god::CGLock lock(ConnectionsMutex);
+		if(newClient)
+			newClient->InitClient( newClientListener, targetConn, newClient->m_id );
+		else
+			newClient->InitClient( newClientListener, targetConn, connectionsAccepted++ );
+
+		if(bFoundEmpty)
+			ClientConnections.set(newClient, indexFound);
+		else if(!bFound)
 			ClientConnections.push(newClient);
 
 		_beginthread( clientProc, 0, newClient.get_address() );

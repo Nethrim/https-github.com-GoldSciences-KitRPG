@@ -121,6 +121,8 @@ int main(int argc, char **argv)// Thread 1: main
 
 	klib::initGame(instanceGame);
 
+	debug_printf("sizeof(SPlayer): %u", (uint32_t) sizeof(klib::SPlayer));
+
 	while(instanceGame.bRunning && !bListenFailure)
 	{
 		instanceGame.ServerTime = time(0);

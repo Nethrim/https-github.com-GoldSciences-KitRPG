@@ -27,6 +27,7 @@ void runCommunications(void* instanceGame)
 	if(instanceGame)
 		runCommunications(*(klib::SGame*)instanceGame);
 
+	Sleep(5000);
 	bAreCommsRunningInThisDamnStuffCode = false;
 
 }
@@ -55,9 +56,13 @@ int main(void)
 	klib::initGame(instanceGame);
 
 	_beginthread(runCommunications, 0, pInstancedGame);
+	Sleep(1000);
 
 	while(instanceGame.bRunning)
 	{
+		if(false == bAreCommsRunningInThisDamnStuffCode)	// if this is false it means the comms thread died 
+			_beginthread(runCommunications, 0, pInstancedGame);
+
 		pollInput(instanceGame.FrameInput);
 		draw(instanceGame);
 	}
@@ -110,7 +115,8 @@ int runCommunications(klib::SGame& instanceGame)
 			result = -1;
 			break;
 		};
-		{
+		
+		{	// here we update the game instance with the data received from the server.
 			god::CGLock thelock(instanceGame.ServerTimeMutex);
 			instanceGame.ServerTime = current_time;
 		}

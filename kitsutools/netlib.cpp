@@ -362,6 +362,6 @@ bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 		error_print("Error receiving pong from server.");
 		return false;
 	}
-	debug_printf("Command received: %s", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(pongCommand));		
+	debug_printf("Command received: %s", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(pongCommand).c_str());		
 	return true;
 }
