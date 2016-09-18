@@ -1,0 +1,452 @@
+File name: Accessory.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 26 14:52:59 2016
+File modification date: Sat Sep 17 22:31:51 2016
+File code lines: 38
+File directive lines: 7
+File comment lines: 5
+File blank lines: 15
+File bytes: 3990
+
+File name: Agent_helper.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Sep  8 02:54:54 2016
+File modification date: Wed Sep 14 06:21:15 2016
+File code lines: 88
+File directive lines: 13
+File comment lines: 1
+File blank lines: 22
+File bytes: 12478
+
+File name: Armor.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Mon Aug 15 05:38:50 2016
+File modification date: Sat Sep 17 21:36:24 2016
+File code lines: 35
+File directive lines: 14
+File comment lines: 5
+File blank lines: 20
+File bytes: 5570
+
+File name: Character.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug  9 20:46:58 2016
+File modification date: Sun Sep 11 00:14:43 2016
+File code lines: 45
+File directive lines: 9
+File comment lines: 4
+File blank lines: 24
+File bytes: 3322
+
+File name: Character.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Mon Aug 15 05:30:35 2016
+File modification date: Wed Sep 14 23:51:37 2016
+File code lines: 93
+File directive lines: 9
+File comment lines: 3
+File blank lines: 54
+File bytes: 4701
+
+File name: CharacterPoints.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Wed Aug 24 23:28:58 2016
+File modification date: Thu Sep  8 00:15:44 2016
+File code lines: 79
+File directive lines: 8
+File comment lines: 1
+File blank lines: 37
+File bytes: 8816
+
+File name: Combat.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:19:12 2016
+File modification date: Sat Sep 17 02:25:30 2016
+File code lines: 301
+File directive lines: 7
+File comment lines: 13
+File blank lines: 189
+File bytes: 24861
+
+File name: Combat.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:18:10 2016
+File modification date: Sun Sep 11 23:06:30 2016
+File code lines: 18
+File directive lines: 6
+File comment lines: 0
+File blank lines: 7
+File bytes: 2232
+
+File name: CombatPoints.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:37:04 2016
+File modification date: Wed Sep 14 23:47:53 2016
+File code lines: 110
+File directive lines: 7
+File comment lines: 1
+File blank lines: 74
+File bytes: 4959
+
+File name: CombatStatus.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 21 15:33:24 2016
+File modification date: Thu Aug 25 00:56:05 2016
+File code lines: 104
+File directive lines: 1
+File comment lines: 8
+File blank lines: 35
+File bytes: 4632
+
+File name: CombatStatus.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 21 14:55:03 2016
+File modification date: Sat Sep  3 14:00:12 2016
+File code lines: 118
+File directive lines: 15
+File comment lines: 8
+File blank lines: 60
+File bytes: 5387
+
+File name: Combat_grenade.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:58:02 2016
+File modification date: Tue Sep  6 04:35:56 2016
+File code lines: 91
+File directive lines: 3
+File comment lines: 2
+File blank lines: 42
+File bytes: 4950
+
+File name: Combat_potion.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:32:14 2016
+File modification date: Tue Sep  6 04:35:52 2016
+File code lines: 52
+File directive lines: 2
+File comment lines: 0
+File blank lines: 24
+File bytes: 5153
+
+File name: credits.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Sep  1 15:46:57 2016
+File modification date: Sun Sep 11 16:36:12 2016
+File code lines: 57
+File directive lines: 4
+File comment lines: 0
+File blank lines: 14
+File bytes: 918
+
+File name: draw.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 28 14:56:22 2016
+File modification date: Sun Sep 18 00:20:41 2016
+File code lines: 104
+File directive lines: 2
+File comment lines: 7
+File blank lines: 48
+File bytes: 8320
+
+File name: draw.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 28 17:05:39 2016
+File modification date: Mon Sep 12 07:26:53 2016
+File code lines: 181
+File directive lines: 8
+File comment lines: 14
+File blank lines: 117
+File bytes: 11349
+
+File name: drawMenu.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Sep 11 16:01:47 2016
+File modification date: Thu Sep 15 16:32:42 2016
+File code lines: 114
+File directive lines: 11
+File comment lines: 8
+File blank lines: 72
+File bytes: 9743
+
+File name: Enemy.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 19 08:29:04 2016
+File modification date: Mon Sep 12 04:20:03 2016
+File code lines: 52
+File directive lines: 11
+File comment lines: 0
+File blank lines: 15
+File bytes: 5674
+
+File name: Enemy.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug  9 18:28:38 2016
+File modification date: Sat Sep 17 22:27:10 2016
+File code lines: 18
+File directive lines: 14
+File comment lines: 2
+File blank lines: 6
+File bytes: 3936
+
+File name: Entity.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug 23 06:13:55 2016
+File modification date: Wed Sep  7 00:59:20 2016
+File code lines: 68
+File directive lines: 7
+File comment lines: 4
+File blank lines: 49
+File bytes: 3159
+
+File name: EntityHelper.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Aug 25 00:09:17 2016
+File modification date: Tue Sep  6 04:38:05 2016
+File code lines: 57
+File directive lines: 6
+File comment lines: 3
+File blank lines: 30
+File bytes: 4145
+
+File name: EntityImpl.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Aug 25 01:19:33 2016
+File modification date: Wed Sep 14 06:24:40 2016
+File code lines: 89
+File directive lines: 7
+File comment lines: 1
+File blank lines: 57
+File bytes: 4526
+
+File name: EntityPoints.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug 23 22:23:38 2016
+File modification date: Wed Sep 14 23:46:46 2016
+File code lines: 70
+File directive lines: 7
+File comment lines: 1
+File blank lines: 44
+File bytes: 3072
+
+File name: equip.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Sep  6 05:03:27 2016
+File modification date: Wed Sep 14 06:14:29 2016
+File code lines: 160
+File directive lines: 16
+File comment lines: 1
+File blank lines: 72
+File bytes: 20480
+
+File name: Facility.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Aug 26 03:24:11 2016
+File modification date: Sat Sep 17 22:40:52 2016
+File code lines: 35
+File directive lines: 8
+File comment lines: 29
+File blank lines: 16
+File bytes: 6492
+
+File name: game.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Wed Aug 31 19:07:21 2016
+File modification date: Fri Sep 16 19:44:30 2016
+File code lines: 59
+File directive lines: 12
+File comment lines: 2
+File blank lines: 31
+File bytes: 4075
+
+File name: Game.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sat Aug 27 21:26:16 2016
+File modification date: Sun Sep 18 00:08:26 2016
+File code lines: 63
+File directive lines: 9
+File comment lines: 1
+File blank lines: 40
+File bytes: 2826
+
+File name: helper_macros.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Sep  2 15:31:54 2016
+File modification date: Fri Sep  2 15:42:43 2016
+File code lines: 5
+File directive lines: 2
+File comment lines: 2
+File blank lines: 2
+File bytes: 504
+
+File name: Item.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug  9 18:28:38 2016
+File modification date: Sat Sep 10 19:22:50 2016
+File code lines: 113
+File directive lines: 8
+File comment lines: 6
+File blank lines: 33
+File bytes: 5984
+
+File name: Menu.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Tue Aug  9 18:30:21 2016
+File modification date: Sat Sep  3 17:25:29 2016
+File code lines: 6
+File directive lines: 7
+File comment lines: 0
+File blank lines: 7
+File bytes: 351
+
+File name: menus.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 28 20:11:46 2016
+File modification date: Mon Sep 12 07:13:44 2016
+File code lines: 91
+File directive lines: 4
+File comment lines: 2
+File blank lines: 53
+File bytes: 6406
+
+File name: menus.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sat Aug 27 22:14:45 2016
+File modification date: Sun Sep 11 23:10:20 2016
+File code lines: 145
+File directive lines: 9
+File comment lines: 6
+File blank lines: 54
+File bytes: 8485
+
+File name: player.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Fri Sep  9 04:46:30 2016
+File modification date: Sat Sep 17 02:23:03 2016
+File code lines: 51
+File directive lines: 5
+File comment lines: 2
+File blank lines: 34
+File bytes: 2294
+
+File name: Profession.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Wed Aug 17 06:03:51 2016
+File modification date: Wed Sep 14 23:50:03 2016
+File code lines: 56
+File directive lines: 12
+File comment lines: 8
+File blank lines: 18
+File bytes: 7610
+
+File name: research.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Sep  1 14:17:28 2016
+File modification date: Mon Sep 12 03:42:23 2016
+File code lines: 160
+File directive lines: 12
+File comment lines: 2
+File blank lines: 73
+File bytes: 14227
+
+File name: shop.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sat Sep  3 02:21:59 2016
+File modification date: Mon Sep 12 04:11:57 2016
+File code lines: 98
+File directive lines: 14
+File comment lines: 0
+File blank lines: 45
+File bytes: 11949
+
+File name: squad.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Sep  1 16:01:20 2016
+File modification date: Mon Sep 12 05:36:55 2016
+File code lines: 40
+File directive lines: 5
+File comment lines: 0
+File blank lines: 34
+File bytes: 2488
+
+File name: StageProp.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sat Sep  3 01:54:14 2016
+File modification date: Mon Sep 12 06:39:11 2016
+File code lines: 18
+File directive lines: 7
+File comment lines: 5
+File blank lines: 17
+File bytes: 2274
+
+File name: tactical.cpp
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Sep 11 20:13:49 2016
+File modification date: Fri Sep 16 19:59:23 2016
+File code lines: 303
+File directive lines: 7
+File comment lines: 8
+File blank lines: 204
+File bytes: 22307
+
+File name: text.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Thu Sep  1 01:36:26 2016
+File modification date: Sun Sep 11 23:06:20 2016
+File code lines: 39
+File directive lines: 5
+File comment lines: 2
+File blank lines: 30
+File bytes: 2255
+
+File name: Tile.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Wed Aug 31 15:21:47 2016
+File modification date: Wed Sep 14 21:13:10 2016
+File code lines: 79
+File directive lines: 8
+File comment lines: 3
+File blank lines: 50
+File bytes: 4262
+
+File name: Vehicle.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Wed Aug 24 04:29:13 2016
+File modification date: Sat Sep 17 22:28:56 2016
+File code lines: 45
+File directive lines: 7
+File comment lines: 8
+File blank lines: 15
+File bytes: 5780
+
+File name: Weapon.h
+File folder: D:\Jeez\KitsuRPG\kitsulib\
+File creation date: Sun Aug 14 05:29:45 2016
+File modification date: Sat Sep 17 22:29:39 2016
+File code lines: 71
+File directive lines: 18
+File comment lines: 14
+File blank lines: 20
+File bytes: 10902
+
+
+----------------------------- Total Files: 43
+----------------------------- Total Lines: 6067
+
+Comments: 192
+Code: 3619
+Compiler directives: 353
+Blanks: 1903
+Total bytes: 287844
+
+----------------------------- Stats: 
+
+Average lines per file: 141.09302325581396
+Average lines of comments per file: 4.465116279069767
+Average lines of code per file: 84.16279069767442
+Average lines of compiler directives per file: 8.209302325581396
+Average blank lines per file: 44.25581395348837
+
+Comments: 3.164661282347124%
+Code: 59.65056865007418%
+Compiler directives: 5.818361628481952%
+Blanks: 31.366408439096755%

@@ -38,10 +38,10 @@ namespace klib
 		SCharacterEquip				MaxResearch			= {};
 		SCharacterInventory			Inventory			= {};
 		SSquad						Squad				= SSquad();
-		::std::vector<CCharacter>	Army				= {};
 		int32_t						Team				= 0;
-
 		SPlayerSelection			Selection			= {0, 0, -1, -1};
+
+		::std::vector<CCharacter>	Army				= {};
 		::std::string				Name				= "Kasparov";
 
 		bool						IsAlive()	const

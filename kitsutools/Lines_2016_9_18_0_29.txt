@@ -1,0 +1,152 @@
+File name: asciiscreen.cpp
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Aug 27 20:21:53 2016
+File modification date: Thu Sep 15 10:04:14 2016
+File code lines: 102
+File directive lines: 9
+File comment lines: 9
+File blank lines: 46
+File bytes: 4864
+
+File name: asciiscreen.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Aug 27 20:21:53 2016
+File modification date: Sun Sep 11 16:23:49 2016
+File code lines: 12
+File directive lines: 6
+File comment lines: 2
+File blank lines: 13
+File bytes: 874
+
+File name: color.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Mon Sep  5 04:45:59 2016
+File modification date: Mon Sep  5 04:58:56 2016
+File code lines: 0
+File directive lines: 35
+File comment lines: 0
+File blank lines: 5
+File bytes: 983
+
+File name: input.cpp
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sun Aug 28 01:35:41 2016
+File modification date: Mon Sep 12 01:03:11 2016
+File code lines: 30
+File directive lines: 5
+File comment lines: 2
+File blank lines: 14
+File bytes: 1621
+
+File name: input.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Aug 27 21:27:56 2016
+File modification date: Mon Sep  5 00:54:16 2016
+File code lines: 16
+File directive lines: 4
+File comment lines: 1
+File blank lines: 14
+File bytes: 683
+
+File name: misc.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Tue Aug  9 18:56:49 2016
+File modification date: Sat Sep 10 00:57:55 2016
+File code lines: 23
+File directive lines: 6
+File comment lines: 3
+File blank lines: 17
+File bytes: 1772
+
+File name: netlib.cpp
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Sep 17 02:41:31 2016
+File modification date: Sat Sep 17 23:36:55 2016
+File code lines: 252
+File directive lines: 11
+File comment lines: 18
+File blank lines: 130
+File bytes: 10824
+
+File name: netlib.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Sep 17 02:41:31 2016
+File modification date: Sat Sep 17 23:30:11 2016
+File code lines: 23
+File directive lines: 4
+File comment lines: 0
+File blank lines: 17
+File bytes: 1999
+
+File name: netlib_server.cpp
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Sep 17 22:55:37 2016
+File modification date: Sat Sep 17 23:36:49 2016
+File code lines: 175
+File directive lines: 6
+File comment lines: 10
+File blank lines: 118
+File bytes: 7013
+
+File name: netlib_server.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sat Sep 17 22:50:47 2016
+File modification date: Sat Sep 17 23:55:08 2016
+File code lines: 29
+File directive lines: 10
+File comment lines: 1
+File blank lines: 20
+File bytes: 1400
+
+File name: noise.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Tue Sep  6 02:41:53 2016
+File modification date: Tue Sep  6 02:43:26 2016
+File code lines: 15
+File directive lines: 4
+File comment lines: 0
+File blank lines: 12
+File bytes: 1002
+
+File name: timer.cpp
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sun Aug 28 02:24:44 2016
+File modification date: Sun Sep  4 15:06:26 2016
+File code lines: 26
+File directive lines: 2
+File comment lines: 0
+File blank lines: 15
+File bytes: 1138
+
+File name: timer.h
+File folder: D:\Jeez\KitsuRPG\kitsutools\
+File creation date: Sun Aug 28 02:24:44 2016
+File modification date: Sun Sep  4 15:12:13 2016
+File code lines: 35
+File directive lines: 6
+File comment lines: 15
+File blank lines: 28
+File bytes: 2153
+
+
+----------------------------- Total Files: 13
+----------------------------- Total Lines: 1356
+
+Comments: 61
+Code: 738
+Compiler directives: 108
+Blanks: 449
+Total bytes: 36326
+
+----------------------------- Stats: 
+
+Average lines per file: 104.3076923076923
+Average lines of comments per file: 4.6923076923076925
+Average lines of code per file: 56.76923076923077
+Average lines of compiler directives per file: 8.307692307692308
+Average blank lines per file: 34.53846153846154
+
+Comments: 4.498525073746313%
+Code: 54.424778761061944%
+Compiler directives: 7.964601769911504%
+Blanks: 33.11209439528024%

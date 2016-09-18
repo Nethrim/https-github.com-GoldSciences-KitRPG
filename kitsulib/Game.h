@@ -1,6 +1,9 @@
 #include "Player.h"
 #include "Tile.h"
 #include "menus.h"
+
+#define GODS_MTSUPPORT
+#include "GCore_mutex.h"
 #include <vector>
 
 #ifndef __GAME_H__91827309126391263192312312354__
@@ -78,6 +81,8 @@ namespace klib
 		std::string					StateMessage		= "";
 		std::string					UserMessage			= "";
 		std::string					UserError			= "";
+
+		god::CGMutex				ServerTimeMutex		= {};
 		std::string					ServerTime			= "";
 
 		SInput						FrameInput			= {};

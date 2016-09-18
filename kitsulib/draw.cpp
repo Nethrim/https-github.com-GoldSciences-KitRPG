@@ -99,7 +99,11 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	actualOffsetX = lineToScreen(bbHeight-4, 1, LEFT, "Mouse: %i, %i.", instanceGame.FrameInput.MouseX, instanceGame.FrameInput.MouseY);	valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, actualOffsetX, LEFT, &(color = COLOR_DARKGREEN	), 1, 20);
 	actualOffsetX = lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);				valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_GREEN		), 1, 32);
 	actualOffsetX = lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);					valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, 32);
-	actualOffsetX = lineToScreen(bbHeight-3, 1, RIGHT, "%s.", instanceGame.ServerTime.c_str());												valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, instanceGame.ServerTime.size());
+	{
+		god::CGLock thelock(instanceGame.ServerTimeMutex);
+		actualOffsetX = lineToScreen(bbHeight-3, 1, RIGHT, "%s.", instanceGame.ServerTime.c_str());											valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, instanceGame.ServerTime.size());
+	}
+
 	actualOffsetX = lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());											valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_DARKYELLOW	), 1, instanceGame.StateMessage.size());
 
 	// Print user error messages and draw cursor.

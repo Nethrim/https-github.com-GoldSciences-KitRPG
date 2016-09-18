@@ -4,6 +4,7 @@
 #include "glabel.h"
 
 #include <time.h>
+#include <process.h>
 
 
 #include <crtdbg.h>
@@ -17,12 +18,10 @@ void draw( klib::SGame& instanceGame ) //
 #define MAX_SEND_SIZE 128
 
 int runCommunications(klib::SGame& instanceGame);
-int runCommunications(void* instanceGame)
+void runCommunications(void* instanceGame)
 {
 	if(instanceGame)
-		return runCommunications(*(klib::SGame*)instanceGame);
-
-	return -1;
+		runCommunications(*(klib::SGame*)instanceGame);
 }
 
 int main(void)
@@ -48,7 +47,7 @@ int main(void)
 
 	klib::initGame(instanceGame);
 
-	runCommunications(instanceGame);
+	_beginthread(runCommunications, 0, pInstancedGame);
 
 	while(instanceGame.bRunning)
 	{
@@ -157,9 +156,6 @@ int runCommunications(klib::SGame& instanceGame)
 	god::error_t result = 0;
 	while(instanceGame.bRunning)
 	{
-		pollInput(instanceGame.FrameInput);
-		draw(instanceGame);
-
 		// Ping before anything else to make sure everything is more or less in order.
 		if(false == ping(instanceClient.pClient, instanceClient.pServer))
 		{
@@ -176,8 +172,11 @@ int runCommunications(klib::SGame& instanceGame)
 			return -1;
 		};
 		ctime_s(send_buffer, sizeof(send_buffer), &current_time);
-		instanceGame.ServerTime = std::string("Server time: ") + send_buffer;
-		instanceGame.ServerTime = instanceGame.ServerTime.substr(0, instanceGame.ServerTime.size()-2);;
+		{
+			god::CGLock thelock(instanceGame.ServerTimeMutex);
+			instanceGame.ServerTime = std::string("Server time: ") + send_buffer;
+			instanceGame.ServerTime = instanceGame.ServerTime.substr(0, instanceGame.ServerTime.size()-2);
+		}
 
 		// Disconnect if the game was closed.
 		if( false == instanceGame.bRunning )

@@ -23,7 +23,6 @@ int32_t CServer::InitServer(int32_t port_number)
 	}
 
 	m_bListening			= false;
-	//m_nClientCount			= 0;
 	m_nQueuedClientCount	= 0;
 	if( initConnection( m_serverConnection ) )
 	{

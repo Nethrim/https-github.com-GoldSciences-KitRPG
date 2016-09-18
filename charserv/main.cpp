@@ -5,6 +5,8 @@
 /* Link with library file wsock32.lib */
 #include "netlib_server.h"
 
+#include "Game.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,28 +15,10 @@
 
 #include <windows.h>
 
-#if defined(WIN64) || defined(_WIN64)
-typedef unsigned long long atomic_t;
-#else
-typedef unsigned long atomic_t;
-#endif
-
-
 #define BUFFER_SIZE 4096
 
 void usage(void);
 
-//HANDLE  hConsoleOut;                 // Handle to the console 
-int     ThreadNr;                    // Number of threads started 
-CONSOLE_SCREEN_BUFFER_INFO csbiInfo; // Console information 
-// The function getrandom returns a random number between 
-// min and max, which must be in integer range.
-#define getrandom( min, max ) (SHORT)((rand() % (int)(((max) + 1) - \
-                               (min))) + (min))
-
-void KbdFunc( void  );               // Keyboard input, thread dispatch
-void clientProc( void * MyID );      // Threads 2 to n: display 
-void ClearScreen( void );            // Screen clear 
 void WriteTitle( int ThreadNum );    // Display title bar information 
 
 bool bListenFailure = false;
@@ -49,7 +33,6 @@ void serverListen( void* server )
 			fprintf(stderr, "Failed to listen on server.\n");
 			bListenFailure = true;
 		}
-		//if()
 		else if( ( !bListenFailure && !bTerminate ) && pServer->Accept() )
 		{
 			fprintf(stderr, "Failed to accept queued client or no client queued.\n");
@@ -70,9 +53,8 @@ int main(int argc, char **argv)// Thread 1: main
 	_CrtSetDbgFlag(tmp);
 #endif
 
-
-	int port_number;			/* Port number to use */
-	int a1, a2, a3, a4;					/* Components of address in xxx.xxx.xxx.xxx form */
+	int port_number;		// Port number to use
+	int a1, a2, a3, a4;		// Components of address in xxx.xxx.xxx.xxx form
 	klib::CServer server;
 
 	/* Interpret command line */
@@ -108,7 +90,7 @@ int main(int argc, char **argv)// Thread 1: main
     // Get display screen information & clear the screen.
     WriteTitle( 0 );
 
-	/* Open windows connection */
+	// Open windows connection 
 	if (initNetwork())
 	{
 		fprintf(stderr, "Failed to initialize network.\n");
@@ -120,13 +102,13 @@ int main(int argc, char **argv)// Thread 1: main
 		fprintf(stderr, "Failed to initialize connection server.\n");
 		return -1;
 	};
-	/* Print out server information */
+	// Print out server information
 
 	_beginthread( serverListen, 0, &server );
 
 	printf("Press CTRL + Q to quit\n");
 
-	///* Loop and get data from clients */
+	// Check for exit request while the server is running.
 	while (!bTerminate && !bListenFailure)
 	{
 		if( GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('Q') )
@@ -161,30 +143,30 @@ void WriteTitle( int ThreadNum )
 
 int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 {
-	/* Check for time request */
+	// Check for time request 
 	if (strcmp(buffer, "GET TIME\r\n") == 0)
 	{
-		/* Get current time */
+		// Get current time
 		time_t current_time = time(NULL);
 			
-		/* Send data back */
+		// Send data back
 		int32_t sentBytes = 0;
 		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
 		{
 			fprintf(stderr, "Error sending datagram.\n");
 			return -1;
 		}
-		if( sentBytes != (int)sizeof(current_time) )
+		else if( sentBytes != (int)sizeof(current_time) )
 		{
 			fprintf(stderr, "Error sending datagram.\n");
 			return -1;
 		}
-		/* Display time */
+		// Display time
 		char timestring[256];
 		ctime_s(timestring, sizeof(char)*256, &current_time);
 		printf("Current time: %s", timestring);
-		int port_number;			/* Port number to use */
-		int a1, a2, a3, a4;			/* Components of address in xxx.xxx.xxx.xxx form */
+		int port_number;			// Port number to use
+		int a1, a2, a3, a4;			// Components of address in xxx.xxx.xxx.xxx form
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
 		fprintf(stderr, "Sent time (%s) to %u.%u.%u.%u:%u.\n", timestring, 
 			(int)a1,
@@ -194,24 +176,59 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 			(int)port_number
 		);
 	}
-	else
+	else if (strcmp(buffer, "GET PLAYER\r\n") == 0)
 	{
-		/* Get current time */
-		const char* mypong = "INVALIDMSG\r\n";
-			
-		/* Send data back */
-		int32_t sentBytes = 0, bytesTosEnd = (int32_t)(sizeof(char)*(strlen(mypong)+1));
+		// Get current time
+		time_t current_time = time(NULL);
+		
+		SPlayer player;
 
-		if( 0 > sendToConnection( client->m_ClientListener, mypong, bytesTosEnd, &sentBytes, client->m_ClientTarget ) )
-			return -1;
-		if( sentBytes != bytesTosEnd )
+		// Send data back
+		int32_t sentBytes = 0;
+		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
 		{
 			fprintf(stderr, "Error sending datagram.\n");
 			return -1;
 		}
-		/* Display time */
-		int port_number;			/* Port number to use */
-		int a1, a2, a3, a4;					/* Components of address in xxx.xxx.xxx.xxx form */
+		else if( sentBytes != (int)sizeof(current_time) )
+		{
+			fprintf(stderr, "Error sending datagram.\n");
+			return -1;
+		}
+		// Display time
+		char timestring[256];
+		ctime_s(timestring, sizeof(char)*256, &current_time);
+		printf("Current time: %s", timestring);
+		
+		int port_number;	
+		int a1, a2, a3, a4;	
+		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
+		fprintf(stderr, "Sent player data (%s) to %u.%u.%u.%u:%u.\n", player.Name.c_str(), 
+			(int)a1,
+			(int)a2,
+			(int)a3,
+			(int)a4,
+			(int)port_number
+		);
+	}
+	else
+	{
+		// Get current time
+		const char* mypong = "INVALIDMSG\r\n";
+			
+		// Send data back
+		int32_t sentBytes = 0, bytesTosEnd = (int32_t)(sizeof(char)*(strlen(mypong)+1));
+
+		if( 0 > sendToConnection( client->m_ClientListener, mypong, bytesTosEnd, &sentBytes, client->m_ClientTarget ) )
+			return -1;
+		else if( sentBytes != bytesTosEnd )
+		{
+			fprintf(stderr, "Error sending datagram.\n");
+			return -1;
+		}
+
+		int port_number;
+		int a1, a2, a3, a4;
 		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
 		fprintf(stderr, "Sent invalid message response to %u.%u.%u.%u:%u.\n", 
 			(int)a1,
