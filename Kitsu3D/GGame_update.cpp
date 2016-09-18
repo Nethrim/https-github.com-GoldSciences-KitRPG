@@ -46,8 +46,6 @@ int32_t CGGame::Update( float fElapsedTime )
 		debug_printf("%s", "Something fishy is going on.");
 	}
 
-
-
 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	m_BodyForceRegistry.UpdateGenerators( fElapsedTime );
 	m_BodyIntegrator.UpdatePositions( fElapsedTime );

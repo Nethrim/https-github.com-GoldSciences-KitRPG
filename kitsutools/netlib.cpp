@@ -84,7 +84,7 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
     // which is passed to the getaddrinfo() function
 
 	addrinfo hints;
-    ZeroMemory( &hints, sizeof(hints) );
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_DGRAM;
     hints.ai_protocol = IPPROTO_UDP;
@@ -207,7 +207,7 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 	/* Check for NULL pointer */
 	if (hp == NULL)
 	{
-		error_printf("Could not get host by name.");
+		error_print("Could not get host by name.");
 		return -1;
 	}	
 	/* Assign the address */

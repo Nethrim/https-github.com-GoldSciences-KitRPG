@@ -8,7 +8,7 @@
 #define __NETLIB_SERVER_H__9823409236498237469827364982734689237__
 
 
-#define MAX_CLIENTS 32
+#define MAX_CLIENTS_QUEUE 32
 
 #define INTERLOCKED_INCREMENT(n)	InterlockedIncrement(&n)
 #define INTERLOCKED_DECREMENT(n)	InterlockedDecrement(&n)
@@ -40,7 +40,7 @@ namespace klib
 		char								host_name[256];	/* Name of the server */
 		GLstObj(klib, CClient)				ClientConnections;	
 		GLstObj(klib, CClient)				ClientUnused;	
-		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS];
+		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS_QUEUE];
 		volatile long						m_nQueuedClientCount;
 
 		int32_t								InitServer(int32_t port_number);

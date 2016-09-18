@@ -38,7 +38,7 @@ int main(void)
 	
 	if( initNetwork() )
 	{
-		fprintf(stderr, "Failed to initialize network\n");
+		error_printf("Failed to initialize network.");
 		return -1;
 	}
 
@@ -72,7 +72,7 @@ int connect(SNetworkClient& instanceClient)
 	sendToConnection(instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer);
 	if (bytesTransmitted == -1)
 	{
-		fprintf(stderr, "Error transmitting data.\n");
+		error_print("Error transmitting data.");
 		disconnectClient(instanceClient);
 		return -1;
 	}
@@ -83,13 +83,13 @@ int connect(SNetworkClient& instanceClient)
 	receiveFromConnection(instanceClient.pClient, connect_buffer, sizeof(connect_buffer), &bytesTransmitted, 0);
 	if( bytesTransmitted < 0 )
 	{
-		fprintf(stderr, "Error receiving data.\n");
+		error_print("Error receiving data.");
 		disconnectClient(instanceClient);
 		return -1;
 	}
 	shutdownConnection(&instanceClient.pServer);
 
-	fprintf(stderr, "response: %s\n", connect_buffer);
+	debug_printf("response: %s", connect_buffer);
 
 	// Got an available port to connect to? 
 	if( 0 != strncmp(connect_buffer, "PORT:", 5) )
@@ -102,7 +102,7 @@ int connect(SNetworkClient& instanceClient)
 	instanceClient.pServer = 0;
 	if(createConnection(instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, port, &instanceClient.pServer))
 	{
-		fprintf(stderr, "Error creating new server connection.\n");
+		error_print("Error creating new server connection.");
 		return -1;
 	}
 	return 0;
@@ -116,7 +116,7 @@ int serverTime(SNetworkClient& instanceClient, time_t& current_time)
 	sendToConnection(instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer);
 	if (bytesTransmitted == -1)
 	{
-		fprintf(stderr, "Error transmitting data.\n");
+		error_print("Error transmitting data.");
 		return -1;
 	}
 
@@ -127,7 +127,7 @@ int serverTime(SNetworkClient& instanceClient, time_t& current_time)
 
 	if( bytesTransmitted < 0 )
 	{
-		fprintf(stderr, "Error receiving data.\n");
+		error_print("Error receiving data.");
 		return -1;
 	}
 
@@ -141,13 +141,13 @@ int runCommunications(klib::SGame& instanceGame)
 	int32_t bytesTransmitted=-1;
 	if(initClientConnection(instanceClient))
 	{
-		fprintf(stderr, "Failed to connect to server.\n");
+		error_print("Failed to connect to server.");
 		return -1;
 	}
 
 	if(connect(instanceClient))
 	{
-		fprintf(stderr, "Failed to connect to server.\n");
+		error_print("Failed to connect to server.");
 		return -1;
 	}
 
@@ -159,7 +159,7 @@ int runCommunications(klib::SGame& instanceGame)
 		// Ping before anything else to make sure everything is more or less in order.
 		if(false == ping(instanceClient.pClient, instanceClient.pServer))
 		{
-			fprintf(stderr, "Ping timeout.\n");
+			error_print("Ping timeout.");
 			result = -1;
 			break;
 		}
@@ -168,7 +168,7 @@ int runCommunications(klib::SGame& instanceGame)
 		time_t current_time;
 		if(0 > serverTime(instanceClient, current_time) )
 		{
-			fprintf(stderr, "Failed to get server time.\n");
+			error_print("Failed to get server time.");
 			return -1;
 		};
 		ctime_s(send_buffer, sizeof(send_buffer), &current_time);
@@ -186,7 +186,7 @@ int runCommunications(klib::SGame& instanceGame)
 			sendToConnection( instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer );
 			if (bytesTransmitted == -1)
 			{
-				fprintf(stderr, "Error transmitting data.\n");
+				error_print("Error transmitting data.");
 				result = -1;
 				break;
 			}

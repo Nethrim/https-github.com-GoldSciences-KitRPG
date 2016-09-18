@@ -76,10 +76,10 @@ int32_t CServer::Listen( void )
 		buffer
 	);
 
-	if( 0 == strcmp(buffer, "CONNECT\r\n") && m_nQueuedClientCount < MAX_CLIENTS )
-	{
+	if( 0 == strcmp(buffer, "CONNECT\r\n") && m_nQueuedClientCount < MAX_CLIENTS_QUEUE )
 		m_QueuedConnections[INTERLOCKED_INCREMENT(m_nQueuedClientCount)-1] = client;
-	}
+	else
+		shutdownConnection(&client);
 
 	return 0;
 };

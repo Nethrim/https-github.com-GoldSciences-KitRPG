@@ -231,7 +231,7 @@ int32_t klib::executeCommand(klib::CClient* client, const char* buffer)
 			return -1;
 		else if( sentBytes != bytesTosEnd )
 		{
-			fprintf(stderr, "Error sending datagram.");
+			error_print("Error sending datagram.");
 			return -1;
 		}
 
