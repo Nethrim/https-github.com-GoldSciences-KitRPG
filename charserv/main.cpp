@@ -35,12 +35,12 @@ void serverListen( void* server )
 	{
 		if( pServer->Listen() )
 		{
-			fprintf(stderr, "Failed to listen on server.\n");
+			error_print("Failed to listen on server.");
 			bListenFailure = true;
 		}
 		else if( false == bListenFailure && 0 > pServer->Accept() )
 		{
-			fprintf(stderr, "Failed to accept queued client or no client queued.\n");
+			error_print("Failed to accept queued client or no client queued.");
 		}
 		// Get display screen information & clear the screen.
 		Sleep(100);
@@ -115,6 +115,7 @@ int main(int argc, char **argv)// Thread 1: main
 
 	while(instanceGame.bRunning && !bListenFailure)
 	{
+		instanceGame.ServerTime = time(0);
 		pollInput(instanceGame.FrameInput);
 		draw(instanceGame);
 	}

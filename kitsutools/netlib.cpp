@@ -106,98 +106,103 @@ int32_t createConnectionByHostName( char* host_name, unsigned short port_number,
 		DWORD ipbufferlength = 46;
 		char ipstringbuffer[46];
 		wchar_t ipwstringbuffer[46];
-		LPSOCKADDR sockaddr_ip;
-		sockaddr_in  *sockaddr_ipv4;
+		sockaddr		* sockaddr_ip	= 0;
+		sockaddr_in		* sockaddr_ipv4 = 0;
+		sockaddr_in6	* sockaddr_ipv6 = 0;
 		//DWORD dwRetval;
 	    INT iRetval;
 
-		switch (ptr->ai_family) {
-            case AF_UNSPEC:
-                debug_print("Unspecified");
-                break;
-            case AF_INET:
-                debug_print("AF_INET (IPv4)");
-                sockaddr_ipv4 = (sockaddr_in *) ptr->ai_addr;
-	            ipbufferlength = 46;
- 				inet_ntop(AF_INET, ptr->ai_addr, ipstringbuffer, ipbufferlength);
-				debug_printf("IPv4 address %s", ipstringbuffer );
-				/* Copy address */
-				b1		= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b1
-				, b2	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b2
-				, b3	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b3
-				, b4	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b4
-				;
+		switch (ptr->ai_family) 
+		{
+		case AF_UNSPEC:
+			debug_print("Unspecified");
+			break;
+		case AF_INET:
+			debug_print("AF_INET (IPv4)");
+			sockaddr_ipv4 = (sockaddr_in *) ptr->ai_addr;
+			ipbufferlength = 46;
+ 			inet_ntop(AF_INET, ptr->ai_addr, ipstringbuffer, ipbufferlength);
+			debug_printf("IPv4 address %s", ipstringbuffer );
+			/* Copy address */
+			b1		= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b1
+			, b2	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b2
+			, b3	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b3
+			, b4	= sockaddr_ipv4->sin_addr.S_un.S_un_b.s_b4
+			;
 
-                //printf("\tIPv4 address %s\n", inet_ntoa(sockaddr_ipv4->sin_addr) );
-                break;
-            case AF_INET6:
-                debug_print("AF_INET6 (IPv6)");
-                // the InetNtop function is available on Windows Vista and later
-                // sockaddr_ipv6 = (struct sockaddr_in6 *) ptr->ai_addr;
-                // printf("\tIPv6 address %s\n",
-                //    InetNtop(AF_INET6, &sockaddr_ipv6->sin6_addr, ipstringbuffer, 46) );
-                
-                // We use WSAAddressToString since it is supported on Windows XP and later
-                sockaddr_ip = (LPSOCKADDR) ptr->ai_addr;
-                // The buffer length is changed by each call to WSAAddresstoString
-                // So we need to set it for each iteration through the loop for safety
-                ipbufferlength = 46;
-                iRetval = WSAAddressToStringW(sockaddr_ip, (DWORD) ptr->ai_addrlen, NULL, ipwstringbuffer, &ipbufferlength );
-                if (iRetval) {
-                    debug_printf("WSAAddressToString failed with %u", WSAGetLastError() );
-				}
-                else    
-                    wprintf(L"\tIPv6 address %s", ipwstringbuffer);
-                break;
-            case AF_NETBIOS:
-                debug_print("AF_NETBIOS (NetBIOS)");
-                break;
-            default:
-                debug_printf("Other %ld", ptr->ai_family);
-                break;
-        }
-        debug_print("Socket type: ");
-        switch (ptr->ai_socktype) {
-            case 0:
-                debug_print("Unspecified");
-                break;
-            case SOCK_STREAM:
-                debug_print("SOCK_STREAM (stream)");
-                break;
-            case SOCK_DGRAM:
-                debug_print("SOCK_DGRAM (datagram)");
-                break;
-            case SOCK_RAW:
-                debug_print("SOCK_RAW (raw)");
-                break;
-            case SOCK_RDM:
-                debug_print("SOCK_RDM (reliable message datagram)");
-                break;
-            case SOCK_SEQPACKET:
-                debug_print("SOCK_SEQPACKET (pseudo-stream packet)");
-                break;
-            default:
-                debug_printf("Other %ld", ptr->ai_socktype);
-                break;
-        }
-        debug_print("Protocol: ");
-        switch (ptr->ai_protocol) {
-            case 0:
-                debug_print("Unspecified");
-                break;
-            case IPPROTO_TCP:
-                debug_print("IPPROTO_TCP (TCP)");
-                break;
-            case IPPROTO_UDP:
-                debug_print("IPPROTO_UDP (UDP)");
-                break;
-            default:
-                debug_printf("Other %ld", ptr->ai_protocol);
-                break;
-        }
-        debug_printf("Length of this sockaddr: %d", (int32_t)ptr->ai_addrlen);
-        debug_printf("Canonical name: %s", ptr->ai_canonname);
-    }
+			//printf("\tIPv4 address %s\n", inet_ntoa(sockaddr_ipv4->sin_addr) );
+			break;
+		case AF_INET6:
+			debug_print("AF_INET6 (IPv6)");
+			// the InetNtop function is available on Windows Vista and later
+			sockaddr_ipv6 = (struct sockaddr_in6 *) ptr->ai_addr;
+			debug_printf(L"IPv6 address %s", InetNtop(AF_INET6, &sockaddr_ipv6->sin6_addr, ipwstringbuffer, 46) );
+
+			// We use WSAAddressToString since it is supported on Windows XP and later
+			sockaddr_ip = (LPSOCKADDR) ptr->ai_addr;
+			// The buffer length is changed by each call to WSAAddresstoString
+			// So we need to set it for each iteration through the loop for safety
+			ipbufferlength = 46;
+			iRetval = WSAAddressToStringW(sockaddr_ip, (DWORD) ptr->ai_addrlen, NULL, ipwstringbuffer, &ipbufferlength );
+			if (iRetval) {
+				debug_printf("WSAAddressToString failed with %u", WSAGetLastError() );
+			}
+			else    
+				wprintf(L"IPv6 address %s", ipwstringbuffer);
+			break;
+		case AF_NETBIOS:
+			debug_print("AF_NETBIOS (NetBIOS)");
+			break;
+		default:
+			debug_printf("Other %ld", ptr->ai_family);
+			break;
+		}
+
+		debug_print("Socket type: ");
+		switch (ptr->ai_socktype) 
+		{
+		case 0:
+			debug_print("Unspecified");
+			break;
+		case SOCK_STREAM:
+			debug_print("SOCK_STREAM (stream)");
+			break;
+		case SOCK_DGRAM:
+			debug_print("SOCK_DGRAM (datagram)");
+			break;
+		case SOCK_RAW:
+			debug_print("SOCK_RAW (raw)");
+			break;
+		case SOCK_RDM:
+			debug_print("SOCK_RDM (reliable message datagram)");
+			break;
+		case SOCK_SEQPACKET:
+			debug_print("SOCK_SEQPACKET (pseudo-stream packet)");
+			break;
+		default:
+			debug_printf("Other %ld", ptr->ai_socktype);
+			break;
+		}
+
+		debug_print("Protocol: ");
+		switch (ptr->ai_protocol) 
+		{
+		case 0:
+			debug_print("Unspecified");
+			break;
+		case IPPROTO_TCP:
+			debug_print("IPPROTO_TCP (TCP)");
+			break;
+		case IPPROTO_UDP:
+			debug_print("IPPROTO_UDP (UDP)");
+			break;
+		default:
+			debug_printf("Other %ld", ptr->ai_protocol);
+			break;
+		}
+		debug_printf("Length of this sockaddr: %d", (int32_t)ptr->ai_addrlen);
+		debug_printf("Canonical name: %s", ptr->ai_canonname);
+	}
 
 	freeaddrinfo(createdAddrInfo);
 	return createConnection( b1, b2, b3, b4, port_number, out_clientInfo );
@@ -252,7 +257,7 @@ int32_t shutdownConnection( SConnectionEndpoint** out_clientInfo )
 int32_t bindConnection( SConnectionEndpoint* client )
 {
 	/* Bind local address to socket */
-	int sockaddr_in_len = (int32_t)_sockaddr_in_len;
+	int32_t sockaddr_in_len = (int32_t)_sockaddr_in_len;
 	if (bind(client->sd, (sockaddr *)&client->sockaddr, (int32_t)_sockaddr_in_len) == -1)
 	{
 		error_printf("Cannot bind address to socket.");
@@ -292,7 +297,7 @@ int32_t connectionAccept( SConnectionEndpoint* conn, SConnectionEndpoint** out_n
 
 int32_t sendToConnection		( SConnectionEndpoint* connection, const char* buffer, uint32_t bytesToSend, int32_t* _bytesSent, SConnectionEndpoint* targetConnection )
 {
-	/* Tranmsit data to get time */
+	// Tranmsit data to get time
 	if( 0 == connection )
 		return -1;
 	int server_length = (int32_t)_sockaddr_in_len;
@@ -314,7 +319,7 @@ int32_t receiveFromConnection	( SConnectionEndpoint* connection, char* buffer, u
 	{
 		SConnectionEndpoint* client;
 		createConnection(0,0,0,0,0,&client);
-		/* Receive time */
+		// Receive time
 		if ((bytesReceived = recvfrom(connection->sd, buffer, bufLen, 0, (sockaddr *)&client->sockaddr, &server_length)) < 0)
 		{
 			shutdownConnection(&client);
@@ -360,7 +365,7 @@ bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 		return false;
 	}
 
-	/* Receive answer */
+	// Receive answer
 	bytesTransmitted=-1;
 	char buffer[256] = {};
 	receiveFromConnection( pClient, buffer, sizeof(buffer), &bytesTransmitted, 0 );
@@ -372,43 +377,4 @@ bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 	debug_printf("response: %s", buffer);		
 
 	return true;
-}
-
-int32_t initClientConnection(SNetworkClient& instanceClient)
-{
-
-	if( createConnection( instanceClient.b1, instanceClient.b2, instanceClient.b3, instanceClient.b4, 0, &instanceClient.pClient ) )
-	{
-		error_printf("Error creating client connection.");
-		return -1;
-	}
-
-	if( initConnection(instanceClient.pClient) )
-	{
-		error_printf("Error initializing client connection.");
-	}
-
-	if( bindConnection(instanceClient.pClient) )
-	{
-		error_printf("Error binding client connection.");
-		shutdownConnection(&instanceClient.pClient);
-		return -1;
-	}
-
-	if( createConnection( instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, instanceClient.port_number, &instanceClient.pServer ) )
-	{
-		error_printf("Error creating new connection to server.");
-		return -1;
-	}
-
-	return 0;
-}
-
-
-void disconnectClient(SNetworkClient& client)
-{
-	/* Get current time */
-	debug_print("Disconnecting client.");
-	shutdownConnection(&client.pClient);
-	shutdownConnection(&client.pServer);
 }

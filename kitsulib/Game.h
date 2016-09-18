@@ -4,6 +4,8 @@
 
 #define GODS_MTSUPPORT
 #include "GCore_mutex.h"
+
+#include <time.h>
 #include <vector>
 
 #ifndef __GAME_H__91827309126391263192312312354__
@@ -19,7 +21,7 @@ namespace klib
 	
 	struct STacticalInfo
 	{
-		STacticalBoard								Board;
+		STacticalBoard	Board;
 
 		void Clear()
 		{
@@ -84,7 +86,7 @@ namespace klib
 		std::string					UserError			= "";
 
 		god::CGMutex				ServerTimeMutex		= {};
-		std::string					ServerTime			= "";
+		time_t						ServerTime			= 0;
 
 		SInput						FrameInput			= {};
 		STimer						FrameTimer			= {};

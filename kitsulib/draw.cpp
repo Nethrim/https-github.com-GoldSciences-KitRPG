@@ -101,7 +101,12 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	actualOffsetX = lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);					valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, 32);
 	{
 		god::CGLock thelock(instanceGame.ServerTimeMutex);
-		actualOffsetX = lineToScreen(bbHeight-3, 1, RIGHT, "%s.", instanceGame.ServerTime.c_str());											valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, instanceGame.ServerTime.size());
+		char send_buffer[128] = {};
+		ctime_s(send_buffer, sizeof(send_buffer), &instanceGame.ServerTime);
+		std::string serverTime = std::string("Server time: ") + send_buffer;
+		serverTime = serverTime.substr(0, serverTime .size()-2);
+		actualOffsetX = lineToScreen(bbHeight-3, 1, RIGHT, "%s.", serverTime.c_str());	
+		valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_CYAN), 1, serverTime .size());
 	}
 
 	actualOffsetX = lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());											valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_DARKYELLOW	), 1, instanceGame.StateMessage.size());

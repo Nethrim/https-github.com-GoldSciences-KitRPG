@@ -27,18 +27,5 @@ int32_t receiveFromConnection		( SConnectionEndpoint* connection, char* buffer, 
 
 bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer);
 
-struct SNetworkClient
-{
-	int32_t a1=192, a2=168, a3=1, a4=27;	/* Server address components in xxx.xxx.xxx.xxx form */
-	int32_t port_number = 6667;				/* The port number to use */
-	int32_t b1=0, b2=0, b3=0, b4=0;			/* Client address components in xxx.xxx.xxx.xxx form */
-
-	SConnectionEndpoint* pServer = 0;	// the remote endpoint
-	SConnectionEndpoint* pClient = 0;	// us
-};
-
-int32_t initClientConnection(SNetworkClient& instanceClient);
-
-void disconnectClient(SNetworkClient& client);
 
 #endif // __NETLIB_H__934892734698236498236498716091782__

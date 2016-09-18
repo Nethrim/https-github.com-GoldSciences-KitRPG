@@ -162,6 +162,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="netlib.h" />
+    <ClInclude Include="netlib_client.h" />
     <ClInclude Include="netlib_server.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="timer.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="asciiscreen.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="netlib.cpp" />
+    <ClCompile Include="netlib_client.cpp" />
     <ClCompile Include="netlib_server.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
