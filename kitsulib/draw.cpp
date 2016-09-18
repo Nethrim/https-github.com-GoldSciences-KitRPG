@@ -38,8 +38,8 @@ void drawStateBackground( SGame& instanceGame )
 }
 
 template <typename... _Args>
-void lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
-	printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args...);
+int32_t lineToScreen( int32_t offsetLine, int32_t offsetColumn, ALIGN align, const char* format, _Args... args ) {
+	return printfToRect(getASCIIBackBuffer(), (size_t)getASCIIBackBufferWidth(), (size_t)getASCIIBackBufferHeight(), offsetLine, offsetColumn, align, format, args...);
 }
 
 void klib::drawAndPresentGame( SGame& instanceGame )
@@ -93,19 +93,14 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	frameMeasure.Frame();
 	instanceGame.FrameTimer.Frame();
 
-	size_t	offset;
-
+	int32_t actualOffsetX;
+	uint16_t color;
 	// Print some debugging information 
-	lineToScreen(bbHeight-4, 1, LEFT, "Mouse: %i, %i.", instanceGame.FrameInput.MouseX, instanceGame.FrameInput.MouseY);
-	lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);
-	lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);
-	lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());
-	for(uint32_t i=0, count = 32U; i<count; i++) {
-		offset = (bbHeight-4)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_DARKGREEN;
-		offset = (bbHeight-3)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_GREEN;		
-		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+i]				= COLOR_CYAN;		
-		offset = (bbHeight-2)*bbWidth;	getASCIIColorBackBuffer()[offset+(bbWidth-1-i)]	= COLOR_DARKYELLOW;
-	}
+	actualOffsetX = lineToScreen(bbHeight-4, 1, LEFT, "Mouse: %i, %i.", instanceGame.FrameInput.MouseX, instanceGame.FrameInput.MouseY);	valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, actualOffsetX, LEFT, &(color = COLOR_DARKGREEN	), 1, 20);
+	actualOffsetX = lineToScreen(bbHeight-3, 1, LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);				valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_GREEN		), 1, 32);
+	actualOffsetX = lineToScreen(bbHeight-2, 1, LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);					valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, 32);
+	actualOffsetX = lineToScreen(bbHeight-3, 1, RIGHT, "%s.", instanceGame.ServerTime.c_str());												valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, LEFT, &(color = COLOR_CYAN			), 1, instanceGame.ServerTime.size());
+	actualOffsetX = lineToScreen(bbHeight-2, 1, RIGHT, "%s.", instanceGame.StateMessage.c_str());											valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, LEFT, &(color = COLOR_DARKYELLOW	), 1, instanceGame.StateMessage.size());
 
 	// Print user error messages and draw cursor.
 	if(instanceGame.State.State != GAME_STATE_CREDITS) {
@@ -121,8 +116,6 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 
 		// Draw cursor
 		int32_t mouseX = instanceGame.FrameInput.MouseX, mouseY = instanceGame.FrameInput.MouseY;
-		//lineToScreen(mouseY, mouseX, LEFT, "\x8");
-		//valueToRect(getASCIIColorBackBuffer(), bbWidth, bbHeight, mouseY, mouseX, LEFT, &(color = COLOR_MAGENTA), 1);
 		getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] = 
 			( ((getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] & 0xF0) >> 4)
 			| ((getASCIIColorBackBuffer()[mouseY*bbWidth+mouseX] & 0x0F) << 4)

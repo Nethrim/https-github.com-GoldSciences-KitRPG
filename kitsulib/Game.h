@@ -78,6 +78,7 @@ namespace klib
 		std::string					StateMessage		= "";
 		std::string					UserMessage			= "";
 		std::string					UserError			= "";
+		std::string					ServerTime			= "";
 
 		SInput						FrameInput			= {};
 		STimer						FrameTimer			= {};

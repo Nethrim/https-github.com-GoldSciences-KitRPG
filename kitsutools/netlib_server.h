@@ -19,13 +19,11 @@ namespace klib
 	{
 	public:
 		int32_t					m_id;
-		//CServer*				m_server;
 		SConnectionEndpoint*	m_ClientListener;
 		SConnectionEndpoint*	m_ClientTarget;
 
 		int32_t InitClient(SConnectionEndpoint* listener, SConnectionEndpoint* target, int32_t id)
 		{
-			//m_server			= server;
 			m_ClientListener	= listener;
 			m_ClientTarget		= target;
 			m_id = id;
