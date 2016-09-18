@@ -53,11 +53,11 @@ void ktools::disconnectClient(SNetworkClient& client)
 int ktools::connect(SNetworkClient& instanceClient)
 {
 	// Send connection request
-	char send_buffer[] = "CONNECT\r\n";
+	static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_CONNECT;
 
 	int32_t bytesTransmitted=-1;
-	sendToConnection(instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer);
-	if (bytesTransmitted == -1)
+	sendToConnection(instanceClient.pClient, (const char*)&send_buffer, (int)sizeof(NETLIB_COMMAND), &bytesTransmitted, instanceClient.pServer);
+	if (bytesTransmitted != sizeof(NETLIB_COMMAND))
 	{
 		error_print("Error transmitting data.");
 		disconnectClient(instanceClient);
@@ -66,9 +66,9 @@ int ktools::connect(SNetworkClient& instanceClient)
 
 	// Get response expecting a remote port to connect to.
 	bytesTransmitted=-1;
-	char connect_buffer[MAX_SEND_SIZE] = {};
-	receiveFromConnection(instanceClient.pClient, connect_buffer, sizeof(connect_buffer), &bytesTransmitted, 0);
-	if( bytesTransmitted < 0 )
+	NETLIB_COMMAND connect_buffer = NETLIB_COMMAND_INVALID;
+	receiveFromConnection(instanceClient.pClient, (char*)&connect_buffer, sizeof(NETLIB_COMMAND), &bytesTransmitted, 0);
+	if( connect_buffer != NETLIB_COMMAND_PORT )
 	{
 		error_print("Error receiving data.");
 		disconnectClient(instanceClient);
@@ -76,31 +76,28 @@ int ktools::connect(SNetworkClient& instanceClient)
 	}
 	shutdownConnection(&instanceClient.pServer);
 
-	debug_printf("response: %s", connect_buffer);
+	debug_printf("response: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(connect_buffer).c_str());
+
+	int32_t port_buffer = -1;
+	receiveFromConnection(instanceClient.pClient, (char*)&port_buffer, sizeof(int32_t), &bytesTransmitted, 0);
+	debug_printf("port reported available: %i.", port_buffer);
 
 	// Got an available port to connect to? 
-	if( 0 != strncmp(connect_buffer, "PORT:", 5) )
-	{
-		shutdownConnection(&instanceClient.pClient);
-		return -1;
-	}
-
-	int port = atoi(&connect_buffer[5]);
-	instanceClient.pServer = 0;
-	if(createConnection(instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, port, &instanceClient.pServer))
+	if(createConnection(instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, port_buffer, &instanceClient.pServer))
 	{
 		error_print("Error creating new server connection.");
 		return -1;
 	}
+	debug_print("Connection created.");
 	return 0;
 }
 
 int ktools::serverTime(SNetworkClient& instanceClient, time_t& current_time)
 {
-	static const char send_buffer[] = "GET TIME\r\n";
+	static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_TIME_GET;
 	// send our command
 	int32_t bytesTransmitted=-1;
-	sendToConnection(instanceClient.pClient, send_buffer, (int)strlen(send_buffer) + 1, &bytesTransmitted, instanceClient.pServer);
+	sendToConnection(instanceClient.pClient, (const char*)&send_buffer, (int)sizeof(NETLIB_COMMAND), &bytesTransmitted, instanceClient.pServer);
 	if (bytesTransmitted == -1)
 	{
 		error_print("Error transmitting data.");
@@ -109,15 +106,20 @@ int ktools::serverTime(SNetworkClient& instanceClient, time_t& current_time)
 
 	// Receive answer
 	bytesTransmitted=-1;
-	char receive_buffer[sizeof(time_t)*2] = {};
-	receiveFromConnection(instanceClient.pClient, receive_buffer, sizeof(receive_buffer), &bytesTransmitted, 0);
+	NETLIB_COMMAND receive_buffer = NETLIB_COMMAND_INVALID;
+	receiveFromConnection(instanceClient.pClient, (char*)&receive_buffer, sizeof(receive_buffer), &bytesTransmitted, 0);
 
-	if( bytesTransmitted < 0 )
+	if( bytesTransmitted < 0 || receive_buffer != NETLIB_COMMAND_TIME_SET )
 	{
 		error_print("Error receiving data.");
 		return -1;
 	}
+	
+	debug_printf("response: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(receive_buffer).c_str());
 
-	memcpy(&current_time, receive_buffer, sizeof(time_t));
+	time_t receive_time=0;
+	receiveFromConnection(instanceClient.pClient, (char*)&receive_time, sizeof(receive_time), &bytesTransmitted, 0);
+
+	memcpy(&current_time, &receive_time, sizeof(time_t));
 	return 0;
 }

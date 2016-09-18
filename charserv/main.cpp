@@ -144,64 +144,34 @@ void usage(void)
 
 int32_t executeCommand(ktools::CClient* client, const char* buffer)
 {
+	int port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Received charserv command from %u.%u.%u.%u:%u.", 
+		(int)a1,
+		(int)a2,
+		(int)a3,
+		(int)a4,
+		(int)port_number
+	);
+
 	// Get current time
 	time_t current_time = time(0);
 
-	// Check for time request 
-	if (strcmp(buffer, "GET TIME\r\n") == 0)
-	{
-		// Send data back
-		int32_t sentBytes = 0;
-		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-		else if( sentBytes != (int)sizeof(current_time) )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-		// Display time
-		char timestring[256];
-		ctime_s(timestring, sizeof(char)*256, &current_time);
-		//printf("Current time: %s", timestring);
-		int port_number;			// Port number to use
-		int a1, a2, a3, a4;			// Components of address in xxx.xxx.xxx.xxx form
-		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		timestring[strlen(timestring)-1] = 0;
-		debug_printf("Sent time (%s) to %u.%u.%u.%u:%u.", timestring, 
-			(int)a1,
-			(int)a2,
-			(int)a3,
-			(int)a4,
-			(int)port_number
-		);
-	}
-	else if (strcmp(buffer, "GET PLAYER:") == 0)
+	if (strcmp(buffer, "GET PLAYER\r\n") == 0)
 	{
 		klib::SPlayer player;
+		if(sendUserCommand(client, ktools::USER_COMMAND_RESPONSE, (const char*)&current_time, (int)sizeof(current_time)))
+		{
+			error_printf("Failed to send player data to %u.%u.%u.%u:%u.", 
+				(int)a1,
+				(int)a2,
+				(int)a3,
+				(int)a4,
+				(int)port_number
+			);
+		};
 
-		// Send data back
-		int32_t sentBytes = 0;
-		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-		else if( sentBytes != (int)sizeof(current_time) )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-		// Display time
-		char timestring[256];
-		ctime_s(timestring, sizeof(char)*256, &current_time);
-		//printf("Current time: %s", timestring);
-		
-		int port_number;	
-		int a1, a2, a3, a4;	
-		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
 		debug_printf("Sent player data (%s) to %u.%u.%u.%u:%u.", player.Name.c_str(), 
 			(int)a1,
 			(int)a2,
@@ -212,24 +182,23 @@ int32_t executeCommand(ktools::CClient* client, const char* buffer)
 	}
 	else
 	{
+		// Get current time
 		const char* mypong = "INVALIDMSG\r\n";
-
+			
+		// Send data back
 		int32_t sentBytes = 0, bytesTosEnd = (int32_t)(sizeof(char)*(strlen(mypong)+1));
 
-		if( 0 > sendToConnection( client->m_ClientListener, mypong, bytesTosEnd, &sentBytes, client->m_ClientTarget ) )
+		if(sendUserCommand(client, ktools::USER_COMMAND_RESPONSE, (const char*)&mypong, sentBytes))
 		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-		else if( sentBytes != bytesTosEnd )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
+			error_printf("Failed to send player data to %u.%u.%u.%u:%u.", 
+				(int)a1,
+				(int)a2,
+				(int)a3,
+				(int)a4,
+				(int)port_number
+			);
+		};
 
-		int port_number;
-		int a1, a2, a3, a4;
-		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
 		debug_printf("Sent invalid message response to %u.%u.%u.%u:%u.", 
 			(int)a1,
 			(int)a2,

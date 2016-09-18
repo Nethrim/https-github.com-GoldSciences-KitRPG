@@ -345,25 +345,23 @@ bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 {
 	// send our command
 	int32_t bytesTransmitted=-1;
-	static const god::glabel strPing = "PING\r\n";
-	NETLIB_COMMAND command = NETLIB_COMMAND_PING;
-	god::error_t transmResult = sendToConnection( pClient, strPing.c_str(), (int)strPing.size() + 1, &bytesTransmitted, pServer );
-	if (transmResult < 0 || bytesTransmitted < 0)//strPing.size())
+	static const NETLIB_COMMAND pingCommand = NETLIB_COMMAND_PING;
+	god::error_t transmResult = sendToConnection( pClient, (const char*)&pingCommand, sizeof(NETLIB_COMMAND), &bytesTransmitted, pServer );
+	if (transmResult < 0 || bytesTransmitted != sizeof(NETLIB_COMMAND))//strPing.size())
 	{
-		error_print("Error transmitting data.");
+		error_print("Error pinging server.");
 		return false;
 	}
 
 	// Receive answer
 	bytesTransmitted=-1;
-	char buffer[256] = {};
-	receiveFromConnection( pClient, buffer, sizeof(buffer), &bytesTransmitted, 0 );
-	if( bytesTransmitted < 0 )
+	NETLIB_COMMAND pongCommand = NETLIB_COMMAND_INVALID;
+	receiveFromConnection( pClient, (char*)&pongCommand, sizeof(NETLIB_COMMAND), &bytesTransmitted, 0 );
+	if(pongCommand != NETLIB_COMMAND_PONG)
 	{
-		error_print("Error receiving data.");
+		error_print("Error receiving pong from server.");
 		return false;
 	}
-	debug_printf("response: %s", buffer);		
-
+	debug_printf("Command received: %s", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(pongCommand));		
 	return true;
 }

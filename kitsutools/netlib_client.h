@@ -17,10 +17,10 @@ namespace ktools
 		SConnectionEndpoint* pClient = 0;	// us
 	};
 
-	int32_t initClientConnection(SNetworkClient& instanceClient);
-	int32_t connect(SNetworkClient& instanceClient);
-	void disconnectClient(SNetworkClient& client);
-	int serverTime(SNetworkClient& instanceClient, time_t& current_time);
+	int32_t	initClientConnection	(SNetworkClient& instanceClient);
+	int32_t	connect					(SNetworkClient& instanceClient);
+	void	disconnectClient		(SNetworkClient& client);
+	int		serverTime				(SNetworkClient& instanceClient, time_t& current_time);
 
 } // namespace
 
