@@ -57,6 +57,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GSystem", "..\GODS\GSystem\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kitsutools", "kitsutools\kitsutools.vcxproj", "{B18EB504-48CD-47EC-AB45-570E91A19993}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tactical", "tactical\tactical.vcxproj", "{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B18EB504-48CD-47EC-AB45-570E91A19993} = {B18EB504-48CD-47EC-AB45-570E91A19993}
+		{50BA017C-1C38-4DFD-9BD4-8BC223869A58} = {50BA017C-1C38-4DFD-9BD4-8BC223869A58}
+		{86AFE1C6-A424-4AC4-9246-DB029CC942D5} = {86AFE1C6-A424-4AC4-9246-DB029CC942D5}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -161,6 +168,14 @@ Global
 		{B18EB504-48CD-47EC-AB45-570E91A19993}.Release|x64.Build.0 = Release|x64
 		{B18EB504-48CD-47EC-AB45-570E91A19993}.Release|x86.ActiveCfg = Release|Win32
 		{B18EB504-48CD-47EC-AB45-570E91A19993}.Release|x86.Build.0 = Release|Win32
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Debug|x64.ActiveCfg = Debug|x64
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Debug|x64.Build.0 = Debug|x64
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Debug|x86.Build.0 = Debug|Win32
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Release|x64.ActiveCfg = Release|x64
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Release|x64.Build.0 = Release|x64
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Release|x86.ActiveCfg = Release|Win32
+		{4D38600A-05DD-42C9-9EC5-ADB12140F2A9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

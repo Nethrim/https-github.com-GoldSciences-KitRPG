@@ -76,6 +76,7 @@ namespace klib
 		bool						bTurnBusy			= false;
 		PLAYER_INDEX				CurrentPlayer		= (PLAYER_INDEX)-1;
 		SPlayer						Players[4]			= {};
+		god::CGMutex				PlayerMutex			= {};
 		STacticalInfo				TacticalInfo		= {};
 
 		std::string					StateMessage		= "";
