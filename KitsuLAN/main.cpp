@@ -101,7 +101,7 @@ int runCommunications(klib::SGame& instanceGame)
 	}
 
 	god::error_t result = 0;
-	while(instanceGame.Flags & klib::GAME_FLAGS_RUNNING)
+	while(gbit_true(instanceGame.Flags, klib::GAME_FLAGS_RUNNING))
 	{
 		// Ping before anything else to make sure everything is more or less in order.
 		if(false == ktools::ping(instanceClient.pClient, instanceClient.pServer))
@@ -126,7 +126,7 @@ int runCommunications(klib::SGame& instanceGame)
 		}
 
 		// Disconnect if the game was closed.
-		if( 0 == (instanceGame.Flags & klib::GAME_FLAGS_RUNNING))
+		if(gbit_false(instanceGame.Flags, klib::GAME_FLAGS_RUNNING))
 			break;
 
 		Sleep(100);

@@ -123,7 +123,7 @@ int main(int argc, char **argv)// Thread 1: main
 
 	debug_printf("sizeof(SPlayer): %u", (uint32_t) sizeof(klib::SPlayer));
 
-	while((instanceGame.Flags & klib::GAME_FLAGS_RUNNING) && !bListenFailure)
+	while(gbit_true(instanceGame.Flags, klib::GAME_FLAGS_RUNNING) && !bListenFailure)
 	{
 		instanceGame.ServerTime = time(0);
 		pollInput(instanceGame.FrameInput);
