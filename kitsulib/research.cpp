@@ -30,7 +30,6 @@ void addIfResearchable
 		researchableItems.Modifiers.AddElement(entity.Modifier);
 }
 
-
 // Returns the possible research for a given type of researchable
 template<typename _EntityType, size_t _Size>
 void generateResearchableList(klib::SResearchGroup<_EntityType>& researchableItems, const klib::SEntityContainer<_EntityType, _Size>& playerInventory, const klib::SResearchGroup<_EntityType>& researchCompleted
@@ -100,8 +99,7 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 	SCharacterInventory&		playerInventory		= playerCompany.Inventory;
 	klib::SCharacterResearch&	researchCompleted	= playerCompany.CompletedResearch;
 	
-	klib::SCharacterResearch  researchableItems;
-
+	klib::SCharacterResearch	researchableItems	= {};
 
 #define GET_AVAILABLE_RESEARCH_FOR_ENTITY(EntityToken_, ProgressiveDefinitions_, ProgressiveModifiers_)																\
 		generateResearchableList(researchableItems.EntityToken_, playerInventory.EntityToken_, researchCompleted.EntityToken_										\
@@ -177,13 +175,13 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 		menuItems[researchableCount].ReturnValue.IsModifier		= true;
 		switch(instanceGame.State.Substate)
 		{
-		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].Text	= modifiersAccessory		[researchableItems.Accessory	.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_STAGEPROP	:	menuItems[researchableCount].Text	= modifiersStageProp		[researchableItems.StageProp	.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_FACILITY		:	menuItems[researchableCount].Text	= modifiersFacility			[researchableItems.Facility		.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_VEHICLE		:	menuItems[researchableCount].Text	= modifiersVehicle			[researchableItems.Vehicle		.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_PROFESSION	:	menuItems[researchableCount].Text	= modifiersProfession		[researchableItems.Profession	.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_WEAPON		:	menuItems[researchableCount].Text	= modifiersWeapon			[researchableItems.Weapon		.Modifiers.Slots[i].Entity	].Name; break;
-		case GAME_SUBSTATE_ARMOR		:	menuItems[researchableCount].Text	= modifiersArmor			[researchableItems.Armor		.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_ACCESSORY	:	menuItems[researchableCount].Text	= modifiersAccessory	[researchableItems.Accessory	.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_STAGEPROP	:	menuItems[researchableCount].Text	= modifiersStageProp	[researchableItems.StageProp	.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_FACILITY		:	menuItems[researchableCount].Text	= modifiersFacility		[researchableItems.Facility		.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_VEHICLE		:	menuItems[researchableCount].Text	= modifiersVehicle		[researchableItems.Vehicle		.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_PROFESSION	:	menuItems[researchableCount].Text	= modifiersProfession	[researchableItems.Profession	.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_WEAPON		:	menuItems[researchableCount].Text	= modifiersWeapon		[researchableItems.Weapon		.Modifiers.Slots[i].Entity	].Name; break;
+		case GAME_SUBSTATE_ARMOR		:	menuItems[researchableCount].Text	= modifiersArmor		[researchableItems.Armor		.Modifiers.Slots[i].Entity	].Name; break;
 		default:
 			break;
 		}

@@ -137,6 +137,7 @@ int main(int argc, char **argv)// Thread 1: main
 	debug_printf("sizeof(SPlayerServer): %u"						, (uint32_t) sizeof(klib::SPlayerServer)								);
 	debug_printf("sizeof(SUserCredentials): %u"						, (uint32_t) sizeof(klib::SUserCredentials)								);
 	debug_printf("sizeof(SUserMetadata): %u"						, (uint32_t) sizeof(klib::SUserMetadata)								);
+	debug_printf("sizeof(SGame): %u"								, (uint32_t) sizeof(klib::SGame)										);
 
 	while(gbit_true(instanceGame.Flags, klib::GAME_FLAGS_RUNNING) && !bListenFailure)
 	{

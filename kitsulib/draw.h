@@ -79,13 +79,9 @@ namespace klib
 
 		uint32_t firstRow	= bReverse ? 0 : displayDepth - 1;
 		uint32_t lastRow	= bReverse ? displayDepth - 1 : 0;
-		uint32_t seed		= (uint32_t)(disturbance+lastTimeSeconds*100000*(1+(rand()%100)));
+		uint64_t seed		= (uint64_t)(disturbance+lastTimeSeconds*100000*(1+(rand()%100)));
 		uint32_t randBase	= (uint32_t)(lastTimeSeconds*(disturbance+654)*100000			);
 		for(int32_t x=0; x<displayWidth; ++x) 
-			//if(	display.Screen[displayDepth-1][x] != '.' 
-			// && display.Screen[displayDepth-1][x] != '|' 
-			// && display.Screen[displayDepth-1][x] != ','
-			//) 
 			if(display.DisplayWeights.Cells[firstRow][x] == 0)
 			{
 				if( 0 == (rand()%4) )
@@ -97,6 +93,7 @@ namespace klib
 					display.TextAttributes	.Cells[firstRow][x] = bReverse ? ((ktools::noise1D(randBase+321+x, seed+91423) > 0.0)?COLOR_CYAN:COLOR_BLUE) :  (ktools::noise1D(randBase+32+x, seed<<1) > 0.0) ? COLOR_RED : (ktools::noise1D(randBase+987429654+x, seed+98234) > 0.0) ? COLOR_ORANGE : COLOR_DARKYELLOW;
 				}
 			}
+
 		for(uint32_t z = 0, maxZ = display.Depth; z < maxZ; z ++) 
 			for(uint32_t x=0; x<display.Width; ++x) 
 			{
@@ -126,48 +123,37 @@ namespace klib
 				if(display.DisplayWeights.Cells[z][x] > 1.0) 
 				{
 					int randX = ((ktools::noise1D(randBase+x+z*display.Width), seed+544) > 0.0) ? rand()%(1+disturbance*2)-disturbance : 0;
-					//if(lastRow == z)
-					//{
-					//	display.Screen			.Cells[lastRow][x]	= ' ';
-					//	display.DisplayWeights	.Cells[lastRow][x]	= 0;
-					//	display.Speed			.Cells[lastRow][x]	= 0; 
-					//	display.SpeedTarget		.Cells[lastRow][x]	= 0;
-					//	//display.TextAttributes	.Cells[lastRow][x]	= COLOR_WHITE;
-					//}
-					//else
-					//{
-						int32_t xpos = std::min(std::max(0, (int)x+randX), displayWidth-1);
-						int32_t zpos = bReverse ? z+1 : z-1;
+					int32_t xpos = std::min(std::max(0, (int)x+randX), displayWidth-1);
+					int32_t zpos = bReverse ? z+1 : z-1;
 	
-						if((rand()%disappearChanceDivisor) == 0) {
-							display.Screen			.Cells[zpos][xpos] = ' ';
-							display.DisplayWeights	.Cells[zpos][xpos] = 0;
-							//display.TextAttributes	.Cells[zpos][xpos] = 1;
+					if((rand()%disappearChanceDivisor) == 0) 
+					{
+						display.Screen			.Cells[zpos][xpos] = ' ';
+						display.DisplayWeights	.Cells[zpos][xpos] = 0;
+					}
+					else 
+					{ 
+						if(('|' == display.Screen	.Cells[z][x]) && z < (display.Depth/5*4)) {
+							display.Screen			.Cells[zpos][xpos] = '.';
+							display.TextAttributes	.Cells[zpos][xpos] = ((bReverse) || (ktools::noiseNormal(x, seed<<2) < 0.0)) ? COLOR_GRAY : COLOR_YELLOW; 
 						}
-						else 
-						{ 
-							if(('|' == display.Screen	.Cells[z][x]) && z < (display.Depth/5*4)) {
-								display.Screen			.Cells[zpos][xpos] = '.';
-								display.TextAttributes	.Cells[zpos][xpos] = ((bReverse) || (ktools::noiseNormal(x, seed<<2) < 0.0)) ? COLOR_GRAY : COLOR_YELLOW; 
-							}
-							else if( bReverse && z > (display.Depth/5)) {
-								display.Screen			.Cells[zpos][xpos] = '|';
-								display.TextAttributes	.Cells[zpos][xpos] = COLOR_CYAN;
-							}
-							else {
-								display.Screen			.Cells[zpos][xpos]	= display.Screen.Cells[z][x];
-								display.TextAttributes	.Cells[zpos][xpos]	= display.TextAttributes.Cells[z][x];
-							}
+						else if( bReverse && z > (display.Depth/5)) {
+							display.Screen			.Cells[zpos][xpos] = '|';
+							display.TextAttributes	.Cells[zpos][xpos] = COLOR_CYAN;
+						}
+						else {
+							display.Screen			.Cells[zpos][xpos]	= display.Screen.Cells[z][x];
+							display.TextAttributes	.Cells[zpos][xpos]	= display.TextAttributes.Cells[z][x];
+						}
 
 
-							display.DisplayWeights	.Cells[zpos][xpos]	= 0.00001f;
-							display.Speed			.Cells[zpos][xpos]	= display.Speed.Cells[z][x];
-							display.SpeedTarget		.Cells[zpos][xpos]	= (float)ktools::noiseNormal(x, seed)*50.0f;
-							if(bDontSlowdown)
-								display.SpeedTarget	.Cells[zpos][xpos]	*= ((bReverse ? display.Depth-z : z )*2/(float)display.Depth);
-							display.SpeedTarget		.Cells[zpos][xpos]	+= 0.001f;
-						}
-					//}
+						display.DisplayWeights	.Cells[zpos][xpos]	= 0.00001f;
+						display.Speed			.Cells[zpos][xpos]	= display.Speed.Cells[z][x];
+						display.SpeedTarget		.Cells[zpos][xpos]	= (float)ktools::noiseNormal(x, seed)*50.0f;
+						if(bDontSlowdown)
+							display.SpeedTarget	.Cells[zpos][xpos]	*= ((bReverse ? display.Depth-z : z )*2/(float)display.Depth);
+						display.SpeedTarget		.Cells[zpos][xpos]	+= 0.001f;
+					}
 
 					display.Screen				.Cells[z][x]	= ' ';
 					display.DisplayWeights		.Cells[z][x]	= 0;
@@ -184,7 +170,7 @@ namespace klib
 		int32_t displayWidth	= (int32_t)display.Width;
 		int32_t displayDepth	= (int32_t)display.Depth;
 
-		uint32_t seed		= (uint32_t)(disturbance+lastTimeSeconds*100000*(1+(rand()%100)));
+		uint64_t seed		= (uint64_t)(disturbance+lastTimeSeconds*100000*(1+(rand()%100)));
 		uint32_t randBase	= (uint32_t)(lastTimeSeconds*(disturbance+654)*100000			);
 		for(int32_t x=0; x<displayWidth; ++x) 
 			//if(display.DisplayWeights[displayDepth-1][x] == 0) 

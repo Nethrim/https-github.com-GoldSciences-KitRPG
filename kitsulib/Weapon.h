@@ -52,7 +52,6 @@ static const CRecordWeapon modifiersWeapon[] =
 ,	{{{0,0,0},{0,4,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{{},{}									, {ENTITY_TECHNOLOGY_BASIC				}},	"Wizard's %s"			}
 ,	{{{0,0,0},{0,0,0}	,{0,0,{0,0,0},0,{0,0,0}},0,400,6}	,{VAMPIRE_FLAGS																	},	"Vampire's %s"			}
 //												   100,1
-,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}			, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Intercontinental %s"	}
 ,	{{{0,0,0},{0,0,0}	,{4,3,{0,0,0},0,{0,0,0}},0,700,1},{	{},{	COMBAT_STATUS_BURN	}			, {ENTITY_TECHNOLOGY_DIGITAL			}},	"Satellite %s"			}
 };
 

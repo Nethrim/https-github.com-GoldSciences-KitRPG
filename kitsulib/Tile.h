@@ -1,6 +1,7 @@
 #include "misc.h"
 #include "text.h"
 #include "noise.h"
+#include "CharacterTile.h"
 
 #ifndef __TILE_H__973098721983761298736129873691872361__
 #define __TILE_H__973098721983761298736129873691872361__
@@ -8,12 +9,6 @@
 namespace klib
 {
 #pragma pack(push, 1)
-	struct SCharacterTile {
-		int8_t		PlayerIndex	;
-		int8_t		SquadIndex	;
-		int8_t		AgentIndex	;
-	};
-
 	struct STopologyHeight {
 		int8_t		Smooth	;
 		int8_t		Sharp	;

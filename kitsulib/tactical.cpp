@@ -445,9 +445,9 @@ void generateTopology
 					terrainDepth = terrainTopology.Depth;
 
 	//fillCellsFromNoise(terrainTopology, {2,0},	(int32_t)seed+0, {0, 0}, 50);
-	fillCellsFromNoise(terrainTopology, {0,1},	(int32_t)time(0), {0, 0}, 50);
-	fillCellsFromNoise(terrainTopology, {0,2},	(int32_t)time(0)<<8, {0, 0}, 50);
-	fillCellsFromNoise(terrainTopology, {0,3},	(int32_t)time(0)<<16, {0, 0}, 50);
+	fillCellsFromNoise(terrainTopology, {0,1},	(int32_t)(time(0)		), {0, 0}, 50);
+	fillCellsFromNoise(terrainTopology, {0,2},	(int32_t)(time(0)<<8	), {0, 0}, 50);
+	fillCellsFromNoise(terrainTopology, {0,3},	(int32_t)(time(0)<<16	), {0, 0}, 50);
 	
 	int8_t*				cellsCollision	= &terrainCollision	.Cells[0][0];
 	STopologyHeight*	cellsHeight		= &terrainTopology	.Cells[0][0];

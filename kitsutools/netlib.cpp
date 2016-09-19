@@ -60,7 +60,7 @@ int32_t ktools::createConnection( unsigned short port_number, ktools::SConnectio
 
 int32_t ktools::createConnectionByHostName( char* host_name, unsigned short port_number, SConnectionEndpoint** out_clientInfo ) 
 {
-	int b1, b2, b3, b4;							/* Client address components in xxx.xxx.xxx.xxx form */
+	int b1=0, b2=0, b3=0, b4=0;							/* Client address components in xxx.xxx.xxx.xxx form */
 
 #if defined( _WIN32) || defined(WIN32)
 	sockaddr binaryAddress = {AF_UNSPEC,};

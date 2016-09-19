@@ -73,6 +73,9 @@ void klib::initGame(SGame& instanceGame)
 
 	player	.Army.push_back(klib::enemyDefinitions[1+rand()%(ktools::size(klib::enemyDefinitions)-1)]);
 	enemy	.Army.push_back(klib::enemyDefinitions[1+rand()%(ktools::size(klib::enemyDefinitions)-1)]);
+
+	instanceGame.Antagonisms[PLAYER_USER ]	= PLAYER_ANTAGONISM_USER	;
+	instanceGame.Antagonisms[PLAYER_ENEMY]	= PLAYER_ANTAGONISM_ENEMY	;
 	
 	klib::CCharacter& adventurer		= player.Army[0];
 	adventurer.CurrentEquip.Weapon		= {25, (int16_t)(rand()%ktools::size(klib::modifiersWeapon		)), 20};

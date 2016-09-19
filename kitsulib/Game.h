@@ -59,12 +59,17 @@ namespace klib
 	typedef SWeightedDisplay<STacticalBoard::Width, STacticalBoard::Depth>				SPostEffectDisplay	;
 	typedef SGrid<char, SGlobalDisplay::Width, SGlobalDisplay::Depth>					SMenuDisplay		;
 
-	enum PLAYER_INDEX
+	enum PLAYER_INDEX	: uint8_t
 	{
-		PLAYER_USER		,
-		PLAYER_ENEMY	,
-		PLAYER_NEUTRAL	,
-		PLAYER_ALLY		,
+		PLAYER_USER		= 0,
+		PLAYER_ENEMY	= 1,
+		PLAYER_NEUTRAL	= 2,
+		PLAYER_ALLY		= 3,
+
+		PLAYER_REMOTE_0	= 4,
+		PLAYER_REMOTE_1	= 5,
+		PLAYER_REMOTE_2	= 6,
+		PLAYER_REMOTE_3	= 7,
 	}; 
 
 	GDEFINE_ENUM_TYPE(GAME_FLAGS, uint8_t);
@@ -75,36 +80,53 @@ namespace klib
 	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x10, TACTICAL			);
 	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x20, TURN_BUSY			);
 
+	//
+	struct SFrameInfo
+	{
+		ktools::SInput	Input	= {};
+		ktools::STimer	Timer	= {};
+	};
+
+	//
 	struct SGame
 	{
+		// Game Flags tell us about the current state of the game.
 		GAME_FLAGS					Flags				= (GAME_FLAGS)(GAME_FLAGS_NETWORK_ENABLED | GAME_FLAGS_TURN_BUSY);
 
 		SGameState					State				= {GAME_STATE_MENU_MAIN,};
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
-		PLAYER_INDEX				CurrentPlayer		= (PLAYER_INDEX)-1;
-		SPlayer						Players[4]			= {};
-		god::CGMutex				PlayerMutex			= {};
-		STacticalInfo				TacticalInfo		= {};
-
-		std::string					StateMessage		= "";
-		std::string					UserMessage			= "";
-		std::string					UserError			= "";
-
-		god::CGMutex				ServerTimeMutex		= {};
 		uint64_t					ServerTime			= 0;
+
+		PLAYER_INDEX				CurrentPlayer		= (PLAYER_INDEX)-1;
+		SPlayer						Players[8]			= {};
+		PLAYER_ANTAGONISM			Antagonisms[8]		= {PLAYER_ANTAGONISM_USER, PLAYER_ANTAGONISM_ENEMY, PLAYER_ANTAGONISM_NEUTRAL, PLAYER_ANTAGONISM_ALLY, 
+			PLAYER_ANTAGONISM_ENEMY, PLAYER_ANTAGONISM_ENEMY, PLAYER_ANTAGONISM_ENEMY, PLAYER_ANTAGONISM_ENEMY};
 
 		ktools::SInput				FrameInput			= {};
 		ktools::STimer				FrameTimer			= {};
 
-		char						SlowMessage[256]	= {'_',};
-
 		int64_t						Seed				= 0;
 
+		// Tactical board.
+		STacticalInfo				TacticalInfo		= {};
+
+		// Displays.
 		STacticalDisplay			TacticalDisplay		= {};
 		SPostEffectDisplay			PostEffectDisplay	= {};
 		SGlobalDisplay				GlobalDisplay		= {};
 		SMenuDisplay				MenuDisplay			= {};
+
+		// Feedback messages.
+		std::string					StateMessage		= "";
+		std::string					UserMessage			= "";
+		std::string					UserError			= "";
+
+		// For the special effect
+		char						SlowMessage[256]	= {'_',};
+
+		god::CGMutex				PlayerMutex			= {};
+		god::CGMutex				ServerTimeMutex		= {};
 
 		void ClearDisplays()
 		{

@@ -173,6 +173,7 @@
     <ClInclude Include="Agent_helper.h" />
     <ClInclude Include="Armor.h" />
     <ClInclude Include="CharacterPoints.h" />
+    <ClInclude Include="CharacterTile.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="CombatPoints.h" />
     <ClInclude Include="CombatStatus.h" />

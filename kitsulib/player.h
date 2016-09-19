@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "CharacterTile.h"
 #include "genum.h"
 
 #ifndef __PLAYER_H__98213640926348273649827364987234698234__
@@ -6,13 +7,22 @@
 
 namespace klib
 {
+	enum PLAYER_ANTAGONISM	: uint8_t
+	{
+		PLAYER_ANTAGONISM_USER		= 0,
+		PLAYER_ANTAGONISM_ENEMY		= 1,
+		PLAYER_ANTAGONISM_NEUTRAL	= 2,
+		PLAYER_ANTAGONISM_ALLY		= 3,
+	};
+
 	// Squads should be indices to the army
-	struct SSquad {
+	struct SSquad 
+	{
 #define MAX_AGENT_SLOTS 12
 		static const int32_t		Size = MAX_AGENT_SLOTS;
 
 		int16_t						Agents			[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
-		int16_t						TargetAgents	[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
+		SCharacterTile				TargetAgents	[MAX_AGENT_SLOTS] = {-1, -1, -1, -1, -1, -1, -1, -1};
 		SCellCoord					TargetPositions	[MAX_AGENT_SLOTS] = {};
 		int32_t						MovesLeft		[MAX_AGENT_SLOTS] = {};
 	
@@ -24,6 +34,7 @@ namespace klib
 		};
 	};
 
+#pragma pack(push, 1)
 	struct SPlayerSelection	// can be AI or human.
 	{
 		int16_t						PlayerSquad	;
@@ -31,6 +42,7 @@ namespace klib
 		int16_t						TargetSquad	;
 		int16_t						TargetUnit	;
 	};
+#pragma pack(pop)
 
 	GDEFINE_ENUM_TYPE(PLAYER_PROPERTY, uint8_t);	// I added these so network messages can talk about the player members
 	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 1, MONEY				);

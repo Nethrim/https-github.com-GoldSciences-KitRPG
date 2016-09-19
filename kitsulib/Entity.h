@@ -1,5 +1,6 @@
 #include "Misc.h"
 #include "EntityPoints.h"
+#include "glabel.h"
 
 #ifndef __ENTITY_H__38924092634721346098170219783096__
 #define __ENTITY_H__38924092634721346098170219783096__
@@ -108,9 +109,9 @@ namespace klib
 	template<typename _EntityType>
 	struct SEntityRecord 
 	{
-		SEntityPoints	Points	;
-		SEntityFlags	Flags	;
-		std::string		Name	;
+		SEntityPoints	Points		;
+		SEntityFlags	Flags		;
+		::god::glabel		Name	;
 
 		SEntityRecord(SEntityPoints	points	
 					 ,SEntityFlags	flags	
