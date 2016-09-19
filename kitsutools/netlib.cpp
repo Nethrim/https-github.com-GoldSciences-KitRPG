@@ -353,6 +353,17 @@ bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 		return false;
 	}
 
+	int port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( pServer, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Sent ping command to %u.%u.%u.%u:%u.", 
+		(int)a1,
+		(int)a2,
+		(int)a3,
+		(int)a4,
+		(int)port_number
+	);
+
 	// Receive answer
 	bytesTransmitted=-1;
 	NETLIB_COMMAND pongCommand = NETLIB_COMMAND_INVALID;
@@ -362,6 +373,15 @@ bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 		error_print("Error receiving pong from server.");
 		return false;
 	}
+
+	debug_printf("Received pong command from %u.%u.%u.%u:%u.", 
+		(int)a1,
+		(int)a2,
+		(int)a3,
+		(int)a4,
+		(int)port_number
+	);
+
 	debug_printf("Command received: %s", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(pongCommand).c_str());		
 	return true;
 }

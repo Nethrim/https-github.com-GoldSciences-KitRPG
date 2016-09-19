@@ -123,13 +123,14 @@ int runCommunications(klib::SGame& instanceGame)
 		{	// here we update the game instance with the data received from the server.
 			god::CGLock thelock(instanceGame.ServerTimeMutex);
 			instanceGame.ServerTime = current_time;
+			debug_printf("Client instance updated successfully.");
 		}
 
 		// Disconnect if the game was closed.
 		if(gbit_false(instanceGame.Flags, klib::GAME_FLAGS_RUNNING))
 			break;
 
-		Sleep(100);
+		Sleep(1000);
 	}
 
 	ktools::requestDisconnect(instanceClient);

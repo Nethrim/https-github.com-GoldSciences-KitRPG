@@ -141,6 +141,36 @@ void disconnectClient(CClient* client)
 	shutdownConnection(&client->m_ClientTarget);
 }
 
+int32_t sendSystemCommand(CClient* pClient, const NETLIB_COMMAND& commandToSend)
+{
+	// Pong client
+	int32_t sentBytes = 0;
+
+	if( 0 > sendToConnection(pClient->m_ClientListener, (const char*)&commandToSend, sizeof(NETLIB_COMMAND), &sentBytes, pClient->m_ClientTarget)
+	 ||	sentBytes != sizeof(NETLIB_COMMAND) 
+	)
+	{
+		error_printf("Error sending system command to remote client. Command: %s"
+			, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandToSend).c_str()
+		);
+		return -1;
+	}
+
+	//
+	int port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( pClient->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Sent sytem command to %u.%u.%u.%u:%u: %s."
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+		, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandToSend).c_str()
+		);
+	return 0;
+}
+
 int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 {
 	if (command == NETLIB_COMMAND_DISCONNECT)
@@ -150,57 +180,18 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 	else if (command == NETLIB_COMMAND_PING)
 	{
 		// Pong client
-		static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_PONG;
-		int32_t sentBytes = 0;
-
-		if( 0 > sendToConnection( client->m_ClientListener, (const char*)&send_buffer, sizeof(NETLIB_COMMAND), &sentBytes, client->m_ClientTarget ) ) 
-		{
-			return -1;
-		}
-		if( sentBytes != sizeof(NETLIB_COMMAND) )
-		{
-			error_print("Error sending datagram.");
-			return -1;
-		}
-
-		//
-		int port_number;	
-		int a1, a2, a3, a4;	
-		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		debug_printf("Sent %s to %u.%u.%u.%u:%u."
-			, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str()
-			, (int)a1
-			, (int)a2
-			, (int)a3
-			, (int)a4
-			, (int)port_number
-			);
+		sendSystemCommand(client, NETLIB_COMMAND_PONG);
 	}
 	else if (command == NETLIB_COMMAND_TIME_GET)
 	{
-		static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_TIME_SET;
-		int32_t sentBytes = 0;
-
-		if( 0 > sendToConnection( client->m_ClientListener, (const char*)&send_buffer, sizeof(NETLIB_COMMAND), &sentBytes, client->m_ClientTarget ) ) 
-		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
-			return -1;
-		}
-		if( sentBytes != sizeof(NETLIB_COMMAND) )
-		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
-			return -1;
-		}
+		sendSystemCommand(client, NETLIB_COMMAND_TIME_SET);
 
 		time_t current_time = time(0);
-		sentBytes = 0;
+		int32_t sentBytes = 0;
 		// Send data back
-		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) )
-		{
-			error_print("Failed to send time to client.");
-			return -1;
-		}
-		else if( sentBytes != (int)sizeof(current_time) )
+		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) 
+		 || sentBytes != (int)sizeof(current_time) 
+		)
 		{
 			error_print("Failed to send time to client.");
 			return -1;
@@ -228,81 +219,79 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 	}
 	else
 	{
-		static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_INVALID;
-		int32_t sentBytes = 0, bytesToSend = (int32_t)sizeof(send_buffer);
-
-		if( 0 > sendToConnection( client->m_ClientListener, (const char*)&send_buffer, bytesToSend, &sentBytes, client->m_ClientTarget ) ) 
-		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
-			return -1;
-		}
-		if( sentBytes != bytesToSend )
-		{
-			error_printf("Failed to send command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(send_buffer).c_str());
-			return -1;
-		}
-
-		int port_number;
-		int a1, a2, a3, a4;
-		getAddress( client->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		debug_printf("Sent invalid message response to %u.%u.%u.%u:%u.", 
-			(int)a1,
-			(int)a2,
-			(int)a3,
-			(int)a4,
-			(int)port_number
-		);
+		sendSystemCommand(client, NETLIB_COMMAND_INVALID);
 	}
 	
 	return 0;
 }
 
+int32_t receiveSystemCommand(CClient* pClient, NETLIB_COMMAND& commandReceived)
+{
+	int port_number;	// Port number to use
+	int a1, a2, a3, a4;	// Components of address in xxx.xxx.xxx.xxx form 
+
+	// Receive bytes from client
+	if( 0 == pClient->m_ClientListener )
+	{
+		error_printf("Client listener was terminated for client with id: %u.", pClient->m_id);
+		return -1;
+	}
+
+	int32_t bytes_received=0;	
+	commandReceived = NETLIB_COMMAND_INVALID;
+	if( 0 > receiveFromConnection( pClient->m_ClientListener, (char*)&commandReceived, sizeof(NETLIB_COMMAND), &bytes_received, 0 ) )
+	{
+		error_print("Error receiving system command.");
+		return -1;
+	}
+	if (bytes_received < 0)
+	{
+		error_print("Error receiving system command.");
+		return -1;
+	}
+
+	if( 0 == pClient->m_ClientTarget )
+	{
+		error_printf("Client target with id %u was null.", pClient->m_id);
+		return -1;
+	}
+
+	getAddress( pClient->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Received sytem command from %u.%u.%u.%u:%u: %s."
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+		, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandReceived).c_str()
+	);
+
+	return 0;
+}
+
 void clientProc( void *pvClient )
 {
-	int port_number;			// Port number to use
-	int a1, a2, a3, a4;			// Components of address in xxx.xxx.xxx.xxx form 
 	CClient* pClient = (CClient*)pvClient;
 	char	connID = pClient->m_id;
 
 	do
 	{
 		// Receive bytes from client
-		if( 0 == pClient->m_ClientListener )
-		{
-			error_printf("Client listener was terminated, exiting thread %u...", pClient->m_id);
-			break;
-		}
-
 		int32_t bytes_received=0;	
 		NETLIB_COMMAND command = NETLIB_COMMAND_INVALID;
-		receiveFromConnection( pClient->m_ClientListener, (char*)&command, sizeof(NETLIB_COMMAND), &bytes_received, 0 );
-		if (bytes_received < 0)
+		if( 0 > receiveSystemCommand(pClient, command) )
 		{
-			error_print("Could not receive datagram.");
+			error_print("Failed to receive command from client.");
 			break;
 		}
 
-		if( 0 == pClient->m_ClientTarget )
-		{
-			error_printf("Client target was null. Exiting thread %u...", pClient->m_id);
-			break;
-		}
-
-		getAddress( pClient->m_ClientTarget, &a1, &a2, &a3, &a4, &port_number );
-		debug_printf("Received %u bytes from %u.%u.%u.%u:%u.", bytes_received, 
-			(int)a1,
-			(int)a2,
-			(int)a3,
-			(int)a4,
-			(int)port_number
-		);
-
-		if( processCommandInternal( pClient, command ) )
+		if( 0 > processCommandInternal( pClient, command ) )
 		{
 			error_printf("processCommandInternal failed for command: '%s' (0x%x)(%u).", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(command).c_str(), (uint32_t)command, (uint32_t)command);
+			break;
 		};
     }
-    // Repeat while RunMutex is still taken. 
+    // Repeat 
     while ( true );
 }
 
@@ -334,8 +323,8 @@ int32_t CServer::Accept( void )
 	}
 	getAddress( newClientListener, &a1, &a2, &a3, &a4, &local_port_number );
 	
+	GPtrObj(CClient) newClient;
 	{
-		GPtrObj(CClient) newClient;
 		bool bFound = false, bFoundEmpty = false;
 		uint32_t indexFound = -1;
 		for(uint32_t i=0; i<ClientConnections.size(); ++i)
@@ -367,20 +356,13 @@ int32_t CServer::Accept( void )
 	}
 
 	// Build listening port message
-	NETLIB_COMMAND portCommand = NETLIB_COMMAND_PORT;
-			
-	// Send data back
-	int32_t sentBytes = 0;
-
-	if( 0 > sendToConnection( newClientListener, (const char*)&portCommand, sizeof(NETLIB_COMMAND), &sentBytes, targetConn ) ) //client ) )
-		return -1;
-	
-	if( sentBytes != sizeof(NETLIB_COMMAND) )
+	if( 0 > sendSystemCommand(newClient.get_address(), NETLIB_COMMAND_PORT) )
 	{
 		error_print("Failed to send port command to client.");
 		return -1;
 	}
 
+	int32_t sentBytes = 0;
 	local_port_number = htons(local_port_number);
 	if( 0 > sendToConnection( newClientListener, (const char*)&local_port_number, sizeof(int32_t), &sentBytes, targetConn ) ) //client ) )
 		return -1;
