@@ -99,16 +99,18 @@ void klib::drawAndPresentGame( SGame& instanceGame )
 	actualOffsetX = lineToScreen(bbHeight-4, 1, ktools::LEFT, "Mouse: %i, %i.", instanceGame.FrameInput.MouseX, instanceGame.FrameInput.MouseY);	ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-4, actualOffsetX, ktools::LEFT, &(color = COLOR_DARKGREEN	), 1, 20);
 	actualOffsetX = lineToScreen(bbHeight-3, 1, ktools::LEFT, "Frame time: %.5f seconds.", instanceGame.FrameTimer.LastTimeSeconds);				ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, ktools::LEFT, &(color = COLOR_GREEN		), 1, 32);
 	actualOffsetX = lineToScreen(bbHeight-2, 1, ktools::LEFT, "Frames last second: %f.", instanceGame.FrameTimer.FramesLastSecond);					ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, ktools::LEFT, &(color = COLOR_CYAN			), 1, 32);
+	time_t curTimeWithUnreliableSize = 0;
 	{
 		god::CGLock thelock(instanceGame.ServerTimeMutex);
-		char send_buffer[128] = {};
-		ctime_s(send_buffer, sizeof(send_buffer), &instanceGame.ServerTime);
-		std::string serverTime = std::string("Server time: ") + send_buffer;
-		serverTime = serverTime.substr(0, serverTime .size()-2);
-		actualOffsetX = lineToScreen(bbHeight-3, 1, ktools::RIGHT, "%s.", serverTime.c_str());	
-		ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, ktools::LEFT, &(color = COLOR_CYAN), 1, (int32_t)serverTime .size());
+		curTimeWithUnreliableSize = instanceGame.ServerTime;
 	}
-
+	
+	char send_buffer[128] = {};
+	ctime_s(send_buffer, sizeof(send_buffer), &curTimeWithUnreliableSize);
+	std::string serverTime = std::string("Server time: ") + send_buffer;
+	serverTime = serverTime.substr(0, serverTime .size()-2);
+	actualOffsetX = lineToScreen(bbHeight-3, 1, ktools::RIGHT, "%s.", serverTime.c_str());	
+	ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-3, actualOffsetX, ktools::LEFT, &(color = COLOR_CYAN), 1, (int32_t)serverTime .size());
 	actualOffsetX = lineToScreen(bbHeight-2, 1, ktools::RIGHT, "%s.", instanceGame.StateMessage.c_str()); ktools::valueToRect(ktools::getASCIIColorBackBuffer(), bbWidth, bbHeight, bbHeight-2, actualOffsetX, ktools::LEFT, &(color = COLOR_DARKYELLOW	), 1, (int32_t)instanceGame.StateMessage.size());
 
 	// Print user error messages and draw cursor.

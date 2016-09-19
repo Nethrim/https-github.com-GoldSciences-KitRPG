@@ -112,7 +112,7 @@ int runCommunications(klib::SGame& instanceGame)
 		}
 
 		// get server time
-		time_t current_time;
+		uint64_t current_time;
 		if(0 > ktools::serverTime(instanceClient, current_time) )
 		{
 			error_print("Failed to get server time.");

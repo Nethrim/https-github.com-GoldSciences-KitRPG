@@ -92,7 +92,7 @@ namespace klib
 		std::string					UserError			= "";
 
 		god::CGMutex				ServerTimeMutex		= {};
-		time_t						ServerTime			= 0;
+		uint64_t					ServerTime			= 0;
 
 		ktools::SInput				FrameInput			= {};
 		ktools::STimer				FrameTimer			= {};

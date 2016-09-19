@@ -28,6 +28,10 @@ namespace ktools
 		SOCKET sd					= 0;								/* The socket descriptor */
 		struct sockaddr_in sockaddr = {};			/* Information about the client */
 	};
+
+	int32_t sendSystemCommand(SConnectionEndpoint* pOrigin, SConnectionEndpoint* pTarget, const NETLIB_COMMAND& commandToSend);
+	int32_t receiveSystemCommand(SConnectionEndpoint* pLocal, SConnectionEndpoint* pRemote, NETLIB_COMMAND& commandReceived);
+
 } // namespace
 
 #endif // __NETLIB_PRIVATE_H__92364982734698273469823462384238__

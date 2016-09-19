@@ -55,7 +55,7 @@ namespace klib
 		GLstNCO(klib, SPlayer)			Players		= {};
 		GLstPOD(klib, SUserMetadata)	Metadata	= {};
 		std::vector<std::string>		Log			= {};
-		time_t							Time		= 0;
+		uint64_t						Time		= 0;
 	};
 }
 

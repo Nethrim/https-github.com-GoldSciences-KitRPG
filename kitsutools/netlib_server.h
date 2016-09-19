@@ -52,11 +52,7 @@ namespace ktools
 		god::CGMutex						ConnectionsMutex;
 	};
 
-	enum USER_COMMAND
-	{	USER_COMMAND_REQUEST
-	,	USER_COMMAND_RESPONSE
-	};
-	int32_t sendUserCommand(CClient* pClient, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize);
+
 };
 
 // Define this function for processing your commands.

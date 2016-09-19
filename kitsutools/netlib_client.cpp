@@ -105,34 +105,29 @@ int ktools::connect(SNetworkClient& instanceClient)
 	return 0;
 }
 
-int ktools::serverTime(SNetworkClient& instanceClient, time_t& current_time)
+int ktools::serverTime(SNetworkClient& instanceClient, uint64_t& current_time)
 {
-	static const NETLIB_COMMAND send_buffer = NETLIB_COMMAND_TIME_GET;
 	// send our command
-	int32_t bytesTransmitted=-1;
-	sendToConnection(instanceClient.pClient, (const char*)&send_buffer, (int)sizeof(NETLIB_COMMAND), &bytesTransmitted, instanceClient.pServer);
-	if (bytesTransmitted == -1)
+	if(0 > sendSystemCommand(instanceClient.pClient, instanceClient.pServer, NETLIB_COMMAND_TIME_GET))
 	{
 		error_print("Error transmitting data.");
 		return -1;
 	}
 
 	// Receive answer
-	bytesTransmitted=-1;
-	NETLIB_COMMAND receive_buffer = NETLIB_COMMAND_INVALID;
-	receiveFromConnection(instanceClient.pClient, (char*)&receive_buffer, sizeof(receive_buffer), &bytesTransmitted, 0);
-
-	if( bytesTransmitted < 0 || receive_buffer != NETLIB_COMMAND_TIME_SET )
+	NETLIB_COMMAND commandTimeSet = NETLIB_COMMAND_INVALID;
+	if(0 > receiveSystemCommand(instanceClient.pClient, instanceClient.pServer, commandTimeSet))
 	{
-		error_print("Error receiving data.");
+		error_print("Error transmitting data.");
 		return -1;
 	}
 	
-	debug_printf("response: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(receive_buffer).c_str());
+	debug_printf("response: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandTimeSet).c_str());
 
-	time_t receive_time=0;
+	uint64_t receive_time=-1;
+	int32_t bytesTransmitted = -1;
 	receiveFromConnection(instanceClient.pClient, (char*)&receive_time, sizeof(receive_time), &bytesTransmitted, 0);
 
-	memcpy(&current_time, &receive_time, sizeof(time_t));
+	memcpy(&current_time, &receive_time, sizeof(uint64_t));
 	return 0;
 }

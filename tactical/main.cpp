@@ -137,7 +137,7 @@ void usage(void)
 int32_t executeCommand(ktools::CClient* client, const char* buffer)
 {
 	// Get current time
-	time_t current_time = time(0);
+	uint64_t current_time = time(0);
 	// Check for time request 
 	int port_number;
 	int a1, a2, a3, a4;
@@ -147,7 +147,7 @@ int32_t executeCommand(ktools::CClient* client, const char* buffer)
 	{
 		klib::SPlayer player;
 
-		if(sendUserCommand(client, ktools::USER_COMMAND_RESPONSE, (const char*)&current_time, (int)sizeof(current_time)))
+		if(sendUserCommand(client->m_ClientListener, ktools::USER_COMMAND_RESPONSE, (const char*)&current_time, (int)sizeof(current_time), client->m_ClientTarget))
 		{
 			error_printf("Failed to send player data to %u.%u.%u.%u:%u.", 
 				(int)a1,
@@ -174,7 +174,7 @@ int32_t executeCommand(ktools::CClient* client, const char* buffer)
 		// Send data back
 		int32_t sentBytes = 0, bytesTosEnd = (int32_t)(sizeof(char)*(strlen(mypong)+1));
 
-		if(sendUserCommand(client, ktools::USER_COMMAND_RESPONSE, (const char*)&mypong, sentBytes))
+		if(sendUserCommand(client->m_ClientListener, ktools::USER_COMMAND_RESPONSE, (const char*)&mypong, sentBytes, client->m_ClientTarget))
 		{
 			error_printf("Failed to send player data to %u.%u.%u.%u:%u.", 
 				(int)a1,

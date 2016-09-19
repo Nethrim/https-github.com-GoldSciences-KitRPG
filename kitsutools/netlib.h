@@ -25,7 +25,16 @@ namespace ktools
 	int32_t sendToConnection			( SConnectionEndpoint* connection, const char* buffer, uint32_t bytesToSend, int32_t* sentBytes, SConnectionEndpoint* targetConnection );
 	int32_t receiveFromConnection		( SConnectionEndpoint* connection, char* buffer, uint32_t bufLen, int32_t* receivedBytes, SConnectionEndpoint** newConnection );
 
-	bool ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer);
+	bool	ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer);
+
+	enum USER_COMMAND
+	{	USER_COMMAND_REQUEST
+	,	USER_COMMAND_RESPONSE
+	};
+
+	int32_t sendUserCommand		(SConnectionEndpoint* pOrigin, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize, SConnectionEndpoint* pTarget);
+	int32_t receiveUserCommand	(SConnectionEndpoint* pOrigin, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize, SConnectionEndpoint* pTarget);
+
 }// namespace
 
 

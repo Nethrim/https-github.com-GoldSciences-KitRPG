@@ -385,3 +385,138 @@ bool ktools::ping(SConnectionEndpoint* pClient, SConnectionEndpoint* pServer)
 	debug_printf("Command received: %s", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(pongCommand).c_str());		
 	return true;
 }
+
+int32_t ktools::sendSystemCommand(SConnectionEndpoint* pOrigin, SConnectionEndpoint* pTarget, const NETLIB_COMMAND& commandToSend)
+{
+	// Pong client
+	int32_t sentBytes = 0;
+
+	if( 0 > sendToConnection(pOrigin, (const char*)&commandToSend, sizeof(NETLIB_COMMAND), &sentBytes, pTarget)
+	 ||	sentBytes != sizeof(NETLIB_COMMAND) 
+	)
+	{
+		error_printf("Error sending system command to remote client. Command: %s."
+			, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandToSend).c_str()
+		);
+		return -1;
+	}
+
+	//
+	int port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( pTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Sent sytem command to %u.%u.%u.%u:%u: %s."
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+		, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandToSend).c_str()
+		);
+	return 0;
+}
+
+int32_t ktools::receiveSystemCommand(SConnectionEndpoint* pLocal, SConnectionEndpoint* pRemote,  NETLIB_COMMAND& commandReceived)
+{
+	int port_number;	// Port number to use
+	int a1, a2, a3, a4;	// Components of address in xxx.xxx.xxx.xxx form 
+
+	// Receive bytes from client
+	if( 0 == pLocal )
+	{
+		error_print("Client listener was terminated.");
+		return -1;
+	}
+
+	int32_t bytes_received=0;	
+	commandReceived = NETLIB_COMMAND_INVALID;
+	if( 0 > receiveFromConnection( pLocal, (char*)&commandReceived, sizeof(NETLIB_COMMAND), &bytes_received, 0 ) || bytes_received < 0)
+	{
+		error_print("Error receiving system command.");
+		return -1;
+	}
+
+	if( 0 == pRemote )
+	{
+		error_print("Client target with was null.");
+		return -1;
+	}
+
+	getAddress( pRemote, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Received sytem command from %u.%u.%u.%u:%u: %s."
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+		, god::genum_definition<NETLIB_COMMAND>::get().get_value_label(commandReceived).c_str()
+	);
+
+	return 0;
+}
+
+
+int32_t ktools::sendUserCommand(SConnectionEndpoint* pOrigin, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize, SConnectionEndpoint* pTarget)
+{
+	// Send data back
+	const NETLIB_COMMAND commandUserResponse = (requestOrResponse == USER_COMMAND_REQUEST) ? NETLIB_COMMAND_USER_REQUEST : NETLIB_COMMAND_USER_RESPONSE;
+	if( 0 > sendSystemCommand(pOrigin, pTarget, commandUserResponse) )
+	{
+		error_print("Error sending system command.");
+		return -1;
+	}
+
+	int32_t sentBytes = 0;
+	if( 0 > sendToConnection( pOrigin, buffer, (int32_t)bufferSize, &sentBytes, pTarget ) || sentBytes != (int)bufferSize )
+	{
+		error_print("Error sending user data.");
+		return -1;
+	}
+	// Display time
+	int32_t port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( pTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Sent user command of %u bytes to %u.%u.%u.%u:%u."
+		, bufferSize
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+	);
+
+	return 0;
+};
+
+
+int32_t ktools::receiveUserCommand(SConnectionEndpoint* pOrigin, USER_COMMAND requestOrResponse, const char* buffer, uint32_t bufferSize, SConnectionEndpoint* pTarget)
+{
+	// Send data back
+	NETLIB_COMMAND commandUserResponse = (requestOrResponse == USER_COMMAND_REQUEST) ? NETLIB_COMMAND_USER_REQUEST : NETLIB_COMMAND_USER_RESPONSE;
+	if( 0 > receiveSystemCommand(pOrigin, pTarget, commandUserResponse) )
+	{
+		error_print("Error sending system command.");
+		return -1;
+	}
+
+	int32_t sentBytes = 0;
+	if( 0 > sendToConnection( pOrigin, buffer, (int32_t)bufferSize, &sentBytes, pTarget ) || sentBytes != (int)bufferSize )
+	{
+		error_print("Error sending user data.");
+		return -1;
+	}
+	// Display time
+	int32_t port_number;	
+	int a1, a2, a3, a4;	
+	getAddress( pTarget, &a1, &a2, &a3, &a4, &port_number );
+	debug_printf("Sent user command of %u bytes to %u.%u.%u.%u:%u."
+		, bufferSize
+		, (int)a1
+		, (int)a2
+		, (int)a3
+		, (int)a4
+		, (int)port_number
+	);
+
+	return 0;
+};
