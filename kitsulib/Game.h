@@ -64,18 +64,24 @@ namespace klib
 		PLAYER_USER		,
 		PLAYER_ENEMY	,
 		PLAYER_NEUTRAL	,
+		PLAYER_ALLY		,
 	}; 
+
+	GDEFINE_ENUM_TYPE(GAME_FLAGS, uint8_t);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x01, RUNNING			);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x02, STARTED			);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x04, CONNECTED			);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x08, NETWORK_ENABLED	);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x10, TACTICAL			);
+	GDEFINE_ENUM_VALUE(GAME_FLAGS, 0x20, TURN_BUSY			);
 
 	struct SGame
 	{
-		bool						bRunning			= true;
-		bool						bStarted			= false;
+		GAME_FLAGS					Flags				= (GAME_FLAGS)(GAME_FLAGS_NETWORK_ENABLED | GAME_FLAGS_TURN_BUSY);
 
 		SGameState					State				= {GAME_STATE_MENU_MAIN,};
 		SGameState					PreviousState		= {GAME_STATE_MENU_MAIN,};
 
-		bool						bTactical			= false;
-		bool						bTurnBusy			= false;
 		PLAYER_INDEX				CurrentPlayer		= (PLAYER_INDEX)-1;
 		SPlayer						Players[4]			= {};
 		god::CGMutex				PlayerMutex			= {};

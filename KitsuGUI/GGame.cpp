@@ -28,7 +28,7 @@ int32_t	god::CGGame::Update( float fElapsedTime )
 	if(m_pGame)
 	{
 		KLIB_UPDATE_GAME(m_pGame);
-		if(!m_pGame->bRunning)
+		if( 0 == (m_pGame->Flags & klib::GAME_FLAGS_RUNNING))
 			return ShutdownGame();
 	}
 	else 

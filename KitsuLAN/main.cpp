@@ -6,7 +6,6 @@
 #include <time.h>
 #include <process.h>
 
-
 #include <crtdbg.h>
 
 // Use this function to draw our game data
@@ -31,7 +30,7 @@ void runCommunications(void* pInstanceGame)
 	runCommunications(instanceGame);
 
 	for(uint32_t i=0; i<10; ++i)
-		if(instanceGame.bRunning)
+		if(instanceGame.Flags & klib::GAME_FLAGS_RUNNING)
 			Sleep(1000);
 
 	bAreCommsRunningInThisDamnStuffCode = false;
@@ -63,7 +62,8 @@ int main(void)
 	_beginthread(runCommunications, 0, pInstancedGame);
 	Sleep(1000);
 
-	while(instanceGame.bRunning)
+
+	while(instanceGame.Flags & klib::GAME_FLAGS_RUNNING)
 	{
 		if(false == bAreCommsRunningInThisDamnStuffCode)	// if this is false it means the comms thread died 
 			_beginthread(runCommunications, 0, pInstancedGame);
@@ -83,7 +83,6 @@ int main(void)
 	return 0;
 }
 
-
 int runCommunications(klib::SGame& instanceGame)
 {
 	ktools::SNetworkClient instanceClient;
@@ -102,7 +101,7 @@ int runCommunications(klib::SGame& instanceGame)
 	}
 
 	god::error_t result = 0;
-	while(instanceGame.bRunning)
+	while(instanceGame.Flags & klib::GAME_FLAGS_RUNNING)
 	{
 		// Ping before anything else to make sure everything is more or less in order.
 		if(false == ktools::ping(instanceClient.pClient, instanceClient.pServer))
@@ -127,14 +126,16 @@ int runCommunications(klib::SGame& instanceGame)
 		}
 
 		// Disconnect if the game was closed.
-		if( false == instanceGame.bRunning )
+		if( 0 == (instanceGame.Flags & klib::GAME_FLAGS_RUNNING))
 			break;
 
 		Sleep(100);
 	}
 
 	ktools::requestDisconnect(instanceClient);
-	instanceGame.bRunning = false;
+
+	gbit_clear(instanceGame.Flags, klib::GAME_FLAGS_RUNNING);
+
 	disconnectClient(instanceClient);
 	return result;
 }

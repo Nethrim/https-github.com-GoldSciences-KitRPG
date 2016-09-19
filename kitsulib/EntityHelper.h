@@ -10,8 +10,8 @@ namespace klib
 	struct SResearchGroup
 	{
 		_EntityType						MaxResearch;
-		SEntityContainer<int16_t, 256>	Definitions;
-		SEntityContainer<int16_t, 256>	Modifiers;
+		SEntityContainer<int16_t, 128>	Definitions;
+		SEntityContainer<int16_t, 128>	Modifiers;
 	};
 
 

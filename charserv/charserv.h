@@ -25,6 +25,20 @@ namespace klib
 	//GDEFINE_ENUM_VALUE(PLAYERSERV_COMMAND, 15, );
 	//GDEFINE_ENUM_VALUE(PLAYERSERV_COMMAND, 16, );
 
+	struct	SUserCredentials
+	{
+		std::string Username = "";
+		std::string Password = "";
+	};
+
+	struct	SUser
+	{
+		SUserCredentials	Credentials		= {};
+		uint64_t			RegisterDate	= 0;
+		uint64_t			LastLogin		= 0;
+		uint64_t			FailedAttempts	= 0;
+	};
+
 	struct SPlayerServer
 	{
 		std::vector<klib::SPlayer>	Players;

@@ -64,7 +64,7 @@ void initTacticalGame(SGame& instanceGame)
 	SPlayer&		player	= instanceGame.Players[PLAYER_USER];
 
 	klib::initTacticalMap(instanceGame);
-	instanceGame.bTactical		= true;
+	gbit_set(instanceGame.Flags, klib::GAME_FLAGS_TACTICAL);
 	player.Selection.PlayerUnit	= player.Selection.PlayerSquad = 0;
 	player.Selection.TargetUnit	= player.Selection.TargetSquad = -1;
 	instanceGame.CurrentPlayer	= PLAYER_USER;
@@ -155,7 +155,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	
 	static ktools::SAccumulator<double>	keyAccum = {0.0, 0.4};
 
-	if(false == instanceGame.bTactical)
+	if(false == gbit_true(instanceGame.Flags, GAME_FLAGS_TACTICAL))
 	{
 		initTacticalGame(instanceGame);
 	}
@@ -163,7 +163,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	{
 		if(!playerUser.SelectNextAgent()) 
 		{
-			instanceGame.bTactical = false;
+			gbit_clear(instanceGame.Flags, GAME_FLAGS_TACTICAL);
 			return {GAME_STATE_WELCOME_COMMANDER};
 		}
 	}
@@ -375,7 +375,7 @@ SGameState drawTacticalScreen(SGame& instanceGame, const SGameState& returnState
 	if(currentPlayer.IsAlive() && currentEnemy.IsAlive()) // If players have agents still alive we just continue in the tactical screen. Otherwise go back to main screen.
 		return returnState;
 
-	instanceGame.bTactical = false;
+	gbit_clear(instanceGame.Flags, GAME_FLAGS_TACTICAL);
 	// Should we give rewards before exiting?
 	return {GAME_STATE_WELCOME_COMMANDER};
 }

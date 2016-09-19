@@ -114,7 +114,7 @@ void klib::showMenu(SGame& instanceGame) {
 
 	switch(instanceGame.State.State) {
 	case GAME_STATE_MENU_MAIN			:	
-		if( instanceGame.bStarted )
+		if( gbit_true(instanceGame.Flags, GAME_FLAGS_STARTED) )
 			newAction = processMenuReturn(instanceGame, drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuMainInGame, instanceGame.FrameInput, instanceGame.State));	
 		else																			  
 			newAction = processMenuReturn(instanceGame, drawMenu(globalDisplay.Screen, &globalDisplay.TextAttributes.Cells[0][0], menuMain, instanceGame.FrameInput, instanceGame.State));	
@@ -137,7 +137,7 @@ void klib::showMenu(SGame& instanceGame) {
 		break;
 	case GAME_STATE_EXIT				:	
 		instanceGame.StateMessage = "Exiting game...";	
-		instanceGame.bRunning = false; 
+		gbit_clear(instanceGame.Flags, GAME_FLAGS_RUNNING);
 		newAction = instanceGame.State; 
 		break;
 

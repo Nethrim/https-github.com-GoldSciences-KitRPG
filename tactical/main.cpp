@@ -113,7 +113,7 @@ int main(int argc, char **argv)// Thread 1: main
 
 	klib::initGame(instanceGame);
 
-	while(instanceGame.bRunning && !bListenFailure)
+	while((instanceGame.Flags & klib::GAME_FLAGS_RUNNING) && !bListenFailure)
 	{
 		instanceGame.ServerTime = time(0);
 		pollInput(instanceGame.FrameInput);

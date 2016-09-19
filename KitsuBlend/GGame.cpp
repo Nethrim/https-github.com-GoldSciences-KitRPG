@@ -67,7 +67,7 @@ error_t	CGGame::Update( float fElapsedTime )
 	{
 		pollInput(m_pGame->FrameInput);
 		drawAndPresentGame(*m_pGame);
-		if(!m_pGame->bRunning)
+		if( 0 == (m_pGame->Flags & klib::GAME_FLAGS_RUNNING))
 			return ShutdownGame();
 	}
 	else 

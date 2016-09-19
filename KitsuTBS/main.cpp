@@ -25,7 +25,7 @@ int main(void)
 
 	klib::initGame(instanceGame);
 
-	while(instanceGame.bRunning)
+	while(instanceGame.Flags & klib::GAME_FLAGS_RUNNING)
 	{
 		ktools::pollInput(instanceGame.FrameInput);
 		draw(instanceGame);

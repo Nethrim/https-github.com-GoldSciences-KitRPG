@@ -48,10 +48,12 @@ void klib::resetGame(SGame& instanceGame)
 	// Set up a nice prompt 
 	std::string playerName;
 	prompt(playerName, "Enter your name:");
+	std::string password;
+	prompt(password, "Enter password:");
 
 	instanceGame.Players[PLAYER_USER].Name = playerName;
-	instanceGame.bStarted	= true;
-	instanceGame.bTactical	= false;
+	gbit_set(instanceGame.Flags, GAME_FLAGS_STARTED);
+	gbit_clear(instanceGame.Flags, GAME_FLAGS_TACTICAL);
 }
 
 // Sets up initial equipment and items for the player to carry or wear.
@@ -59,8 +61,8 @@ void klib::initGame(SGame& instanceGame)
 {
 	srand((int32_t)time(0));
 
-	instanceGame.bStarted	= false;
-	instanceGame.bTactical	= false;
+	gbit_clear(instanceGame.Flags, GAME_FLAGS_STARTED	);
+	gbit_clear(instanceGame.Flags, GAME_FLAGS_TACTICAL	);
 
 	instanceGame.Seed = time(0);
 
@@ -77,8 +79,8 @@ void klib::initGame(SGame& instanceGame)
 	adventurer.CurrentEquip.Accessory	= {(int16_t)(rand()%ktools::size(klib::definitionsAccessory		)), (int16_t)(rand()%ktools::size(klib::modifiersAccessory	)), 1+rand()%10};
 	adventurer.CurrentEquip.Armor		= {(int16_t)(rand()%ktools::size(klib::definitionsArmor			)), (int16_t)(rand()%ktools::size(klib::modifiersArmor		)), 1+rand()%10};
 	adventurer.CurrentEquip.Profession	= {(int16_t)(rand()%ktools::size(klib::definitionsProfession	)), (int16_t)(rand()%ktools::size(klib::modifiersProfession	)), 1+rand()%10};
-	adventurer.CurrentEquip.Vehicle		= {(int16_t)(rand()%ktools::size(klib::definitionsVehicle		)), (int16_t)(rand()%ktools::size(klib::modifiersVehicle		)), 1+rand()%10};
-	adventurer.CurrentEquip.Facility	= {(int16_t)(rand()%ktools::size(klib::definitionsFacility		)), (int16_t)(rand()%ktools::size(klib::modifiersFacility		)), 1+rand()%10};
+	adventurer.CurrentEquip.Vehicle		= {(int16_t)(rand()%ktools::size(klib::definitionsVehicle		)), (int16_t)(rand()%ktools::size(klib::modifiersVehicle	)), 1+rand()%10};
+	adventurer.CurrentEquip.Facility	= {(int16_t)(rand()%ktools::size(klib::definitionsFacility		)), (int16_t)(rand()%ktools::size(klib::modifiersFacility	)), 1+rand()%10};
 	adventurer.CurrentEquip.StageProp	= {(int16_t)(rand()%ktools::size(klib::definitionsStageProp		)), (int16_t)(rand()%ktools::size(klib::modifiersStageProp	)), 1+rand()%10};
 
 	for(uint32_t i=1; i<8; i++) 
@@ -112,4 +114,7 @@ void klib::initGame(SGame& instanceGame)
 	instanceGame.TacticalInfo		.Clear();
 
 	initTacticalMap(instanceGame);
+
+	gbit_set(instanceGame.Flags, GAME_FLAGS_RUNNING	);
+
 };
