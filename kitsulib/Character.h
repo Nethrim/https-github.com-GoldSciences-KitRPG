@@ -52,17 +52,24 @@ namespace klib
 	};
 
 
-	template<typename _EntityType, CHARACTER_TYPE _CharacterType>
-	struct SEquip
+	//template<typename _EntityType, CHARACTER_TYPE _CharacterType>
+	//struct SEquip
+	//{
+	//	CHARACTER_TYPE			Type			= _CharacterType;
+	//	_EntityType				Entity			= {0,0,1};
+	//
+	//	SEntityPoints			Points			= SEntityPoints();	
+	//	SEntityFlags			Flags			= SEntityFlags();	
+	//	SCharacterTurnBonus		ActiveBonus		= SCharacterTurnBonus();
+	//
+	//	SCharacterInventory		Inventory		= SCharacterInventory();
+	//};
+
+	struct SCharacterGoods	//
 	{
-		CHARACTER_TYPE			Type			= _CharacterType;
-		_EntityType				Entity			= {0,0,1};
-
-		SEntityPoints			Points			= SEntityPoints();	
-		SEntityFlags			Flags			= SEntityFlags();	
-		SCharacterTurnBonus		ActiveBonus		= SCharacterTurnBonus();
-
-		SCharacterInventory		Inventory		= SCharacterInventory();
+		SCharacterEquip				MaxResearch			= {};
+		SCharacterResearch			CompletedResearch	= {};
+		SCharacterInventory			Inventory			= {};
 	};
 
 	//template<typename _EntityType>
@@ -79,10 +86,8 @@ namespace klib
 		SCharacterScore			Score			= SCharacterScore();	
 
 		SCharacterEquip			CurrentEquip	= SCharacterEquip();
-		SCharacterEquip			MaxEquip		= SCharacterEquip();	// Max equip grades researched/available.
-		SCharacterInventory		Inventory		= SCharacterInventory();
 
-		SCharacterResearch		Researched		= SCharacterResearch();
+		SCharacterGoods			Goods			= SCharacterGoods();
 
 		constexpr SCharacter() = default;
 		constexpr SCharacter(CHARACTER_TYPE characterType, int maxHP, int hitChance, int attack, int coins, SSpeedPoints speed, SEntityEffect characterEffect, SEntityStatus characterStatus ) 
@@ -92,9 +97,7 @@ namespace klib
 			,ActiveBonus		(SCharacterTurnBonus	())
 			,Score				(SCharacterScore		())
 			,CurrentEquip		(SCharacterEquip		())
-			,MaxEquip			(SCharacterEquip		())
-			,Inventory			(SCharacterInventory	())
-			,Researched			(SCharacterResearch		())
+			,Goods				(SCharacterGoods		())
 		{};
 
 		bool					DidLoseTurn			() {

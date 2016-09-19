@@ -80,7 +80,7 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 {
 	createPlayerCharacter(adventurer, name);
 	klib::SCharacterEquip& currentEquip = adventurer.CurrentEquip;
-	klib::SCharacterEquip& maxEquip		= adventurer.MaxEquip;
+	klib::SCharacterEquip& maxEquip		= adventurer.Goods.MaxResearch;
 #if defined(POWER_START)
 	currentEquip.Weapon		.Index		= (int16_t)std::min(3U, size(klib::definitionsWeapon		)-1);
 	currentEquip.Accessory	.Index		= (int16_t)std::min(3U, size(klib::definitionsAccessory		)-1);
@@ -107,24 +107,24 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 	memset(&maxEquip	, 0, sizeof(klib::SCharacterEquip));
 #endif
 
-	adventurer.Inventory.Weapon		.AddElement({1,1,1});
-	adventurer.Inventory.Accessory	.AddElement({1,1,1});
-	adventurer.Inventory.Armor		.AddElement({1,1,1});
-	adventurer.Inventory.Profession	.AddElement({adventurer.CurrentEquip.Profession.Definition,1,10});
-	adventurer.Inventory.Vehicle	.AddElement({1,1,1});
-	adventurer.Inventory.Facility	.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Weapon		.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Accessory	.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Armor		.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Profession	.AddElement({adventurer.CurrentEquip.Profession.Definition,1,10});
+	adventurer.Goods.Inventory.Vehicle		.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Facility		.AddElement({1,1,1});
 
 	int16_t i = 5;
-	adventurer.Inventory.Weapon		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsWeapon		), rand()%(int16_t)ktools::size(klib::modifiersWeapon		), ++i	});
-	adventurer.Inventory.Accessory	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsAccessory		), rand()%(int16_t)ktools::size(klib::modifiersAccessory	), ++i	});
-	adventurer.Inventory.Armor		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsArmor			), rand()%(int16_t)ktools::size(klib::modifiersArmor		), ++i	});
-	adventurer.Inventory.Profession	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsProfession	), rand()%(int16_t)ktools::size(klib::modifiersProfession	), ++i	});
-	adventurer.Inventory.Vehicle	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsVehicle		), rand()%(int16_t)ktools::size(klib::modifiersVehicle		), ++i	});
-	adventurer.Inventory.Facility	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsFacility		), rand()%(int16_t)ktools::size(klib::modifiersFacility	), ++i	});
+	adventurer.Goods.Inventory.Weapon		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsWeapon		), rand()%(int16_t)ktools::size(klib::modifiersWeapon		), ++i	});
+	adventurer.Goods.Inventory.Accessory	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsAccessory		), rand()%(int16_t)ktools::size(klib::modifiersAccessory	), ++i	});
+	adventurer.Goods.Inventory.Armor		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsArmor			), rand()%(int16_t)ktools::size(klib::modifiersArmor		), ++i	});
+	adventurer.Goods.Inventory.Profession	.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsProfession	), rand()%(int16_t)ktools::size(klib::modifiersProfession	), ++i	});
+	adventurer.Goods.Inventory.Vehicle		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsVehicle		), rand()%(int16_t)ktools::size(klib::modifiersVehicle		), ++i	});
+	adventurer.Goods.Inventory.Facility		.AddElement(	{	rand()%(int16_t)ktools::size(klib::definitionsFacility		), rand()%(int16_t)ktools::size(klib::modifiersFacility	), ++i	});
 
-	adventurer.Inventory.Items		.AddElement({1,1,1});
+	adventurer.Goods.Inventory.Items		.AddElement({1,1,1});
 	for(int32_t i=1; i<3; ++i)
-		adventurer.Inventory.Items	.AddElement({ 1+int16_t(rand()%(ktools::size(klib::itemDescriptions)-1)), int16_t(1+rand()%ktools::size(klib::itemModifiers)), int16_t(rand()%ktools::size(klib::itemGrades)) });
+		adventurer.Goods.Inventory.Items	.AddElement({ 1+int16_t(rand()%(ktools::size(klib::itemDescriptions)-1)), int16_t(1+rand()%ktools::size(klib::itemModifiers)), int16_t(rand()%ktools::size(klib::itemGrades)) });
 
 	const klib::SEntityPoints finalPoints	= klib::calculateFinalPoints(adventurer);
 	adventurer.Points.LifeCurrent			= finalPoints.LifeMax;

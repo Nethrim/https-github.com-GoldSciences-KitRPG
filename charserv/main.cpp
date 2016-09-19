@@ -12,6 +12,8 @@
 #include "Game.h"
 #include "draw.h"
 
+#include "GCore_function_macros.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,6 +21,11 @@
 #include <process.h>
 
 #include <windows.h>
+
+
+GDEFINE_POD(klib, SUserMetadata		);
+GDEFINE_OBJ(klib, SUserCredentials	);
+GDEFINE_OBJ(klib, SPlayer			);
 
 void usage(void);
 
@@ -74,6 +81,8 @@ int main(int argc, char **argv)// Thread 1: main
 	_CrtSetDbgFlag(tmp);
 #endif
 
+	klib::SPlayerServer serverInstance;
+
 	int port_number;		// Port number to use
 	ktools::CServer server;
 
@@ -121,7 +130,12 @@ int main(int argc, char **argv)// Thread 1: main
 
 	klib::initGame(instanceGame);
 
-	debug_printf("sizeof(SPlayer): %u", (uint32_t) sizeof(klib::SPlayer));
+	debug_printf("sizeof(SCharacter): %u"		, (uint32_t) sizeof(klib::SCharacter));
+	debug_printf("sizeof(SPlayerGoods): %u"			, (uint32_t) sizeof(klib::SPlayerGoods));
+	debug_printf("sizeof(SPlayer): %u"			, (uint32_t) sizeof(klib::SPlayer));
+	debug_printf("sizeof(SPlayerServer): %u"	, (uint32_t) sizeof(klib::SPlayerServer));
+	debug_printf("sizeof(SUserCredentials): %u"	, (uint32_t) sizeof(klib::SUserCredentials));
+	debug_printf("sizeof(SUserMetadata): %u"	, (uint32_t) sizeof(klib::SUserMetadata));
 
 	while(gbit_true(instanceGame.Flags, klib::GAME_FLAGS_RUNNING) && !bListenFailure)
 	{
@@ -136,6 +150,23 @@ int main(int argc, char **argv)// Thread 1: main
 	server.ShutdownServer();
 
 	ktools::shutdownNetwork();
+
+	const char serverDBFile [] = "player_server.bin";
+	FILE* fp = 0;
+	fopen_s(&fp, serverDBFile, "wb");
+	if( fp ) 
+	{
+		for(uint32_t iUser=0, userCount = (uint32_t)serverInstance.Players.size(); iUser<userCount; ++iUser)
+		{
+			klib::SPlayer* player = serverInstance.Players[iUser];
+			if(0 == player) 
+				continue;
+
+			//player->
+		}
+		fclose(fp);
+	}
+
 	return 0;
 }
 

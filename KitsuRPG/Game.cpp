@@ -67,8 +67,8 @@ void equipEntityMenu
 void equipWeaponMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Weapon
-		, adventurer.Researched.Weapon
+		( adventurer.Goods.Inventory.Weapon
+		, adventurer.Goods.CompletedResearch.Weapon
 		, klib::definitionsWeapon
 		, klib::modifiersWeapon
 		, adventurer.CurrentEquip.Weapon
@@ -86,8 +86,8 @@ void equipWeaponMenu	(klib::CCharacter& adventurer)
 void equipAccessoryMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Accessory
-		, adventurer.Researched.Accessory
+		( adventurer.Goods.Inventory.Accessory
+		, adventurer.Goods.CompletedResearch.Accessory
 		, klib::definitionsAccessory
 		, klib::modifiersAccessory
 		, adventurer.CurrentEquip.Accessory
@@ -105,8 +105,8 @@ void equipAccessoryMenu	(klib::CCharacter& adventurer)
 void equipArmorMenu		(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Armor
-		, adventurer.Researched.Armor
+		( adventurer.Goods.Inventory.Armor
+		, adventurer.Goods.CompletedResearch.Armor
 		, klib::definitionsArmor
 		, klib::modifiersArmor
 		, adventurer.CurrentEquip.Armor
@@ -124,8 +124,8 @@ void equipArmorMenu		(klib::CCharacter& adventurer)
 void equipProfessionMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Profession
-		, adventurer.Researched.Profession
+		( adventurer.Goods.Inventory.Profession
+		, adventurer.Goods.CompletedResearch.Profession
 		, klib::definitionsProfession
 		, klib::modifiersProfession
 		, adventurer.CurrentEquip.Profession
@@ -143,8 +143,8 @@ void equipProfessionMenu	(klib::CCharacter& adventurer)
 void equipVehicleMenu	(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Vehicle
-		, adventurer.Researched.Vehicle
+		( adventurer.Goods.Inventory.Vehicle
+		, adventurer.Goods.CompletedResearch.Vehicle
 		, klib::definitionsVehicle
 		, klib::modifiersVehicle
 		, adventurer.CurrentEquip.Vehicle
@@ -162,8 +162,8 @@ void equipVehicleMenu	(klib::CCharacter& adventurer)
 void equipFacilityMenu		(klib::CCharacter& adventurer) 
 { 
 	equipEntityMenu
-		( adventurer.Inventory.Facility
-		, adventurer.Researched.Facility
+		( adventurer.Goods.Inventory.Facility
+		, adventurer.Goods.CompletedResearch.Facility
 		, klib::definitionsFacility
 		, klib::modifiersFacility 
 		, adventurer.CurrentEquip.Facility
@@ -259,7 +259,7 @@ void inspect(klib::CCharacter& adventurer)
 		else if( 3 == tavernChoice ) {	displayProfession	(adventurer);	}	// 
 		else if( 4 == tavernChoice ) {	displayVehicle		(adventurer);	}	// 
 		else if( 5 == tavernChoice ) {	displayFacility		(adventurer);	}	// 
-		else if( 6 == tavernChoice ) {	displayInventory	(adventurer.Inventory.Items, adventurer.Name.c_str());	}	// 
+		else if( 6 == tavernChoice ) {	displayInventory	(adventurer.Goods.Inventory.Items, adventurer.Name.c_str());	}	// 
 		else if( 7 == tavernChoice ) {	break;	}	// 
 		else {	
 			printf(optionNotSupported);
@@ -303,15 +303,15 @@ void sell(klib::CCharacter& adventurer)
 	while (true)	// break the loop to leave the shop
 	{
 		int32_t indexInventory = displayInventoryMenu(adventurer, "Select an item to sell", "Back to tavern");
-		if(indexInventory == adventurer.Inventory.Items.Count) {	// exit option
-			indexInventory = adventurer.Inventory.Items.Count;	// Exit menu
+		if(indexInventory == adventurer.Goods.Inventory.Items.Count) {	// exit option
+			indexInventory = adventurer.Goods.Inventory.Items.Count;	// Exit menu
 			break;
 		}
 		else {
-			const klib::SItem& itemEntity = adventurer.Inventory.Items.Slots[indexInventory].Entity;
+			const klib::SItem& itemEntity = adventurer.Goods.Inventory.Items.Slots[indexInventory].Entity;
 			int32_t itemPrice =  getItemPrice(itemEntity, true);
 			adventurer.Points.Coins += itemPrice;
-			adventurer.Inventory.Items.DecreaseEntity(indexInventory);
+			adventurer.Goods.Inventory.Items.DecreaseEntity(indexInventory);
 			printf("You sold %s and got paid %i coins for it.\n", getItemName(itemEntity).c_str(), itemPrice); 
 		}
 	}
@@ -433,7 +433,7 @@ void bar(klib::CCharacter& adventurer)
 			// Check first for conditions that prevent from acquiring the item
 			if(adventurer.Points.Coins < itemPrice)
 				printf("You can't afford to buy %s! Choose something else...\n", itemName.c_str());
-			else if(adventurer.Inventory.Items.AddElement(selectedItem))	// addItem() returns false if the inventory is full.
+			else if(adventurer.Goods.Inventory.Items.AddElement(selectedItem))	// addItem() returns false if the inventory is full.
 			{
 				printf("You spend %u coins buying %s.\n", itemPrice, itemName.c_str());
 				adventurer.Points.Coins		-= itemPrice;
@@ -443,7 +443,7 @@ void bar(klib::CCharacter& adventurer)
 				printf("Not enough space in inventory!\n");
 		}
 	}
-	displayInventory(adventurer.Inventory.Items, adventurer.Name.c_str());
+	displayInventory(adventurer.Goods.Inventory.Items, adventurer.Name.c_str());
 }
 
 // messageFormat requires to support 2 strings at the beginning and an integer at the end: "\n-- %s is carrying %s level %u:\n"

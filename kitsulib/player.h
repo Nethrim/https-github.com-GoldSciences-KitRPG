@@ -33,22 +33,27 @@ namespace klib
 	};
 
 	GDEFINE_ENUM_TYPE(PLAYER_PROPERTY, uint8_t);	// I added these so network messages can talk about the player members
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  1, MONEY				);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  2, RESEARCH_COMPLETED	);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  3, RESEARCH_MAX		);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  4, INVENTORY			);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  5, SQUAD				);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  6, TEAM				);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  7, SELECTION			);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  8, ARMY				);
-	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY,  9, NAME				);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 1, MONEY				);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 2, RESEARCH_COMPLETED	);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 3, RESEARCH_MAX			);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 4, INVENTORY			);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 5, SQUAD				);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 6, TEAM					);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 7, SELECTION			);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 8, ARMY					);
+	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 9, NAME					);
+
+	struct SPlayerGoods	//
+	{
+		SCharacterEquip				MaxResearch			= {};
+		SCharacterResearch			CompletedResearch	= {};
+		SCharacterInventory			Inventory			= {};
+	};
 
 	struct SPlayer	// can be AI or human.
 	{
 		int32_t						Money				= 25000;
-		SCharacterResearch			CompletedResearch	= {};
-		SCharacterEquip				MaxResearch			= {};
-		SCharacterInventory			Inventory			= {};
+		SPlayerGoods				Goods				= {};
 		SSquad						Squad				= SSquad();
 		int32_t						Team				= 0;
 		SPlayerSelection			Selection			= {0, 0, -1, -1};

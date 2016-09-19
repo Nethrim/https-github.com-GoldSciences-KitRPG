@@ -483,7 +483,7 @@ void klib::applyTurnStatusAndBonusesAndSkipTurn(CCharacter& character)
 
 bool klib::executeItem(int32_t indexInventory, CCharacter& user, CCharacter& target) {
 
-	const SItem& item = user.Inventory.Items.Slots[indexInventory].Entity;
+	const SItem& item = user.Goods.Inventory.Items.Slots[indexInventory].Entity;
 	std::string itemName = getItemName(item);
 
 	bool bUsedItem = false;
@@ -504,7 +504,7 @@ bool klib::executeItem(int32_t indexInventory, CCharacter& user, CCharacter& tar
 	}
 
 	if(bUsedItem)
-		user.Inventory.Items.DecreaseEntity(indexInventory);
+		user.Goods.Inventory.Items.DecreaseEntity(indexInventory);
 
 	return bUsedItem;
 }

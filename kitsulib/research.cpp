@@ -95,20 +95,23 @@ void completeResearch(const SResearchable& selectedChoice, _EntityType& maxResea
 
 SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 {
-	SPlayer& player = instanceGame.Players[PLAYER_USER];
-	klib::SCharacterResearch& researchCompleted = player.CompletedResearch;
+	SPlayer&					player				= instanceGame.Players[PLAYER_USER];
+	SPlayerGoods&				playerCompany		= player.Goods;
+	SCharacterInventory&		playerInventory		= playerCompany.Inventory;
+	klib::SCharacterResearch&	researchCompleted	= playerCompany.CompletedResearch;
+	
 	klib::SCharacterResearch  researchableItems;
 
 
 #define GET_AVAILABLE_RESEARCH_FOR_ENTITY(EntityToken_, ProgressiveDefinitions_, ProgressiveModifiers_)																\
-		generateResearchableList(researchableItems.EntityToken_, player.Inventory.EntityToken_, researchCompleted.EntityToken_										\
-			, ProgressiveDefinitions_, ProgressiveModifiers_, player.MaxResearch.EntityToken_);																		\
+		generateResearchableList(researchableItems.EntityToken_, playerInventory.EntityToken_, researchCompleted.EntityToken_										\
+			, ProgressiveDefinitions_, ProgressiveModifiers_, playerCompany.MaxResearch.EntityToken_);																\
 		for(iAgent=0; iAgent<armySize; ++iAgent) 																													\
 			generateResearchableListFromAgent( researchableItems.EntityToken_ 																						\
 				, player.Army[iAgent].CurrentEquip.EntityToken_ 																									\
-				, player.Army[iAgent].Inventory.EntityToken_ 																										\
+				, player.Army[iAgent].Goods.Inventory.EntityToken_ 																									\
 				, researchCompleted.EntityToken_																													\
-				, ProgressiveDefinitions_, ProgressiveModifiers_, player.MaxResearch.EntityToken_																	\
+				, ProgressiveDefinitions_, ProgressiveModifiers_, playerCompany.MaxResearch.EntityToken_															\
 			);																																						\
 																																									\
 		researchableDefinitions	+= researchableItems.EntityToken_.Definitions.Count;																				\
@@ -210,13 +213,13 @@ SGameState drawResearchMenu(SGame& instanceGame, const SGameState& returnState)
 
 	switch(instanceGame.State.Substate)
 	{
-	case GAME_SUBSTATE_ACCESSORY	: completeResearch(selectedChoice, player.MaxResearch.	Accessory	, researchableItems.	Accessory	, researchCompleted.	Accessory	, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_STAGEPROP	: completeResearch(selectedChoice, player.MaxResearch.	StageProp	, researchableItems.	StageProp	, researchCompleted.	StageProp	, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_FACILITY		: completeResearch(selectedChoice, player.MaxResearch.	Facility	, researchableItems.	Facility	, researchCompleted.	Facility	, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_VEHICLE		: completeResearch(selectedChoice, player.MaxResearch.	Vehicle		, researchableItems.	Vehicle		, researchCompleted.	Vehicle		, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_PROFESSION	: completeResearch(selectedChoice, player.MaxResearch.	Profession	, researchableItems.	Profession	, researchCompleted.	Profession	, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_WEAPON		: completeResearch(selectedChoice, player.MaxResearch.	Weapon		, researchableItems.	Weapon		, researchCompleted.	Weapon		, instanceGame.UserMessage); break; 
-	case GAME_SUBSTATE_ARMOR		: completeResearch(selectedChoice, player.MaxResearch.	Armor		, researchableItems.	Armor		, researchCompleted.	Armor		, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_ACCESSORY	: completeResearch(selectedChoice, playerCompany.MaxResearch.	Accessory	, researchableItems.	Accessory	, researchCompleted.	Accessory	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_STAGEPROP	: completeResearch(selectedChoice, playerCompany.MaxResearch.	StageProp	, researchableItems.	StageProp	, researchCompleted.	StageProp	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_FACILITY		: completeResearch(selectedChoice, playerCompany.MaxResearch.	Facility	, researchableItems.	Facility	, researchCompleted.	Facility	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_VEHICLE		: completeResearch(selectedChoice, playerCompany.MaxResearch.	Vehicle		, researchableItems.	Vehicle		, researchCompleted.	Vehicle		, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_PROFESSION	: completeResearch(selectedChoice, playerCompany.MaxResearch.	Profession	, researchableItems.	Profession	, researchCompleted.	Profession	, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_WEAPON		: completeResearch(selectedChoice, playerCompany.MaxResearch.	Weapon		, researchableItems.	Weapon		, researchCompleted.	Weapon		, instanceGame.UserMessage); break; 
+	case GAME_SUBSTATE_ARMOR		: completeResearch(selectedChoice, playerCompany.MaxResearch.	Armor		, researchableItems.	Armor		, researchCompleted.	Armor		, instanceGame.UserMessage); break; 
 	default:
 		break;
 	}

@@ -1,5 +1,6 @@
 #include "Player.h"
-#include "genum.h"
+#include "glist.h"
+
 
 #ifndef __CHARSERV_H__92364928374692837469283746239874__
 #define __CHARSERV_H__92364928374692837469283746239874__
@@ -25,25 +26,36 @@ namespace klib
 	//GDEFINE_ENUM_VALUE(PLAYERSERV_COMMAND, 15, );
 	//GDEFINE_ENUM_VALUE(PLAYERSERV_COMMAND, 16, );
 
+	GDECLARE_OBJ(SPlayer);
+
 	struct	SUserCredentials
 	{
-		std::string Username = "";
-		std::string Password = "";
+		std::string			Username = "";
+		std::string			Password = "";
 	};
+	GDECLARE_OBJ(SUserCredentials);
 
-	struct	SUser
+	struct	SUserMetadata
 	{
-		SUserCredentials	Credentials		= {};
 		uint64_t			RegisterDate	= 0;
 		uint64_t			LastLogin		= 0;
-		uint64_t			FailedAttempts	= 0;
+		uint64_t			LoginFailed		= 0;
+		uint64_t			LoginSucceeded	= 0;
 	};
+	GDECLARE_POD(SUserMetadata
+		, god::GDATA_TYPE_UINT64
+		, god::GDATA_TYPE_UINT64
+		, god::GDATA_TYPE_UINT64
+		, god::GDATA_TYPE_UINT64
+	);
 
 	struct SPlayerServer
 	{
-		std::vector<klib::SPlayer>	Players;
-		std::vector<std::string>	Log;
-		time_t						Time;
+		GLstNCO(klib, SUserCredentials)	Credentials	= {};
+		GLstNCO(klib, SPlayer)			Players		= {};
+		GLstPOD(klib, SUserMetadata)	Metadata	= {};
+		std::vector<std::string>		Log			= {};
+		time_t							Time		= 0;
 	};
 }
 

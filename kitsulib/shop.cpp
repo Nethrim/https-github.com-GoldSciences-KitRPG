@@ -116,16 +116,17 @@ SGameState drawBuyMenu(SGame& instanceGame, const SGameState& returnState)
 
 	player.Money -= selectedChoice.Price;
 
+	SCharacterInventory& playerInventory = player.Goods.Inventory;
 	switch(instanceGame.State.Substate)
 	{
-	case GAME_SUBSTATE_ACCESSORY	:	player.Inventory.Accessory	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_STAGEPROP	:	player.Inventory.StageProp	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_FACILITY		:	player.Inventory.Facility	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_VEHICLE		:	player.Inventory.Vehicle	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_PROFESSION	:	player.Inventory.Profession	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " Job License for " + std::to_string(selectedChoice.Price) + " Coins."	; break;
-	case GAME_SUBSTATE_WEAPON		:	player.Inventory.Weapon		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_ARMOR		:	player.Inventory.Armor		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
-	case GAME_SUBSTATE_ITEM			:	player.Inventory.Items		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_ACCESSORY	:	playerInventory.Accessory	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_STAGEPROP	:	playerInventory.StageProp	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_FACILITY		:	playerInventory.Facility	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_VEHICLE		:	playerInventory.Vehicle		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_PROFESSION	:	playerInventory.Profession	.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " Job License for " + std::to_string(selectedChoice.Price) + " Coins."	; break;
+	case GAME_SUBSTATE_WEAPON		:	playerInventory.Weapon		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_ARMOR		:	playerInventory.Armor		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
+	case GAME_SUBSTATE_ITEM			:	playerInventory.Items		.AddElement({selectedChoice.Definition, 0, selectedChoice.Grade});	instanceGame.UserMessage = "You have successfully bought " + selectedChoice.Name + " for " + std::to_string(selectedChoice.Price) + " Coins."; break;
 	case GAME_SUBSTATE_CHARACTER	:	player.Army.push_back(enemyDefinitions[selectedChoice.Definition]);	instanceGame.UserMessage = "You have successfully hired " + selectedChoice.Name + " for " + std::to_string(selectedChoice.MaintenanceCost) + " Coins/Month."; break;
 	default:
 		break;
