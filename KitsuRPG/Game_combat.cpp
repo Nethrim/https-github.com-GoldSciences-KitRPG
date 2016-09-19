@@ -182,7 +182,7 @@ void assignDrops(klib::CCharacter& winner, klib::CCharacter& loser)
 	else
 		printf("%s loses his job as %s level %u and tries to get a new job as %s level %u instead.\n", loser.Name.c_str(), loserProfessionName.c_str(), oldLoserProfession.Level, klib::getProfessionName(loser.CurrentEquip.Profession).c_str(), loser.CurrentEquip.Profession.Level);
 
-	if(	winner.CurrentEquip.Profession.Modifier < winner.Goods.MaxResearch.Profession.Modifier ) {
+	if(	winner.CurrentEquip.Profession.Modifier < winner.MaxResearch.Profession.Modifier ) {
 		winner.CurrentEquip.Profession.Modifier++;
 		printf("%s gets promoted to %s!!\n", winner.Name.c_str(), getProfessionName(winner.CurrentEquip.Profession).c_str());
 	}

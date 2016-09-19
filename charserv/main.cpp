@@ -130,12 +130,13 @@ int main(int argc, char **argv)// Thread 1: main
 
 	klib::initGame(instanceGame);
 
-	debug_printf("sizeof(SCharacter): %u"		, (uint32_t) sizeof(klib::SCharacter));
-	debug_printf("sizeof(SPlayerGoods): %u"			, (uint32_t) sizeof(klib::SPlayerGoods));
-	debug_printf("sizeof(SPlayer): %u"			, (uint32_t) sizeof(klib::SPlayer));
-	debug_printf("sizeof(SPlayerServer): %u"	, (uint32_t) sizeof(klib::SPlayerServer));
-	debug_printf("sizeof(SUserCredentials): %u"	, (uint32_t) sizeof(klib::SUserCredentials));
-	debug_printf("sizeof(SUserMetadata): %u"	, (uint32_t) sizeof(klib::SUserMetadata));
+	debug_printf("sizeof(SCharacter): %u"							, (uint32_t) sizeof(klib::SCharacter)									);
+	debug_printf("sizeof(SCharacter)-sizeof(SCharacterGoods): %u"	, (uint32_t)(sizeof(klib::SCharacter)-sizeof(klib::SCharacterGoods))	);
+	debug_printf("sizeof(SPlayer): %u"								, (uint32_t) sizeof(klib::SPlayer)										);
+	debug_printf("sizeof(SPlayer)-sizeof(SCharacterGoods): %u"		, (uint32_t)(sizeof(klib::SPlayer)-sizeof(klib::SCharacterGoods))		);
+	debug_printf("sizeof(SPlayerServer): %u"						, (uint32_t) sizeof(klib::SPlayerServer)								);
+	debug_printf("sizeof(SUserCredentials): %u"						, (uint32_t) sizeof(klib::SUserCredentials)								);
+	debug_printf("sizeof(SUserMetadata): %u"						, (uint32_t) sizeof(klib::SUserMetadata)								);
 
 	while(gbit_true(instanceGame.Flags, klib::GAME_FLAGS_RUNNING) && !bListenFailure)
 	{

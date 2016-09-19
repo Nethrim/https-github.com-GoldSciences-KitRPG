@@ -43,17 +43,11 @@ namespace klib
 	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 8, ARMY					);
 	GDEFINE_ENUM_VALUE(PLAYER_PROPERTY, 9, NAME					);
 
-	struct SPlayerGoods	//
-	{
-		SCharacterEquip				MaxResearch			= {};
-		SCharacterResearch			CompletedResearch	= {};
-		SCharacterInventory			Inventory			= {};
-	};
-
 	struct SPlayer	// can be AI or human.
 	{
 		int32_t						Money				= 25000;
-		SPlayerGoods				Goods				= {};
+		SCharacterEquip				MaxResearch			= {};
+		SCharacterGoods				Goods				= {};
 		SSquad						Squad				= SSquad();
 		int32_t						Team				= 0;
 		SPlayerSelection			Selection			= {0, 0, -1, -1};

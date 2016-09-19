@@ -67,7 +67,6 @@ namespace klib
 
 	struct SCharacterGoods	//
 	{
-		SCharacterEquip				MaxResearch			= {};
 		SCharacterResearch			CompletedResearch	= {};
 		SCharacterInventory			Inventory			= {};
 	};
@@ -86,6 +85,7 @@ namespace klib
 		SCharacterScore			Score			= SCharacterScore();	
 
 		SCharacterEquip			CurrentEquip	= SCharacterEquip();
+		SCharacterEquip			MaxResearch		= {};
 
 		SCharacterGoods			Goods			= SCharacterGoods();
 

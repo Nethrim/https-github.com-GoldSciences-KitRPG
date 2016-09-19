@@ -80,7 +80,7 @@ void initPlayerCharacter(klib::CCharacter& adventurer, const std::string& name)
 {
 	createPlayerCharacter(adventurer, name);
 	klib::SCharacterEquip& currentEquip = adventurer.CurrentEquip;
-	klib::SCharacterEquip& maxEquip		= adventurer.Goods.MaxResearch;
+	klib::SCharacterEquip& maxEquip		= adventurer.MaxResearch;
 #if defined(POWER_START)
 	currentEquip.Weapon		.Index		= (int16_t)std::min(3U, size(klib::definitionsWeapon		)-1);
 	currentEquip.Accessory	.Index		= (int16_t)std::min(3U, size(klib::definitionsAccessory		)-1);

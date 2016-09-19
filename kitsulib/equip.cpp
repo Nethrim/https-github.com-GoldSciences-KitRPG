@@ -77,7 +77,7 @@ SGameState drawEquipMenu(SGame& instanceGame, const SGameState& returnState)
 	bool bAlreadyInSquad;
 
 	SPlayer&				player			= instanceGame.Players[PLAYER_USER];
-	SPlayerGoods&			playerCompany	= instanceGame.Players[PLAYER_USER].Goods;
+	SCharacterGoods&		playerCompany	= instanceGame.Players[PLAYER_USER].Goods;
 	SCharacterInventory&	playerInventory	= playerCompany.Inventory;
 	SGlobalDisplay&	display	= instanceGame.GlobalDisplay;
 

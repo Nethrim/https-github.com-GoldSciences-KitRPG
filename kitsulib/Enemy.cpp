@@ -45,7 +45,7 @@ void klib::setupAgent(const CCharacter& adventurer, CCharacter& currentEnemy, in
 	currentEnemy.CurrentEquip.StageProp		.Level		= (1 > (adventurer.CurrentEquip.StageProp	.Level-1)) ? 1 : adventurer.CurrentEquip.StageProp	.Level;
 
 	// 
-	currentEnemy.Goods.MaxResearch = currentEnemy.CurrentEquip;
+	currentEnemy.MaxResearch = currentEnemy.CurrentEquip;
 	currentEnemy.Goods.CompletedResearch = SCharacterResearch();
 	currentEnemy.Goods.CompletedResearch.Weapon		.Definitions.AddElement(currentEnemy.CurrentEquip.Weapon		.Definition);
 	currentEnemy.Goods.CompletedResearch.Armor		.Definitions.AddElement(currentEnemy.CurrentEquip.Armor			.Definition);	

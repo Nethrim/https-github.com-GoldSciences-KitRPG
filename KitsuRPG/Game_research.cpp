@@ -26,7 +26,7 @@ void  researchWeaponDefinition(klib::CCharacter& adventurer)
 		, "You have designed a %s blueprint and user manual!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Weapon = adventurer.Goods.CompletedResearch.Weapon.MaxResearch;
+	adventurer.MaxResearch.Weapon = adventurer.Goods.CompletedResearch.Weapon.MaxResearch;
 }
 
 void  researchWeaponModifier(klib::CCharacter& adventurer) 
@@ -41,7 +41,7 @@ void  researchWeaponModifier(klib::CCharacter& adventurer)
 		, "You have developed a novel method for %s implementation and everyone in the world loves you for it!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Weapon = adventurer.Goods.CompletedResearch.Weapon.MaxResearch;
+	adventurer.MaxResearch.Weapon = adventurer.Goods.CompletedResearch.Weapon.MaxResearch;
 }
 
 
@@ -57,7 +57,7 @@ void  researchArmorDefinition(klib::CCharacter& adventurer)
 		, "You have finished your high-end %s design with the common combat enhacements that identify your work!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Armor = adventurer.Goods.CompletedResearch.Armor.MaxResearch;
+	adventurer.MaxResearch.Armor = adventurer.Goods.CompletedResearch.Armor.MaxResearch;
 }
 
 void  researchArmorModifier(klib::CCharacter& adventurer) 
@@ -72,7 +72,7 @@ void  researchArmorModifier(klib::CCharacter& adventurer)
 		, "You have developed a stylized and expensive %s technology and everyone in the world loves you for it!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Armor = adventurer.Goods.CompletedResearch.Armor.MaxResearch;
+	adventurer.MaxResearch.Armor = adventurer.Goods.CompletedResearch.Armor.MaxResearch;
 }
 
 void  researchAccessoryDefinition(klib::CCharacter& adventurer) 
@@ -87,7 +87,7 @@ void  researchAccessoryDefinition(klib::CCharacter& adventurer)
 		, "You got to win the beauty contest by showing your new %s!\n"
 	); 
 
-	 adventurer.Goods.MaxResearch.Accessory = adventurer.Goods.CompletedResearch.Accessory.MaxResearch;
+	 adventurer.MaxResearch.Accessory = adventurer.Goods.CompletedResearch.Accessory.MaxResearch;
 }
 
 void  researchAccessoryModifier(klib::CCharacter& adventurer) 
@@ -102,7 +102,7 @@ void  researchAccessoryModifier(klib::CCharacter& adventurer)
 		, "You become known as the inventor of %s.\n"
 	); 
 
-	 adventurer.Goods.MaxResearch.Accessory = adventurer.Goods.CompletedResearch.Accessory.MaxResearch;
+	 adventurer.MaxResearch.Accessory = adventurer.Goods.CompletedResearch.Accessory.MaxResearch;
 }
 
 
@@ -118,7 +118,7 @@ void  researchProfessionDefinition(klib::CCharacter& adventurer)
 		, "You have learned all you could about being a %s!\n"
 	); 
 
-	 adventurer.Goods.MaxResearch.Profession = adventurer.Goods.CompletedResearch.Profession.MaxResearch;
+	 adventurer.MaxResearch.Profession = adventurer.Goods.CompletedResearch.Profession.MaxResearch;
 }
 
 void  researchProfessionModifier(klib::CCharacter& adventurer) 
@@ -133,7 +133,7 @@ void  researchProfessionModifier(klib::CCharacter& adventurer)
 		, "You have achieved a superior military rank for %s and everyone in the world loves you for it!\n"
 	); 
 
-	 adventurer.Goods.MaxResearch.Profession = adventurer.Goods.CompletedResearch.Profession.MaxResearch;
+	 adventurer.MaxResearch.Profession = adventurer.Goods.CompletedResearch.Profession.MaxResearch;
 }
 
 void  researchVehicleDefinition(klib::CCharacter& adventurer) 
@@ -148,7 +148,7 @@ void  researchVehicleDefinition(klib::CCharacter& adventurer)
 		, "You have engineered a %s! Simulator sold separately...\n"
 	); 
 
-	 adventurer.Goods.MaxResearch.Vehicle = adventurer.Goods.CompletedResearch.Vehicle.MaxResearch;
+	 adventurer.MaxResearch.Vehicle = adventurer.Goods.CompletedResearch.Vehicle.MaxResearch;
 }
 
 void  researchVehicleModifier(klib::CCharacter& adventurer) 
@@ -163,7 +163,7 @@ void  researchVehicleModifier(klib::CCharacter& adventurer)
 		, "You have mounted an advanced combat vehicle production line for %s and you get a Nobel Peace Prize!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Vehicle = adventurer.Goods.CompletedResearch.Vehicle.MaxResearch;
+	adventurer.MaxResearch.Vehicle = adventurer.Goods.CompletedResearch.Vehicle.MaxResearch;
 }
 
 void  researchFacilityDefinition(klib::CCharacter& adventurer) 
@@ -178,7 +178,7 @@ void  researchFacilityDefinition(klib::CCharacter& adventurer)
 		, "Your new %s has been approved and your neighbors will have a new reason to enjoy the view!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Facility = adventurer.Goods.CompletedResearch.Facility.MaxResearch;
+	adventurer.MaxResearch.Facility = adventurer.Goods.CompletedResearch.Facility.MaxResearch;
 }
 
 void  researchFacilityModifier(klib::CCharacter& adventurer) 
@@ -193,5 +193,5 @@ void  researchFacilityModifier(klib::CCharacter& adventurer)
 		, "You reinvented %s and earned an army of followers!\n"
 	); 
 
-	adventurer.Goods.MaxResearch.Facility = adventurer.Goods.CompletedResearch.Facility.MaxResearch;
+	adventurer.MaxResearch.Facility = adventurer.Goods.CompletedResearch.Facility.MaxResearch;
 }
