@@ -1,6 +1,8 @@
 #include "netlib_server.h"
 #include "netlib_private.h"
 
+#include "misc.h"
+
 #include "GCore_function_macros.h"
 
 #include <cstdio>
@@ -27,7 +29,6 @@ int32_t CServer::InitServer(int32_t port_number)
 		return -1;
 	}
 
-	m_bListening			= false;
 	m_nQueuedClientCount	= 0;
 	if( initConnection( m_serverConnection ) )
 	{
@@ -42,21 +43,30 @@ int32_t CServer::InitServer(int32_t port_number)
 		ShutdownServer();
 		return -1;
 	};
+
+	m_bListening			= true;
 	return 0;
 };
 
+int32_t receiveSystemCommand(CClient* pClient, NETLIB_COMMAND& commandReceived)
+{
+	return receiveSystemCommand(pClient->m_ClientListener, pClient->m_ClientTarget, commandReceived);
+}
+
 int32_t CServer::Listen( void )
 {
+	if(!m_bListening)
+		return 1;
+
 	int a1, a2, a3, a4, port_number;	/* Components of address in xxx.xxx.xxx.xxx form */
 	getAddress( m_serverConnection, &a1, &a2, &a3, &a4, &port_number );
-	debug_printf("Server running on %u.%u.%u.%u:%u"
+	debug_printf("Server listening on %u.%u.%u.%u:%u"
 		,(unsigned int)a1
 		,(unsigned int)a2
 		,(unsigned int)a3
 		,(unsigned int)a4
 		,(unsigned int)ntohs(port_number)
 		);
-	m_bListening = true;
 
 	// Information about the client
 	struct SConnectionEndpoint* client;	
@@ -82,14 +92,14 @@ int32_t CServer::Listen( void )
 		god::genum_definition<NETLIB_COMMAND>::get().get_value_label(command).c_str()
 	);
 
-	if(command == NETLIB_COMMAND_CONNECT)
-		m_QueuedConnections[INTERLOCKED_INCREMENT(m_nQueuedClientCount)-1] = client;
+	int64_t newIndex = INTERLOCKED_INCREMENT(m_nQueuedClientCount)-1;
+	if(m_bListening && command == NETLIB_COMMAND_CONNECT && newIndex < ktools::size(m_QueuedConnections))
+		m_QueuedConnections[newIndex] = client;
 	else
 		shutdownConnection(&client);
 
 	return 0;
 };
-
 
 void disconnectClient(CClient* client)
 {
@@ -99,17 +109,17 @@ void disconnectClient(CClient* client)
 	shutdownConnection(&client->m_ClientTarget);
 }
 
-
 int32_t sendSystemCommand(CClient* pClient, const NETLIB_COMMAND& commandToSend)
 {
 	return sendSystemCommand(pClient->m_ClientListener, pClient->m_ClientTarget, commandToSend);
 }
 
-
 int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 {
+	debug_printf("Processing system command: %s.", god::genum_definition<NETLIB_COMMAND>::get().get_value_label(command).c_str());
 	if (command == NETLIB_COMMAND_DISCONNECT)
 	{
+		debug_print("Disconnect requested by client.");
 		disconnectClient(client);
 	}
 	else if (command == NETLIB_COMMAND_PING)
@@ -124,9 +134,7 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 		uint64_t current_time = time(0);
 		int32_t sentBytes = 0;
 		// Send data back
-		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) 
-		 || sentBytes != (int)sizeof(current_time) 
-		)
+		if( 0 > sendToConnection( client->m_ClientListener, (char *)&current_time, (int)sizeof(current_time), &sentBytes, client->m_ClientTarget ) || sentBytes != (int32_t)sizeof(current_time) )
 		{
 			error_print("Failed to send time to client.");
 			return -1;
@@ -162,10 +170,6 @@ int32_t processCommandInternal(CClient* client, NETLIB_COMMAND command)
 	return 0;
 }
 
-int32_t receiveSystemCommand(CClient* pClient, NETLIB_COMMAND& commandReceived)
-{
-	return receiveSystemCommand(pClient->m_ClientListener, pClient->m_ClientTarget, commandReceived);
-}
 
 void clientProc( void *pvClient )
 {
@@ -190,7 +194,9 @@ void clientProc( void *pvClient )
 		};
     }
     // Repeat 
-    while ( true );
+    while ( pClient->m_ClientListener && pClient->m_ClientTarget );
+
+	disconnectClient(pClient);
 }
 
 int32_t CServer::Accept( void )
@@ -204,17 +210,17 @@ int32_t CServer::Accept( void )
 	SConnectionEndpoint* newClientListener = 0, *targetConn = m_QueuedConnections[INTERLOCKED_DECREMENT(m_nQueuedClientCount)];
 
 	getAddress( m_serverConnection, &a1, &a2, &a3, &a4, &local_port_number );
-	if( createConnection( a1, a2, a3, a4, 0, &newClientListener ) )
+	if( 0 > createConnection( a1, a2, a3, a4, 0, &newClientListener ) )
 	{
  		error_print("Failed to create client listener.");
 		return -1;
 	}
-	if( 0 > initConnection( newClientListener ) )
+	else if( 0 > initConnection( newClientListener ) )
 	{
 		error_print("Failed to initialize client listener connection.");
 		return -1;
 	}				
-	if( 0 > bindConnection( newClientListener ) )
+	else if( 0 > bindConnection( newClientListener ) )
 	{
 		error_print("Failed to bind client listener connection.");
 		return -1;
@@ -225,21 +231,21 @@ int32_t CServer::Accept( void )
 	{
 		bool bFound = false, bFoundEmpty = false;
 		uint32_t indexFound = -1;
-		for(uint32_t i=0; i<ClientConnections.size(); ++i)
-			if(0 == ClientConnections[i])
+		god::CGLock lock(ConnectionsMutex);
+		for(uint32_t iClient=0, clientCount = ClientConnections.size(); iClient<clientCount; ++iClient)
+			if(0 == ClientConnections[iClient])
 			{
 				bFoundEmpty = true;
-				indexFound = i;
+				indexFound = iClient;
 				break;
 			}
-			else if(ClientConnections[i]->m_ClientListener == 0 || ClientConnections[i]->m_ClientTarget == 0)
+			else if(ClientConnections[iClient]->m_ClientListener == 0 || ClientConnections[iClient]->m_ClientTarget == 0)
 			{
-				newClient = ClientConnections.acquire(i);
+				newClient = ClientConnections.acquire(iClient);
 				bFound = true;
 				break;
 			}
 
-		god::CGLock lock(ConnectionsMutex);
 		if(newClient)
 			newClient->InitClient( newClientListener, targetConn, newClient->m_id );
 		else
@@ -249,9 +255,8 @@ int32_t CServer::Accept( void )
 			ClientConnections.set(newClient, indexFound);
 		else if(!bFound)
 			ClientConnections.push(newClient);
-
-		_beginthread( clientProc, 0, newClient.get_address() );
 	}
+	_beginthread( clientProc, 0, newClient.get_address() );
 
 	// Build listening port message
 	if( 0 > ::sendSystemCommand(newClient.get_address(), NETLIB_COMMAND_PORT) )
@@ -262,10 +267,7 @@ int32_t CServer::Accept( void )
 
 	int32_t sentBytes = 0;
 	local_port_number = htons(local_port_number);
-	if( 0 > sendToConnection( newClientListener, (const char*)&local_port_number, sizeof(int32_t), &sentBytes, targetConn ) ) //client ) )
-		return -1;
-	
-	if( sentBytes != sizeof(int32_t) )
+	if( 0 > sendToConnection( newClientListener, (const char*)&local_port_number, sizeof(int32_t), &sentBytes, targetConn ) || sentBytes != sizeof(int32_t) )
 	{
 		error_print("Failed to send port command to client.");
 		return -1;
@@ -292,11 +294,7 @@ void CServer::ShutdownServer()
 	m_bListening = false;
 
 	while ( m_nQueuedClientCount > 0 )
-	{
-		// Tell thread to die and record its death.
-		//ReleaseMutex( hRunMutex ); queued connections don't have any threads
 		shutdownConnection(&m_QueuedConnections[INTERLOCKED_DECREMENT(m_nQueuedClientCount)]);
-	}
 
 	while ( ClientConnections.size() )
 	{

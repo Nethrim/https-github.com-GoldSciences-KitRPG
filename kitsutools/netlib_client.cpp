@@ -11,7 +11,7 @@ using namespace ktools;
 int32_t ktools::initClientConnection(SNetworkClient& instanceClient)
 {
 
-	if( createConnection( instanceClient.b1, instanceClient.b2, instanceClient.b3, instanceClient.b4, 0, &instanceClient.pClient ) )
+	if( createConnection( instanceClient.l1, instanceClient.l2, instanceClient.l3, instanceClient.l4, 0, &instanceClient.pClient ) )
 	{
 		error_printf("Error creating client connection.");
 		return -1;
@@ -30,7 +30,7 @@ int32_t ktools::initClientConnection(SNetworkClient& instanceClient)
 		return -1;
 	}
 
-	if( createConnection( instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, instanceClient.port_number, &instanceClient.pServer ) )
+	if( createConnection( instanceClient.r1, instanceClient.r2, instanceClient.r3, instanceClient.r4, instanceClient.rPort, &instanceClient.pServer ) )
 	{
 		error_printf("Error creating new connection to server.");
 		return -1;
@@ -43,7 +43,7 @@ int32_t ktools::requestDisconnect(SNetworkClient& instanceClient)
 {
 	static const NETLIB_COMMAND commandDisconnect = NETLIB_COMMAND_DISCONNECT;
 	int32_t bytesTransmitted=-1;
-	sendToConnection( instanceClient.pClient, (const char*)&commandDisconnect, (int)sizeof(NETLIB_COMMAND) + 1, &bytesTransmitted, instanceClient.pServer );
+	sendToConnection( instanceClient.pClient, (const char*)&commandDisconnect, (int)sizeof(NETLIB_COMMAND), &bytesTransmitted, instanceClient.pServer );
 	if (bytesTransmitted == -1)
 	{
 		error_print("Error sending disconnect message.");
@@ -96,7 +96,7 @@ int ktools::connect(SNetworkClient& instanceClient)
 	debug_printf("port reported available: %i.", port_buffer);
 
 	// Got an available port to connect to? 
-	if(createConnection(instanceClient.a1, instanceClient.a2, instanceClient.a3, instanceClient.a4, port_buffer, &instanceClient.pServer))
+	if(createConnection(instanceClient.r1, instanceClient.r2, instanceClient.r3, instanceClient.r4, port_buffer, &instanceClient.pServer))
 	{
 		error_print("Error creating new server connection.");
 		return -1;

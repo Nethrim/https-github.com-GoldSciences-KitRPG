@@ -18,9 +18,9 @@ namespace ktools
 	class CClient
 	{
 	public:
-		int32_t					m_id;
-		SConnectionEndpoint*	m_ClientListener;
-		SConnectionEndpoint*	m_ClientTarget;
+		int32_t					m_id				= -1;
+		SConnectionEndpoint*	m_ClientListener	= 0;
+		SConnectionEndpoint*	m_ClientTarget		= 0;
 
 		int32_t InitClient(SConnectionEndpoint* listener, SConnectionEndpoint* target, int32_t id)
 		{
@@ -35,13 +35,14 @@ namespace ktools
 	class CServer
 	{
 	public:
-		bool								m_bListening; 
-		SConnectionEndpoint*				m_serverConnection;
-		char								host_name[256];	/* Name of the server */
-		GLstObj(ktools, CClient)			ClientConnections;	
-		GLstObj(ktools, CClient)			ClientUnused;	
-		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS_QUEUE];
-		volatile long						m_nQueuedClientCount;
+		volatile long						m_nQueuedClientCount					= 0;
+		SConnectionEndpoint*				m_serverConnection						= 0;
+		SConnectionEndpoint*				m_QueuedConnections[MAX_CLIENTS_QUEUE]	= {};
+		GLstObj(ktools, CClient)			ClientConnections						= {};	
+		GLstObj(ktools, CClient)			ClientUnused							= {};	
+		god::CGMutex						ConnectionsMutex						= {};
+		char								host_name[256]							= {};	//
+		bool								m_bListening							= false;	 
 
 		int32_t								InitServer(int32_t port_number);
 		int32_t								Listen( void );
@@ -49,10 +50,7 @@ namespace ktools
 		void								ShutdownServer();
 		void								DisconnectClient(int32_t id);
 
-		god::CGMutex						ConnectionsMutex;
 	};
-
-
 };
 
 // Define this function for processing your commands.

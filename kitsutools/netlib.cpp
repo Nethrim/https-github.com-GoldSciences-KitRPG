@@ -45,9 +45,11 @@ void initSockaddrStruct( int a1, int a2, int a3, int a4, unsigned short port_num
 
 int32_t ktools::createConnection( int b1, int b2, int b3, int b4, unsigned short port_number, ktools::SConnectionEndpoint** out_newClientInfo ) 
 {
-	ktools::SConnectionEndpoint* newClientInfo = new ktools::SConnectionEndpoint();
+	ktools::SConnectionEndpoint* newClientInfo = new ktools::SConnectionEndpoint(), * oldClientInfo;
 	initSockaddrStruct( b1, b2, b3, b4, port_number, &newClientInfo->sockaddr );
+	oldClientInfo = *out_newClientInfo;
 	*out_newClientInfo = newClientInfo;
+	shutdownConnection(&oldClientInfo);
 	return 0;
 }
 
@@ -305,7 +307,7 @@ int32_t ktools::receiveFromConnection	( SConnectionEndpoint* connection, char* b
 	int32_t bytesReceived =-1;
 	if( newConnection )
 	{
-		SConnectionEndpoint* client;
+		SConnectionEndpoint* client=0;
 		createConnection(0,0,0,0,0,&client);
 		// Receive time
 		if ((bytesReceived = recvfrom(connection->sd, buffer, bufLen, 0, (sockaddr *)&client->sockaddr, &server_length)) < 0)

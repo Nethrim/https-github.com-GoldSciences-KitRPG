@@ -49,13 +49,15 @@ void serverListen( ktools::CServer* pServer )
 			error_print("Failed to listen on server.");
 			bListenFailure = true;
 		}
-		else if( false == bListenFailure && 0 > pServer->Accept() )
+		else if( 0 > pServer->Accept() )
 		{
 			error_print("Failed to accept queued client or no client queued.");
+			Sleep(400);
 		}
-		// Get display screen information & clear the screen.
+
 		Sleep(100);
 		WriteTitle( pServer->ClientConnections.size() );
+
 	};
 }
 

@@ -25,8 +25,8 @@ namespace ktools
 
 	struct SConnectionEndpoint
 	{
-		SOCKET sd					= 0;								/* The socket descriptor */
-		struct sockaddr_in sockaddr = {};			/* Information about the client */
+		SOCKET			sd			= 0;	// Socket descriptor
+		sockaddr_in		sockaddr	= {};	// Information about this endpoint
 	};
 
 	int32_t sendSystemCommand(SConnectionEndpoint* pOrigin, SConnectionEndpoint* pTarget, const NETLIB_COMMAND& commandToSend);

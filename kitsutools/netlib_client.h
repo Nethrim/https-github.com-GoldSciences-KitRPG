@@ -9,9 +9,9 @@ namespace ktools
 
 	struct SNetworkClient
 	{
-		int32_t a1=192, a2=168, a3=1, a4=27;	/* Server address components in xxx.xxx.xxx.xxx form */
-		int32_t port_number = 6667;				/* The port number to use */
-		int32_t b1=0, b2=0, b3=0, b4=0;			/* Client address components in xxx.xxx.xxx.xxx form */
+		int32_t r1=192, r2=168, r3=1, r4=27;	// Remote address components 
+		int32_t rPort = 6667;					// The port number to use
+		int32_t l1=0, l2=0, l3=0, l4=0;			// Local address components 
 
 		SConnectionEndpoint* pServer = 0;	// the remote endpoint
 		SConnectionEndpoint* pClient = 0;	// us
